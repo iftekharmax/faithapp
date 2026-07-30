@@ -175,7 +175,7 @@ export function ApplicationEditDialog({
           </div>
         )}
 
-        <DialogFooter>
+        <DialogFooter className="border-t bg-muted/40 px-5 py-3 sm:px-6">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>Cancel</Button>
           <Button onClick={submit} disabled={saving}>{saving ? "Saving…" : "Save changes"}</Button>
         </DialogFooter>

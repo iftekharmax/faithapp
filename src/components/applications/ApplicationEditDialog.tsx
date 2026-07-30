@@ -114,7 +114,7 @@ export function ApplicationEditDialog({
 
         {form && (
           <div className="grid flex-1 gap-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
-            <input type="hidden" />
+            
             <div className="sm:col-span-2">
               <Label htmlFor="university">University *</Label>
               <Input id="university" value={form.university} onChange={(e) => set("university", e.target.value)} />

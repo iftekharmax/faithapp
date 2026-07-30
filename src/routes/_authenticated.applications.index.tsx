@@ -281,6 +281,19 @@ function ApplicationsPage() {
                         {APPLICATION_STATUS_LABELS[a.status]}
                       </Badge>
                     </TableCell>
+                    <TableCell>
+                      {docStatuses[a.id] && docStatuses[a.id] !== "none" ? (
+                        <Badge
+                          variant="secondary"
+                          className={docStatusColor[docStatuses[a.id] as Exclude<DocSummaryStatus, "none">]}
+                        >
+                          {docStatusLabel[docStatuses[a.id] as Exclude<DocSummaryStatus, "none">]}
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                       <Button asChild variant="ghost" size="icon">
                         <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>

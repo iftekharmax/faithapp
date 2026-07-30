@@ -54,6 +54,20 @@ const statusColor: Record<ApplicationStatus, string> = {
   withdrawn: "bg-muted text-muted-foreground",
   rejected: "bg-red-500/15 text-red-600",
 };
+const docStatusLabel: Record<Exclude<DocSummaryStatus, "none">, string> = {
+  required: "Required",
+  pending: "Pending",
+  approved: "Approved",
+  rejected: "Reject",
+};
+
+const docStatusColor: Record<Exclude<DocSummaryStatus, "none">, string> = {
+  required: "bg-amber-500/15 text-amber-600",
+  pending: "bg-blue-500/15 text-blue-600",
+  approved: "bg-emerald-500/15 text-emerald-600",
+  rejected: "bg-red-500/15 text-red-600",
+};
+
 
 
 function ApplicationsPage() {

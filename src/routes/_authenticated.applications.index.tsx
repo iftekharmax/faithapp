@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, RefreshCw, Filter, X, Eye, FileText } from "lucide-react";
+import { Search, Plus, RefreshCw, Filter, X, Eye, FileText, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 import {
   listApplications,
+  deleteApplication,
   APPLICATION_STATUSES, APPLICATION_STATUS_LABELS,
   type Application, type ApplicationStatus,
 } from "@/lib/applications";
@@ -27,6 +28,9 @@ import {
   listDocumentStatusByApplication,
   type DocSummaryStatus,
 } from "@/lib/document-requests";
+import { ApplicationViewDialog } from "@/components/applications/ApplicationViewDialog";
+import { ApplicationEditDialog } from "@/components/applications/ApplicationEditDialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/applications/")({
   component: () => (
@@ -83,6 +87,11 @@ function ApplicationsPage() {
   const [intake, setIntake] = useState<string>("all");
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState<Application | null>(null);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -295,11 +304,35 @@ function ApplicationsPage() {
                     </TableCell>
 
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                      <Button asChild variant="ghost" size="icon">
-                        <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          aria-label="View application"
+                          title="View"
+                          onClick={() => { setSelected(a); setViewOpen(true); }}
+                          className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                        >
                           <Eye className="h-4 w-4" />
-                        </Link>
-                      </Button>
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Edit application"
+                          title="Edit"
+                          onClick={() => { setSelected(a); setEditOpen(true); }}
+                          className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Delete application"
+                          title="Delete"
+                          onClick={() => { setSelected(a); setDeleteOpen(true); }}
+                          className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -316,6 +349,41 @@ function ApplicationsPage() {
           />
         </CardContent>
       </Card>
+
+      <ApplicationViewDialog application={selected} open={viewOpen} onOpenChange={setViewOpen} />
+      <ApplicationEditDialog
+        application={selected}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSaved={load}
+      />
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        variant="destructive"
+        title="Delete application?"
+        description={
+          selected
+            ? `${selected.application_code} will be permanently deleted. This cannot be undone.`
+            : undefined
+        }
+        confirmLabel="Delete"
+        loading={deleting}
+        onConfirm={async () => {
+          if (!selected) return;
+          setDeleting(true);
+          try {
+            await deleteApplication(selected.id);
+            toast.success("Application deleted");
+            setDeleteOpen(false);
+            await load();
+          } catch (e: any) {
+            toast.error(e.message ?? "Failed to delete application");
+          } finally {
+            setDeleting(false);
+          }
+        }}
+      />
     </div>
   );
 }

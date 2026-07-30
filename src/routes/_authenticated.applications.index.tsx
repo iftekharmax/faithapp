@@ -73,6 +73,7 @@ const docStatusColor: Record<Exclude<DocSummaryStatus, "none">, string> = {
 function ApplicationsPage() {
   const navigate = useNavigate();
   const [apps, setApps] = useState<Application[]>([]);
+  const [docStatuses, setDocStatuses] = useState<Record<string, DocSummaryStatus>>({});
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
@@ -85,7 +86,14 @@ function ApplicationsPage() {
 
   const load = async () => {
     setLoading(true);
-    try { setApps(await listApplications()); }
+    try {
+      const [list, docs] = await Promise.all([
+        listApplications(),
+        listDocumentStatusByApplication().catch(() => ({} as Record<string, DocSummaryStatus>)),
+      ]);
+      setApps(list);
+      setDocStatuses(docs);
+    }
     catch (e: any) { toast.error(e.message ?? "Failed to load applications"); }
     finally { setLoading(false); }
   };

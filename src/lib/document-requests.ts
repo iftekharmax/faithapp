@@ -362,3 +362,48 @@ export async function listDocumentStatusByApplication(): Promise<Record<string, 
   for (const [id, statuses] of Object.entries(grouped)) out[id] = rollupDocStatus(statuses);
   return out;
 }
+
+// ---- Bulk document decisions for an application ----
+
+/** Mandatory requests that still have no uploaded file. */
+export function missingRequiredUploads(requests: DocumentRequest[]): DocumentRequest[] {
+  return requests.filter((r) => r.is_mandatory && !r.file_path);
+}
+
+/** Can every document on this application be approved? */
+export function canApproveDocuments(requests: DocumentRequest[]): { ok: boolean; reason?: string } {
+  if (requests.length === 0) {
+    return { ok: false, reason: "No documents have been requested for this application yet." };
+  }
+  const missing = missingRequiredUploads(requests);
+  if (missing.length > 0) {
+    return {
+      ok: false,
+      reason: `Upload all required documents first: ${missing.map((m) => m.document_name).join(", ")}.`,
+    };
+  }
+  return { ok: true };
+}
+
+async function moveTo(request: DocumentRequest, target: DocRequestStatus, notes?: string) {
+  if (request.status === target) return;
+  if (!isDocRequestTransitionAllowed(request.status, target)) {
+    // "pending" is reachable from every state and can reach every decision.
+    await setDocumentRequestStatus(request.id, "pending");
+  }
+  await setDocumentRequestStatus(request.id, target, notes);
+}
+
+/** Approve every document request on an application (validated). */
+export async function approveAllDocuments(requests: DocumentRequest[]) {
+  const check = canApproveDocuments(requests);
+  if (!check.ok) throw new Error(check.reason);
+  for (const r of requests) await moveTo(r, "approved");
+}
+
+/** Reject every document request on an application. A reason note is required. */
+export async function rejectAllDocuments(requests: DocumentRequest[], notes: string) {
+  if (requests.length === 0) throw new Error("No documents have been requested for this application yet.");
+  if (!notes.trim()) throw new Error("Please add a reason for the rejection.");
+  for (const r of requests) await moveTo(r, "rejected", notes.trim());
+}

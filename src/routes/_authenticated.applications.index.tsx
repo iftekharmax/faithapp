@@ -379,7 +379,7 @@ function ApplicationsPage() {
                           type="button"
                           aria-label="Edit application"
                           title="Edit"
-                          onClick={() => { setSelected(a); setViewOpen(true); }}
+                          onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
                           className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                         >
                           <Pencil className="h-4 w-4" />

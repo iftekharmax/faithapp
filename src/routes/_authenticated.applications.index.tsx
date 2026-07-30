@@ -26,10 +26,14 @@ import {
 } from "@/lib/applications";
 import {
   listDocumentStatusByApplication,
+  listDocumentRequests,
+  approveAllDocuments,
+  rejectAllDocuments,
   type DocSummaryStatus,
 } from "@/lib/document-requests";
 import { ApplicationViewDialog } from "@/components/applications/ApplicationViewDialog";
 import { ApplicationEditDialog } from "@/components/applications/ApplicationEditDialog";
+import { ApplicationDocumentsDialog } from "@/components/applications/ApplicationDocumentsDialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/applications/")({

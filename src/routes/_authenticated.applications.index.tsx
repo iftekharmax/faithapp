@@ -93,7 +93,7 @@ function ApplicationsPage() {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Application | null>(null);
   const [viewOpen, setViewOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
+  
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);

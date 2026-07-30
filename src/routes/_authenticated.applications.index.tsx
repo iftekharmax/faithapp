@@ -349,6 +349,41 @@ function ApplicationsPage() {
           />
         </CardContent>
       </Card>
+
+      <ApplicationViewDialog application={selected} open={viewOpen} onOpenChange={setViewOpen} />
+      <ApplicationEditDialog
+        application={selected}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSaved={load}
+      />
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        variant="destructive"
+        title="Delete application?"
+        description={
+          selected
+            ? `${selected.application_code} will be permanently deleted. This cannot be undone.`
+            : undefined
+        }
+        confirmLabel="Delete"
+        loading={deleting}
+        onConfirm={async () => {
+          if (!selected) return;
+          setDeleting(true);
+          try {
+            await deleteApplication(selected.id);
+            toast.success("Application deleted");
+            setDeleteOpen(false);
+            await load();
+          } catch (e: any) {
+            toast.error(e.message ?? "Failed to delete application");
+          } finally {
+            setDeleting(false);
+          }
+        }}
+      />
     </div>
   );
 }

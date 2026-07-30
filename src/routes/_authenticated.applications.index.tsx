@@ -114,6 +114,32 @@ function ApplicationsPage() {
   };
   useEffect(() => { load(); }, []);
 
+  const reloadDocStatuses = async () => {
+    try { setDocStatuses(await listDocumentStatusByApplication()); } catch { /* ignore */ }
+  };
+
+  const decideDocuments = async (a: Application, decision: "approved" | "rejected") => {
+    setDecidingId(a.id);
+    try {
+      const requests = await listDocumentRequests(a.id);
+      if (decision === "approved") {
+        await approveAllDocuments(requests);
+      } else {
+        const reason = window.prompt("Reason for rejecting the documents");
+        if (reason === null) return;
+        await rejectAllDocuments(requests, reason);
+      }
+      // Instant badge feedback, then reconcile with the server.
+      setDocStatuses((prev) => ({ ...prev, [a.id]: decision === "approved" ? "approved" : "rejected" }));
+      toast.success(decision === "approved" ? "Documents approved" : "Documents rejected");
+      await reloadDocStatuses();
+    } catch (e: any) {
+      toast.error(e.message ?? "Could not update documents");
+    } finally {
+      setDecidingId(null);
+    }
+  };
+
   const uniq = (arr: (string | null | undefined)[]) =>
     Array.from(new Set(arr.filter(Boolean) as string[])).sort();
   const countries = useMemo(() => uniq(apps.map((a) => a.country)), [apps]);

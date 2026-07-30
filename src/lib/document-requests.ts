@@ -334,3 +334,31 @@ export async function deleteDocumentRequest(id: string) {
   const { error } = await supabase.from("application_document_requests").delete().eq("id", id);
   if (error) throw new Error(mapDocRequestError(error));
 }
+
+// ---- Applications list: per-application document status summary ----
+
+export type DocSummaryStatus = "none" | "required" | "pending" | "rejected" | "approved";
+
+/** Rolls up many request rows into one badge status for the applications list. */
+export function rollupDocStatus(statuses: DocRequestStatus[]): DocSummaryStatus {
+  if (statuses.length === 0) return "none";
+  if (statuses.includes("rejected")) return "rejected";
+  if (statuses.some((s) => s === "pending" || s === "under_review" || s === "hold" || s === "uploaded")) return "pending";
+  if (statuses.includes("required")) return "required";
+  return "approved";
+}
+
+/** Map of application_id -> rolled-up document status. */
+export async function listDocumentStatusByApplication(): Promise<Record<string, DocSummaryStatus>> {
+  const { data, error } = await supabase
+    .from("application_document_requests")
+    .select("application_id, status");
+  if (error) throw error;
+  const grouped: Record<string, DocRequestStatus[]> = {};
+  for (const row of (data ?? []) as Array<{ application_id: string; status: DocRequestStatus }>) {
+    (grouped[row.application_id] ??= []).push(row.status);
+  }
+  const out: Record<string, DocSummaryStatus> = {};
+  for (const [id, statuses] of Object.entries(grouped)) out[id] = rollupDocStatus(statuses);
+  return out;
+}

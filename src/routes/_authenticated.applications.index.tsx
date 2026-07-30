@@ -23,6 +23,10 @@ import {
   APPLICATION_STATUSES, APPLICATION_STATUS_LABELS,
   type Application, type ApplicationStatus,
 } from "@/lib/applications";
+import {
+  listDocumentStatusByApplication,
+  type DocSummaryStatus,
+} from "@/lib/document-requests";
 
 export const Route = createFileRoute("/_authenticated/applications/")({
   component: () => (
@@ -50,11 +54,26 @@ const statusColor: Record<ApplicationStatus, string> = {
   withdrawn: "bg-muted text-muted-foreground",
   rejected: "bg-red-500/15 text-red-600",
 };
+const docStatusLabel: Record<Exclude<DocSummaryStatus, "none">, string> = {
+  required: "Required",
+  pending: "Pending",
+  approved: "Approved",
+  rejected: "Reject",
+};
+
+const docStatusColor: Record<Exclude<DocSummaryStatus, "none">, string> = {
+  required: "bg-amber-500/15 text-amber-600",
+  pending: "bg-blue-500/15 text-blue-600",
+  approved: "bg-emerald-500/15 text-emerald-600",
+  rejected: "bg-red-500/15 text-red-600",
+};
+
 
 
 function ApplicationsPage() {
   const navigate = useNavigate();
   const [apps, setApps] = useState<Application[]>([]);
+  const [docStatuses, setDocStatuses] = useState<Record<string, DocSummaryStatus>>({});
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
@@ -67,7 +86,14 @@ function ApplicationsPage() {
 
   const load = async () => {
     setLoading(true);
-    try { setApps(await listApplications()); }
+    try {
+      const [list, docs] = await Promise.all([
+        listApplications(),
+        listDocumentStatusByApplication().catch(() => ({} as Record<string, DocSummaryStatus>)),
+      ]);
+      setApps(list);
+      setDocStatuses(docs);
+    }
     catch (e: any) { toast.error(e.message ?? "Failed to load applications"); }
     finally { setLoading(false); }
   };
@@ -206,20 +232,21 @@ function ApplicationsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                <TableHead>Application</TableHead>
+                <TableHead>Application No.</TableHead>
                   <TableHead className="hidden md:table-cell">Student</TableHead>
                   <TableHead className="hidden lg:table-cell">University / Program</TableHead>
                   <TableHead className="hidden lg:table-cell">Intake</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Documents</TableHead>
                   <TableHead className="w-16 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableSkeleton rows={6} columns={6} />
+                  <TableSkeleton rows={6} columns={7} />
                 ) : paged.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="p-0">
+                    <TableCell colSpan={7} className="p-0">
                       <EmptyState
                         icon={FileText}
                         title="No applications match your filters"
@@ -254,6 +281,19 @@ function ApplicationsPage() {
                         {APPLICATION_STATUS_LABELS[a.status]}
                       </Badge>
                     </TableCell>
+                    <TableCell>
+                      {docStatuses[a.id] && docStatuses[a.id] !== "none" ? (
+                        <Badge
+                          variant="secondary"
+                          className={docStatusColor[docStatuses[a.id] as Exclude<DocSummaryStatus, "none">]}
+                        >
+                          {docStatusLabel[docStatuses[a.id] as Exclude<DocSummaryStatus, "none">]}
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                       <Button asChild variant="ghost" size="icon">
                         <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>

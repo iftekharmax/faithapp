@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, RefreshCw, Filter, X, Eye, FileText, Pencil, Trash2, Check, XCircle } from "lucide-react";
+import { Search, Plus, RefreshCw, Filter, X, Eye, FileText, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 import { Button } from "@/components/ui/button";
@@ -26,14 +26,9 @@ import {
 } from "@/lib/applications";
 import {
   listDocumentStatusByApplication,
-  listDocumentRequests,
-  approveAllDocuments,
-  rejectAllDocuments,
   type DocSummaryStatus,
 } from "@/lib/document-requests";
 import { ApplicationViewDialog } from "@/components/applications/ApplicationViewDialog";
-
-import { ApplicationDocumentsDialog } from "@/components/applications/ApplicationDocumentsDialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/applications/")({
@@ -93,11 +88,9 @@ function ApplicationsPage() {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Application | null>(null);
   const [viewOpen, setViewOpen] = useState(false);
-  
+
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [docsOpen, setDocsOpen] = useState(false);
-  const [decidingId, setDecidingId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -114,31 +107,6 @@ function ApplicationsPage() {
   };
   useEffect(() => { load(); }, []);
 
-  const reloadDocStatuses = async () => {
-    try { setDocStatuses(await listDocumentStatusByApplication()); } catch { /* ignore */ }
-  };
-
-  const decideDocuments = async (a: Application, decision: "approved" | "rejected") => {
-    setDecidingId(a.id);
-    try {
-      const requests = await listDocumentRequests(a.id);
-      if (decision === "approved") {
-        await approveAllDocuments(requests);
-      } else {
-        const reason = window.prompt("Reason for rejecting the documents");
-        if (reason === null) return;
-        await rejectAllDocuments(requests, reason);
-      }
-      // Instant badge feedback, then reconcile with the server.
-      setDocStatuses((prev) => ({ ...prev, [a.id]: decision === "approved" ? "approved" : "rejected" }));
-      toast.success(decision === "approved" ? "Documents approved" : "Documents rejected");
-      await reloadDocStatuses();
-    } catch (e: any) {
-      toast.error(e.message ?? "Could not update documents");
-    } finally {
-      setDecidingId(null);
-    }
-  };
 
   const uniq = (arr: (string | null | undefined)[]) =>
     Array.from(new Set(arr.filter(Boolean) as string[])).sort();
@@ -339,35 +307,6 @@ function ApplicationsPage() {
                       <div className="flex items-center justify-end gap-0.5">
                         <button
                           type="button"
-                          aria-label="Manage documents"
-                          title="Documents"
-                          onClick={() => { setSelected(a); setDocsOpen(true); }}
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          <FileText className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label="Approve documents"
-                          title="Approve documents"
-                          disabled={decidingId === a.id}
-                          onClick={() => decideDocuments(a, "approved")}
-                          className="grid h-8 w-8 place-items-center rounded-md text-emerald-600 transition-colors hover:bg-emerald-500/10 disabled:opacity-50"
-                        >
-                          <Check className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label="Reject documents"
-                          title="Reject documents"
-                          disabled={decidingId === a.id}
-                          onClick={() => decideDocuments(a, "rejected")}
-                          className="grid h-8 w-8 place-items-center rounded-md text-red-600 transition-colors hover:bg-red-500/10 disabled:opacity-50"
-                        >
-                          <XCircle className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
                           aria-label="View application"
                           title="View"
                           onClick={() => { setSelected(a); setViewOpen(true); }}
@@ -412,12 +351,7 @@ function ApplicationsPage() {
       </Card>
 
       <ApplicationViewDialog application={selected} open={viewOpen} onOpenChange={setViewOpen} />
-      <ApplicationDocumentsDialog
-        application={selected}
-        open={docsOpen}
-        onOpenChange={setDocsOpen}
-        onChanged={reloadDocStatuses}
-      />
+
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}

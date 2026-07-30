@@ -418,12 +418,6 @@ function ApplicationsPage() {
         onOpenChange={setDocsOpen}
         onChanged={reloadDocStatuses}
       />
-      <ApplicationEditDialog
-        application={selected}
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        onSaved={load}
-      />
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}

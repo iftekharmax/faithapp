@@ -412,6 +412,12 @@ function ApplicationsPage() {
       </Card>
 
       <ApplicationViewDialog application={selected} open={viewOpen} onOpenChange={setViewOpen} />
+      <ApplicationDocumentsDialog
+        application={selected}
+        open={docsOpen}
+        onOpenChange={setDocsOpen}
+        onChanged={reloadDocStatuses}
+      />
       <ApplicationEditDialog
         application={selected}
         open={editOpen}

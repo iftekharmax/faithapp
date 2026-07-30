@@ -9,38 +9,455 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthSignupRouteImport } from './routes/auth.signup'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
+import { Route as AuthLoginRouteImport } from './routes/auth.login'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
+import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated.users'
+import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated.tasks'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
+import { Route as AuthenticatedRolesRouteImport } from './routes/_authenticated.roles'
+import { Route as AuthenticatedProgramsRouteImport } from './routes/_authenticated.programs'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated.profile'
+import { Route as AuthenticatedPermissionsRouteImport } from './routes/_authenticated.permissions'
+import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated.departments'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedCountriesRouteImport } from './routes/_authenticated.countries'
+import { Route as AuthenticatedChangePasswordRouteImport } from './routes/_authenticated.change-password'
+import { Route as AuthenticatedAuditLogsRouteImport } from './routes/_authenticated.audit-logs'
+import { Route as AuthenticatedUniversitiesIndexRouteImport } from './routes/_authenticated.universities.index'
+import { Route as AuthenticatedStudentsIndexRouteImport } from './routes/_authenticated.students.index'
+import { Route as AuthenticatedCounselorsIndexRouteImport } from './routes/_authenticated.counselors.index'
+import { Route as AuthenticatedApplicationsIndexRouteImport } from './routes/_authenticated.applications.index'
+import { Route as ApiAdminResendVerificationRouteImport } from './routes/api.admin.resend-verification'
+import { Route as ApiAdminCreateUserRouteImport } from './routes/api.admin.create-user'
+import { Route as AuthenticatedUniversitiesUniversityIdRouteImport } from './routes/_authenticated.universities.$universityId'
+import { Route as AuthenticatedStudentsNewRouteImport } from './routes/_authenticated.students.new'
+import { Route as AuthenticatedStudentsImportRouteImport } from './routes/_authenticated.students.import'
+import { Route as AuthenticatedStudentsStudentIdRouteImport } from './routes/_authenticated.students.$studentId'
+import { Route as AuthenticatedCounselorsCounselorIdRouteImport } from './routes/_authenticated.counselors.$counselorId'
+import { Route as AuthenticatedApplicationsNewRouteImport } from './routes/_authenticated.applications.new'
+import { Route as AuthenticatedApplicationsApplicationIdRouteImport } from './routes/_authenticated.applications.$applicationId'
+import { Route as AuthenticatedAdminSchemaRouteImport } from './routes/_authenticated.admin.schema'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthSignupRoute = AuthSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedRolesRoute = AuthenticatedRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProgramsRoute = AuthenticatedProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPermissionsRoute =
+  AuthenticatedPermissionsRouteImport.update({
+    id: '/permissions',
+    path: '/permissions',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDepartmentsRoute =
+  AuthenticatedDepartmentsRouteImport.update({
+    id: '/departments',
+    path: '/departments',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCountriesRoute = AuthenticatedCountriesRouteImport.update({
+  id: '/countries',
+  path: '/countries',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedChangePasswordRoute =
+  AuthenticatedChangePasswordRouteImport.update({
+    id: '/change-password',
+    path: '/change-password',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAuditLogsRoute = AuthenticatedAuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedUniversitiesIndexRoute =
+  AuthenticatedUniversitiesIndexRouteImport.update({
+    id: '/universities/',
+    path: '/universities/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedStudentsIndexRoute =
+  AuthenticatedStudentsIndexRouteImport.update({
+    id: '/students/',
+    path: '/students/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedCounselorsIndexRoute =
+  AuthenticatedCounselorsIndexRouteImport.update({
+    id: '/counselors/',
+    path: '/counselors/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedApplicationsIndexRoute =
+  AuthenticatedApplicationsIndexRouteImport.update({
+    id: '/applications/',
+    path: '/applications/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const ApiAdminResendVerificationRoute =
+  ApiAdminResendVerificationRouteImport.update({
+    id: '/api/admin/resend-verification',
+    path: '/api/admin/resend-verification',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAdminCreateUserRoute = ApiAdminCreateUserRouteImport.update({
+  id: '/api/admin/create-user',
+  path: '/api/admin/create-user',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedUniversitiesUniversityIdRoute =
+  AuthenticatedUniversitiesUniversityIdRouteImport.update({
+    id: '/universities/$universityId',
+    path: '/universities/$universityId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedStudentsNewRoute =
+  AuthenticatedStudentsNewRouteImport.update({
+    id: '/students/new',
+    path: '/students/new',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedStudentsImportRoute =
+  AuthenticatedStudentsImportRouteImport.update({
+    id: '/students/import',
+    path: '/students/import',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedStudentsStudentIdRoute =
+  AuthenticatedStudentsStudentIdRouteImport.update({
+    id: '/students/$studentId',
+    path: '/students/$studentId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedCounselorsCounselorIdRoute =
+  AuthenticatedCounselorsCounselorIdRouteImport.update({
+    id: '/counselors/$counselorId',
+    path: '/counselors/$counselorId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedApplicationsNewRoute =
+  AuthenticatedApplicationsNewRouteImport.update({
+    id: '/applications/new',
+    path: '/applications/new',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedApplicationsApplicationIdRoute =
+  AuthenticatedApplicationsApplicationIdRouteImport.update({
+    id: '/applications/$applicationId',
+    path: '/applications/$applicationId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminSchemaRoute =
+  AuthenticatedAdminSchemaRouteImport.update({
+    id: '/admin/schema',
+    path: '/admin/schema',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/audit-logs': typeof AuthenticatedAuditLogsRoute
+  '/change-password': typeof AuthenticatedChangePasswordRoute
+  '/countries': typeof AuthenticatedCountriesRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/departments': typeof AuthenticatedDepartmentsRoute
+  '/permissions': typeof AuthenticatedPermissionsRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/programs': typeof AuthenticatedProgramsRoute
+  '/roles': typeof AuthenticatedRolesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/tasks': typeof AuthenticatedTasksRoute
+  '/users': typeof AuthenticatedUsersRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/admin/schema': typeof AuthenticatedAdminSchemaRoute
+  '/applications/$applicationId': typeof AuthenticatedApplicationsApplicationIdRoute
+  '/applications/new': typeof AuthenticatedApplicationsNewRoute
+  '/counselors/$counselorId': typeof AuthenticatedCounselorsCounselorIdRoute
+  '/students/$studentId': typeof AuthenticatedStudentsStudentIdRoute
+  '/students/import': typeof AuthenticatedStudentsImportRoute
+  '/students/new': typeof AuthenticatedStudentsNewRoute
+  '/universities/$universityId': typeof AuthenticatedUniversitiesUniversityIdRoute
+  '/api/admin/create-user': typeof ApiAdminCreateUserRoute
+  '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
+  '/applications/': typeof AuthenticatedApplicationsIndexRoute
+  '/counselors/': typeof AuthenticatedCounselorsIndexRoute
+  '/students/': typeof AuthenticatedStudentsIndexRoute
+  '/universities/': typeof AuthenticatedUniversitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/audit-logs': typeof AuthenticatedAuditLogsRoute
+  '/change-password': typeof AuthenticatedChangePasswordRoute
+  '/countries': typeof AuthenticatedCountriesRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/departments': typeof AuthenticatedDepartmentsRoute
+  '/permissions': typeof AuthenticatedPermissionsRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/programs': typeof AuthenticatedProgramsRoute
+  '/roles': typeof AuthenticatedRolesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/tasks': typeof AuthenticatedTasksRoute
+  '/users': typeof AuthenticatedUsersRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/admin/schema': typeof AuthenticatedAdminSchemaRoute
+  '/applications/$applicationId': typeof AuthenticatedApplicationsApplicationIdRoute
+  '/applications/new': typeof AuthenticatedApplicationsNewRoute
+  '/counselors/$counselorId': typeof AuthenticatedCounselorsCounselorIdRoute
+  '/students/$studentId': typeof AuthenticatedStudentsStudentIdRoute
+  '/students/import': typeof AuthenticatedStudentsImportRoute
+  '/students/new': typeof AuthenticatedStudentsNewRoute
+  '/universities/$universityId': typeof AuthenticatedUniversitiesUniversityIdRoute
+  '/api/admin/create-user': typeof ApiAdminCreateUserRoute
+  '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
+  '/applications': typeof AuthenticatedApplicationsIndexRoute
+  '/counselors': typeof AuthenticatedCounselorsIndexRoute
+  '/students': typeof AuthenticatedStudentsIndexRoute
+  '/universities': typeof AuthenticatedUniversitiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
+  '/_authenticated/audit-logs': typeof AuthenticatedAuditLogsRoute
+  '/_authenticated/change-password': typeof AuthenticatedChangePasswordRoute
+  '/_authenticated/countries': typeof AuthenticatedCountriesRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
+  '/_authenticated/permissions': typeof AuthenticatedPermissionsRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/programs': typeof AuthenticatedProgramsRoute
+  '/_authenticated/roles': typeof AuthenticatedRolesRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/tasks': typeof AuthenticatedTasksRoute
+  '/_authenticated/users': typeof AuthenticatedUsersRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/_authenticated/admin/schema': typeof AuthenticatedAdminSchemaRoute
+  '/_authenticated/applications/$applicationId': typeof AuthenticatedApplicationsApplicationIdRoute
+  '/_authenticated/applications/new': typeof AuthenticatedApplicationsNewRoute
+  '/_authenticated/counselors/$counselorId': typeof AuthenticatedCounselorsCounselorIdRoute
+  '/_authenticated/students/$studentId': typeof AuthenticatedStudentsStudentIdRoute
+  '/_authenticated/students/import': typeof AuthenticatedStudentsImportRoute
+  '/_authenticated/students/new': typeof AuthenticatedStudentsNewRoute
+  '/_authenticated/universities/$universityId': typeof AuthenticatedUniversitiesUniversityIdRoute
+  '/api/admin/create-user': typeof ApiAdminCreateUserRoute
+  '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
+  '/_authenticated/applications/': typeof AuthenticatedApplicationsIndexRoute
+  '/_authenticated/counselors/': typeof AuthenticatedCounselorsIndexRoute
+  '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
+  '/_authenticated/universities/': typeof AuthenticatedUniversitiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/audit-logs'
+    | '/change-password'
+    | '/countries'
+    | '/dashboard'
+    | '/departments'
+    | '/permissions'
+    | '/profile'
+    | '/programs'
+    | '/roles'
+    | '/settings'
+    | '/tasks'
+    | '/users'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/reset-password'
+    | '/auth/signup'
+    | '/admin/schema'
+    | '/applications/$applicationId'
+    | '/applications/new'
+    | '/counselors/$counselorId'
+    | '/students/$studentId'
+    | '/students/import'
+    | '/students/new'
+    | '/universities/$universityId'
+    | '/api/admin/create-user'
+    | '/api/admin/resend-verification'
+    | '/applications/'
+    | '/counselors/'
+    | '/students/'
+    | '/universities/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/audit-logs'
+    | '/change-password'
+    | '/countries'
+    | '/dashboard'
+    | '/departments'
+    | '/permissions'
+    | '/profile'
+    | '/programs'
+    | '/roles'
+    | '/settings'
+    | '/tasks'
+    | '/users'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/reset-password'
+    | '/auth/signup'
+    | '/admin/schema'
+    | '/applications/$applicationId'
+    | '/applications/new'
+    | '/counselors/$counselorId'
+    | '/students/$studentId'
+    | '/students/import'
+    | '/students/new'
+    | '/universities/$universityId'
+    | '/api/admin/create-user'
+    | '/api/admin/resend-verification'
+    | '/applications'
+    | '/counselors'
+    | '/students'
+    | '/universities'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/audit-logs'
+    | '/_authenticated/change-password'
+    | '/_authenticated/countries'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/departments'
+    | '/_authenticated/permissions'
+    | '/_authenticated/profile'
+    | '/_authenticated/programs'
+    | '/_authenticated/roles'
+    | '/_authenticated/settings'
+    | '/_authenticated/tasks'
+    | '/_authenticated/users'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/reset-password'
+    | '/auth/signup'
+    | '/_authenticated/admin/schema'
+    | '/_authenticated/applications/$applicationId'
+    | '/_authenticated/applications/new'
+    | '/_authenticated/counselors/$counselorId'
+    | '/_authenticated/students/$studentId'
+    | '/_authenticated/students/import'
+    | '/_authenticated/students/new'
+    | '/_authenticated/universities/$universityId'
+    | '/api/admin/create-user'
+    | '/api/admin/resend-verification'
+    | '/_authenticated/applications/'
+    | '/_authenticated/counselors/'
+    | '/_authenticated/students/'
+    | '/_authenticated/universities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
+  ApiAdminCreateUserRoute: typeof ApiAdminCreateUserRoute
+  ApiAdminResendVerificationRoute: typeof ApiAdminResendVerificationRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +465,303 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/signup': {
+      id: '/auth/signup'
+      path: '/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_authenticated/users': {
+      id: '/_authenticated/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthenticatedUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tasks': {
+      id: '/_authenticated/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof AuthenticatedTasksRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/roles': {
+      id: '/_authenticated/roles'
+      path: '/roles'
+      fullPath: '/roles'
+      preLoaderRoute: typeof AuthenticatedRolesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/programs': {
+      id: '/_authenticated/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof AuthenticatedProgramsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/permissions': {
+      id: '/_authenticated/permissions'
+      path: '/permissions'
+      fullPath: '/permissions'
+      preLoaderRoute: typeof AuthenticatedPermissionsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/departments': {
+      id: '/_authenticated/departments'
+      path: '/departments'
+      fullPath: '/departments'
+      preLoaderRoute: typeof AuthenticatedDepartmentsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/countries': {
+      id: '/_authenticated/countries'
+      path: '/countries'
+      fullPath: '/countries'
+      preLoaderRoute: typeof AuthenticatedCountriesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/change-password': {
+      id: '/_authenticated/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof AuthenticatedChangePasswordRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/audit-logs': {
+      id: '/_authenticated/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AuthenticatedAuditLogsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/universities/': {
+      id: '/_authenticated/universities/'
+      path: '/universities'
+      fullPath: '/universities/'
+      preLoaderRoute: typeof AuthenticatedUniversitiesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/students/': {
+      id: '/_authenticated/students/'
+      path: '/students'
+      fullPath: '/students/'
+      preLoaderRoute: typeof AuthenticatedStudentsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/counselors/': {
+      id: '/_authenticated/counselors/'
+      path: '/counselors'
+      fullPath: '/counselors/'
+      preLoaderRoute: typeof AuthenticatedCounselorsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/applications/': {
+      id: '/_authenticated/applications/'
+      path: '/applications'
+      fullPath: '/applications/'
+      preLoaderRoute: typeof AuthenticatedApplicationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/admin/resend-verification': {
+      id: '/api/admin/resend-verification'
+      path: '/api/admin/resend-verification'
+      fullPath: '/api/admin/resend-verification'
+      preLoaderRoute: typeof ApiAdminResendVerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/create-user': {
+      id: '/api/admin/create-user'
+      path: '/api/admin/create-user'
+      fullPath: '/api/admin/create-user'
+      preLoaderRoute: typeof ApiAdminCreateUserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/universities/$universityId': {
+      id: '/_authenticated/universities/$universityId'
+      path: '/universities/$universityId'
+      fullPath: '/universities/$universityId'
+      preLoaderRoute: typeof AuthenticatedUniversitiesUniversityIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/students/new': {
+      id: '/_authenticated/students/new'
+      path: '/students/new'
+      fullPath: '/students/new'
+      preLoaderRoute: typeof AuthenticatedStudentsNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/students/import': {
+      id: '/_authenticated/students/import'
+      path: '/students/import'
+      fullPath: '/students/import'
+      preLoaderRoute: typeof AuthenticatedStudentsImportRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/students/$studentId': {
+      id: '/_authenticated/students/$studentId'
+      path: '/students/$studentId'
+      fullPath: '/students/$studentId'
+      preLoaderRoute: typeof AuthenticatedStudentsStudentIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/counselors/$counselorId': {
+      id: '/_authenticated/counselors/$counselorId'
+      path: '/counselors/$counselorId'
+      fullPath: '/counselors/$counselorId'
+      preLoaderRoute: typeof AuthenticatedCounselorsCounselorIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/applications/new': {
+      id: '/_authenticated/applications/new'
+      path: '/applications/new'
+      fullPath: '/applications/new'
+      preLoaderRoute: typeof AuthenticatedApplicationsNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/applications/$applicationId': {
+      id: '/_authenticated/applications/$applicationId'
+      path: '/applications/$applicationId'
+      fullPath: '/applications/$applicationId'
+      preLoaderRoute: typeof AuthenticatedApplicationsApplicationIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/schema': {
+      id: '/_authenticated/admin/schema'
+      path: '/admin/schema'
+      fullPath: '/admin/schema'
+      preLoaderRoute: typeof AuthenticatedAdminSchemaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedAuditLogsRoute: typeof AuthenticatedAuditLogsRoute
+  AuthenticatedChangePasswordRoute: typeof AuthenticatedChangePasswordRoute
+  AuthenticatedCountriesRoute: typeof AuthenticatedCountriesRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
+  AuthenticatedPermissionsRoute: typeof AuthenticatedPermissionsRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedProgramsRoute: typeof AuthenticatedProgramsRoute
+  AuthenticatedRolesRoute: typeof AuthenticatedRolesRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
+  AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
+  AuthenticatedAdminSchemaRoute: typeof AuthenticatedAdminSchemaRoute
+  AuthenticatedApplicationsApplicationIdRoute: typeof AuthenticatedApplicationsApplicationIdRoute
+  AuthenticatedApplicationsNewRoute: typeof AuthenticatedApplicationsNewRoute
+  AuthenticatedCounselorsCounselorIdRoute: typeof AuthenticatedCounselorsCounselorIdRoute
+  AuthenticatedStudentsStudentIdRoute: typeof AuthenticatedStudentsStudentIdRoute
+  AuthenticatedStudentsImportRoute: typeof AuthenticatedStudentsImportRoute
+  AuthenticatedStudentsNewRoute: typeof AuthenticatedStudentsNewRoute
+  AuthenticatedUniversitiesUniversityIdRoute: typeof AuthenticatedUniversitiesUniversityIdRoute
+  AuthenticatedApplicationsIndexRoute: typeof AuthenticatedApplicationsIndexRoute
+  AuthenticatedCounselorsIndexRoute: typeof AuthenticatedCounselorsIndexRoute
+  AuthenticatedStudentsIndexRoute: typeof AuthenticatedStudentsIndexRoute
+  AuthenticatedUniversitiesIndexRoute: typeof AuthenticatedUniversitiesIndexRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAuditLogsRoute: AuthenticatedAuditLogsRoute,
+  AuthenticatedChangePasswordRoute: AuthenticatedChangePasswordRoute,
+  AuthenticatedCountriesRoute: AuthenticatedCountriesRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
+  AuthenticatedPermissionsRoute: AuthenticatedPermissionsRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedProgramsRoute: AuthenticatedProgramsRoute,
+  AuthenticatedRolesRoute: AuthenticatedRolesRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTasksRoute: AuthenticatedTasksRoute,
+  AuthenticatedUsersRoute: AuthenticatedUsersRoute,
+  AuthenticatedAdminSchemaRoute: AuthenticatedAdminSchemaRoute,
+  AuthenticatedApplicationsApplicationIdRoute:
+    AuthenticatedApplicationsApplicationIdRoute,
+  AuthenticatedApplicationsNewRoute: AuthenticatedApplicationsNewRoute,
+  AuthenticatedCounselorsCounselorIdRoute:
+    AuthenticatedCounselorsCounselorIdRoute,
+  AuthenticatedStudentsStudentIdRoute: AuthenticatedStudentsStudentIdRoute,
+  AuthenticatedStudentsImportRoute: AuthenticatedStudentsImportRoute,
+  AuthenticatedStudentsNewRoute: AuthenticatedStudentsNewRoute,
+  AuthenticatedUniversitiesUniversityIdRoute:
+    AuthenticatedUniversitiesUniversityIdRoute,
+  AuthenticatedApplicationsIndexRoute: AuthenticatedApplicationsIndexRoute,
+  AuthenticatedCounselorsIndexRoute: AuthenticatedCounselorsIndexRoute,
+  AuthenticatedStudentsIndexRoute: AuthenticatedStudentsIndexRoute,
+  AuthenticatedUniversitiesIndexRoute: AuthenticatedUniversitiesIndexRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthSignupRoute: AuthSignupRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
+  ApiAdminCreateUserRoute: ApiAdminCreateUserRoute,
+  ApiAdminResendVerificationRoute: ApiAdminResendVerificationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

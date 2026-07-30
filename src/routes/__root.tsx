@@ -11,6 +11,10 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider } from "@/lib/auth-context";
+import { ThemeProvider } from "@/lib/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { SessionExpiredDialog } from "@/components/auth/SessionExpiredDialog";
 
 function NotFoundComponent() {
   return (
@@ -77,21 +81,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Faith AMS — Application Management System" },
+      { name: "description", content: "Faith AMS is an enterprise application management platform for education consultancies. Manage students, applications, counselors and workflows in one place." },
+      { name: "author", content: "Faith AMS" },
+      { property: "og:title", content: "Faith AMS — Application Management System" },
+      { property: "og:description", content: "Faith AMS is an enterprise application management platform for education consultancies. Manage students, applications, counselors and workflows in one place." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Faith AMS — Application Management System" },
+      { name: "twitter:description", content: "Faith AMS is an enterprise application management platform for education consultancies. Manage students, applications, counselors and workflows in one place." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4762841a-0817-4678-91c2-5af5916f7532/id-preview-858af8d1--b3a95749-5360-4090-91dd-9f6eb945373a.lovable.app-1784334520300.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4762841a-0817-4678-91c2-5af5916f7532/id-preview-858af8d1--b3a95749-5360-4090-91dd-9f6eb945373a.lovable.app-1784334520300.png" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "stylesheet", href: appCss },
     ],
   }),
   shellComponent: RootShell,
@@ -102,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -117,10 +120,21 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    // Verify the students table has the columns from the latest migration.
+    // Runs once per session; shows an admin toast when the DB is behind.
+    import("../lib/schema-check").then((m) => m.verifyStudentSchema());
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeProvider>
+        <AuthProvider>
+          <Outlet />
+          <SessionExpiredDialog />
+          <Toaster richColors position="top-right" />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

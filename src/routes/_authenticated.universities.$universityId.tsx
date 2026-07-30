@@ -1,0 +1,617 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  getUniversity, listCampuses, createCampus, updateCampus, deleteCampus,
+  listFaculties, createFaculty, updateFaculty, deleteFaculty,
+  listPrograms, createProgram, updateProgram, deleteProgram,
+  DuplicateError,
+  type University, type Campus, type Faculty, type UniversityProgram, UNI_STATUSES, type UniStatus,
+} from "@/lib/universities";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth-context";
+import { CsvToolbar } from "@/components/universities/CsvToolbar";
+import {
+  exportCampusesCsv, previewCampusesCsv,
+  exportFacultiesCsv, previewFacultiesCsv,
+  exportProgramsCsv, previewProgramsCsv,
+} from "@/lib/university-csv";
+
+export const Route = createFileRoute("/_authenticated/universities/$universityId")({
+  component: UniversityDetail,
+});
+
+function UniversityDetail() {
+  const { universityId } = Route.useParams();
+  const { roles } = useAuth();
+  const canEdit = roles.some((r) => ["admin", "counselor", "application_team"].includes(r));
+  const [uni, setUni] = useState<University | null>(null);
+  const [campuses, setCampuses] = useState<Campus[]>([]);
+  const [faculties, setFaculties] = useState<Faculty[]>([]);
+  const [programs, setPrograms] = useState<UniversityProgram[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  async function reload() {
+    setLoading(true);
+    try {
+      const [u, c, f, p, a] = await Promise.all([
+        getUniversity(universityId),
+        listCampuses(universityId),
+        listFaculties(universityId),
+        listPrograms({ universityId }),
+        supabase.from("applications").select("id, application_code, status, program, student:students(full_name, student_code)").eq("university_id", universityId).order("created_at", { ascending: false }),
+      ]);
+      setUni(u); setCampuses(c); setFaculties(f); setPrograms(p);
+      setApplications((a.data as any[]) ?? []);
+    } catch (e: any) { toast.error(e.message); }
+    finally { setLoading(false); }
+  }
+
+  useEffect(() => { reload(); /* eslint-disable-next-line */ }, [universityId]);
+
+  if (loading || !uni) {
+    return <div className="space-y-4"><Skeleton className="h-32" /><Skeleton className="h-64" /></div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm" asChild><Link to="/universities"><ArrowLeft className="mr-1 h-4 w-4" />Back</Link></Button>
+      </div>
+
+      <Card>
+        <CardContent className="flex flex-wrap items-start gap-4 p-6">
+          <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-muted ring-1 ring-border">
+            {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-cover" /> : <Building2 className="h-10 w-10 text-muted-foreground" />}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-2xl font-semibold">{uni.name}</h1>
+              <Badge variant={uni.status === "active" ? "default" : "secondary"} className="capitalize">{uni.status}</Badge>
+            </div>
+            <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              {uni.country && <span className="inline-flex items-center gap-1.5">{uni.country.flag_url && <img src={uni.country.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}{uni.country.name}</span>}
+              {uni.city && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{uni.city}</span>}
+              {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">Website <ExternalLink className="h-3 w-3" /></a>}
+            </div>
+            {uni.description && <p className="mt-3 text-sm text-muted-foreground">{uni.description}</p>}
+          </div>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <MiniStat label="Campuses" value={campuses.length} />
+            <MiniStat label="Faculties" value={faculties.length} />
+            <MiniStat label="Programs" value={programs.length} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Tabs defaultValue="programs">
+        <TabsList>
+          <TabsTrigger value="programs">Programs ({programs.length})</TabsTrigger>
+          <TabsTrigger value="campuses">Campuses ({campuses.length})</TabsTrigger>
+          <TabsTrigger value="faculties">Faculties ({faculties.length})</TabsTrigger>
+          <TabsTrigger value="applications">Applications ({applications.length})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="programs" className="mt-4">
+          <ProgramsTab
+            universityId={universityId} programs={programs}
+            campuses={campuses} faculties={faculties} canEdit={canEdit} onChange={reload}
+          />
+        </TabsContent>
+
+        <TabsContent value="campuses" className="mt-4">
+          <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+        </TabsContent>
+
+        <TabsContent value="faculties" className="mt-4">
+          <FacultiesTab universityId={universityId} faculties={faculties} canEdit={canEdit} onChange={reload} />
+        </TabsContent>
+
+        <TabsContent value="applications" className="mt-4">
+          <Card><CardHeader><CardTitle>Applications</CardTitle></CardHeader>
+            <CardContent>
+              {applications.length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">No applications linked to this university yet.</p>
+              ) : (
+                <Table>
+                  <TableHeader><TableRow>
+                    <TableHead>Code</TableHead><TableHead>Student</TableHead>
+                    <TableHead>Program</TableHead><TableHead>Status</TableHead><TableHead></TableHead>
+                  </TableRow></TableHeader>
+                  <TableBody>
+                    {applications.map((a) => (
+                      <TableRow key={a.id}>
+                        <TableCell className="font-mono text-xs">{a.application_code}</TableCell>
+                        <TableCell>{a.student?.full_name ?? "—"}</TableCell>
+                        <TableCell>{a.program}</TableCell>
+                        <TableCell><Badge variant="outline" className="capitalize">{String(a.status).replace(/_/g, " ")}</Badge></TableCell>
+                        <TableCell><Button size="sm" variant="ghost" asChild>
+                          <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>Open</Link>
+                        </Button></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="rounded-lg border bg-muted/30 px-4 py-2">
+      <div className="text-xl font-semibold">{value}</div>
+      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
+/* ============ PROGRAMS ============ */
+function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange }: {
+  universityId: string; programs: UniversityProgram[]; campuses: Campus[]; faculties: Faculty[];
+  canEdit: boolean; onChange: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<UniversityProgram | null>(null);
+  const [form, setForm] = useState<Partial<UniversityProgram>>({ status: "active", currency: "USD" });
+  const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
+  const [degreeFilter, setDegreeFilter] = useState<string>("all");
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
+
+  const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
+  const filtered = programs.filter((p) =>
+    (!search || p.name.toLowerCase().includes(search.toLowerCase())) &&
+    (degreeFilter === "all" || p.degree === degreeFilter)
+  );
+
+  function openNew() { setEditing(null); setForm({ status: "active", currency: "USD", university_id: universityId }); setOpen(true); }
+  function openEdit(p: UniversityProgram) { setEditing(p); setForm({ ...p }); setOpen(true); }
+
+  async function save() {
+    if (!form.name?.trim()) { toast.error("Program name required"); return; }
+    if (form.tuition_fee != null && form.tuition_fee !== "" as any) {
+      const n = Number(form.tuition_fee); if (!Number.isFinite(n) || n < 0) { toast.error("Tuition fee must be a positive number"); return; }
+    }
+    if (form.application_deadline && Number.isNaN(new Date(form.application_deadline).getTime())) {
+      toast.error("Invalid application deadline"); return;
+    }
+    setSaving(true);
+    try {
+      const payload: any = { ...form, university_id: universityId };
+      delete payload.campus; delete payload.faculty;
+      if (payload.tuition_fee === "" || payload.tuition_fee == null) payload.tuition_fee = null;
+      else payload.tuition_fee = Number(payload.tuition_fee);
+      if (!payload.application_deadline) payload.application_deadline = null;
+      if (editing) await updateProgram(editing.id, payload);
+      else await createProgram(payload);
+      toast.success("Saved"); setOpen(false); onChange();
+    } catch (e: any) {
+      if (e instanceof DuplicateError) {
+        const payload: any = { ...form, university_id: universityId };
+        delete payload.campus; delete payload.faculty;
+        if (payload.tuition_fee === "" || payload.tuition_fee == null) payload.tuition_fee = null;
+        else payload.tuition_fee = Number(payload.tuition_fee);
+        if (!payload.application_deadline) payload.application_deadline = null;
+        setDup({ id: e.existingId, name: e.entityName, payload });
+      } else toast.error(e.message);
+    }
+    finally { setSaving(false); }
+  }
+
+  async function mergeDuplicate() {
+    if (!dup) return;
+    setSaving(true);
+    try { await updateProgram(dup.id, dup.payload); toast.success("Existing program updated"); setDup(null); setOpen(false); onChange(); }
+    catch (e: any) { toast.error(e.message); }
+    finally { setSaving(false); }
+  }
+
+
+  async function confirmDelete() {
+    if (!deleteId) return;
+    try { await deleteProgram(deleteId); toast.success("Deleted"); setDeleteId(null); onChange(); }
+    catch (e: any) { toast.error(e.message); }
+  }
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3 space-y-0">
+        <div className="flex flex-1 flex-wrap gap-2">
+          <Input placeholder="Search programs..." value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-xs" />
+          <Select value={degreeFilter} onValueChange={setDegreeFilter}>
+            <SelectTrigger className="w-[160px]"><SelectValue placeholder="Degree" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All degrees</SelectItem>
+              {degrees.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <CsvToolbar label="programs"
+            onExport={() => exportProgramsCsv(universityId)}
+            onPreview={canEdit ? (text) => previewProgramsCsv(text, universityId) : undefined}
+            onImportDone={onChange}
+            templateHeaders={["name","degree","duration","campus","faculty","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"]}
+            templateName="programs-template" canImport={canEdit} />
+          {canEdit && <Button onClick={openNew}><Plus className="mr-2 h-4 w-4" />Add program</Button>}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {filtered.length === 0 ? (
+          <p className="py-10 text-center text-sm text-muted-foreground">No programs yet.</p>
+        ) : (
+          <div className="grid gap-3 md:grid-cols-2">
+            {filtered.map((p) => (
+              <div key={p.id} className="rounded-xl border p-4 transition hover:shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-semibold">{p.name}</h3>
+                      <Badge variant={p.status === "active" ? "default" : "secondary"} className="capitalize">{p.status}</Badge>
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-3 text-xs text-muted-foreground">
+                      {p.degree && <span className="inline-flex items-center gap-1"><GraduationCap className="h-3 w-3" />{p.degree}</span>}
+                      {p.duration && <span>{p.duration}</span>}
+                      {p.campus?.name && <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{p.campus.name}</span>}
+                      {p.faculty?.name && <span>· {p.faculty.name}</span>}
+                    </div>
+                  </div>
+                  {canEdit && (
+                    <div className="flex gap-1">
+                      <Button size="icon" variant="ghost" onClick={() => openEdit(p)}><Pencil className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => setDeleteId(p.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                  {p.intake && <InfoLine icon={Calendar} label="Intake" value={p.intake} />}
+                  {p.application_deadline && <InfoLine icon={Calendar} label="Deadline" value={new Date(p.application_deadline).toLocaleDateString()} />}
+                  {p.tuition_fee != null && <InfoLine icon={DollarSign} label="Tuition" value={`${p.currency ?? ""} ${p.tuition_fee.toLocaleString()}`} />}
+                  {p.scholarship && <InfoLine icon={Award} label="Scholarship" value={p.scholarship} />}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader><DialogTitle>{editing ? "Edit program" : "New program"}</DialogTitle></DialogHeader>
+          <div className="grid max-h-[70vh] gap-3 overflow-y-auto pr-1 md:grid-cols-2">
+            <div className="md:col-span-2"><Label>Name *</Label><Input value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+            <div><Label>Degree</Label><Input placeholder="e.g. Bachelor, Master, PhD" value={form.degree ?? ""} onChange={(e) => setForm({ ...form, degree: e.target.value })} /></div>
+            <div><Label>Duration</Label><Input placeholder="e.g. 4 years" value={form.duration ?? ""} onChange={(e) => setForm({ ...form, duration: e.target.value })} /></div>
+            <div><Label>Campus</Label>
+              <Select value={form.campus_id ?? undefined} onValueChange={(v) => setForm({ ...form, campus_id: v || null })}>
+                <SelectTrigger><SelectValue placeholder="Select campus" /></SelectTrigger>
+                <SelectContent>{campuses.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div><Label>Faculty</Label>
+              <Select value={form.faculty_id ?? undefined} onValueChange={(v) => setForm({ ...form, faculty_id: v || null })}>
+                <SelectTrigger><SelectValue placeholder="Select faculty" /></SelectTrigger>
+                <SelectContent>{faculties.map((f) => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div><Label>Intake</Label><Input placeholder="e.g. Sep 2026, Jan 2027" value={form.intake ?? ""} onChange={(e) => setForm({ ...form, intake: e.target.value })} /></div>
+            <div><Label>Application deadline</Label><Input type="date" value={form.application_deadline ?? ""} onChange={(e) => setForm({ ...form, application_deadline: e.target.value })} /></div>
+            <div><Label>Tuition fee</Label><Input type="number" value={form.tuition_fee ?? ""} onChange={(e) => setForm({ ...form, tuition_fee: e.target.value as any })} /></div>
+            <div><Label>Currency</Label><Input value={form.currency ?? "USD"} onChange={(e) => setForm({ ...form, currency: e.target.value })} /></div>
+            <div className="md:col-span-2"><Label>Scholarship</Label><Input value={form.scholarship ?? ""} onChange={(e) => setForm({ ...form, scholarship: e.target.value })} /></div>
+            <div className="md:col-span-2"><Label>Requirements</Label><Textarea rows={2} value={form.requirements ?? ""} onChange={(e) => setForm({ ...form, requirements: e.target.value })} /></div>
+            <div className="md:col-span-2"><Label>Description</Label><Textarea rows={2} value={form.description ?? ""} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
+            <div><Label>Status</Label>
+              <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={save} disabled={saving}>{saving ? "Saving..." : "Save"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader><AlertDialogTitle>Delete this program?</AlertDialogTitle>
+            <AlertDialogDescription>This can't be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!dup} onOpenChange={(o) => !o && setDup(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Program already exists</AlertDialogTitle>
+            <AlertDialogDescription>
+              A program named <span className="font-medium">"{dup?.name}"</span> already exists for this campus at this university.
+              Update the existing program with your changes instead?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={mergeDuplicate} disabled={saving}>Update existing</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Card>
+  );
+}
+
+function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-1.5">
+      <Icon className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />
+      <div><div className="text-[10px] uppercase text-muted-foreground">{label}</div><div>{value}</div></div>
+    </div>
+  );
+}
+
+/* ============ CAMPUSES ============ */
+function CampusesTab({ universityId, campuses, canEdit, onChange }: {
+  universityId: string; campuses: Campus[]; canEdit: boolean; onChange: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Campus | null>(null);
+  const [form, setForm] = useState<Partial<Campus>>({ status: "active", is_main: false });
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  function openNew() { setEditing(null); setForm({ status: "active", is_main: false }); setOpen(true); }
+  function openEdit(c: Campus) { setEditing(c); setForm({ ...c }); setOpen(true); }
+
+  async function save() {
+    if (!form.name?.trim()) { toast.error("Name required"); return; }
+    setSaving(true);
+    try {
+      const payload = { ...form, university_id: universityId };
+      if (editing) await updateCampus(editing.id, payload);
+      else await createCampus(payload);
+      toast.success("Saved"); setOpen(false); onChange();
+    } catch (e: any) {
+      if (e instanceof DuplicateError) setDup({ id: e.existingId, name: e.entityName, payload: { ...form, university_id: universityId } });
+      else toast.error(e.message);
+    }
+    finally { setSaving(false); }
+  }
+  async function mergeDuplicate() {
+    if (!dup) return;
+    setSaving(true);
+    try { await updateCampus(dup.id, dup.payload); toast.success("Existing campus updated"); setDup(null); setOpen(false); onChange(); }
+    catch (e: any) { toast.error(e.message); }
+    finally { setSaving(false); }
+  }
+  async function confirmDelete() {
+    if (!deleteId) return;
+    try { await deleteCampus(deleteId); toast.success("Deleted"); setDeleteId(null); onChange(); }
+    catch (e: any) { toast.error(e.message); }
+  }
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
+        <CardTitle>Campuses</CardTitle>
+        <div className="flex flex-wrap items-center gap-2">
+          <CsvToolbar label="campuses"
+            onExport={() => exportCampusesCsv(universityId)}
+            onPreview={canEdit ? (text) => previewCampusesCsv(text, universityId) : undefined}
+            onImportDone={onChange}
+            templateHeaders={["name","city","address","is_main","status"]}
+            templateName="campuses-template" canImport={canEdit} />
+          {canEdit && <Button onClick={openNew}><Plus className="mr-2 h-4 w-4" />Add campus</Button>}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {campuses.length === 0 ? <p className="py-10 text-center text-sm text-muted-foreground">No campuses yet.</p> : (
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {campuses.map((c) => (
+              <div key={c.id} className="rounded-xl border p-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 font-semibold">{c.name} {c.is_main && <Badge variant="outline">Main</Badge>}</div>
+                    {c.city && <div className="text-xs text-muted-foreground"><MapPin className="mr-1 inline h-3 w-3" />{c.city}</div>}
+                    {c.address && <div className="mt-1 text-xs text-muted-foreground">{c.address}</div>}
+                  </div>
+                  <Badge variant={c.status === "active" ? "default" : "secondary"} className="capitalize">{c.status}</Badge>
+                </div>
+                {canEdit && (
+                  <div className="mt-3 flex gap-1">
+                    <Button size="sm" variant="ghost" onClick={() => openEdit(c)}><Pencil className="mr-1 h-3 w-3" />Edit</Button>
+                    <Button size="sm" variant="ghost" onClick={() => setDeleteId(c.id)}><Trash2 className="mr-1 h-3 w-3 text-destructive" />Delete</Button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{editing ? "Edit campus" : "New campus"}</DialogTitle></DialogHeader>
+          <div className="grid gap-3">
+            <div><Label>Name *</Label><Input value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+            <div><Label>City</Label><Input value={form.city ?? ""} onChange={(e) => setForm({ ...form, city: e.target.value })} /></div>
+            <div><Label>Address</Label><Textarea rows={2} value={form.address ?? ""} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
+            <div className="flex items-center gap-2"><Switch checked={form.is_main ?? false} onCheckedChange={(v) => setForm({ ...form, is_main: v })} /><Label>Main campus</Label></div>
+            <div><Label>Status</Label>
+              <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button><Button onClick={save}>Save</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader><AlertDialogTitle>Delete campus?</AlertDialogTitle><AlertDialogDescription>Programs referencing it will lose the link.</AlertDialogDescription></AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!dup} onOpenChange={(o) => !o && setDup(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Campus already exists</AlertDialogTitle>
+            <AlertDialogDescription>
+              A campus named <span className="font-medium">"{dup?.name}"</span> already exists at this university.
+              Update the existing campus with your changes instead?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={mergeDuplicate} disabled={saving}>Update existing</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Card>
+  );
+}
+
+/* ============ FACULTIES ============ */
+function FacultiesTab({ universityId, faculties, canEdit, onChange }: {
+  universityId: string; faculties: Faculty[]; canEdit: boolean; onChange: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Faculty | null>(null);
+  const [form, setForm] = useState<Partial<Faculty>>({ status: "active" });
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  function openNew() { setEditing(null); setForm({ status: "active" }); setOpen(true); }
+  function openEdit(f: Faculty) { setEditing(f); setForm({ ...f }); setOpen(true); }
+
+  async function save() {
+    if (!form.name?.trim()) { toast.error("Name required"); return; }
+    setSaving(true);
+    try {
+      const payload = { ...form, university_id: universityId };
+      if (editing) await updateFaculty(editing.id, payload);
+      else await createFaculty(payload);
+      toast.success("Saved"); setOpen(false); onChange();
+    } catch (e: any) {
+      if (e instanceof DuplicateError) setDup({ id: e.existingId, name: e.entityName, payload: { ...form, university_id: universityId } });
+      else toast.error(e.message);
+    } finally { setSaving(false); }
+  }
+  async function mergeDuplicate() {
+    if (!dup) return;
+    setSaving(true);
+    try { await updateFaculty(dup.id, dup.payload); toast.success("Existing faculty updated"); setDup(null); setOpen(false); onChange(); }
+    catch (e: any) { toast.error(e.message); }
+    finally { setSaving(false); }
+  }
+  async function confirmDelete() {
+    if (!deleteId) return;
+    try { await deleteFaculty(deleteId); toast.success("Deleted"); setDeleteId(null); onChange(); }
+    catch (e: any) { toast.error(e.message); }
+  }
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
+        <CardTitle>Faculties</CardTitle>
+        <div className="flex flex-wrap items-center gap-2">
+          <CsvToolbar label="faculties"
+            onExport={() => exportFacultiesCsv(universityId)}
+            onPreview={canEdit ? (text) => previewFacultiesCsv(text, universityId) : undefined}
+            onImportDone={onChange}
+            templateHeaders={["name","status"]}
+            templateName="faculties-template" canImport={canEdit} />
+          {canEdit && <Button onClick={openNew}><Plus className="mr-2 h-4 w-4" />Add faculty</Button>}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {faculties.length === 0 ? <p className="py-10 text-center text-sm text-muted-foreground">No faculties yet.</p> : (
+          <Table>
+            <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Status</TableHead><TableHead></TableHead></TableRow></TableHeader>
+            <TableBody>{faculties.map((f) => (
+              <TableRow key={f.id}>
+                <TableCell className="font-medium">{f.name}</TableCell>
+                <TableCell><Badge variant={f.status === "active" ? "default" : "secondary"} className="capitalize">{f.status}</Badge></TableCell>
+                <TableCell className="text-right">
+                  {canEdit && <>
+                    <Button size="icon" variant="ghost" onClick={() => openEdit(f)}><Pencil className="h-4 w-4" /></Button>
+                    <Button size="icon" variant="ghost" onClick={() => setDeleteId(f.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  </>}
+                </TableCell>
+              </TableRow>
+            ))}</TableBody>
+          </Table>
+        )}
+      </CardContent>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{editing ? "Edit faculty" : "New faculty"}</DialogTitle></DialogHeader>
+          <div className="grid gap-3">
+            <div><Label>Name *</Label><Input value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+            <div><Label>Status</Label>
+              <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button><Button onClick={save}>Save</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader><AlertDialogTitle>Delete faculty?</AlertDialogTitle><AlertDialogDescription>Programs referencing it will lose the link.</AlertDialogDescription></AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!dup} onOpenChange={(o) => !o && setDup(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Faculty already exists</AlertDialogTitle>
+            <AlertDialogDescription>
+              A faculty named <span className="font-medium">"{dup?.name}"</span> already exists at this university.
+              Update the existing faculty with your changes instead?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={mergeDuplicate} disabled={saving}>Update existing</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Card>
+  );
+}

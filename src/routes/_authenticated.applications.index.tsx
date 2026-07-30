@@ -87,6 +87,11 @@ function ApplicationsPage() {
   const [intake, setIntake] = useState<string>("all");
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState<Application | null>(null);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -299,11 +304,35 @@ function ApplicationsPage() {
                     </TableCell>
 
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                      <Button asChild variant="ghost" size="icon">
-                        <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          aria-label="View application"
+                          title="View"
+                          onClick={() => { setSelected(a); setViewOpen(true); }}
+                          className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                        >
                           <Eye className="h-4 w-4" />
-                        </Link>
-                      </Button>
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Edit application"
+                          title="Edit"
+                          onClick={() => { setSelected(a); setEditOpen(true); }}
+                          className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Delete application"
+                          title="Delete"
+                          onClick={() => { setSelected(a); setDeleteOpen(true); }}
+                          className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -232,20 +232,21 @@ function ApplicationsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                <TableHead>Application</TableHead>
+                <TableHead>Application No.</TableHead>
                   <TableHead className="hidden md:table-cell">Student</TableHead>
                   <TableHead className="hidden lg:table-cell">University / Program</TableHead>
                   <TableHead className="hidden lg:table-cell">Intake</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Documents</TableHead>
                   <TableHead className="w-16 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableSkeleton rows={6} columns={6} />
+                  <TableSkeleton rows={6} columns={7} />
                 ) : paged.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="p-0">
+                    <TableCell colSpan={7} className="p-0">
                       <EmptyState
                         icon={FileText}
                         title="No applications match your filters"

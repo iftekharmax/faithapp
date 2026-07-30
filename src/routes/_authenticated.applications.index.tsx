@@ -338,7 +338,6 @@ function ApplicationsPage() {
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-0.5">
                         <button
-
                           type="button"
                           aria-label="View application"
                           title="View"

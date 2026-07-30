@@ -104,16 +104,17 @@ export function ApplicationEditDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Edit application</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="flex max-h-[92dvh] w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-2xl">
+        <DialogHeader className="border-b bg-muted/40 px-5 py-4 text-left sm:px-6">
+          <DialogTitle className="text-base font-semibold sm:text-lg">Edit application</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             {application?.application_code} · {application?.student?.full_name ?? "—"}
           </DialogDescription>
         </DialogHeader>
 
         {form && (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid flex-1 gap-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
+            <input type="hidden" />
             <div className="sm:col-span-2">
               <Label htmlFor="university">University *</Label>
               <Input id="university" value={form.university} onChange={(e) => set("university", e.target.value)} />

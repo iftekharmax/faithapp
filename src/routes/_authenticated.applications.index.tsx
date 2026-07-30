@@ -32,7 +32,7 @@ import {
   type DocSummaryStatus,
 } from "@/lib/document-requests";
 import { ApplicationViewDialog } from "@/components/applications/ApplicationViewDialog";
-import { ApplicationEditDialog } from "@/components/applications/ApplicationEditDialog";
+
 import { ApplicationDocumentsDialog } from "@/components/applications/ApplicationDocumentsDialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
@@ -93,7 +93,7 @@ function ApplicationsPage() {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Application | null>(null);
   const [viewOpen, setViewOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
+  
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);
@@ -379,7 +379,7 @@ function ApplicationsPage() {
                           type="button"
                           aria-label="Edit application"
                           title="Edit"
-                          onClick={() => { setSelected(a); setEditOpen(true); }}
+                          onClick={() => { setSelected(a); setViewOpen(true); }}
                           className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                         >
                           <Pencil className="h-4 w-4" />
@@ -417,12 +417,6 @@ function ApplicationsPage() {
         open={docsOpen}
         onOpenChange={setDocsOpen}
         onChanged={reloadDocStatuses}
-      />
-      <ApplicationEditDialog
-        application={selected}
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        onSaved={load}
       />
       <ConfirmDialog
         open={deleteOpen}

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, RefreshCw, Filter, X, Eye, FileText } from "lucide-react";
+import { Search, Plus, RefreshCw, Filter, X, Eye, FileText, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 import {
   listApplications,
+  deleteApplication,
   APPLICATION_STATUSES, APPLICATION_STATUS_LABELS,
   type Application, type ApplicationStatus,
 } from "@/lib/applications";
@@ -27,6 +28,9 @@ import {
   listDocumentStatusByApplication,
   type DocSummaryStatus,
 } from "@/lib/document-requests";
+import { ApplicationViewDialog } from "@/components/applications/ApplicationViewDialog";
+import { ApplicationEditDialog } from "@/components/applications/ApplicationEditDialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/applications/")({
   component: () => (

@@ -96,6 +96,8 @@ function ApplicationsPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [docsOpen, setDocsOpen] = useState(false);
+  const [decidingId, setDecidingId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);

@@ -338,35 +338,7 @@ function ApplicationsPage() {
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-0.5">
                         <button
-                          type="button"
-                          aria-label="Manage documents"
-                          title="Documents"
-                          onClick={() => { setSelected(a); setDocsOpen(true); }}
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          <FileText className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label="Approve documents"
-                          title="Approve documents"
-                          disabled={decidingId === a.id}
-                          onClick={() => decideDocuments(a, "approved")}
-                          className="grid h-8 w-8 place-items-center rounded-md text-emerald-600 transition-colors hover:bg-emerald-500/10 disabled:opacity-50"
-                        >
-                          <Check className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label="Reject documents"
-                          title="Reject documents"
-                          disabled={decidingId === a.id}
-                          onClick={() => decideDocuments(a, "rejected")}
-                          className="grid h-8 w-8 place-items-center rounded-md text-red-600 transition-colors hover:bg-red-500/10 disabled:opacity-50"
-                        >
-                          <XCircle className="h-4 w-4" />
-                        </button>
-                        <button
+
                           type="button"
                           aria-label="View application"
                           title="View"

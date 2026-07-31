@@ -3,11 +3,12 @@ import { Link } from "@tanstack/react-router";
 import {
   Send, ClipboardList, FileCheck2, Sparkles, Coins, ScrollText,
   Plane, PlaneLanding, GraduationCap, Ban, XCircle, FileEdit,
-  ClipboardCheck, ArrowRight, Lightbulb,
+  ClipboardCheck, ArrowRight, Lightbulb, ChevronRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   APPLICATION_STATUS_LABELS,
   type ApplicationStatus,
@@ -24,7 +25,6 @@ const NEXT_ICON: Partial<Record<ApplicationStatus, typeof Send>> = {
   enrolled: GraduationCap, withdrawn: Ban, rejected: XCircle, visa_refused: XCircle,
 };
 
-// Recommended "primary" progression by current phase
 const RECOMMENDED: Record<ApplicationStatus, ApplicationStatus | null> = {
   draft: "submitted",
   submitted: "under_review",
@@ -80,7 +80,7 @@ export function NextActions({
   const alternatives = useMemo(
     () => allowedNextStatuses(currentStatus, isAdmin).filter(
       (s) => s !== currentStatus && s !== recommended,
-    ).slice(0, 4),
+    ),
     [currentStatus, isAdmin, recommended],
   );
 
@@ -88,44 +88,68 @@ export function NextActions({
   const RecIcon = recommended ? NEXT_ICON[recommended] ?? ArrowRight : ArrowRight;
 
   return (
-    <Card className="overflow-hidden border-primary/20">
-      <CardHeader className="border-b bg-gradient-to-br from-primary/10 via-card to-card py-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-primary to-fuchsia-500 text-white shadow-sm">
-            <Lightbulb className="h-3.5 w-3.5" />
+    <Card className="overflow-hidden border border-primary/15 bg-gradient-to-b from-card via-card to-muted/20 shadow-sm">
+      <CardHeader className="border-b border-border/60 bg-muted/30 px-5 py-4">
+        <CardTitle className="flex items-center gap-3 text-base font-semibold tracking-tight">
+          <div className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-md shadow-primary/20">
+            <Lightbulb className="h-4 w-4" />
           </div>
-          Next actions
+          <span className="flex-1">Next actions</span>
+          <Badge variant="secondary" className="hidden text-[11px] font-normal uppercase tracking-wide sm:inline-flex">
+            {APPLICATION_STATUS_LABELS[currentStatus]}
+          </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3 p-4">
-        <p className="text-sm text-muted-foreground">{GUIDANCE[currentStatus]}</p>
+
+      <CardContent className="space-y-5 p-5">
+        <div className="rounded-xl border border-primary/10 bg-gradient-to-r from-primary/5 via-primary/[0.02] to-transparent p-4">
+          <p className="text-sm font-medium leading-relaxed text-foreground">{GUIDANCE[currentStatus]}</p>
+        </div>
 
         {canProgress && !isTerminal && recommended && (
-          <div className="rounded-xl border bg-primary/5 p-3">
-            <div className="mb-2 flex items-center gap-2">
-              <Badge variant="outline" className="border-primary/30 bg-primary/10 text-primary">
-                Recommended
-              </Badge>
-              <span className="text-xs text-muted-foreground">Move status to</span>
+          <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-card p-1 shadow-sm">
+            <div className="rounded-xl bg-card/80 p-4 backdrop-blur-sm">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="grid h-6 w-6 place-items-center rounded-md bg-primary/10 text-primary">
+                    <Sparkles className="h-3.5 w-3.5" />
+                  </div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-primary">Recommended</span>
+                </div>
+                <span className="text-xs text-muted-foreground">Move status to</span>
+              </div>
+
+              <Button
+                onClick={() => onQuickStatus(recommended)}
+                className={cn(
+                  "group h-11 w-full justify-between gap-2 rounded-xl bg-gradient-to-r from-primary to-primary/90",
+                  "px-4 text-left font-semibold shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:brightness-105",
+                )}
+                aria-label={`Advance status to ${APPLICATION_STATUS_LABELS[recommended]}`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <span className="grid h-7 w-7 place-items-center rounded-lg bg-primary-foreground/15">
+                    <RecIcon className="h-4 w-4" />
+                  </span>
+                  {APPLICATION_STATUS_LABELS[recommended]}
+                </span>
+                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Button>
             </div>
-            <Button
-              onClick={() => onQuickStatus(recommended)}
-              className={cn("w-full justify-start gap-2 shadow-sm")}
-              aria-label={`Advance status to ${APPLICATION_STATUS_LABELS[recommended]}`}
-            >
-              <RecIcon className="h-4 w-4" />
-              {APPLICATION_STATUS_LABELS[recommended]}
-              <ArrowRight className="ml-auto h-4 w-4" />
-            </Button>
           </div>
         )}
 
         {canProgress && alternatives.length > 0 && (
-          <div>
-            <p className="mb-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Other transitions
-            </p>
-            <div className="flex flex-wrap gap-1.5">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Separator className="flex-1" />
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Other transitions
+              </span>
+              <Separator className="flex-1" />
+            </div>
+
+            <div className="flex flex-wrap gap-2">
               {alternatives.map((s) => {
                 const Icon = NEXT_ICON[s] ?? ArrowRight;
                 return (
@@ -134,10 +158,13 @@ export function NextActions({
                     size="sm"
                     variant="outline"
                     onClick={() => onQuickStatus(s)}
-                    className="h-8"
+                    className={cn(
+                      "h-9 gap-2 rounded-full border-border/70 bg-card pl-3 pr-4 text-xs font-medium",
+                      "transition-all hover:border-primary/40 hover:bg-primary/5 hover:text-primary hover:shadow-sm",
+                    )}
                     aria-label={`Move status to ${APPLICATION_STATUS_LABELS[s]}`}
                   >
-                    <Icon className="mr-1.5 h-3.5 w-3.5" />
+                    <Icon className="h-3.5 w-3.5 text-muted-foreground transition-colors group-hover:text-primary" />
                     {APPLICATION_STATUS_LABELS[s]}
                   </Button>
                 );
@@ -146,25 +173,36 @@ export function NextActions({
           </div>
         )}
 
-        <div className="grid gap-2 pt-1 sm:grid-cols-2">
+        <div className="grid gap-3 pt-1 sm:grid-cols-2">
           <Button
             variant="outline"
             size="sm"
             onClick={onRequestDocuments}
-            className="justify-start"
+            className="h-11 justify-start gap-3 rounded-xl border-border/70 bg-card px-4 text-sm font-medium transition-all hover:border-primary/40 hover:bg-primary/5 hover:text-primary hover:shadow-sm"
             aria-label="Request a document from the counselor"
           >
-            <ClipboardCheck className="mr-2 h-4 w-4 text-primary" />
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
+              <ClipboardCheck className="h-4 w-4" />
+            </span>
             {hasOpenDocRequest ? "Manage document requests" : "Request document"}
           </Button>
-          <Button asChild variant="outline" size="sm" className="justify-start">
+
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="h-11 justify-start gap-3 rounded-xl border-border/70 bg-card px-4 text-sm font-medium transition-all hover:border-primary/40 hover:bg-primary/5 hover:text-primary hover:shadow-sm"
+          >
             <Link
               to="/applications/$applicationId"
               params={{ applicationId }}
               hash="offers"
               aria-label="Open offer letters panel"
             >
-              <FileCheck2 className="mr-2 h-4 w-4 text-primary" /> Manage offers
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
+                <FileCheck2 className="h-4 w-4" />
+              </span>
+              Manage offers
             </Link>
           </Button>
         </div>

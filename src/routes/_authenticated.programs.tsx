@@ -264,6 +264,14 @@ function ProgramsPage() {
     [sortedRows, showBookmarks, bookmarks],
   );
 
+  const paginatedRows = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return visibleRows.slice(start, start + pageSize);
+  }, [visibleRows, page, pageSize]);
+
+  const totalPages = Math.ceil(visibleRows.length / pageSize);
+
+
   // Compare highlights
   const cheapestId = compareRows.length
     ? compareRows.reduce((best, r) => (r.tuition_fee ?? Infinity) < (best.tuition_fee ?? Infinity) ? r : best, compareRows[0]).id

@@ -565,7 +565,7 @@ function ProgramsPage() {
               <SelectTrigger className="h-11 w-11 rounded-xl border-muted/60 bg-muted/30 p-0 flex items-center justify-center hover:bg-muted/50" title="Sort by">
                 <ArrowUpDown className="h-4 w-4" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent align="end" className="w-[180px]">
                 {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
                   <SelectItem key={k} value={k}>{SORT_LABELS[k]}</SelectItem>
                 ))}
@@ -1094,7 +1094,7 @@ function CompareMobileCarousel({
                       ) : (
                         <Select onValueChange={(v) => { onReplace(r.id, v); setReplaceFor(null); }}>
                           <SelectTrigger className="h-9"><SelectValue placeholder="Choose a program…" /></SelectTrigger>
-                          <SelectContent>
+                          <SelectContent position="item-aligned">
                             {replacementOptions.map((opt) => (
                               <SelectItem key={opt.id} value={opt.id}>
                                 {opt.name}{opt.university?.name ? ` — ${opt.university.name}` : ""}

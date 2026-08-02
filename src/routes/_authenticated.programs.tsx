@@ -403,7 +403,7 @@ function ProgramsPage() {
       </div>
 
       {/* Sticky search + filter bar */}
-      <div className="sticky top-0 z-30 -mx-4 border-b bg-background/85 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:-mx-6 sm:px-6">
+      <div className="sticky top-0 z-30 -mx-4 border-b bg-background/90 px-4 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 sm:-mx-6 sm:px-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           {/* Main search box */}
           <div className="relative min-w-[240px] flex-1">

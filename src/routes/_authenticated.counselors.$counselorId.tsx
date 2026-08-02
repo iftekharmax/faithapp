@@ -18,6 +18,7 @@ import {
 import {
   listUsers, lockUser, setStatus, writeAudit, type AdminUser, type UserStatus,
 } from "@/lib/user-management";
+import { useChat } from "@/components/chat/ChatProvider";
 
 export const Route = createFileRoute("/_authenticated/counselors/$counselorId")({
   component: () => (
@@ -46,6 +47,7 @@ function fmtDate(v: string | null) {
 function CounselorDetailPage() {
   const { counselorId } = Route.useParams();
   const navigate = useNavigate();
+  const { toggle: toggleChat } = useChat();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<AdminUser | null>(null);
   const [pending, setPending] = useState<null | "activate" | "deactivate" | "lock" | "unlock">(null);
@@ -191,10 +193,8 @@ function CounselorDetailPage() {
                   </a>
                 </Button>
               )}
-              <Button size="sm" variant="outline" asChild>
-                <Link to="/chat">
-                  <MessageSquare className="mr-2 h-4 w-4" /> Message
-                </Link>
+              <Button size="sm" variant="outline" onClick={() => toggleChat()}>
+                <MessageSquare className="mr-2 h-4 w-4" /> Message
               </Button>
             </div>
           </div>

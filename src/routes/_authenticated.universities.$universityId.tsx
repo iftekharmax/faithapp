@@ -168,7 +168,7 @@ function MiniStat({ label, value }: { label: string; value: number }) {
 }
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange }: {
+function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange, navigate }: {
   universityId: string; programs: UniversityProgram[]; campuses: Campus[]; faculties: Faculty[];
   canEdit: boolean; onChange: () => void; navigate: any;
 }) {

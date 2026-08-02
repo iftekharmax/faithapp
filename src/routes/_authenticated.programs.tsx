@@ -505,10 +505,7 @@ function ProgramsPage() {
       })()}
 
 
-      {/* Selection bar */}
-      {selected.size > 0 && (
-      {/* Selection bar removed */}
-      {/* Compare dialog removed */}
+      {/* Selection and Compare functionality removed */}
 
       {/* Details drawer */}
       <Sheet open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>

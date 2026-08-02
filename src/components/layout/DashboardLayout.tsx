@@ -10,19 +10,13 @@ import { Separator } from "@/components/ui/separator";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [persistentOpen, setPersistentOpen] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = document.cookie.split("; ").find((row) => row.startsWith("sidebar_state="));
-      return saved ? saved.split("=")[1] === "true" : false;
-    }
-    return false;
-  });
+  const [open, setOpen] = useState(false);
 
-  const handleOpenChange = (open: boolean) => {
-    setPersistentOpen(open);
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
   };
 
-  const effectiveOpen = persistentOpen || isHovered;
+  const effectiveOpen = open || isHovered;
 
   return (
     <SidebarProvider open={effectiveOpen} onOpenChange={handleOpenChange}>

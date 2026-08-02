@@ -89,6 +89,11 @@ function NewProgramPage() {
     others_fee: 0,
   } as any);
 
+  // We keep a ref to the form data to preserve it across retry attempts
+  // but since we are using React state and not refreshing the page, 
+  // simply NOT resetting the state on error is enough.
+  // The current handleSave implementation already keeps form state intact on error.
+
   function set<K extends keyof UniversityProgram>(key: K, value: any) {
     setForm((f) => ({ ...f, [key]: value }));
     setErrors((e) => (e[key as string] ? { ...e, [key as string]: undefined } : e));

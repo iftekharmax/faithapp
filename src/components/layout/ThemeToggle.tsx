@@ -12,7 +12,7 @@ export function ThemeToggle() {
   useEffect(() => setMounted(true), []);
 
   const isDark = mounted && resolvedTheme === "dark";
-  const active = mounted ? theme ?? "system" : "system";
+  const active = mounted ? (theme || "system") : "system";
 
   const options: { key: "light" | "dark" | "system"; label: string; icon: typeof Sun }[] = [
     { key: "light", label: "Light", icon: Sun },

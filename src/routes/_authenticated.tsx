@@ -29,7 +29,7 @@ function AuthenticatedLayout() {
     const t = setTimeout(async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) navigate({ to: "/auth/login", replace: true });
-    }, 800);
+    }, 2500);
     return () => clearTimeout(t);
   }, [session, loading, sessionTimedOut, navigate]);
 

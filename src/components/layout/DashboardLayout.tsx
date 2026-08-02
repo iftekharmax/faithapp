@@ -15,8 +15,6 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     <SidebarProvider open={open} onOpenChange={setOpen}>
       <div 
         className="relative flex min-h-screen w-full bg-background"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
       >
         {/* Ambient background */}
         <div
@@ -27,7 +25,16 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               "radial-gradient(circle at 15% 0%, oklch(0.85 0.09 260 / 0.35), transparent 40%), radial-gradient(circle at 85% 100%, oklch(0.82 0.10 200 / 0.28), transparent 45%)",
           }}
         />
-        <AppSidebar />
+        
+        {/* Sidebar wrapper for hover interaction */}
+        <div 
+          className="relative z-40"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
+          <AppSidebar />
+        </div>
+
         <SidebarInset className="flex min-w-0 flex-1 flex-col bg-transparent">
           <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background/80 px-3 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sm:px-6">
             <SidebarTrigger className="h-9 w-9 rounded-lg hover:bg-accent" />

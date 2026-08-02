@@ -454,8 +454,8 @@ function NewProgramPage() {
                     value={(form.tuition_fee as any) ?? ""}
                     onChange={(e) => set("tuition_fee", e.target.value)}
                   />
-                  <div className="absolute left-3.5 top-1/2 flex h-4 w-4 -translate-y-1/2 items-center justify-center text-[10px] font-bold text-muted-foreground">
-                    {form.currency || "$"}
+                  <div className="absolute left-3.5 top-1/2 flex h-4 w-4 -translate-y-1/2 items-center justify-center text-xs font-bold text-muted-foreground">
+                    {getCurrencySymbol(form.currency || "USD")}
                   </div>
                 </div>
                 <FieldError msg={errors.tuition_fee} />

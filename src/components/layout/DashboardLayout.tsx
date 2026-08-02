@@ -9,13 +9,24 @@ import { Breadcrumbs } from "./Breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [persistentOpen, setPersistentOpen] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = document.cookie.split("; ").find((row) => row.startsWith("sidebar_state="));
+      return saved ? saved.split("=")[1] === "true" : false;
+    }
+    return false;
+  });
+
+  const handleOpenChange = (open: boolean) => {
+    setPersistentOpen(open);
+  };
+
+  const effectiveOpen = persistentOpen || isHovered;
 
   return (
-    <SidebarProvider open={open} onOpenChange={setOpen}>
-      <div 
-        className="relative flex min-h-screen w-full bg-background"
-      >
+    <SidebarProvider open={effectiveOpen} onOpenChange={handleOpenChange}>
+      <div className="relative flex min-h-screen w-full bg-background">
         {/* Ambient background */}
         <div
           aria-hidden
@@ -25,19 +36,31 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               "radial-gradient(circle at 15% 0%, oklch(0.85 0.09 260 / 0.35), transparent 40%), radial-gradient(circle at 85% 100%, oklch(0.82 0.10 200 / 0.28), transparent 45%)",
           }}
         />
-        
-        {/* Sidebar wrapper for hover interaction */}
-        <div 
+
+        {/* Sidebar wrapper for hover and accessibility */}
+        <div
           className="relative z-40"
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onFocus={() => setIsHovered(true)}
+          onBlur={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+              setIsHovered(false);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setIsHovered(false);
+              (document.activeElement as HTMLElement)?.blur();
+            }
+          }}
         >
           <AppSidebar />
         </div>
 
         <SidebarInset className="flex min-w-0 flex-1 flex-col bg-transparent">
           <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background/80 px-3 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sm:px-6">
-            <SidebarTrigger className="h-9 w-9 rounded-lg hover:bg-accent" />
+            <SidebarTrigger className="h-9 w-9 rounded-lg hover:bg-accent focus-visible:ring-2 focus-visible:ring-primary" />
             <Separator orientation="vertical" className="mx-1 h-6" />
             <div className="min-w-0 flex-1">
               <Breadcrumbs />

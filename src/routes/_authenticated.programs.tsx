@@ -457,15 +457,22 @@ function ProgramsPage() {
               </SelectContent>
             </Select>
 
-            <Select value="all">
+            <Select
+              value={filters.duration ?? "all"}
+              onValueChange={(v) => setFilters({ ...filters, duration: v === "all" ? undefined : v })}
+            >
               <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
-                Program level
+                <span className="flex items-center gap-2">
+                  Duration
+                  {filters.duration && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
+                </span>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All levels</SelectItem>
-                <SelectItem value="ug">Undergraduate</SelectItem>
-                <SelectItem value="pg">Postgraduate</SelectItem>
-                <SelectItem value="phd">PhD</SelectItem>
+                <SelectItem value="all">All durations</SelectItem>
+                <SelectItem value="1 year">1 year</SelectItem>
+                <SelectItem value="2 years">2 years</SelectItem>
+                <SelectItem value="3 years">3 years</SelectItem>
+                <SelectItem value="4 years">4 years</SelectItem>
               </SelectContent>
             </Select>
 

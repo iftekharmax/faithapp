@@ -191,10 +191,8 @@ function CounselorDetailPage() {
                   </a>
                 </Button>
               )}
-              <Button size="sm" variant="outline" asChild>
-                <Link to="/chat">
-                  <MessageSquare className="mr-2 h-4 w-4" /> Message
-                </Link>
+              <Button size="sm" variant="outline" onClick={() => toggleChat()}>
+                <MessageSquare className="mr-2 h-4 w-4" /> Message
               </Button>
             </div>
           </div>

@@ -567,14 +567,60 @@ function ProgramsPage() {
           );
         }
         return (
-          <div className={gridCls}>
-            {visibleRows.map((r) => (
-              <ProgramCard key={r.id} r={r} density={density}
-                selected={false} onToggle={() => {}} // Disabled selection
-                bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
-                onShare={() => share(r)} onOpen={() => setDetail(r)}
-              />
-            ))}
+          <div className="space-y-8">
+            <div className={gridCls}>
+              {paginatedRows.map((r) => (
+                <ProgramCard key={r.id} r={r} density={density}
+                  selected={false} onToggle={() => {}} // Disabled selection
+                  bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
+                  onShare={() => share(r)} onOpen={() => setDetail(r)}
+                />
+              ))}
+            </div>
+
+            {/* Pagination UI */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 py-4">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-xl"
+                  disabled={page === 1}
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+                    .map((p, i, arr) => (
+                      <div key={p} className="flex items-center">
+                        {i > 0 && arr[i-1] !== p - 1 && <span className="px-2 text-muted-foreground text-xs">...</span>}
+                        <Button
+                          variant={page === p ? "default" : "outline"}
+                          size="sm"
+                          className={cn("h-9 w-9 rounded-xl", page === p && "shadow-md shadow-primary/20")}
+                          onClick={() => setPage(p)}
+                        >
+                          {p}
+                        </Button>
+                      </div>
+                    ))
+                  }
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-xl"
+                  disabled={page === totalPages}
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
         );
       })()}

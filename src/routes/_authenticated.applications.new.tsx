@@ -60,6 +60,9 @@ function NewApplicationPage() {
     intake: "",
     scholarship: "",
     application_fee: undefined,
+    registration_fee: undefined,
+    emgs_fee: undefined,
+    others_fee: undefined,
     status: "draft",
     notes: "",
   });
@@ -137,6 +140,10 @@ function NewApplicationPage() {
       degree: p.degree ?? f.degree ?? "",
       intake: p.intake ?? f.intake ?? "",
       scholarship: p.scholarship ?? f.scholarship ?? "",
+      application_fee: p.application_fee ?? f.application_fee ?? undefined,
+      registration_fee: p.registration_fee ?? f.registration_fee ?? undefined,
+      emgs_fee: p.emgs_fee ?? f.emgs_fee ?? undefined,
+      others_fee: p.others_fee ?? f.others_fee ?? undefined,
     }));
   }, [programId, programs]);
 
@@ -160,6 +167,9 @@ function NewApplicationPage() {
       const created = await createApplication({
         ...form,
         application_fee: form.application_fee ? Number(form.application_fee) : null,
+        registration_fee: form.registration_fee ? Number(form.registration_fee) : null,
+        emgs_fee: form.emgs_fee ? Number(form.emgs_fee) : null,
+        others_fee: form.others_fee ? Number(form.others_fee) : null,
         country: form.country || null,
         campus: form.campus || null,
         degree: form.degree || null,
@@ -299,11 +309,35 @@ function NewApplicationPage() {
           <Field label="Scholarship" error={err("scholarship")}>
             <Input value={form.scholarship ?? ""} onChange={(e) => set("scholarship", e.target.value)} />
           </Field>
-          <Field label="Application fee" error={err("application_fee")}>
-            <Input type="number" min="0" step="0.01"
-              value={form.application_fee ?? ""}
-              onChange={(e) => set("application_fee", e.target.value === "" ? null : Number(e.target.value))} />
-          </Field>
+          <div className="md:col-span-2 mt-2">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Financial Details</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Field label="Application fee" error={err("application_fee")}>
+                <Input type="number" min="0" step="0.01"
+                  value={form.application_fee ?? ""}
+                  onChange={(e) => set("application_fee", e.target.value === "" ? null : Number(e.target.value))} />
+              </Field>
+              <Field label="Registration fee" error={err("registration_fee")}>
+                <Input type="number" min="0" step="0.01"
+                  value={form.registration_fee ?? ""}
+                  onChange={(e) => set("registration_fee", e.target.value === "" ? null : Number(e.target.value))} />
+              </Field>
+              <Field label="EMGS fee" error={err("emgs_fee")}>
+                <Input type="number" min="0" step="0.01"
+                  value={form.emgs_fee ?? ""}
+                  onChange={(e) => set("emgs_fee", e.target.value === "" ? null : Number(e.target.value))} />
+              </Field>
+              <Field label="Others fee" error={err("others_fee")}>
+                <Input type="number" min="0" step="0.01"
+                  value={form.others_fee ?? ""}
+                  onChange={(e) => set("others_fee", e.target.value === "" ? null : Number(e.target.value))} />
+              </Field>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

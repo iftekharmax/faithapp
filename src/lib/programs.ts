@@ -15,6 +15,7 @@ export interface ProgramRow {
   status: string;
   university: { id: string; name: string; country_id: string | null; city: string | null } | null;
   campus: { id: string; name: string } | null;
+  created_at?: string;
 }
 
 export interface ProgramFilters {
@@ -32,7 +33,7 @@ export interface ProgramFilters {
 export async function listPrograms(f: ProgramFilters = {}): Promise<ProgramRow[]> {
   let q = supabase
     .from("university_programs")
-    .select("id, name, degree, duration, intake, application_deadline, tuition_fee, currency, scholarship, requirements, description, status, university:universities(id, name, country_id, city), campus:campuses(id, name)")
+    .select("id, name, degree, duration, intake, application_deadline, tuition_fee, currency, scholarship, requirements, description, status, created_at, university:universities(id, name, country_id, city), campus:campuses(id, name)")
     .eq("status", "active")
     .order("name");
   if (f.q) q = q.ilike("name", `%${f.q}%`);

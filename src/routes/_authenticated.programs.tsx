@@ -119,9 +119,10 @@ const gradientFor = (id: string) => GRADIENTS[[...id].reduce((a, c) => a + c.cha
 
 const BOOKMARK_KEY = "program_bookmarks_v1";
 const DENSITY_KEY = "program_density_v1";
-type SortKey = "name" | "fee_asc" | "fee_desc" | "duration" | "deadline";
+type SortKey = "name" | "fee_asc" | "fee_desc" | "duration" | "deadline" | "latest";
 type Density = "comfortable";
 const SORT_LABELS: Record<SortKey, string> = {
+  latest: "Latest Programs",
   name: "Name (A-Z)",
   fee_asc: "Tuition: Low to High",
   fee_desc: "Tuition: High to Low",
@@ -147,11 +148,19 @@ function ProgramsPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [compareOpen, setCompareOpen] = useState(false);
-  const view = "grid"; // Fixed to grid view
+  const view = "grid"; 
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [detail, setDetail] = useState<ProgramRow | null>(null);
-  const density = "comfortable"; // Fixed to comfortable density
-  const setDensity = (_: Density) => {}; // No-op to satisfy potential usages
+  const density = "comfortable";
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
+  const setDensity = (_: Density) => {}; 
+
+  // Reset page on filter change
+  useEffect(() => {
+    setPage(1);
+  }, [filters, sort]);
+
 
   // Load bookmarks
   useEffect(() => {
@@ -201,6 +210,11 @@ function ProgramsPage() {
   const sortedRows = useMemo(() => {
     const arr = [...rows];
     switch (sort) {
+      case "latest": arr.sort((a, b) => {
+        const av = a.created_at ? Date.parse(a.created_at) : 0;
+        const bv = b.created_at ? Date.parse(b.created_at) : 0;
+        return bv - av;
+      }); break;
       case "fee_asc": arr.sort((a, b) => (a.tuition_fee ?? Infinity) - (b.tuition_fee ?? Infinity)); break;
       case "fee_desc": arr.sort((a, b) => (b.tuition_fee ?? -Infinity) - (a.tuition_fee ?? -Infinity)); break;
       case "duration": arr.sort((a, b) => parseDurationMonths(a.duration) - parseDurationMonths(b.duration)); break;
@@ -255,6 +269,14 @@ function ProgramsPage() {
     showBookmarks ? sortedRows.filter((r) => bookmarks.has(r.id)) : sortedRows,
     [sortedRows, showBookmarks, bookmarks],
   );
+
+  const paginatedRows = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return visibleRows.slice(start, start + pageSize);
+  }, [visibleRows, page, pageSize]);
+
+  const totalPages = Math.ceil(visibleRows.length / pageSize);
+
 
   // Compare highlights
   const cheapestId = compareRows.length
@@ -381,7 +403,7 @@ function ProgramsPage() {
       </div>
 
       {/* Sticky search + filter bar */}
-      <div className="sticky top-0 z-30 -mx-4 border-b bg-background/85 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:-mx-6 sm:px-6">
+      <div className="sticky top-0 z-30 -mx-4 border-b bg-background/90 px-4 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 sm:-mx-6 sm:px-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           {/* Main search box */}
           <div className="relative min-w-[240px] flex-1">
@@ -435,15 +457,22 @@ function ProgramsPage() {
               </SelectContent>
             </Select>
 
-            <Select value="all">
+            <Select
+              value={filters.duration ?? "all"}
+              onValueChange={(v) => setFilters({ ...filters, duration: v === "all" ? undefined : v })}
+            >
               <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
-                Program level
+                <span className="flex items-center gap-2">
+                  Duration
+                  {filters.duration && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
+                </span>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All levels</SelectItem>
-                <SelectItem value="ug">Undergraduate</SelectItem>
-                <SelectItem value="pg">Postgraduate</SelectItem>
-                <SelectItem value="phd">PhD</SelectItem>
+                <SelectItem value="all">All durations</SelectItem>
+                <SelectItem value="1 year">1 year</SelectItem>
+                <SelectItem value="2 years">2 years</SelectItem>
+                <SelectItem value="3 years">3 years</SelectItem>
+                <SelectItem value="4 years">4 years</SelectItem>
               </SelectContent>
             </Select>
 
@@ -475,8 +504,14 @@ function ProgramsPage() {
 
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" className="h-11 w-11 rounded-xl border-muted/60 bg-muted/30 p-0 flex items-center justify-center hover:bg-muted/50" title="More filters">
+                <Button variant="outline" className={cn("h-11 rounded-xl border-muted/60 bg-muted/30 px-3 flex items-center justify-center hover:bg-muted/50 gap-2", activeFilterCount > 0 && "text-primary border-primary/30")}>
                   <SlidersHorizontal className="h-4 w-4" />
+                  <span className="hidden xl:inline text-xs font-semibold">More Filters</span>
+                  {activeFilterCount > 0 && (
+                    <Badge variant="default" className="h-5 min-w-[20px] px-1 justify-center text-[10px] rounded-full">
+                      {activeFilterCount}
+                    </Badge>
+                  )}
                 </Button>
               </SheetTrigger>
               <SheetContent className="w-full sm:max-w-md">
@@ -491,7 +526,7 @@ function ProgramsPage() {
               title={showBookmarks ? "Showing bookmarks only" : "Show bookmarks only"}
               className={cn(
                 "h-11 w-11 rounded-xl border-muted/60 p-0 flex items-center justify-center transition-all",
-                showBookmarks ? "bg-primary text-primary-foreground shadow-lg" : "bg-muted/30 hover:bg-muted/50",
+                showBookmarks ? "bg-amber-500 text-white shadow-lg shadow-amber-500/20 border-amber-500" : "bg-muted/30 hover:bg-muted/50",
               )}
             >
               {showBookmarks ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
@@ -551,14 +586,60 @@ function ProgramsPage() {
           );
         }
         return (
-          <div className={gridCls}>
-            {visibleRows.map((r) => (
-              <ProgramCard key={r.id} r={r} density={density}
-                selected={false} onToggle={() => {}} // Disabled selection
-                bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
-                onShare={() => share(r)} onOpen={() => setDetail(r)}
-              />
-            ))}
+          <div className="space-y-8">
+            <div className={gridCls}>
+              {paginatedRows.map((r) => (
+                <ProgramCard key={r.id} r={r} density={density}
+                  selected={false} onToggle={() => {}} // Disabled selection
+                  bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
+                  onShare={() => share(r)} onOpen={() => setDetail(r)}
+                />
+              ))}
+            </div>
+
+            {/* Pagination UI */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 py-4">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-xl"
+                  disabled={page === 1}
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+                    .map((p, i, arr) => (
+                      <div key={p} className="flex items-center">
+                        {i > 0 && arr[i-1] !== p - 1 && <span className="px-2 text-muted-foreground text-xs">...</span>}
+                        <Button
+                          variant={page === p ? "default" : "outline"}
+                          size="sm"
+                          className={cn("h-9 w-9 rounded-xl", page === p && "shadow-md shadow-primary/20")}
+                          onClick={() => setPage(p)}
+                        >
+                          {p}
+                        </Button>
+                      </div>
+                    ))
+                  }
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-xl"
+                  disabled={page === totalPages}
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
         );
       })()}

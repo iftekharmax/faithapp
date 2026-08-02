@@ -119,7 +119,7 @@ const gradientFor = (id: string) => GRADIENTS[[...id].reduce((a, c) => a + c.cha
 
 const BOOKMARK_KEY = "program_bookmarks_v1";
 const DENSITY_KEY = "program_density_v1";
-type SortKey = "name" | "fee_asc" | "fee_desc" | "duration" | "deadline";
+type SortKey = "name" | "fee_asc" | "fee_desc" | "duration" | "deadline" | "latest";
 type Density = "comfortable";
 const SORT_LABELS: Record<SortKey, string> = {
   name: "Name (A-Z)",

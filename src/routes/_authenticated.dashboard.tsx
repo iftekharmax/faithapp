@@ -499,6 +499,34 @@ function DashboardPage() {
         </div>
       </section>
 
+      {data && data.total === 0 && (
+        <Card className="bg-primary/5 border-primary/20 overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <Award className="h-24 w-24" />
+          </div>
+          <CardContent className="py-6 sm:py-8 flex flex-col sm:row items-center gap-6 relative z-10">
+            <div className="h-16 w-16 shrink-0 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <Sparkles className="h-8 w-8 text-primary" />
+            </div>
+            <div className="text-center sm:text-left space-y-2">
+              <h3 className="text-lg font-bold">Get started with Faith AMS</h3>
+              <p className="text-sm text-muted-foreground max-w-xl">
+                Your dashboard is empty because no applications have been created yet.
+                Start managing your student applications and tracking their status in one place.
+              </p>
+              <div className="pt-2 flex flex-wrap justify-center sm:justify-start gap-3">
+                <Button asChild size="sm">
+                  <Link to="/applications/new">Create Application</Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/students">View Students</Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {isOn("kpis") && blocks.kpis}
       {rows}
     </div>

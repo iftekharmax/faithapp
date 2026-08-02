@@ -210,6 +210,11 @@ function ProgramsPage() {
   const sortedRows = useMemo(() => {
     const arr = [...rows];
     switch (sort) {
+      case "latest": arr.sort((a, b) => {
+        const av = a.created_at ? Date.parse(a.created_at) : 0;
+        const bv = b.created_at ? Date.parse(b.created_at) : 0;
+        return bv - av;
+      }); break;
       case "fee_asc": arr.sort((a, b) => (a.tuition_fee ?? Infinity) - (b.tuition_fee ?? Infinity)); break;
       case "fee_desc": arr.sort((a, b) => (b.tuition_fee ?? -Infinity) - (a.tuition_fee ?? -Infinity)); break;
       case "duration": arr.sort((a, b) => parseDurationMonths(a.duration) - parseDurationMonths(b.duration)); break;

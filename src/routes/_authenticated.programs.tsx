@@ -122,6 +122,7 @@ const DENSITY_KEY = "program_density_v1";
 type SortKey = "name" | "fee_asc" | "fee_desc" | "duration" | "deadline" | "latest";
 type Density = "comfortable";
 const SORT_LABELS: Record<SortKey, string> = {
+  latest: "Latest Programs",
   name: "Name (A-Z)",
   fee_asc: "Tuition: Low to High",
   fee_desc: "Tuition: High to Low",

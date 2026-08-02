@@ -15,6 +15,7 @@ export interface ProgramRow {
   status: string;
   university: { id: string; name: string; country_id: string | null; city: string | null } | null;
   campus: { id: string; name: string } | null;
+  created_at?: string;
 }
 
 export interface ProgramFilters {

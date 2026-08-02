@@ -557,16 +557,14 @@ function ProgramCard({ r, selected, onToggle, bookmarked, onBookmark, onShare, o
       "group relative overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10",
       selected && "ring-2 ring-primary ring-offset-2 ring-offset-background"
     )}>
-      <div className={cn("relative bg-gradient-to-br", compact ? "h-16" : "h-28", gradientFor(r.id))}>
+      <div className={cn("relative bg-gradient-to-br h-28", gradientFor(r.id))}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.3),transparent_60%)]" />
-        <div className={cn("absolute flex items-center gap-1.5", compact ? "right-2 top-2" : "right-3 top-3")}>
+        <div className="absolute flex items-center gap-1.5 right-3 top-3">
           <IconButton title="Share" onClick={onShare}><Share2 className="h-3.5 w-3.5 text-white" /></IconButton>
           <IconButton title={bookmarked ? "Remove bookmark" : "Save"} onClick={onBookmark}>
             {bookmarked ? <BookmarkCheck className="h-3.5 w-3.5 text-white" /> : <Bookmark className="h-3.5 w-3.5 text-white" />}
           </IconButton>
-          <label className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-white/20 backdrop-blur transition-colors hover:bg-white/30" title="Select to compare">
-            <Checkbox checked={selected} onCheckedChange={onToggle} className="border-white data-[state=checked]:bg-white data-[state=checked]:text-primary" />
-          </label>
+          {/* Selection label removed */}
         </div>
         <div className="absolute bottom-3 left-4 right-14">
           <GraduationCap className="mb-1 h-6 w-6 text-white/90" />

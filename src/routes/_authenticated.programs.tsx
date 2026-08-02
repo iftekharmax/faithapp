@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Scale, Search, X, GraduationCap, MapPin, Calendar, Coins,
-  Award, Clock, Sparkles, SlidersHorizontal, LayoutGrid, Rows3, ArrowRight, BookOpen,
-  Bookmark, BookmarkCheck, Share2, ArrowUpDown, ExternalLink, CheckCircle2, FileText, ListChecks,
-  Maximize2, Minimize2, Trash2, Replace, Plus, ChevronLeft, ChevronRight, Loader2,
+  Search, X, GraduationCap, MapPin, Calendar, Coins,
+  Award, Clock, Sparkles, SlidersHorizontal, ArrowRight, BookOpen,
+  Bookmark, BookmarkCheck, Share2, ArrowUpDown, FileText, ListChecks,
+  Plus, ChevronLeft, ChevronRight, Loader2, CheckCircle2, Trash2, ExternalLink, Replace,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
@@ -26,9 +26,9 @@ export const Route = createFileRoute("/_authenticated/programs")({
   head: () => ({
     meta: [
       { title: "Programs — Faith AMS" },
-      { name: "description", content: "Discover and compare academic programs across universities." },
+      { name: "description", content: "Discover academic programs across universities." },
       { property: "og:title", content: "Programs — Faith AMS" },
-      { property: "og:description", content: "Discover and compare academic programs across universities." },
+      { property: "og:description", content: "Discover academic programs across universities." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -120,7 +120,7 @@ const gradientFor = (id: string) => GRADIENTS[[...id].reduce((a, c) => a + c.cha
 const BOOKMARK_KEY = "program_bookmarks_v1";
 const DENSITY_KEY = "program_density_v1";
 type SortKey = "name" | "fee_asc" | "fee_desc" | "duration" | "deadline";
-type Density = "compact" | "comfortable";
+type Density = "comfortable";
 const SORT_LABELS: Record<SortKey, string> = {
   name: "Name (A-Z)",
   fee_asc: "Tuition: Low to High",
@@ -147,18 +147,17 @@ function ProgramsPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [compareOpen, setCompareOpen] = useState(false);
-  const [view, setView] = useState<"grid" | "list">("grid");
+  const view = "grid"; // Fixed to grid view
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [detail, setDetail] = useState<ProgramRow | null>(null);
-  const [density, setDensity] = useState<Density>("comfortable");
+  const density = "comfortable"; // Fixed to comfortable density
+  const setDensity = (_: Density) => {}; // No-op to satisfy potential usages
 
-  // Load bookmarks + density
+  // Load bookmarks
   useEffect(() => {
     try {
       const raw = localStorage.getItem(BOOKMARK_KEY);
       if (raw) setBookmarks(new Set(JSON.parse(raw)));
-      const d = localStorage.getItem(DENSITY_KEY);
-      if (d === "compact" || d === "comfortable") setDensity(d);
     } catch { /* ignore */ }
   }, []);
 
@@ -438,31 +437,7 @@ function ProgramsPage() {
               </Badge>
             )}
           </Button>
-          <div className="hidden overflow-hidden rounded-full border sm:flex">
-            <button onClick={() => setDensity("comfortable")} title="Comfortable" className={cn("flex h-10 items-center gap-1 px-3 text-xs font-medium transition-colors", density === "comfortable" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
-              <Maximize2 className="h-3.5 w-3.5" />
-            </button>
-            <button onClick={() => setDensity("compact")} title="Compact" className={cn("flex h-10 items-center gap-1 px-3 text-xs font-medium transition-colors", density === "compact" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
-              <Minimize2 className="h-3.5 w-3.5" />
-            </button>
-          </div>
-          <div className="hidden overflow-hidden rounded-full border sm:flex">
-            <button onClick={() => setView("grid")} className={cn("flex h-10 items-center gap-1 px-3 text-xs font-medium transition-colors", view === "grid" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
-              <LayoutGrid className="h-4 w-4" />
-            </button>
-            <button onClick={() => setView("list")} className={cn("flex h-10 items-center gap-1 px-3 text-xs font-medium transition-colors", view === "list" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
-              <Rows3 className="h-4 w-4" />
-            </button>
-          </div>
-          <Button
-            className="h-10 rounded-full bg-gradient-to-r from-primary to-purple-600 px-3 shadow-md shadow-primary/25 disabled:opacity-50 sm:px-4"
-            disabled={selected.size < 2}
-            onClick={() => setCompareOpen(true)}
-          >
-            <Scale className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Compare</span>
-            <span className="ml-1">({selected.size})</span>
-          </Button>
+          {/* View toggles and compare button removed as per request */}
         </div>
 
         {/* Filter chips */}
@@ -489,15 +464,13 @@ function ProgramsPage() {
 
       {/* Results */}
       {(() => {
-        const gridCls = density === "compact"
-          ? "grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-          : "grid gap-4 sm:grid-cols-2 xl:grid-cols-3";
+        const gridCls = "grid gap-4 sm:grid-cols-2 xl:grid-cols-3";
         if (loading) {
           return (
             <div className={cn(view === "grid" ? gridCls : "space-y-2")}>
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="animate-pulse rounded-2xl border bg-card">
-                  <div className={cn(density === "compact" ? "h-16" : "h-28", "rounded-t-2xl bg-muted/60")} />
+                  <div className="h-28 rounded-t-2xl bg-muted/60" />
                   <div className="space-y-2 p-4">
                     <div className="h-4 w-3/4 rounded bg-muted" />
                     <div className="h-3 w-1/2 rounded bg-muted" />
@@ -518,24 +491,11 @@ function ProgramsPage() {
             </div>
           );
         }
-        if (view === "grid") {
-          return (
-            <div className={gridCls}>
-              {visibleRows.map((r) => (
-                <ProgramCard key={r.id} r={r} density={density}
-                  selected={selected.has(r.id)} onToggle={() => toggle(r.id)}
-                  bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
-                  onShare={() => share(r)} onOpen={() => setDetail(r)}
-                />
-              ))}
-            </div>
-          );
-        }
         return (
-          <div className={density === "compact" ? "space-y-2" : "space-y-3"}>
+          <div className={gridCls}>
             {visibleRows.map((r) => (
-              <ProgramRowItem key={r.id} r={r}
-                selected={selected.has(r.id)} onToggle={() => toggle(r.id)}
+              <ProgramCard key={r.id} r={r} density={density}
+                selected={false} onToggle={() => {}} // Disabled selection
                 bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
                 onShare={() => share(r)} onOpen={() => setDetail(r)}
               />
@@ -545,129 +505,7 @@ function ProgramsPage() {
       })()}
 
 
-      {/* Selection bar */}
-      {selected.size > 0 && (
-        <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center px-4">
-          <div className="pointer-events-auto flex items-center gap-3 rounded-full border bg-background/95 px-5 py-2.5 shadow-2xl shadow-primary/10 backdrop-blur">
-            <span className="text-sm font-medium">{selected.size} selected</span>
-            <div className="h-4 w-px bg-border" />
-            <Button size="sm" variant="ghost" onClick={() => setSelected(new Set())}>Clear</Button>
-            <Button size="sm" className="rounded-full bg-gradient-to-r from-primary to-purple-600" disabled={selected.size < 2} onClick={() => setCompareOpen(true)}>
-              <Scale className="mr-1.5 h-3.5 w-3.5" /> Compare
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Compare dialog */}
-      <Dialog open={compareOpen} onOpenChange={setCompareOpen}>
-        <DialogContent className="max-h-[92vh] w-[calc(100vw-1rem)] max-w-6xl overflow-y-auto p-4 sm:p-6">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Scale className="h-5 w-5 text-primary" /> Compare programs
-              <Badge variant="outline" className="ml-2">{compareRows.length} programs</Badge>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-wrap gap-2 pb-1 text-xs">
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 font-medium text-emerald-700 dark:text-emerald-400">
-              <CheckCircle2 className="h-3 w-3" /> Best value
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 font-medium text-blue-700 dark:text-blue-400">
-              <Clock className="h-3 w-3" /> Shortest
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 font-medium text-amber-700 dark:text-amber-500">
-              <Calendar className="h-3 w-3" /> Earliest deadline
-            </span>
-          </div>
-          {/* Mobile: swipeable vertical cards */}
-          <div className="sm:hidden">
-            <CompareMobileCarousel
-              rows={compareRows}
-              allRows={sortedRows}
-              cheapestId={cheapestId}
-              shortestId={shortestId}
-              earliestId={earliestId}
-              onRemove={(id) => toggle(id)}
-              onReplace={(oldId, newId) => setSelected((s) => {
-                const next = new Set(s);
-                next.delete(oldId);
-                next.add(newId);
-                return next;
-              })}
-              onOpen={(r) => { setCompareOpen(false); setDetail(r); }}
-            />
-          </div>
-
-          {/* Desktop: side-by-side table */}
-          <div className="hidden overflow-x-auto sm:block">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="p-2 text-left text-xs uppercase tracking-wide text-muted-foreground">Field</th>
-                  {compareRows.map((r) => (
-                    <th key={r.id} className="min-w-[220px] p-2 text-left align-top">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <div className="font-semibold text-foreground">{r.name}</div>
-                          <div className="mt-0.5 text-[11px] font-normal text-muted-foreground">{r.university?.name}</div>
-                        </div>
-                        <div className="flex shrink-0 items-center gap-0.5">
-                          <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => { setCompareOpen(false); setDetail(r); }} title="Open details">
-                            <ExternalLink className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button size="sm" variant="ghost" className="h-7 px-2 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => toggle(r.id)} title="Remove from compare">
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {([
-                  ["Campus", (r) => r.campus?.name ?? "—", null],
-                  ["Degree", (r) => r.degree ?? "—", null],
-                  ["Duration", (r) => r.duration ?? "—", "shortest"],
-                  ["Intake", (r) => r.intake ?? "—", null],
-                  ["Tuition", (r) => r.tuition_fee ? `${r.currency ?? ""} ${r.tuition_fee.toLocaleString()}` : "—", "cheapest"],
-                  ["Scholarship", (r) => r.scholarship ?? "—", null],
-                  ["Deadline", (r) => r.application_deadline ?? "—", "earliest"],
-                ] as [string, (r: ProgramRow) => string, "cheapest" | "shortest" | "earliest" | null][]).map(([label, fn, hl]) => (
-                  <tr key={label} className="border-b transition-colors hover:bg-muted/40">
-                    <td className="p-2 font-medium text-muted-foreground">{label}</td>
-                    {compareRows.map((r) => {
-                      const isBest =
-                        (hl === "cheapest" && r.id === cheapestId && r.tuition_fee != null) ||
-                        (hl === "shortest" && r.id === shortestId && r.duration) ||
-                        (hl === "earliest" && r.id === earliestId && r.application_deadline);
-                      const hlColor = hl === "cheapest" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                        : hl === "shortest" ? "bg-blue-500/10 text-blue-700 dark:text-blue-400"
-                        : "bg-amber-500/10 text-amber-700 dark:text-amber-500";
-                      return (
-                        <td key={r.id} className="p-2 align-top">
-                          <span className={cn("inline-flex items-center gap-1 rounded-md px-1.5 py-0.5", isBest && `font-semibold ${hlColor}`)}>
-                            {isBest && <CheckCircle2 className="h-3 w-3" />}
-                            {fn(r)}
-                          </span>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-                <tr>
-                  <td />
-                  {compareRows.map((r) => (
-                    <td key={r.id} className="p-2">
-                      <ApplyButton program={r} className="w-full rounded-lg" />
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Selection and Compare functionality removed */}
 
       {/* Details drawer */}
       <Sheet open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
@@ -713,53 +551,46 @@ interface CardProps {
 }
 
 function ProgramCard({ r, selected, onToggle, bookmarked, onBookmark, onShare, onOpen, density = "comfortable" }: CardProps) {
-  const compact = density === "compact";
+  const compact = false;
   return (
     <div className={cn(
       "group relative overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10",
       selected && "ring-2 ring-primary ring-offset-2 ring-offset-background"
     )}>
-      <div className={cn("relative bg-gradient-to-br", compact ? "h-16" : "h-28", gradientFor(r.id))}>
+      <div className={cn("relative bg-gradient-to-br h-28", gradientFor(r.id))}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.3),transparent_60%)]" />
-        <div className={cn("absolute flex items-center gap-1.5", compact ? "right-2 top-2" : "right-3 top-3")}>
+        <div className="absolute flex items-center gap-1.5 right-3 top-3">
           <IconButton title="Share" onClick={onShare}><Share2 className="h-3.5 w-3.5 text-white" /></IconButton>
           <IconButton title={bookmarked ? "Remove bookmark" : "Save"} onClick={onBookmark}>
             {bookmarked ? <BookmarkCheck className="h-3.5 w-3.5 text-white" /> : <Bookmark className="h-3.5 w-3.5 text-white" />}
           </IconButton>
-          <label className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-white/20 backdrop-blur transition-colors hover:bg-white/30" title="Select to compare">
-            <Checkbox checked={selected} onCheckedChange={onToggle} className="border-white data-[state=checked]:bg-white data-[state=checked]:text-primary" />
-          </label>
+          {/* Selection label removed */}
         </div>
-        {!compact && (
-          <div className="absolute bottom-3 left-4 right-14">
-            <GraduationCap className="mb-1 h-6 w-6 text-white/90" />
-            {r.degree && <div className="text-[11px] font-medium uppercase tracking-wider text-white/80">{r.degree}</div>}
-          </div>
-        )}
-        {compact && r.degree && (
-          <div className="absolute bottom-1.5 left-3 text-[10px] font-medium uppercase tracking-wider text-white/85">{r.degree}</div>
-        )}
+        <div className="absolute bottom-3 left-4 right-14">
+          <GraduationCap className="mb-1 h-6 w-6 text-white/90" />
+          {r.degree && <div className="text-[11px] font-medium uppercase tracking-wider text-white/80">{r.degree}</div>}
+        </div>
         {r.scholarship && (
-          <div className={cn("absolute flex items-center gap-1 rounded-full bg-amber-400/95 px-2 py-0.5 text-[10px] font-bold text-amber-950 shadow-lg", compact ? "left-2 top-2" : "left-3 top-3")}>
-            <Award className="h-3 w-3" /> {compact ? "" : "SCHOLARSHIP"}
+          <div className="absolute flex items-center gap-1 rounded-full bg-amber-400/95 px-2 py-0.5 text-[10px] font-bold text-amber-950 shadow-lg left-3 top-3">
+            <Award className="h-3 w-3" /> SCHOLARSHIP
           </div>
         )}
       </div>
 
-      <div className={cn(compact ? "space-y-2 p-3" : "space-y-3 p-4")}>
+      <div className="space-y-3 p-4">
         <button onClick={onOpen} className="block w-full text-left">
-          <h3 className={cn("font-semibold transition-colors group-hover:text-primary", compact ? "line-clamp-1 text-sm leading-tight" : "line-clamp-2 leading-snug")}>{r.name}</h3>
+          <h3 className="font-semibold transition-colors group-hover:text-primary line-clamp-2 leading-snug">{r.name}</h3>
           <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
             <MapPin className="h-3 w-3 shrink-0" />
             <span className="truncate">{r.university?.name}{r.campus ? ` · ${r.campus.name}` : ""}</span>
           </div>
         </button>
 
-        <div className={cn("grid grid-cols-2 gap-2 border-y text-xs", compact ? "py-2" : "py-3")}>
+        <div className="grid grid-cols-2 gap-2 border-y text-xs py-3">
           <MetaCell icon={Clock} label="Duration" value={r.duration} />
           <MetaCell icon={Calendar} label="Intake" value={r.intake} />
           <MetaCell icon={Coins} label="Tuition" value={r.tuition_fee ? `${r.currency ?? ""} ${r.tuition_fee.toLocaleString()}` : null} />
-          {!compact && <MetaCell icon={Calendar} label="Deadline" value={r.application_deadline} />}
+          <MetaCell icon={Calendar} label="Deadline" value={r.application_deadline} />
         </div>
 
 
@@ -803,44 +634,7 @@ function MetaCell({ icon: Icon, label, value }: { icon: any; label: string; valu
   );
 }
 
-function ProgramRowItem({ r, selected, onToggle, bookmarked, onBookmark, onShare, onOpen }: CardProps) {
-  return (
-    <div className={cn(
-      "group flex flex-wrap items-center gap-4 rounded-2xl border bg-card p-4 transition-all hover:shadow-lg hover:shadow-primary/5",
-      selected && "ring-2 ring-primary"
-    )}>
-      <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-md", gradientFor(r.id))}>
-        <GraduationCap className="h-6 w-6" />
-      </div>
-      <button onClick={onOpen} className="min-w-0 flex-1 text-left">
-        <div className="flex items-center gap-2">
-          <h3 className="truncate font-semibold group-hover:text-primary">{r.name}</h3>
-          {r.scholarship && <Badge className="bg-amber-500 hover:bg-amber-500"><Award className="mr-1 h-3 w-3" />Scholarship</Badge>}
-        </div>
-        <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{r.university?.name}{r.campus ? ` · ${r.campus.name}` : ""}</span>
-          {r.degree && <span className="inline-flex items-center gap-1"><GraduationCap className="h-3 w-3" />{r.degree}</span>}
-          {r.duration && <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" />{r.duration}</span>}
-          {r.intake && <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" />{r.intake}</span>}
-        </div>
-      </button>
-      <div className="hidden text-right sm:block">
-        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Tuition</div>
-        <div className="font-semibold">{r.tuition_fee ? `${r.currency ?? ""} ${r.tuition_fee.toLocaleString()}` : "—"}</div>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onShare} title="Share">
-          <Share2 className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onBookmark} title={bookmarked ? "Remove bookmark" : "Save"}>
-          {bookmarked ? <BookmarkCheck className="h-4 w-4 text-primary" /> : <Bookmark className="h-4 w-4" />}
-        </Button>
-        <Checkbox checked={selected} onCheckedChange={onToggle} title="Select to compare" />
-      </div>
-      <ApplyButton program={r} className="rounded-full" />
-    </div>
-  );
-}
+{/* ProgramRowItem removed */}
 
 function ProgramDetail({ r, bookmarked, onBookmark, onShare }: { r: ProgramRow; bookmarked: boolean; onBookmark: () => void; onShare: () => void }) {
   // Derive modules from description bullet points, if any

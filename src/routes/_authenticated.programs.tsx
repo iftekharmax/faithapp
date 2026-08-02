@@ -4,7 +4,7 @@ import {
   Search, X, GraduationCap, MapPin, Calendar, Coins,
   Award, Clock, Sparkles, SlidersHorizontal, ArrowRight, BookOpen,
   Bookmark, BookmarkCheck, Share2, ArrowUpDown, FileText, ListChecks,
-  Plus, ChevronLeft, ChevronRight, Loader2,
+  Plus, ChevronLeft, ChevronRight, Loader2, CheckCircle2, Trash2, ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
@@ -120,7 +120,7 @@ const gradientFor = (id: string) => GRADIENTS[[...id].reduce((a, c) => a + c.cha
 const BOOKMARK_KEY = "program_bookmarks_v1";
 const DENSITY_KEY = "program_density_v1";
 type SortKey = "name" | "fee_asc" | "fee_desc" | "duration" | "deadline";
-type Density = "compact" | "comfortable";
+type Density = "comfortable";
 const SORT_LABELS: Record<SortKey, string> = {
   name: "Name (A-Z)",
   fee_asc: "Tuition: Low to High",

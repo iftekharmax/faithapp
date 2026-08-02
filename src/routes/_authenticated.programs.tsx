@@ -504,8 +504,14 @@ function ProgramsPage() {
 
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" className="h-11 w-11 rounded-xl border-muted/60 bg-muted/30 p-0 flex items-center justify-center hover:bg-muted/50" title="More filters">
+                <Button variant="outline" className={cn("h-11 rounded-xl border-muted/60 bg-muted/30 px-3 flex items-center justify-center hover:bg-muted/50 gap-2", activeFilterCount > 0 && "text-primary border-primary/30")}>
                   <SlidersHorizontal className="h-4 w-4" />
+                  <span className="hidden xl:inline text-xs font-semibold">More Filters</span>
+                  {activeFilterCount > 0 && (
+                    <Badge variant="default" className="h-5 min-w-[20px] px-1 justify-center text-[10px] rounded-full">
+                      {activeFilterCount}
+                    </Badge>
+                  )}
                 </Button>
               </SheetTrigger>
               <SheetContent className="w-full sm:max-w-md">
@@ -520,7 +526,7 @@ function ProgramsPage() {
               title={showBookmarks ? "Showing bookmarks only" : "Show bookmarks only"}
               className={cn(
                 "h-11 w-11 rounded-xl border-muted/60 p-0 flex items-center justify-center transition-all",
-                showBookmarks ? "bg-primary text-primary-foreground shadow-lg" : "bg-muted/30 hover:bg-muted/50",
+                showBookmarks ? "bg-amber-500 text-white shadow-lg shadow-amber-500/20 border-amber-500" : "bg-muted/30 hover:bg-muted/50",
               )}
             >
               {showBookmarks ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}

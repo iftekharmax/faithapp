@@ -88,6 +88,22 @@ function NewProgramPage() {
     setErrors((e) => (e[key as string] ? { ...e, [key as string]: undefined } : e));
   }
 
+  const totalFees = [
+    form.tuition_fee,
+    (form as any).application_fee,
+    (form as any).registration_fee,
+    (form as any).emgs_fee,
+    (form as any).others_fee,
+  ].reduce((acc, val) => acc + (val ? Number(val) : 0), 0);
+
+  const formatCurrency = (val: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: form.currency || "USD",
+      minimumFractionDigits: 2,
+    }).format(val);
+  };
+
   useEffect(() => {
     let alive = true;
     async function load() {

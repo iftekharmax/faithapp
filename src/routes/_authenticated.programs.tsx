@@ -578,26 +578,26 @@ function ProgramCard({ r, selected, onToggle, bookmarked, onBookmark, onShare, o
           <div className="absolute bottom-1.5 left-3 text-[10px] font-medium uppercase tracking-wider text-white/85">{r.degree}</div>
         )}
         {r.scholarship && (
-          <div className={cn("absolute flex items-center gap-1 rounded-full bg-amber-400/95 px-2 py-0.5 text-[10px] font-bold text-amber-950 shadow-lg", compact ? "left-2 top-2" : "left-3 top-3")}>
-            <Award className="h-3 w-3" /> {compact ? "" : "SCHOLARSHIP"}
+          <div className="absolute flex items-center gap-1 rounded-full bg-amber-400/95 px-2 py-0.5 text-[10px] font-bold text-amber-950 shadow-lg left-3 top-3">
+            <Award className="h-3 w-3" /> SCHOLARSHIP
           </div>
         )}
       </div>
 
-      <div className={cn(compact ? "space-y-2 p-3" : "space-y-3 p-4")}>
+      <div className="space-y-3 p-4">
         <button onClick={onOpen} className="block w-full text-left">
-          <h3 className={cn("font-semibold transition-colors group-hover:text-primary", compact ? "line-clamp-1 text-sm leading-tight" : "line-clamp-2 leading-snug")}>{r.name}</h3>
+          <h3 className="font-semibold transition-colors group-hover:text-primary line-clamp-2 leading-snug">{r.name}</h3>
           <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
             <MapPin className="h-3 w-3 shrink-0" />
             <span className="truncate">{r.university?.name}{r.campus ? ` · ${r.campus.name}` : ""}</span>
           </div>
         </button>
 
-        <div className={cn("grid grid-cols-2 gap-2 border-y text-xs", compact ? "py-2" : "py-3")}>
+        <div className="grid grid-cols-2 gap-2 border-y text-xs py-3">
           <MetaCell icon={Clock} label="Duration" value={r.duration} />
           <MetaCell icon={Calendar} label="Intake" value={r.intake} />
           <MetaCell icon={Coins} label="Tuition" value={r.tuition_fee ? `${r.currency ?? ""} ${r.tuition_fee.toLocaleString()}` : null} />
-          {!compact && <MetaCell icon={Calendar} label="Deadline" value={r.application_deadline} />}
+          <MetaCell icon={Calendar} label="Deadline" value={r.application_deadline} />
         </div>
 
 

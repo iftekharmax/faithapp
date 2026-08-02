@@ -28,6 +28,7 @@ export interface ProgramFilters {
   max_fee?: number;
   scholarship_only?: boolean;
   duration?: string;
+  degree?: string;
 }
 
 export async function listPrograms(f: ProgramFilters = {}): Promise<ProgramRow[]> {
@@ -44,6 +45,7 @@ export async function listPrograms(f: ProgramFilters = {}): Promise<ProgramRow[]
   if (typeof f.max_fee === "number") q = q.lte("tuition_fee", f.max_fee);
   if (f.scholarship_only) q = q.not("scholarship", "is", null);
   if (f.duration) q = q.ilike("duration", `%${f.duration}%`);
+  if (f.degree) q = q.ilike("degree", `%${f.degree}%`);
   const { data, error } = await q;
   if (error) throw error;
   let rows = (data ?? []) as unknown as ProgramRow[];

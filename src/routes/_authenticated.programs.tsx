@@ -374,6 +374,7 @@ function ProgramsPage() {
   if (filters.intake) chips.push({ key: "intake", label: `Intake: ${filters.intake}`, onRemove: () => setFilters({ ...filters, intake: undefined }) });
   if (typeof filters.min_fee === "number") chips.push({ key: "min", label: `Min fee: ${filters.min_fee}`, onRemove: () => setFilters({ ...filters, min_fee: undefined }) });
   if (typeof filters.max_fee === "number") chips.push({ key: "max", label: `Max fee: ${filters.max_fee}`, onRemove: () => setFilters({ ...filters, max_fee: undefined }) });
+  if (filters.degree) chips.push({ key: "deg", label: `Level: ${filters.degree}`, onRemove: () => setFilters({ ...filters, degree: undefined }) });
   if (filters.duration) chips.push({ key: "dur", label: `Duration: ${filters.duration}`, onRemove: () => setFilters({ ...filters, duration: undefined }) });
   if (filters.scholarship_only) chips.push({ key: "sch", label: "Scholarship only", onRemove: () => setFilters({ ...filters, scholarship_only: false }) });
   if (showBookmarks) chips.push({ key: "bm", label: "Bookmarks only", onRemove: () => setFilters({ ...filters, bookmarks_only: false } as any) });
@@ -458,21 +459,22 @@ function ProgramsPage() {
             </Select>
 
             <Select
-              value={filters.duration ?? "all"}
-              onValueChange={(v) => setFilters({ ...filters, duration: v === "all" ? undefined : v })}
+              value={filters.degree ?? "all"}
+              onValueChange={(v) => setFilters({ ...filters, degree: v === "all" ? undefined : v })}
             >
               <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
                 <span className="flex items-center gap-2">
-                  Duration
-                  {filters.duration && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
+                  Program Level
+                  {filters.degree && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
                 </span>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All durations</SelectItem>
-                <SelectItem value="1 year">1 year</SelectItem>
-                <SelectItem value="2 years">2 years</SelectItem>
-                <SelectItem value="3 years">3 years</SelectItem>
-                <SelectItem value="4 years">4 years</SelectItem>
+                <SelectItem value="all">All levels</SelectItem>
+                <SelectItem value="Bachelor">Bachelor</SelectItem>
+                <SelectItem value="Master">Master</SelectItem>
+                <SelectItem value="PhD">PhD</SelectItem>
+                <SelectItem value="Diploma">Diploma</SelectItem>
+                <SelectItem value="Certificate">Certificate</SelectItem>
               </SelectContent>
             </Select>
 

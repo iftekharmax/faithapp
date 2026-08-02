@@ -15,7 +15,7 @@ import {
 } from "@/lib/universities";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 
-export const Route = createFileRoute("/_authenticated/universities/programs/new")({
+export const Route = createFileRoute("/_authenticated/universities/$universityId/programs/new")({
   component: () => (
     <RoleGuard roles={["admin", "counselor", "application_team"]}>
       <NewProgramPage />

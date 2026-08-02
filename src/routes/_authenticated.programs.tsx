@@ -4,7 +4,7 @@ import {
   Search, X, GraduationCap, MapPin, Calendar, Coins,
   Award, Clock, Sparkles, SlidersHorizontal, ArrowRight, BookOpen,
   Bookmark, BookmarkCheck, Share2, ArrowUpDown, FileText, ListChecks,
-  Plus, ChevronLeft, ChevronRight, Loader2, CheckCircle2, Trash2, ExternalLink,
+  Plus, ChevronLeft, ChevronRight, Loader2, CheckCircle2, Trash2, ExternalLink, Replace,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
@@ -551,7 +551,7 @@ interface CardProps {
 }
 
 function ProgramCard({ r, selected, onToggle, bookmarked, onBookmark, onShare, onOpen, density = "comfortable" }: CardProps) {
-  const compact = density === "compact";
+  const compact = false;
   return (
     <div className={cn(
       "group relative overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10",

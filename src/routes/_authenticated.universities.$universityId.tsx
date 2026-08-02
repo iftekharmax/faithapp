@@ -169,7 +169,7 @@ function MiniStat({ label, value }: { label: string; value: number }) {
 /* ============ PROGRAMS ============ */
 function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange }: {
   universityId: string; programs: UniversityProgram[]; campuses: Campus[]; faculties: Faculty[];
-  canEdit: boolean; onChange: () => void;
+  canEdit: boolean; onChange: () => void; navigate: any;
 }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<UniversityProgram | null>(null);

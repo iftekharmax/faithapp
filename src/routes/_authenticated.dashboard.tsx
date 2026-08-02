@@ -184,9 +184,10 @@ function DashboardPage() {
     weekday: "long", month: "long", day: "numeric", year: "numeric",
   }), []);
 
-  if (!data) return <DashboardSkeleton />;
+  // We now render per-widget loaders below
 
   const trendPct = useMemo(() => {
+    if (!data) return null;
     const cur = data.submittedLast7d;
     const prev = data.submittedPrev7d;
     if (prev === 0) return cur > 0 ? { value: "+100%", positive: true } : null;
@@ -194,8 +195,8 @@ function DashboardPage() {
     return { value: `${pct >= 0 ? "+" : ""}${pct}%`, positive: pct >= 0 };
   }, [data]);
 
-  const successRate = data.total
-    ? Math.round((data.enrolled / data.total) * 100)
+  const successRate = data
+    ? (data.total ? Math.round((data.enrolled / data.total) * 100) : 0)
     : 0;
 
   const isOn = (k: WidgetKey) => widgets.find((w) => w.key === k)?.enabled ?? false;
@@ -207,15 +208,23 @@ function DashboardPage() {
   const blocks: Record<WidgetKey, React.ReactNode | null> = {
     kpis: (
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4">
-        <StatCard title="Total Applications" value={data?.total ?? "—"} icon={FileText}
-          accent="primary" trend={trendPct ?? undefined}
-          description={data ? `${data.submittedLast7d} new this week` : undefined} />
-        <StatCard title="In Pipeline" value={data?.pending ?? "—"} icon={Clock}
-          accent="warning" description="Draft · Submitted · Review" />
-        <StatCard title="Offers" value={data?.offers ?? "—"} icon={Award}
-          accent="violet" description="Received & confirmed" />
-        <StatCard title="Enrolled" value={data?.enrolled ?? "—"} icon={CheckCircle2}
-          accent="success" description={data ? `${successRate}% conversion` : undefined} />
+        {data ? (
+          <>
+            <StatCard title="Total Applications" value={data.total} icon={FileText}
+              accent="primary" trend={trendPct ?? undefined}
+              description={`${data.submittedLast7d} new this week`} />
+            <StatCard title="In Pipeline" value={data.pending} icon={Clock}
+              accent="warning" description="Draft · Submitted · Review" />
+            <StatCard title="Offers" value={data.offers} icon={Award}
+              accent="violet" description="Received & confirmed" />
+            <StatCard title="Enrolled" value={data.enrolled} icon={CheckCircle2}
+              accent="success" description={`${successRate}% conversion`} />
+          </>
+        ) : (
+          [...Array(4)].map((_, i) => (
+            <div key={i} className="h-28 rounded-xl bg-muted/10 animate-pulse border border-border/40" />
+          ))
+        )}
       </section>
     ),
     trend: (
@@ -227,38 +236,58 @@ function DashboardPage() {
           <span className="hidden text-xs text-muted-foreground sm:inline">Created vs enrolled</span>
         </CardHeader>
         <CardContent className="h-56 sm:h-64 px-2 sm:px-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data?.trend ?? []} margin={{ left: -20, right: 8, top: 6, bottom: 0 }}>
-              <defs>
-                <linearGradient id="gCreated" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.38} />
-                  <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="gEnrolled" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={0.34} />
-                  <stop offset="100%" stopColor="var(--chart-2)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="date" tick={AXIS_TICK} axisLine={false} tickLine={false}
-                tickFormatter={(v: string) => v.slice(5)} interval="preserveStartEnd" />
-              <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} width={28} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
-              <Area type="monotone" dataKey="created" stroke="var(--chart-1)" strokeWidth={2} fill="url(#gCreated)" name="Created" />
-              <Area type="monotone" dataKey="enrolled" stroke="var(--chart-2)" strokeWidth={2} fill="url(#gEnrolled)" name="Enrolled" />
-            </AreaChart>
-          </ResponsiveContainer>
+          {!data ? (
+            <div className="h-full w-full bg-muted/5 animate-pulse rounded-md" />
+          ) : data.total === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center text-center space-y-3">
+              <div className="p-3 rounded-full bg-muted/20">
+                <TrendingUp className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">No activity data</p>
+                <p className="text-xs text-muted-foreground">Activities will appear here once applications are submitted.</p>
+              </div>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data.trend} margin={{ left: -20, right: 8, top: 6, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="gCreated" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.38} />
+                    <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="gEnrolled" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={0.34} />
+                    <stop offset="100%" stopColor="var(--chart-2)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="date" tick={AXIS_TICK} axisLine={false} tickLine={false}
+                  tickFormatter={(v: string) => v.slice(5)} interval="preserveStartEnd" />
+                <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} width={28} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                <Area type="monotone" dataKey="created" stroke="var(--chart-1)" strokeWidth={2} fill="url(#gCreated)" name="Created" />
+                <Area type="monotone" dataKey="enrolled" stroke="var(--chart-2)" strokeWidth={2} fill="url(#gEnrolled)" name="Enrolled" />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
         </CardContent>
       </Card>
     ),
-    pipeline: <StatusPipeline counts={data?.statusCounts ?? {}} />,
-    funnel: (
+    pipeline: !data ? (
+      <div className="h-64 bg-muted/5 animate-pulse rounded-xl border border-border/40" />
+    ) : (
+      <StatusPipeline counts={data.statusCounts} />
+    ),
+    funnel: !data ? (
+      <div className="h-64 bg-muted/5 animate-pulse rounded-xl border border-border/40" />
+    ) : (
       <ConversionFunnel
         steps={[
-          { label: "Submitted", value: (data?.statusCounts.submitted ?? 0) + (data?.statusCounts.under_review ?? 0) + (data?.pending ?? 0), color: "from-primary to-info" },
-          { label: "Offers", value: data?.offers ?? 0, color: "from-violet to-primary" },
-          { label: "Visa granted", value: data?.visaGranted ?? 0, color: "from-info to-success" },
-          { label: "Enrolled", value: data?.enrolled ?? 0, color: "from-success to-chart-8" },
+          { label: "Submitted", value: (data.statusCounts.submitted ?? 0) + (data.statusCounts.under_review ?? 0) + (data.pending ?? 0), color: "from-primary to-info" },
+          { label: "Offers", value: data.offers, color: "from-violet to-primary" },
+          { label: "Visa granted", value: data.visaGranted, color: "from-info to-success" },
+          { label: "Enrolled", value: data.enrolled, color: "from-success to-chart-8" },
         ]}
       />
     ),
@@ -270,15 +299,23 @@ function DashboardPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="h-56 px-2 sm:px-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data?.byCountry ?? []} margin={{ left: -20, right: 8, top: 4, bottom: 0 }}>
-              <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} angle={-15} textAnchor="end" height={40} />
-              <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} width={28} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} cursor={{ fill: "var(--muted)", opacity: 0.45 }} />
-              <Bar dataKey="value" fill="var(--chart-6)" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {!data ? (
+            <div className="h-full w-full bg-muted/5 animate-pulse rounded-md" />
+          ) : data.byCountry.length === 0 ? (
+            <div className="flex h-full items-center justify-center text-center">
+              <p className="text-xs text-muted-foreground">No data available.</p>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.byCountry} margin={{ left: -20, right: 8, top: 4, bottom: 0 }}>
+                <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="name" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} angle={-15} textAnchor="end" height={40} />
+                <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} width={28} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} cursor={{ fill: "var(--muted)", opacity: 0.45 }} />
+                <Bar dataKey="value" fill="var(--chart-6)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </CardContent>
       </Card>
     ),
@@ -290,22 +327,52 @@ function DashboardPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="h-56 px-2 sm:px-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={data?.byIntake ?? []} dataKey="value" nameKey="name"
-                innerRadius={36} outerRadius={72} paddingAngle={2}>
-                {(data?.byIntake ?? []).map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="var(--background)" strokeWidth={2} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
-              <Legend wrapperStyle={{ fontSize: 11, color: "var(--muted-foreground)" }} iconType="circle" />
-            </PieChart>
-          </ResponsiveContainer>
+          {!data ? (
+            <div className="h-full w-full bg-muted/5 animate-pulse rounded-md" />
+          ) : data.byIntake.length === 0 ? (
+            <div className="flex h-full items-center justify-center text-center">
+              <p className="text-xs text-muted-foreground">No data available.</p>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={data.byIntake} dataKey="value" nameKey="name"
+                  innerRadius={36} outerRadius={72} paddingAngle={2}>
+                  {data.byIntake.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="var(--background)" strokeWidth={2} />
+                  ))}
+                </Pie>
+                <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                <Legend wrapperStyle={{ fontSize: 11, color: "var(--muted-foreground)" }} iconType="circle" />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
         </CardContent>
       </Card>
     ),
-    recent: <RecentApplications items={data?.recent ?? []} />,
+    recent: !data ? (
+      <div className="h-64 bg-muted/5 animate-pulse rounded-xl border border-border/40" />
+    ) : data.recent.length === 0 ? (
+      <Card className="border-border/60">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold">Recent Applications</CardTitle>
+        </CardHeader>
+        <CardContent className="py-12 flex flex-col items-center justify-center space-y-4">
+          <div className="p-4 rounded-full bg-muted/20">
+            <FileText className="h-8 w-8 text-muted-foreground/60" />
+          </div>
+          <div className="text-center max-w-[240px]">
+            <p className="text-sm font-medium">No applications found</p>
+            <p className="text-xs text-muted-foreground mt-1">Start by creating your first student application to track progress.</p>
+          </div>
+          <Button asChild size="sm" className="mt-2">
+            <Link to="/applications/new">Create Application</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    ) : (
+      <RecentApplications items={data.recent} />
+    ),
     universities: (
       <Card className="border-border/60 min-w-0">
         <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
@@ -431,6 +498,34 @@ function DashboardPage() {
           </div>
         </div>
       </section>
+
+      {data && data.total === 0 && (
+        <Card className="bg-primary/5 border-primary/20 overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <Award className="h-24 w-24" />
+          </div>
+          <CardContent className="py-6 sm:py-8 flex flex-col sm:row items-center gap-6 relative z-10">
+            <div className="h-16 w-16 shrink-0 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <Sparkles className="h-8 w-8 text-primary" />
+            </div>
+            <div className="text-center sm:text-left space-y-2">
+              <h3 className="text-lg font-bold">Get started with Faith AMS</h3>
+              <p className="text-sm text-muted-foreground max-w-xl">
+                Your dashboard is empty because no applications have been created yet.
+                Start managing your student applications and tracking their status in one place.
+              </p>
+              <div className="pt-2 flex flex-wrap justify-center sm:justify-start gap-3">
+                <Button asChild size="sm">
+                  <Link to="/applications/new">Create Application</Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/students">View Students</Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {isOn("kpis") && blocks.kpis}
       {rows}

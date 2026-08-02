@@ -44,12 +44,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const hadSessionRef = useRef(false);
 
   const loadUserData = async (uid: string) => {
-    const [{ data: prof }, { data: r }] = await Promise.all([
-      supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
-      supabase.from("user_roles").select("role").eq("user_id", uid),
-    ]);
-    setProfile((prof as Profile) ?? null);
-    setRoles(((r as { role: AppRole }[]) ?? []).map((x) => x.role));
+    try {
+      const [{ data: prof }, { data: r }] = await Promise.all([
+        supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", uid),
+      ]);
+      setProfile((prof as Profile) ?? null);
+      setRoles(((r as { role: AppRole }[]) ?? []).map((x) => x.role));
+    } catch (err) {
+      console.error("Error loading user data:", err);
+    }
   };
 
   const refresh = async () => {
@@ -121,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!mounted) return;
       setLoading(false);
       if (!hadSessionRef.current) setSessionTimedOut(true);
-    }, 4000);
+    }, 15000);
 
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;

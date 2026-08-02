@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   ArrowLeft, Save, Loader2, DollarSign, Award, BookOpen, Clock, School,
-  Calendar, AlertCircle, Sparkles, Building2,
+  Calendar, AlertCircle, Sparkles, Building2, RefreshCcw
 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -76,17 +76,40 @@ function NewProgramPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [form, setForm] = useState<Partial<UniversityProgram>>({
     status: "active",
     currency: "USD",
     university_id: universityId,
-  });
+    tuition_fee: 0,
+    application_fee: 0,
+    registration_fee: 0,
+    emgs_fee: 0,
+    others_fee: 0,
+  } as any);
 
   function set<K extends keyof UniversityProgram>(key: K, value: any) {
     setForm((f) => ({ ...f, [key]: value }));
     setErrors((e) => (e[key as string] ? { ...e, [key as string]: undefined } : e));
+    if (submitError) setSubmitError(null);
   }
+
+  const totalFees = [
+    form.tuition_fee,
+    (form as any).application_fee,
+    (form as any).registration_fee,
+    (form as any).emgs_fee,
+    (form as any).others_fee,
+  ].reduce((acc, val) => acc + (val ? Number(val) : 0), 0);
+
+  const formatCurrency = (val: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: form.currency || "USD",
+      minimumFractionDigits: 2,
+    }).format(val);
+  };
 
   useEffect(() => {
     let alive = true;
@@ -115,6 +138,7 @@ function NewProgramPage() {
   }, [universityId]);
 
   async function handleSave() {
+    setSubmitError(null);
     const parsed = programSchema.safeParse({
       name: form.name ?? "",
       degree: form.degree ?? "",
@@ -143,13 +167,22 @@ function NewProgramPage() {
     setSaving(true);
     try {
       await createProgram({ ...form, ...parsed.data, university_id: universityId } as any);
-      toast.success("Program created", { description: `${parsed.data.name} has been added to ${uni?.name ?? "this university"}.` });
-      navigate({ to: "/universities/$universityId", params: { universityId } });
+      toast.success("Program created", { 
+        description: `${parsed.data.name} has been added to ${uni?.name ?? "this university"}.` 
+      });
+      // Navigate back to university details which will refresh the list via its loader
+      navigate({ 
+        to: "/universities/$universityId", 
+        params: { universityId },
+        // Ensure we force a refresh of the route data
+        search: (old: any) => ({ ...old, _refresh: Date.now() })
+      });
     } catch (e: any) {
       if (e instanceof DuplicateError) {
         setErrors((prev) => ({ ...prev, name: "A program with this name already exists for the selected campus." }));
         toast.error("Duplicate program", { description: "Change the program name or pick another campus." });
       } else {
+        setSubmitError(e?.message ?? "A network error occurred while creating the program.");
         toast.error("Could not create program", { description: e?.message ?? "Unexpected error" });
       }
     } finally {
@@ -193,7 +226,7 @@ function NewProgramPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8 pb-28">
+    <div className="mx-auto max-w-6xl space-y-8 pb-12">
       {/* Hero header */}
       <header className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/10 via-background to-background p-6 shadow-sm sm:p-8">
         <div className="absolute -right-16 -top-16 h-52 w-52 rounded-full bg-primary/10 blur-3xl" />
@@ -216,6 +249,40 @@ function NewProgramPage() {
           </div>
         </div>
       </header>
+
+      {submitError && (
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="rounded-full bg-destructive/10 p-2 text-destructive">
+              <AlertCircle className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-destructive">Submission failed</h3>
+              <p className="mt-1 text-sm text-destructive/80">{submitError}</p>
+              <div className="mt-4 flex gap-3">
+                <Button 
+                  size="sm" 
+                  variant="destructive" 
+                  className="rounded-lg px-4"
+                  onClick={handleSave}
+                  disabled={saving}
+                >
+                  <RefreshCcw className={cn("mr-2 h-4 w-4", saving && "animate-spin")} />
+                  Retry Submission
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="rounded-lg bg-background"
+                  onClick={() => setSubmitError(null)}
+                >
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
@@ -407,6 +474,13 @@ function NewProgramPage() {
                   </div>
                 ))}
               </div>
+
+              <div className="mt-4 rounded-xl bg-primary/5 p-4 ring-1 ring-primary/10">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-primary/70">Total Fees</span>
+                  <span className="text-lg font-bold text-primary">{formatCurrency(totalFees)}</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -439,33 +513,41 @@ function NewProgramPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="pt-4 flex flex-col gap-3">
+                <Button 
+                  className="h-12 w-full rounded-xl text-base font-semibold shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
+                  onClick={handleSave}
+                  disabled={saving}
+                >
+                  {saving ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5" />}
+                  {saving ? "Creating Program..." : "Create Program"}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-12 w-full rounded-xl text-base font-semibold"
+                  asChild
+                  disabled={saving}
+                >
+                  <Link to="/universities/$universityId" params={{ universityId }}>
+                    Cancel
+                  </Link>
+                </Button>
+              </div>
+
+              {Object.keys(errors).length > 0 && (
+                <div className="mt-2 rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-center">
+                  <p className="flex items-center justify-center gap-2 text-sm font-medium text-destructive">
+                    <AlertCircle className="h-4 w-4" /> Please fix errors to save
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
-        </div>
-      </div>
-
-      {/* Sticky action bar */}
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/90 p-4 shadow-lg backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
-          <p className="hidden text-xs text-muted-foreground sm:block">Fields marked * are required.</p>
-          <div className="flex flex-1 items-center justify-end gap-3">
-            <Button variant="ghost" className="rounded-xl px-6 font-semibold text-muted-foreground" asChild>
-              <Link to="/universities/$universityId" params={{ universityId }}>Cancel</Link>
-            </Button>
-            <Button
-              className="h-11 min-w-[170px] rounded-xl font-semibold shadow-lg shadow-primary/20 transition-transform hover:scale-[1.01] active:scale-[0.99]"
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...</>
-              ) : (
-                <><Save className="mr-2 h-4 w-4" /> Create Program</>
-              )}
-            </Button>
-          </div>
         </div>
       </div>
     </div>
   );
 }
+
+export default NewProgramPage;

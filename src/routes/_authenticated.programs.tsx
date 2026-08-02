@@ -320,13 +320,26 @@ function ProgramsPage() {
         </Select>
       </FilterField>
       <FilterField label="Intake">
-        <Select value={filters.intake ?? "all"} onValueChange={(v) => setFilters({ ...filters, intake: v === "all" ? undefined : v })}>
-          <SelectTrigger className="h-10"><SelectValue placeholder="All intakes" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All intakes</SelectItem>
-            {intakes.map((i) => <SelectItem key={i.id} value={i.name}>{i.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <div className="grid grid-cols-2 gap-2">
+          {intakes.map((i) => {
+            const current = filters.intake ?? [];
+            const active = current.includes(i.name);
+            return (
+              <label key={i.id} className={cn("flex cursor-pointer items-center gap-2 rounded-lg border p-2 text-xs transition-colors", active ? "border-primary bg-primary/5" : "hover:bg-muted/50")}>
+                <Checkbox
+                  checked={active}
+                  onCheckedChange={(v) => {
+                    const next = v
+                      ? [...current, i.name]
+                      : current.filter(x => x !== i.name);
+                    setFilters({ ...filters, intake: next.length ? next : undefined });
+                  }}
+                />
+                <span className={cn("font-medium", active && "text-primary")}>{i.name}</span>
+              </label>
+            );
+          })}
+        </div>
       </FilterField>
       <FilterField label="Tuition range">
         <div className="grid grid-cols-2 gap-2">
@@ -371,10 +384,26 @@ function ProgramsPage() {
     const u = universities.find((x) => x.id === filters.university_id);
     chips.push({ key: "uni", label: `University: ${u?.name ?? "—"}`, onRemove: () => setFilters({ ...filters, university_id: undefined }) });
   }
-  if (filters.intake) chips.push({ key: "intake", label: `Intake: ${filters.intake}`, onRemove: () => setFilters({ ...filters, intake: undefined }) });
+  if (filters.intake && filters.intake.length > 0) {
+    filters.intake.forEach(val => {
+      chips.push({
+        key: `intake-${val}`,
+        label: `Intake: ${val}`,
+        onRemove: () => setFilters({ ...filters, intake: filters.intake?.filter(x => x !== val) })
+      });
+    });
+  }
   if (typeof filters.min_fee === "number") chips.push({ key: "min", label: `Min fee: ${filters.min_fee}`, onRemove: () => setFilters({ ...filters, min_fee: undefined }) });
   if (typeof filters.max_fee === "number") chips.push({ key: "max", label: `Max fee: ${filters.max_fee}`, onRemove: () => setFilters({ ...filters, max_fee: undefined }) });
-  if (filters.degree) chips.push({ key: "deg", label: `Level: ${filters.degree}`, onRemove: () => setFilters({ ...filters, degree: undefined }) });
+  if (filters.degree && filters.degree.length > 0) {
+    filters.degree.forEach(val => {
+      chips.push({
+        key: `deg-${val}`,
+        label: `Level: ${val}`,
+        onRemove: () => setFilters({ ...filters, degree: filters.degree?.filter(x => x !== val) })
+      });
+    });
+  }
   if (filters.duration) chips.push({ key: "dur", label: `Duration: ${filters.duration}`, onRemove: () => setFilters({ ...filters, duration: undefined }) });
   if (filters.scholarship_only) chips.push({ key: "sch", label: "Scholarship only", onRemove: () => setFilters({ ...filters, scholarship_only: false }) });
   if (showBookmarks) chips.push({ key: "bm", label: "Bookmarks only", onRemove: () => setFilters({ ...filters, bookmarks_only: false } as any) });
@@ -458,38 +487,77 @@ function ProgramsPage() {
               </SelectContent>
             </Select>
 
-            <Select
-              value={filters.degree ?? "all"}
-              onValueChange={(v) => setFilters({ ...filters, degree: v === "all" ? undefined : v })}
-            >
-              <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
-                <span className="flex items-center gap-2">
-                  Program Level
-                  {filters.degree && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All levels</SelectItem>
-                <SelectItem value="Bachelor">Bachelor</SelectItem>
-                <SelectItem value="Master">Master</SelectItem>
-                <SelectItem value="PhD">PhD</SelectItem>
-                <SelectItem value="Diploma">Diploma</SelectItem>
-                <SelectItem value="Certificate">Certificate</SelectItem>
-              </SelectContent>
-            </Select>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className={cn("h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50", filters.degree?.length && "text-primary border-primary/30")}>
+                  <span className="flex items-center gap-2">
+                    Program Level
+                    {filters.degree?.length ? (
+                      <Badge variant="default" className="h-4 min-w-[16px] px-1 justify-center text-[9px] rounded-full">
+                        {filters.degree.length}
+                      </Badge>
+                    ) : null}
+                  </span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader><SheetTitle>Program Level</SheetTitle></SheetHeader>
+                <div className="mt-6 space-y-3">
+                  {["Bachelor", "Master", "PhD", "Diploma", "Certificate"].map(level => {
+                    const current = filters.degree ?? [];
+                    const active = current.includes(level);
+                    return (
+                      <label key={level} className={cn("flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors", active ? "border-primary bg-primary/5" : "hover:bg-muted/50")}>
+                        <Checkbox
+                          checked={active}
+                          onCheckedChange={(v) => {
+                            const next = v ? [...current, level] : current.filter(x => x !== level);
+                            setFilters({ ...filters, degree: next.length ? next : undefined });
+                          }}
+                        />
+                        <span className="font-medium">{level}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </SheetContent>
+            </Sheet>
 
-            <Select
-              value={filters.intake ?? "all"}
-              onValueChange={(v) => setFilters({ ...filters, intake: v === "all" ? undefined : v })}
-            >
-              <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
-                Intakes
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All intakes</SelectItem>
-                {intakes.map((i) => <SelectItem key={i.id} value={i.name}>{i.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className={cn("h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50", filters.intake?.length && "text-primary border-primary/30")}>
+                  <span className="flex items-center gap-2">
+                    Intakes
+                    {filters.intake?.length ? (
+                      <Badge variant="default" className="h-4 min-w-[16px] px-1 justify-center text-[9px] rounded-full">
+                        {filters.intake.length}
+                      </Badge>
+                    ) : null}
+                  </span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader><SheetTitle>Select Intakes</SheetTitle></SheetHeader>
+                <div className="mt-6 grid grid-cols-1 gap-3">
+                  {intakes.map((i) => {
+                    const current = filters.intake ?? [];
+                    const active = current.includes(i.name);
+                    return (
+                      <label key={i.id} className={cn("flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors", active ? "border-primary bg-primary/5" : "hover:bg-muted/50")}>
+                        <Checkbox
+                          checked={active}
+                          onCheckedChange={(v) => {
+                            const next = v ? [...current, i.name] : current.filter(x => x !== i.name);
+                            setFilters({ ...filters, intake: next.length ? next : undefined });
+                          }}
+                        />
+                        <span className="font-medium">{i.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </SheetContent>
+            </Sheet>
             
             <div className="h-8 w-px bg-border mx-1" />
             
@@ -497,7 +565,7 @@ function ProgramsPage() {
               <SelectTrigger className="h-11 w-11 rounded-xl border-muted/60 bg-muted/30 p-0 flex items-center justify-center hover:bg-muted/50" title="Sort by">
                 <ArrowUpDown className="h-4 w-4" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent align="end" className="w-[180px]">
                 {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
                   <SelectItem key={k} value={k}>{SORT_LABELS[k]}</SelectItem>
                 ))}
@@ -1026,7 +1094,7 @@ function CompareMobileCarousel({
                       ) : (
                         <Select onValueChange={(v) => { onReplace(r.id, v); setReplaceFor(null); }}>
                           <SelectTrigger className="h-9"><SelectValue placeholder="Choose a program…" /></SelectTrigger>
-                          <SelectContent>
+                          <SelectContent position="item-aligned">
                             {replacementOptions.map((opt) => (
                               <SelectItem key={opt.id} value={opt.id}>
                                 {opt.name}{opt.university?.name ? ` — ${opt.university.name}` : ""}

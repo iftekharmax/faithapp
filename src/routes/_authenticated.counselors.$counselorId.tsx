@@ -46,6 +46,7 @@ function fmtDate(v: string | null) {
 function CounselorDetailPage() {
   const { counselorId } = Route.useParams();
   const navigate = useNavigate();
+  const { toggle: toggleChat } = useChat();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<AdminUser | null>(null);
   const [pending, setPending] = useState<null | "activate" | "deactivate" | "lock" | "unlock">(null);

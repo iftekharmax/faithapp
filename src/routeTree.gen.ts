@@ -34,7 +34,6 @@ import { Route as AuthenticatedCounselorsIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedApplicationsIndexRouteImport } from './routes/_authenticated.applications.index'
 import { Route as ApiAdminResendVerificationRouteImport } from './routes/api.admin.resend-verification'
 import { Route as ApiAdminCreateUserRouteImport } from './routes/api.admin.create-user'
-import { Route as AuthenticatedUniversitiesUniversityIdRouteImport } from './routes/_authenticated.universities.$universityId'
 import { Route as AuthenticatedStudentsNewRouteImport } from './routes/_authenticated.students.new'
 import { Route as AuthenticatedStudentsImportRouteImport } from './routes/_authenticated.students.import'
 import { Route as AuthenticatedStudentsStudentIdRouteImport } from './routes/_authenticated.students.$studentId'
@@ -42,6 +41,7 @@ import { Route as AuthenticatedCounselorsCounselorIdRouteImport } from './routes
 import { Route as AuthenticatedApplicationsNewRouteImport } from './routes/_authenticated.applications.new'
 import { Route as AuthenticatedApplicationsApplicationIdRouteImport } from './routes/_authenticated.applications.$applicationId'
 import { Route as AuthenticatedAdminSchemaRouteImport } from './routes/_authenticated.admin.schema'
+import { Route as AuthenticatedUniversitiesUniversityIdIndexRouteImport } from './routes/_authenticated.universities.$universityId.index'
 import { Route as AuthenticatedUniversitiesUniversityIdProgramsNewRouteImport } from './routes/_authenticated.universities.$universityId.programs.new'
 
 const AuthRoute = AuthRouteImport.update({
@@ -176,12 +176,6 @@ const ApiAdminCreateUserRoute = ApiAdminCreateUserRouteImport.update({
   path: '/api/admin/create-user',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedUniversitiesUniversityIdRoute =
-  AuthenticatedUniversitiesUniversityIdRouteImport.update({
-    id: '/universities/$universityId',
-    path: '/universities/$universityId',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedStudentsNewRoute =
   AuthenticatedStudentsNewRouteImport.update({
     id: '/students/new',
@@ -224,11 +218,17 @@ const AuthenticatedAdminSchemaRoute =
     path: '/admin/schema',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedUniversitiesUniversityIdIndexRoute =
+  AuthenticatedUniversitiesUniversityIdIndexRouteImport.update({
+    id: '/universities/$universityId/',
+    path: '/universities/$universityId/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedUniversitiesUniversityIdProgramsNewRoute =
   AuthenticatedUniversitiesUniversityIdProgramsNewRouteImport.update({
-    id: '/programs/new',
-    path: '/programs/new',
-    getParentRoute: () => AuthenticatedUniversitiesUniversityIdRoute,
+    id: '/universities/$universityId/programs/new',
+    path: '/universities/$universityId/programs/new',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -257,13 +257,13 @@ export interface FileRoutesByFullPath {
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdRoute
   '/students/import': typeof AuthenticatedStudentsImportRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
-  '/universities/$universityId': typeof AuthenticatedUniversitiesUniversityIdRouteWithChildren
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
   '/applications/': typeof AuthenticatedApplicationsIndexRoute
   '/counselors/': typeof AuthenticatedCounselorsIndexRoute
   '/students/': typeof AuthenticatedStudentsIndexRoute
   '/universities/': typeof AuthenticatedUniversitiesIndexRoute
+  '/universities/$universityId/': typeof AuthenticatedUniversitiesUniversityIdIndexRoute
   '/universities/$universityId/programs/new': typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
 }
 export interface FileRoutesByTo {
@@ -292,13 +292,13 @@ export interface FileRoutesByTo {
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdRoute
   '/students/import': typeof AuthenticatedStudentsImportRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
-  '/universities/$universityId': typeof AuthenticatedUniversitiesUniversityIdRouteWithChildren
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
   '/applications': typeof AuthenticatedApplicationsIndexRoute
   '/counselors': typeof AuthenticatedCounselorsIndexRoute
   '/students': typeof AuthenticatedStudentsIndexRoute
   '/universities': typeof AuthenticatedUniversitiesIndexRoute
+  '/universities/$universityId': typeof AuthenticatedUniversitiesUniversityIdIndexRoute
   '/universities/$universityId/programs/new': typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
 }
 export interface FileRoutesById {
@@ -329,13 +329,13 @@ export interface FileRoutesById {
   '/_authenticated/students/$studentId': typeof AuthenticatedStudentsStudentIdRoute
   '/_authenticated/students/import': typeof AuthenticatedStudentsImportRoute
   '/_authenticated/students/new': typeof AuthenticatedStudentsNewRoute
-  '/_authenticated/universities/$universityId': typeof AuthenticatedUniversitiesUniversityIdRouteWithChildren
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
   '/_authenticated/applications/': typeof AuthenticatedApplicationsIndexRoute
   '/_authenticated/counselors/': typeof AuthenticatedCounselorsIndexRoute
   '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
   '/_authenticated/universities/': typeof AuthenticatedUniversitiesIndexRoute
+  '/_authenticated/universities/$universityId/': typeof AuthenticatedUniversitiesUniversityIdIndexRoute
   '/_authenticated/universities/$universityId/programs/new': typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
 }
 export interface FileRouteTypes {
@@ -366,13 +366,13 @@ export interface FileRouteTypes {
     | '/students/$studentId'
     | '/students/import'
     | '/students/new'
-    | '/universities/$universityId'
     | '/api/admin/create-user'
     | '/api/admin/resend-verification'
     | '/applications/'
     | '/counselors/'
     | '/students/'
     | '/universities/'
+    | '/universities/$universityId/'
     | '/universities/$universityId/programs/new'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -401,13 +401,13 @@ export interface FileRouteTypes {
     | '/students/$studentId'
     | '/students/import'
     | '/students/new'
-    | '/universities/$universityId'
     | '/api/admin/create-user'
     | '/api/admin/resend-verification'
     | '/applications'
     | '/counselors'
     | '/students'
     | '/universities'
+    | '/universities/$universityId'
     | '/universities/$universityId/programs/new'
   id:
     | '__root__'
@@ -437,13 +437,13 @@ export interface FileRouteTypes {
     | '/_authenticated/students/$studentId'
     | '/_authenticated/students/import'
     | '/_authenticated/students/new'
-    | '/_authenticated/universities/$universityId'
     | '/api/admin/create-user'
     | '/api/admin/resend-verification'
     | '/_authenticated/applications/'
     | '/_authenticated/counselors/'
     | '/_authenticated/students/'
     | '/_authenticated/universities/'
+    | '/_authenticated/universities/$universityId/'
     | '/_authenticated/universities/$universityId/programs/new'
   fileRoutesById: FileRoutesById
 }
@@ -632,13 +632,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminCreateUserRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/universities/$universityId': {
-      id: '/_authenticated/universities/$universityId'
-      path: '/universities/$universityId'
-      fullPath: '/universities/$universityId'
-      preLoaderRoute: typeof AuthenticatedUniversitiesUniversityIdRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/students/new': {
       id: '/_authenticated/students/new'
       path: '/students/new'
@@ -688,30 +681,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSchemaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/universities/$universityId/': {
+      id: '/_authenticated/universities/$universityId/'
+      path: '/universities/$universityId'
+      fullPath: '/universities/$universityId/'
+      preLoaderRoute: typeof AuthenticatedUniversitiesUniversityIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/universities/$universityId/programs/new': {
       id: '/_authenticated/universities/$universityId/programs/new'
-      path: '/programs/new'
+      path: '/universities/$universityId/programs/new'
       fullPath: '/universities/$universityId/programs/new'
       preLoaderRoute: typeof AuthenticatedUniversitiesUniversityIdProgramsNewRouteImport
-      parentRoute: typeof AuthenticatedUniversitiesUniversityIdRoute
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
-
-interface AuthenticatedUniversitiesUniversityIdRouteChildren {
-  AuthenticatedUniversitiesUniversityIdProgramsNewRoute: typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
-}
-
-const AuthenticatedUniversitiesUniversityIdRouteChildren: AuthenticatedUniversitiesUniversityIdRouteChildren =
-  {
-    AuthenticatedUniversitiesUniversityIdProgramsNewRoute:
-      AuthenticatedUniversitiesUniversityIdProgramsNewRoute,
-  }
-
-const AuthenticatedUniversitiesUniversityIdRouteWithChildren =
-  AuthenticatedUniversitiesUniversityIdRoute._addFileChildren(
-    AuthenticatedUniversitiesUniversityIdRouteChildren,
-  )
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAuditLogsRoute: typeof AuthenticatedAuditLogsRoute
@@ -733,11 +718,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedStudentsStudentIdRoute: typeof AuthenticatedStudentsStudentIdRoute
   AuthenticatedStudentsImportRoute: typeof AuthenticatedStudentsImportRoute
   AuthenticatedStudentsNewRoute: typeof AuthenticatedStudentsNewRoute
-  AuthenticatedUniversitiesUniversityIdRoute: typeof AuthenticatedUniversitiesUniversityIdRouteWithChildren
   AuthenticatedApplicationsIndexRoute: typeof AuthenticatedApplicationsIndexRoute
   AuthenticatedCounselorsIndexRoute: typeof AuthenticatedCounselorsIndexRoute
   AuthenticatedStudentsIndexRoute: typeof AuthenticatedStudentsIndexRoute
   AuthenticatedUniversitiesIndexRoute: typeof AuthenticatedUniversitiesIndexRoute
+  AuthenticatedUniversitiesUniversityIdIndexRoute: typeof AuthenticatedUniversitiesUniversityIdIndexRoute
+  AuthenticatedUniversitiesUniversityIdProgramsNewRoute: typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -762,12 +748,14 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedStudentsStudentIdRoute: AuthenticatedStudentsStudentIdRoute,
   AuthenticatedStudentsImportRoute: AuthenticatedStudentsImportRoute,
   AuthenticatedStudentsNewRoute: AuthenticatedStudentsNewRoute,
-  AuthenticatedUniversitiesUniversityIdRoute:
-    AuthenticatedUniversitiesUniversityIdRouteWithChildren,
   AuthenticatedApplicationsIndexRoute: AuthenticatedApplicationsIndexRoute,
   AuthenticatedCounselorsIndexRoute: AuthenticatedCounselorsIndexRoute,
   AuthenticatedStudentsIndexRoute: AuthenticatedStudentsIndexRoute,
   AuthenticatedUniversitiesIndexRoute: AuthenticatedUniversitiesIndexRoute,
+  AuthenticatedUniversitiesUniversityIdIndexRoute:
+    AuthenticatedUniversitiesUniversityIdIndexRoute,
+  AuthenticatedUniversitiesUniversityIdProgramsNewRoute:
+    AuthenticatedUniversitiesUniversityIdProgramsNewRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -800,3 +788,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

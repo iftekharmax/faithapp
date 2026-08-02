@@ -112,6 +112,7 @@ function UniversityDetail() {
           <ProgramsTab
             universityId={universityId} programs={programs}
             campuses={campuses} faculties={faculties} canEdit={canEdit} onChange={reload}
+            navigate={navigate}
           />
         </TabsContent>
 

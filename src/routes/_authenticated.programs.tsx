@@ -673,7 +673,7 @@ function ProgramRowItem({ r, selected, onToggle, bookmarked, onBookmark, onShare
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onBookmark} title={bookmarked ? "Remove bookmark" : "Save"}>
           {bookmarked ? <BookmarkCheck className="h-4 w-4 text-primary" /> : <Bookmark className="h-4 w-4" />}
         </Button>
-        <Checkbox checked={selected} onCheckedChange={onToggle} title="Select to compare" />
+        {/* Selection checkbox removed */}
       </div>
       <ApplyButton program={r} className="rounded-full" />
     </div>

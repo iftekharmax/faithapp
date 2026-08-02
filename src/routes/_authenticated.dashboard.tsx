@@ -157,6 +157,23 @@ function useDashboardData() {
   return data;
 }
 
+function DashboardSkeleton() {
+  return (
+    <div className="min-w-0 space-y-4 sm:space-y-5">
+      <div className="h-24 w-full rounded-xl bg-muted/20 animate-pulse" />
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-32 rounded-xl bg-muted/20 animate-pulse" />
+        ))}
+      </div>
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <div className="h-64 rounded-xl bg-muted/20 animate-pulse" />
+        <div className="h-64 rounded-xl bg-muted/20 animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
 function DashboardPage() {
   const { profile, user, roles } = useAuth();
   const name = profile?.full_name || user?.email?.split("@")[0] || "there";
@@ -167,8 +184,9 @@ function DashboardPage() {
     weekday: "long", month: "long", day: "numeric", year: "numeric",
   }), []);
 
+  if (!data) return <DashboardSkeleton />;
+
   const trendPct = useMemo(() => {
-    if (!data) return null;
     const cur = data.submittedLast7d;
     const prev = data.submittedPrev7d;
     if (prev === 0) return cur > 0 ? { value: "+100%", positive: true } : null;
@@ -176,7 +194,7 @@ function DashboardPage() {
     return { value: `${pct >= 0 ? "+" : ""}${pct}%`, positive: pct >= 0 };
   }, [data]);
 
-  const successRate = data && data.total
+  const successRate = data.total
     ? Math.round((data.enrolled / data.total) * 100)
     : 0;
 

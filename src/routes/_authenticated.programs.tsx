@@ -634,44 +634,7 @@ function MetaCell({ icon: Icon, label, value }: { icon: any; label: string; valu
   );
 }
 
-function ProgramRowItem({ r, selected, onToggle, bookmarked, onBookmark, onShare, onOpen }: CardProps) {
-  return (
-    <div className={cn(
-      "group flex flex-wrap items-center gap-4 rounded-2xl border bg-card p-4 transition-all hover:shadow-lg hover:shadow-primary/5",
-      selected && "ring-2 ring-primary"
-    )}>
-      <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-md", gradientFor(r.id))}>
-        <GraduationCap className="h-6 w-6" />
-      </div>
-      <button onClick={onOpen} className="min-w-0 flex-1 text-left">
-        <div className="flex items-center gap-2">
-          <h3 className="truncate font-semibold group-hover:text-primary">{r.name}</h3>
-          {r.scholarship && <Badge className="bg-amber-500 hover:bg-amber-500"><Award className="mr-1 h-3 w-3" />Scholarship</Badge>}
-        </div>
-        <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{r.university?.name}{r.campus ? ` · ${r.campus.name}` : ""}</span>
-          {r.degree && <span className="inline-flex items-center gap-1"><GraduationCap className="h-3 w-3" />{r.degree}</span>}
-          {r.duration && <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" />{r.duration}</span>}
-          {r.intake && <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" />{r.intake}</span>}
-        </div>
-      </button>
-      <div className="hidden text-right sm:block">
-        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Tuition</div>
-        <div className="font-semibold">{r.tuition_fee ? `${r.currency ?? ""} ${r.tuition_fee.toLocaleString()}` : "—"}</div>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onShare} title="Share">
-          <Share2 className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onBookmark} title={bookmarked ? "Remove bookmark" : "Save"}>
-          {bookmarked ? <BookmarkCheck className="h-4 w-4 text-primary" /> : <Bookmark className="h-4 w-4" />}
-        </Button>
-        {/* Selection checkbox removed */}
-      </div>
-      <ApplyButton program={r} className="rounded-full" />
-    </div>
-  );
-}
+{/* ProgramRowItem removed */}
 
 function ProgramDetail({ r, bookmarked, onBookmark, onShare }: { r: ProgramRow; bookmarked: boolean; onBookmark: () => void; onShare: () => void }) {
   // Derive modules from description bullet points, if any

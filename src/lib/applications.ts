@@ -99,6 +99,9 @@ export interface Application {
   intake: string | null;
   scholarship: string | null;
   application_fee: number | null;
+  registration_fee: number | null;
+  emgs_fee: number | null;
+  others_fee: number | null;
   
   status: ApplicationStatus;
   notes: string | null;
@@ -158,9 +161,13 @@ export function validateApplicationInput(input: ApplicationInput): Record<string
   else if (input.university.length > 200) errors.university = "Too long (max 200)";
   if (!input.program || !input.program.trim()) errors.program = "Program is required";
   else if (input.program.length > 200) errors.program = "Too long (max 200)";
-  if (input.application_fee != null && (isNaN(Number(input.application_fee)) || Number(input.application_fee) < 0)) {
-    errors.application_fee = "Must be a positive number";
-  }
+  const feeFields: Array<keyof ApplicationInput> = ["application_fee", "registration_fee", "emgs_fee", "others_fee"];
+  feeFields.forEach(field => {
+    const val = input[field];
+    if (val != null && (isNaN(Number(val)) || Number(val) < 0)) {
+      errors[field] = "Must be a positive number";
+    }
+  });
   if (input.notes && input.notes.length > 5000) errors.notes = "Too long (max 5000)";
   return errors;
 }

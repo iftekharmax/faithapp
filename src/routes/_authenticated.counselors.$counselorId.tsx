@@ -18,6 +18,7 @@ import {
 import {
   listUsers, lockUser, setStatus, writeAudit, type AdminUser, type UserStatus,
 } from "@/lib/user-management";
+import { useChat } from "@/components/chat/ChatProvider";
 
 export const Route = createFileRoute("/_authenticated/counselors/$counselorId")({
   component: () => (

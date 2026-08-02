@@ -37,6 +37,7 @@ export const Route = createFileRoute("/_authenticated/universities/$universityId
 
 function UniversityDetail() {
   const { universityId } = Route.useParams();
+  const navigate = useNavigate();
   const { roles } = useAuth();
   const canEdit = roles.some((r) => ["admin", "counselor", "application_team"].includes(r));
   const [uni, setUni] = useState<University | null>(null);

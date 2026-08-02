@@ -31,7 +31,7 @@ import {
   exportProgramsCsv, previewProgramsCsv,
 } from "@/lib/university-csv";
 
-export const Route = createFileRoute("/_authenticated/universities/$universityId")({
+export const Route = createFileRoute("/_authenticated/universities/$universityId/")({
   component: UniversityDetail,
 });
 

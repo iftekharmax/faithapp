@@ -187,6 +187,7 @@ function DashboardPage() {
   // We now render per-widget loaders below
 
   const trendPct = useMemo(() => {
+    if (!data) return null;
     const cur = data.submittedLast7d;
     const prev = data.submittedPrev7d;
     if (prev === 0) return cur > 0 ? { value: "+100%", positive: true } : null;
@@ -194,8 +195,8 @@ function DashboardPage() {
     return { value: `${pct >= 0 ? "+" : ""}${pct}%`, positive: pct >= 0 };
   }, [data]);
 
-  const successRate = data.total
-    ? Math.round((data.enrolled / data.total) * 100)
+  const successRate = data
+    ? (data.total ? Math.round((data.enrolled / data.total) * 100) : 0)
     : 0;
 
   const isOn = (k: WidgetKey) => widgets.find((w) => w.key === k)?.enabled ?? false;
@@ -365,7 +366,7 @@ function DashboardPage() {
             <p className="text-xs text-muted-foreground mt-1">Start by creating your first student application to track progress.</p>
           </div>
           <Button asChild size="sm" className="mt-2">
-            <Link href="/applications/new">Create Application</Link>
+            <Link to="/applications/new">Create Application</Link>
           </Button>
         </CardContent>
       </Card>

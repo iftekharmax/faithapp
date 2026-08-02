@@ -448,12 +448,20 @@ function NewProgramPage() {
 
               <div className="grid gap-2">
                 <Label className={labelCls}>Currency *</Label>
-                <Input
-                  className={cn(inputCls, errors.currency && "border-destructive")}
-                  placeholder="USD"
-                  value={form.currency ?? ""}
-                  onChange={(e) => set("currency", e.target.value.toUpperCase())}
-                />
+                <Select value={form.currency || "USD"} onValueChange={(v) => set("currency", v)}>
+                  <SelectTrigger className={inputCls}>
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD - US Dollar</SelectItem>
+                    <SelectItem value="BDT">BDT - Bangladeshi Taka</SelectItem>
+                    <SelectItem value="GBP">GBP - British Pound</SelectItem>
+                    <SelectItem value="EUR">EUR - Euro</SelectItem>
+                    <SelectItem value="MYR">MYR - Malaysian Ringgit</SelectItem>
+                    <SelectItem value="AUD">AUD - Australian Dollar</SelectItem>
+                    <SelectItem value="CAD">CAD - Canadian Dollar</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FieldError msg={errors.currency} />
               </div>
 

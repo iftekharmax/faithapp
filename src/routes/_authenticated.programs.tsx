@@ -380,64 +380,123 @@ function ProgramsPage() {
         </div>
       </div>
 
-      {/* Sticky search + sort + filter bar */}
-      <div className="sticky top-0 z-30 -mx-4 border-b bg-background/85 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:-mx-6 sm:px-6">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative min-w-[180px] flex-1">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      {/* Sticky search + filter bar */}
+      <div className="sticky top-0 z-30 -mx-4 border-b bg-background/85 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:-mx-6 sm:px-6">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Main search box */}
+          <div className="relative min-w-[240px] flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              className="h-10 rounded-full border bg-background pl-9 pr-3 text-sm shadow-sm focus-visible:ring-2 focus-visible:ring-primary/40"
-              placeholder="Search programs…"
+              className="h-11 rounded-xl border-muted/60 bg-background pl-10 pr-3 text-sm shadow-sm transition-all focus-visible:ring-2 focus-visible:ring-primary/40"
+              placeholder="What would you like to study?"
               value={filters.q ?? ""}
               onChange={(e) => setFilters({ ...filters, q: e.target.value })}
             />
           </div>
-          <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-            <SelectTrigger className="h-10 w-auto min-w-0 gap-1 rounded-full px-3 sm:min-w-[160px]">
-              <ArrowUpDown className="h-4 w-4 shrink-0" />
-              <span className="hidden sm:inline"><SelectValue /></span>
-            </SelectTrigger>
-            <SelectContent>
-              {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
-                <SelectItem key={k} value={k}>{SORT_LABELS[k]}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" className="h-10 rounded-full px-3">
-                <SlidersHorizontal className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Filters</span>
-                {activeFilterCount > 0 && <Badge className="ml-1 h-5 px-1.5">{activeFilterCount}</Badge>}
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="w-full sm:max-w-md">
-              <SheetHeader><SheetTitle>Refine programs</SheetTitle></SheetHeader>
-              <div className="mt-6">{filtersPanel}</div>
-            </SheetContent>
-          </Sheet>
-          <Button
-            variant={showBookmarks ? "default" : "outline"}
-            onClick={() => setFilters({ ...filters, bookmarks_only: !showBookmarks } as any)}
-            title={showBookmarks ? "Showing bookmarks only" : "Show bookmarks only"}
-            aria-pressed={showBookmarks}
-            className={cn(
-              "h-10 rounded-full px-3",
-              showBookmarks && "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/25 hover:from-amber-500 hover:to-orange-500",
-            )}
-          >
-            {showBookmarks ? <BookmarkCheck className="h-4 w-4 sm:mr-2" /> : <Bookmark className="h-4 w-4 sm:mr-2" />}
-            <span className="hidden sm:inline">Favorites</span>
-            {bookmarks.size > 0 && (
-              <Badge
-                variant="secondary"
-                className={cn("ml-1 h-5 px-1.5", showBookmarks && "bg-white/25 text-white hover:bg-white/25")}
-              >
-                {bookmarks.size}
-              </Badge>
-            )}
-          </Button>
-          {/* View toggles and compare button removed as per request */}
+
+          {/* Inline filters */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Select
+              value={filters.country_id ?? "all"}
+              onValueChange={(v) => setFilters({ ...filters, country_id: v === "all" ? undefined : v, university_id: undefined })}
+            >
+              <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
+                <span className="flex items-center gap-2">
+                  Destination
+                  {filters.country_id && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All countries</SelectItem>
+                {countries.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    <span className="inline-flex items-center gap-2">
+                      {c.flag_url && <img src={c.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}
+                      {c.name}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={filters.university_id ?? "all"}
+              onValueChange={(v) => setFilters({ ...filters, university_id: v === "all" ? undefined : v })}
+            >
+              <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
+                <span className="flex items-center gap-2">
+                  Institution
+                  {filters.university_id && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All universities</SelectItem>
+                {availableUniversities.map((u) => <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+
+            <Select value="all">
+              <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
+                Program level
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All levels</SelectItem>
+                <SelectItem value="ug">Undergraduate</SelectItem>
+                <SelectItem value="pg">Postgraduate</SelectItem>
+                <SelectItem value="phd">PhD</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={filters.intake ?? "all"}
+              onValueChange={(v) => setFilters({ ...filters, intake: v === "all" ? undefined : v })}
+            >
+              <SelectTrigger className="h-11 w-auto min-w-[140px] gap-2 rounded-xl border-muted/60 bg-muted/30 px-4 text-sm font-medium hover:bg-muted/50">
+                Intakes
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All intakes</SelectItem>
+                {intakes.map((i) => <SelectItem key={i.id} value={i.name}>{i.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            
+            <div className="h-8 w-px bg-border mx-1" />
+            
+            <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
+              <SelectTrigger className="h-11 w-11 rounded-xl border-muted/60 bg-muted/30 p-0 flex items-center justify-center hover:bg-muted/50" title="Sort by">
+                <ArrowUpDown className="h-4 w-4" />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
+                  <SelectItem key={k} value={k}>{SORT_LABELS[k]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="h-11 w-11 rounded-xl border-muted/60 bg-muted/30 p-0 flex items-center justify-center hover:bg-muted/50" title="More filters">
+                  <SlidersHorizontal className="h-4 w-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-md">
+                <SheetHeader><SheetTitle>Refine programs</SheetTitle></SheetHeader>
+                <div className="mt-6">{filtersPanel}</div>
+              </SheetContent>
+            </Sheet>
+
+            <Button
+              variant={showBookmarks ? "default" : "outline"}
+              onClick={() => setFilters({ ...filters, bookmarks_only: !showBookmarks } as any)}
+              title={showBookmarks ? "Showing bookmarks only" : "Show bookmarks only"}
+              className={cn(
+                "h-11 w-11 rounded-xl border-muted/60 p-0 flex items-center justify-center transition-all",
+                showBookmarks ? "bg-primary text-primary-foreground shadow-lg" : "bg-muted/30 hover:bg-muted/50",
+              )}
+            >
+              {showBookmarks ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
 
         {/* Filter chips */}

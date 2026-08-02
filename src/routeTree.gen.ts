@@ -42,6 +42,7 @@ import { Route as AuthenticatedCounselorsCounselorIdRouteImport } from './routes
 import { Route as AuthenticatedApplicationsNewRouteImport } from './routes/_authenticated.applications.new'
 import { Route as AuthenticatedApplicationsApplicationIdRouteImport } from './routes/_authenticated.applications.$applicationId'
 import { Route as AuthenticatedAdminSchemaRouteImport } from './routes/_authenticated.admin.schema'
+import { Route as AuthenticatedUniversitiesProgramsNewRouteImport } from './routes/_authenticated.universities..programs.new'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -223,6 +224,12 @@ const AuthenticatedAdminSchemaRoute =
     path: '/admin/schema',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedUniversitiesProgramsNewRoute =
+  AuthenticatedUniversitiesProgramsNewRouteImport.update({
+    id: '/universities/programs/new',
+    path: '/universities/programs/new',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/counselors/': typeof AuthenticatedCounselorsIndexRoute
   '/students/': typeof AuthenticatedStudentsIndexRoute
   '/universities/': typeof AuthenticatedUniversitiesIndexRoute
+  '/universities/programs/new': typeof AuthenticatedUniversitiesProgramsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -291,6 +299,7 @@ export interface FileRoutesByTo {
   '/counselors': typeof AuthenticatedCounselorsIndexRoute
   '/students': typeof AuthenticatedStudentsIndexRoute
   '/universities': typeof AuthenticatedUniversitiesIndexRoute
+  '/universities/programs/new': typeof AuthenticatedUniversitiesProgramsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -327,6 +336,7 @@ export interface FileRoutesById {
   '/_authenticated/counselors/': typeof AuthenticatedCounselorsIndexRoute
   '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
   '/_authenticated/universities/': typeof AuthenticatedUniversitiesIndexRoute
+  '/_authenticated/universities/programs/new': typeof AuthenticatedUniversitiesProgramsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/counselors/'
     | '/students/'
     | '/universities/'
+    | '/universities/programs/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/counselors'
     | '/students'
     | '/universities'
+    | '/universities/programs/new'
   id:
     | '__root__'
     | '/'
@@ -432,6 +444,7 @@ export interface FileRouteTypes {
     | '/_authenticated/counselors/'
     | '/_authenticated/students/'
     | '/_authenticated/universities/'
+    | '/_authenticated/universities/programs/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -675,6 +688,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSchemaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/universities/programs/new': {
+      id: '/_authenticated/universities/programs/new'
+      path: '/universities/programs/new'
+      fullPath: '/universities/programs/new'
+      preLoaderRoute: typeof AuthenticatedUniversitiesProgramsNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -703,6 +723,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCounselorsIndexRoute: typeof AuthenticatedCounselorsIndexRoute
   AuthenticatedStudentsIndexRoute: typeof AuthenticatedStudentsIndexRoute
   AuthenticatedUniversitiesIndexRoute: typeof AuthenticatedUniversitiesIndexRoute
+  AuthenticatedUniversitiesProgramsNewRoute: typeof AuthenticatedUniversitiesProgramsNewRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -733,6 +754,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCounselorsIndexRoute: AuthenticatedCounselorsIndexRoute,
   AuthenticatedStudentsIndexRoute: AuthenticatedStudentsIndexRoute,
   AuthenticatedUniversitiesIndexRoute: AuthenticatedUniversitiesIndexRoute,
+  AuthenticatedUniversitiesProgramsNewRoute:
+    AuthenticatedUniversitiesProgramsNewRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

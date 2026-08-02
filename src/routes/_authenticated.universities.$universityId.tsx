@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -37,6 +37,7 @@ export const Route = createFileRoute("/_authenticated/universities/$universityId
 
 function UniversityDetail() {
   const { universityId } = Route.useParams();
+  const navigate = useNavigate();
   const { roles } = useAuth();
   const canEdit = roles.some((r) => ["admin", "counselor", "application_team"].includes(r));
   const [uni, setUni] = useState<University | null>(null);
@@ -111,6 +112,7 @@ function UniversityDetail() {
           <ProgramsTab
             universityId={universityId} programs={programs}
             campuses={campuses} faculties={faculties} canEdit={canEdit} onChange={reload}
+            navigate={navigate}
           />
         </TabsContent>
 
@@ -166,9 +168,9 @@ function MiniStat({ label, value }: { label: string; value: number }) {
 }
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange }: {
+function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange, navigate }: {
   universityId: string; programs: UniversityProgram[]; campuses: Campus[]; faculties: Faculty[];
-  canEdit: boolean; onChange: () => void;
+  canEdit: boolean; onChange: () => void; navigate: any;
 }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<UniversityProgram | null>(null);
@@ -185,7 +187,7 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
     (degreeFilter === "all" || p.degree === degreeFilter)
   );
 
-  function openNew() { setEditing(null); setForm({ status: "active", currency: "USD", university_id: universityId }); setOpen(true); }
+  function openNew() { navigate({ to: "/universities/$universityId/programs/new", params: { universityId } }); }
   function openEdit(p: UniversityProgram) { setEditing(p); setForm({ ...p }); setOpen(true); }
 
   async function save() {

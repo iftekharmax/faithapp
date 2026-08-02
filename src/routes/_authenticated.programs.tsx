@@ -522,68 +522,7 @@ function ProgramsPage() {
       {/* Compare dialog */}
       <Dialog open={compareOpen} onOpenChange={setCompareOpen}>
         <DialogContent className="max-h-[92vh] w-[calc(100vw-1rem)] max-w-6xl overflow-y-auto p-4 sm:p-6">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Scale className="h-5 w-5 text-primary" /> Compare programs
-              <Badge variant="outline" className="ml-2">{compareRows.length} programs</Badge>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-wrap gap-2 pb-1 text-xs">
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 font-medium text-emerald-700 dark:text-emerald-400">
-              <CheckCircle2 className="h-3 w-3" /> Best value
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 font-medium text-blue-700 dark:text-blue-400">
-              <Clock className="h-3 w-3" /> Shortest
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 font-medium text-amber-700 dark:text-amber-500">
-              <Calendar className="h-3 w-3" /> Earliest deadline
-            </span>
-          </div>
-          {/* Mobile: swipeable vertical cards */}
-          <div className="sm:hidden">
-            <CompareMobileCarousel
-              rows={compareRows}
-              allRows={sortedRows}
-              cheapestId={cheapestId}
-              shortestId={shortestId}
-              earliestId={earliestId}
-              onRemove={(id) => toggle(id)}
-              onReplace={(oldId, newId) => setSelected((s) => {
-                const next = new Set(s);
-                next.delete(oldId);
-                next.add(newId);
-                return next;
-              })}
-              onOpen={(r) => { setCompareOpen(false); setDetail(r); }}
-            />
-          </div>
-
-          {/* Desktop: side-by-side table */}
-          <div className="hidden overflow-x-auto sm:block">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="p-2 text-left text-xs uppercase tracking-wide text-muted-foreground">Field</th>
-                  {compareRows.map((r) => (
-                    <th key={r.id} className="min-w-[220px] p-2 text-left align-top">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <div className="font-semibold text-foreground">{r.name}</div>
-                          <div className="mt-0.5 text-[11px] font-normal text-muted-foreground">{r.university?.name}</div>
-                        </div>
-                        <div className="flex shrink-0 items-center gap-0.5">
-                          <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => { setCompareOpen(false); setDetail(r); }} title="Open details">
-                            <ExternalLink className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button size="sm" variant="ghost" className="h-7 px-2 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => toggle(r.id)} title="Remove from compare">
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
+          {/* Compare dialog content removed */}
               <tbody>
                 {([
                   ["Campus", (r) => r.campus?.name ?? "—", null],

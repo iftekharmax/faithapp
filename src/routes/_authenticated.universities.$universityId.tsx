@@ -185,7 +185,7 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
     (degreeFilter === "all" || p.degree === degreeFilter)
   );
 
-  function openNew() { setEditing(null); setForm({ status: "active", currency: "USD", university_id: universityId }); setOpen(true); }
+  function openNew() { navigate({ to: "/universities/$universityId/programs/new", params: { universityId } }); }
   function openEdit(p: UniversityProgram) { setEditing(p); setForm({ ...p }); setOpen(true); }
 
   async function save() {

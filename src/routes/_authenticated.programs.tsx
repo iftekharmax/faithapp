@@ -151,14 +151,13 @@ function ProgramsPage() {
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [detail, setDetail] = useState<ProgramRow | null>(null);
   const density = "comfortable"; // Fixed to comfortable density
+  const setDensity = (_: Density) => {}; // No-op to satisfy potential usages
 
-  // Load bookmarks + density
+  // Load bookmarks
   useEffect(() => {
     try {
       const raw = localStorage.getItem(BOOKMARK_KEY);
       if (raw) setBookmarks(new Set(JSON.parse(raw)));
-      const d = localStorage.getItem(DENSITY_KEY);
-      if (d === "compact" || d === "comfortable") setDensity(d);
     } catch { /* ignore */ }
   }, []);
 
@@ -465,15 +464,13 @@ function ProgramsPage() {
 
       {/* Results */}
       {(() => {
-        const gridCls = density === "compact"
-          ? "grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-          : "grid gap-4 sm:grid-cols-2 xl:grid-cols-3";
+        const gridCls = "grid gap-4 sm:grid-cols-2 xl:grid-cols-3";
         if (loading) {
           return (
             <div className={cn(view === "grid" ? gridCls : "space-y-2")}>
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="animate-pulse rounded-2xl border bg-card">
-                  <div className={cn(density === "compact" ? "h-16" : "h-28", "rounded-t-2xl bg-muted/60")} />
+                  <div className="h-28 rounded-t-2xl bg-muted/60" />
                   <div className="space-y-2 p-4">
                     <div className="h-4 w-3/4 rounded bg-muted" />
                     <div className="h-3 w-1/2 rounded bg-muted" />

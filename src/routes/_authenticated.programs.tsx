@@ -147,10 +147,10 @@ function ProgramsPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [compareOpen, setCompareOpen] = useState(false);
-  const [view, setView] = useState<"grid" | "list">("grid");
+  const view = "grid"; // Fixed to grid view
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [detail, setDetail] = useState<ProgramRow | null>(null);
-  const [density, setDensity] = useState<Density>("comfortable");
+  const density = "comfortable"; // Fixed to comfortable density
 
   // Load bookmarks + density
   useEffect(() => {
@@ -438,31 +438,7 @@ function ProgramsPage() {
               </Badge>
             )}
           </Button>
-          <div className="hidden overflow-hidden rounded-full border sm:flex">
-            <button onClick={() => setDensity("comfortable")} title="Comfortable" className={cn("flex h-10 items-center gap-1 px-3 text-xs font-medium transition-colors", density === "comfortable" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
-              <Maximize2 className="h-3.5 w-3.5" />
-            </button>
-            <button onClick={() => setDensity("compact")} title="Compact" className={cn("flex h-10 items-center gap-1 px-3 text-xs font-medium transition-colors", density === "compact" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
-              <Minimize2 className="h-3.5 w-3.5" />
-            </button>
-          </div>
-          <div className="hidden overflow-hidden rounded-full border sm:flex">
-            <button onClick={() => setView("grid")} className={cn("flex h-10 items-center gap-1 px-3 text-xs font-medium transition-colors", view === "grid" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
-              <LayoutGrid className="h-4 w-4" />
-            </button>
-            <button onClick={() => setView("list")} className={cn("flex h-10 items-center gap-1 px-3 text-xs font-medium transition-colors", view === "list" ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
-              <Rows3 className="h-4 w-4" />
-            </button>
-          </div>
-          <Button
-            className="h-10 rounded-full bg-gradient-to-r from-primary to-purple-600 px-3 shadow-md shadow-primary/25 disabled:opacity-50 sm:px-4"
-            disabled={selected.size < 2}
-            onClick={() => setCompareOpen(true)}
-          >
-            <Scale className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Compare</span>
-            <span className="ml-1">({selected.size})</span>
-          </Button>
+          {/* View toggles and compare button removed as per request */}
         </div>
 
         {/* Filter chips */}
@@ -518,24 +494,11 @@ function ProgramsPage() {
             </div>
           );
         }
-        if (view === "grid") {
-          return (
-            <div className={gridCls}>
-              {visibleRows.map((r) => (
-                <ProgramCard key={r.id} r={r} density={density}
-                  selected={selected.has(r.id)} onToggle={() => toggle(r.id)}
-                  bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
-                  onShare={() => share(r)} onOpen={() => setDetail(r)}
-                />
-              ))}
-            </div>
-          );
-        }
         return (
-          <div className={density === "compact" ? "space-y-2" : "space-y-3"}>
+          <div className={gridCls}>
             {visibleRows.map((r) => (
-              <ProgramRowItem key={r.id} r={r}
-                selected={selected.has(r.id)} onToggle={() => toggle(r.id)}
+              <ProgramCard key={r.id} r={r} density={density}
+                selected={false} onToggle={() => {}} // Disabled selection
                 bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
                 onShare={() => share(r)} onOpen={() => setDetail(r)}
               />

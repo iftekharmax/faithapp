@@ -319,6 +319,10 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
             <div><Label>Application deadline</Label><Input type="date" value={form.application_deadline ?? ""} onChange={(e) => setForm({ ...form, application_deadline: e.target.value })} /></div>
             <div><Label>Tuition fee</Label><Input type="number" value={form.tuition_fee ?? ""} onChange={(e) => setForm({ ...form, tuition_fee: e.target.value as any })} /></div>
             <div><Label>Currency</Label><Input value={form.currency ?? "USD"} onChange={(e) => setForm({ ...form, currency: e.target.value })} /></div>
+            <div><Label>Application Fee</Label><Input type="number" value={form.application_fee ?? ""} onChange={(e) => setForm({ ...form, application_fee: e.target.value as any })} /></div>
+            <div><Label>Registration Fee</Label><Input type="number" value={form.registration_fee ?? ""} onChange={(e) => setForm({ ...form, registration_fee: e.target.value as any })} /></div>
+            <div><Label>EMGS Fee</Label><Input type="number" value={form.emgs_fee ?? ""} onChange={(e) => setForm({ ...form, emgs_fee: e.target.value as any })} /></div>
+            <div><Label>Others Fee</Label><Input type="number" value={form.others_fee ?? ""} onChange={(e) => setForm({ ...form, others_fee: e.target.value as any })} /></div>
             <div className="md:col-span-2"><Label>Scholarship</Label><Input value={form.scholarship ?? ""} onChange={(e) => setForm({ ...form, scholarship: e.target.value })} /></div>
             <div className="md:col-span-2"><Label>Requirements</Label><Textarea rows={2} value={form.requirements ?? ""} onChange={(e) => setForm({ ...form, requirements: e.target.value })} /></div>
             <div className="md:col-span-2"><Label>Description</Label><Textarea rows={2} value={form.description ?? ""} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>

@@ -95,6 +95,10 @@ export type UniversityProgram = {
   application_deadline: string | null;
   tuition_fee: number | null;
   currency: string | null;
+  application_fee: number | null;
+  registration_fee: number | null;
+  emgs_fee: number | null;
+  others_fee: number | null;
   scholarship: string | null;
   requirements: string | null;
   description: string | null;

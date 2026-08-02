@@ -435,13 +435,15 @@ function NewProgramPage() {
                 <Label className={labelCls}>Tuition fee</Label>
                 <div className="relative">
                   <Input
-                    type="number" min="0"
+                    type="number" min="0" step="0.01"
                     className={cn(inputCls, "pl-10", errors.tuition_fee && "border-destructive")}
                     placeholder="0.00"
                     value={(form.tuition_fee as any) ?? ""}
                     onChange={(e) => set("tuition_fee", e.target.value)}
                   />
-                  <DollarSign className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <div className="absolute left-3.5 top-1/2 flex h-4 w-4 -translate-y-1/2 items-center justify-center text-[10px] font-bold text-muted-foreground">
+                    {form.currency || "$"}
+                  </div>
                 </div>
                 <FieldError msg={errors.tuition_fee} />
               </div>

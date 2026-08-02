@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { NotificationBell } from "./NotificationBell";
@@ -9,9 +9,15 @@ import { Breadcrumbs } from "./Breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <SidebarProvider>
-      <div className="relative flex min-h-screen w-full bg-background">
+    <SidebarProvider open={open} onOpenChange={setOpen}>
+      <div 
+        className="relative flex min-h-screen w-full bg-background"
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+      >
         {/* Ambient background */}
         <div
           aria-hidden

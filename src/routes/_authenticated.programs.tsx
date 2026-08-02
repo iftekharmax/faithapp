@@ -568,15 +568,10 @@ function ProgramCard({ r, selected, onToggle, bookmarked, onBookmark, onShare, o
             <Checkbox checked={selected} onCheckedChange={onToggle} className="border-white data-[state=checked]:bg-white data-[state=checked]:text-primary" />
           </label>
         </div>
-        {!compact && (
-          <div className="absolute bottom-3 left-4 right-14">
-            <GraduationCap className="mb-1 h-6 w-6 text-white/90" />
-            {r.degree && <div className="text-[11px] font-medium uppercase tracking-wider text-white/80">{r.degree}</div>}
-          </div>
-        )}
-        {compact && r.degree && (
-          <div className="absolute bottom-1.5 left-3 text-[10px] font-medium uppercase tracking-wider text-white/85">{r.degree}</div>
-        )}
+        <div className="absolute bottom-3 left-4 right-14">
+          <GraduationCap className="mb-1 h-6 w-6 text-white/90" />
+          {r.degree && <div className="text-[11px] font-medium uppercase tracking-wider text-white/80">{r.degree}</div>}
+        </div>
         {r.scholarship && (
           <div className="absolute flex items-center gap-1 rounded-full bg-amber-400/95 px-2 py-0.5 text-[10px] font-bold text-amber-950 shadow-lg left-3 top-3">
             <Award className="h-3 w-3" /> SCHOLARSHIP

@@ -23,12 +23,12 @@ export interface ProgramFilters {
   country_id?: string;
   university_id?: string;
   campus_id?: string;
-  intake?: string[];
+  intake?: string;
   min_fee?: number;
   max_fee?: number;
   scholarship_only?: boolean;
   duration?: string;
-  degree?: string[];
+  degree?: string;
 }
 
 export async function listPrograms(f: ProgramFilters = {}): Promise<ProgramRow[]> {
@@ -40,12 +40,12 @@ export async function listPrograms(f: ProgramFilters = {}): Promise<ProgramRow[]
   if (f.q) q = q.ilike("name", `%${f.q}%`);
   if (f.university_id) q = q.eq("university_id", f.university_id);
   if (f.campus_id) q = q.eq("campus_id", f.campus_id);
-  if (f.intake && f.intake.length > 0) q = q.in("intake", f.intake);
+  if (f.intake) q = q.ilike("intake", `%${f.intake}%`);
   if (typeof f.min_fee === "number") q = q.gte("tuition_fee", f.min_fee);
   if (typeof f.max_fee === "number") q = q.lte("tuition_fee", f.max_fee);
   if (f.scholarship_only) q = q.not("scholarship", "is", null);
   if (f.duration) q = q.ilike("duration", `%${f.duration}%`);
-  if (f.degree && f.degree.length > 0) q = q.in("degree", f.degree);
+  if (f.degree) q = q.ilike("degree", `%${f.degree}%`);
   const { data, error } = await q;
   if (error) throw error;
   let rows = (data ?? []) as unknown as ProgramRow[];

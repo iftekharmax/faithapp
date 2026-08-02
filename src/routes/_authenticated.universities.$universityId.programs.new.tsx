@@ -478,13 +478,18 @@ function NewProgramPage() {
                 ] as const).map(([key, label]) => (
                   <div key={key} className="grid gap-2">
                     <Label className={labelCls}>{label}</Label>
-                    <Input
-                      type="number" min="0"
-                      className={cn("h-10 rounded-lg border-muted-foreground/20 shadow-sm", errors[key] && "border-destructive")}
-                      placeholder="0.00"
-                      value={((form as any)[key]) ?? ""}
-                      onChange={(e) => set(key as any, e.target.value)}
-                    />
+                    <div className="relative">
+                      <Input
+                        type="number" min="0" step="0.01"
+                        className={cn("h-10 pl-8 rounded-lg border-muted-foreground/20 shadow-sm", errors[key] && "border-destructive")}
+                        placeholder="0.00"
+                        value={((form as any)[key]) ?? ""}
+                        onChange={(e) => set(key as any, e.target.value)}
+                      />
+                      <div className="absolute left-2.5 top-1/2 flex h-4 w-4 -translate-y-1/2 items-center justify-center text-[9px] font-bold text-muted-foreground">
+                        {form.currency || "$"}
+                      </div>
+                    </div>
                     <FieldError msg={errors[key]} />
                   </div>
                 ))}

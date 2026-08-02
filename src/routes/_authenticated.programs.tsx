@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Scale, Search, X, GraduationCap, MapPin, Calendar, Coins,
-  Award, Clock, Sparkles, SlidersHorizontal, LayoutGrid, Rows3, ArrowRight, BookOpen,
-  Bookmark, BookmarkCheck, Share2, ArrowUpDown, ExternalLink, CheckCircle2, FileText, ListChecks,
-  Maximize2, Minimize2, Trash2, Replace, Plus, ChevronLeft, ChevronRight, Loader2,
+  Search, X, GraduationCap, MapPin, Calendar, Coins,
+  Award, Clock, Sparkles, SlidersHorizontal, ArrowRight, BookOpen,
+  Bookmark, BookmarkCheck, Share2, ArrowUpDown, FileText, ListChecks,
+  Plus, ChevronLeft, ChevronRight, Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
@@ -26,9 +26,9 @@ export const Route = createFileRoute("/_authenticated/programs")({
   head: () => ({
     meta: [
       { title: "Programs — Faith AMS" },
-      { name: "description", content: "Discover and compare academic programs across universities." },
+      { name: "description", content: "Discover academic programs across universities." },
       { property: "og:title", content: "Programs — Faith AMS" },
-      { property: "og:description", content: "Discover and compare academic programs across universities." },
+      { property: "og:description", content: "Discover academic programs across universities." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

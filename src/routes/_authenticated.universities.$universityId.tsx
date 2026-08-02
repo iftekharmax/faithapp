@@ -297,46 +297,244 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
       </CardContent>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader><DialogTitle>{editing ? "Edit program" : "New program"}</DialogTitle></DialogHeader>
-          <div className="grid max-h-[70vh] gap-3 overflow-y-auto pr-1 md:grid-cols-2">
-            <div className="md:col-span-2"><Label>Name *</Label><Input value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-            <div><Label>Degree</Label><Input placeholder="e.g. Bachelor, Master, PhD" value={form.degree ?? ""} onChange={(e) => setForm({ ...form, degree: e.target.value })} /></div>
-            <div><Label>Duration</Label><Input placeholder="e.g. 4 years" value={form.duration ?? ""} onChange={(e) => setForm({ ...form, duration: e.target.value })} /></div>
-            <div><Label>Campus</Label>
-              <Select value={form.campus_id ?? undefined} onValueChange={(v) => setForm({ ...form, campus_id: v || null })}>
-                <SelectTrigger><SelectValue placeholder="Select campus" /></SelectTrigger>
-                <SelectContent>{campuses.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div><Label>Faculty</Label>
-              <Select value={form.faculty_id ?? undefined} onValueChange={(v) => setForm({ ...form, faculty_id: v || null })}>
-                <SelectTrigger><SelectValue placeholder="Select faculty" /></SelectTrigger>
-                <SelectContent>{faculties.map((f) => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div><Label>Intake</Label><Input placeholder="e.g. Sep 2026, Jan 2027" value={form.intake ?? ""} onChange={(e) => setForm({ ...form, intake: e.target.value })} /></div>
-            <div><Label>Application deadline</Label><Input type="date" value={form.application_deadline ?? ""} onChange={(e) => setForm({ ...form, application_deadline: e.target.value })} /></div>
-            <div><Label>Tuition fee</Label><Input type="number" value={form.tuition_fee ?? ""} onChange={(e) => setForm({ ...form, tuition_fee: e.target.value as any })} /></div>
-            <div><Label>Currency</Label><Input value={form.currency ?? "USD"} onChange={(e) => setForm({ ...form, currency: e.target.value })} /></div>
-            <div><Label>Application Fee</Label><Input type="number" value={form.application_fee ?? ""} onChange={(e) => setForm({ ...form, application_fee: e.target.value as any })} /></div>
-            <div><Label>Registration Fee</Label><Input type="number" value={form.registration_fee ?? ""} onChange={(e) => setForm({ ...form, registration_fee: e.target.value as any })} /></div>
-            <div><Label>EMGS Fee</Label><Input type="number" value={form.emgs_fee ?? ""} onChange={(e) => setForm({ ...form, emgs_fee: e.target.value as any })} /></div>
-            <div><Label>Others Fee</Label><Input type="number" value={form.others_fee ?? ""} onChange={(e) => setForm({ ...form, others_fee: e.target.value as any })} /></div>
-            <div className="md:col-span-2"><Label>Scholarship</Label><Input value={form.scholarship ?? ""} onChange={(e) => setForm({ ...form, scholarship: e.target.value })} /></div>
-            <div className="md:col-span-2"><Label>Requirements</Label><Textarea rows={2} value={form.requirements ?? ""} onChange={(e) => setForm({ ...form, requirements: e.target.value })} /></div>
-            <div className="md:col-span-2"><Label>Description</Label><Textarea rows={2} value={form.description ?? ""} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
-            <div><Label>Status</Label>
-              <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent>
-              </Select>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden border-none bg-background sm:rounded-3xl shadow-2xl">
+          <div className="relative overflow-hidden bg-primary px-6 py-8 text-primary-foreground">
+            <div className="absolute right-0 top-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+            <div className="relative">
+              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
+                <Plus className="h-6 w-6 text-white" />
+              </div>
+              <DialogHeader className="text-left">
+                <DialogTitle className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                  {editing ? "Edit Program" : "Add New Program"}
+                </DialogTitle>
+                <p className="text-primary-foreground/80">
+                  {editing ? "Update details for the existing program" : "Define the details for a new academic program"}
+                </p>
+              </DialogHeader>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={save} disabled={saving}>{saving ? "Saving..." : "Save"}</Button>
-          </DialogFooter>
+
+          <div className="max-h-[70vh] overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-muted-foreground/20">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="md:col-span-2 space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Program Name *</Label>
+                <Input 
+                  className="h-12 rounded-xl border-muted/60 bg-muted/20 focus-visible:ring-primary shadow-sm"
+                  placeholder="e.g. B.Sc. in Computer Science"
+                  value={form.name ?? ""} 
+                  onChange={(e) => setForm({ ...form, name: e.target.value })} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Degree Level</Label>
+                <Input 
+                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
+                  placeholder="e.g. Bachelor, Master, PhD" 
+                  value={form.degree ?? ""} 
+                  onChange={(e) => setForm({ ...form, degree: e.target.value })} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Duration</Label>
+                <Input 
+                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
+                  placeholder="e.g. 4 years" 
+                  value={form.duration ?? ""} 
+                  onChange={(e) => setForm({ ...form, duration: e.target.value })} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Campus</Label>
+                <Select value={form.campus_id ?? "none"} onValueChange={(v) => setForm({ ...form, campus_id: v === "none" ? null : v })}>
+                  <SelectTrigger className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm">
+                    <SelectValue placeholder="Select campus" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    {campuses.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Faculty</Label>
+                <Select value={form.faculty_id ?? "none"} onValueChange={(v) => setForm({ ...form, faculty_id: v === "none" ? null : v })}>
+                  <SelectTrigger className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm">
+                    <SelectValue placeholder="Select faculty" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    {faculties.map((f) => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Intake</Label>
+                <Input 
+                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
+                  placeholder="e.g. Sep 2026, Jan 2027" 
+                  value={form.intake ?? ""} 
+                  onChange={(e) => setForm({ ...form, intake: e.target.value })} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Application Deadline</Label>
+                <Input 
+                  type="date" 
+                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
+                  value={form.application_deadline ?? ""} 
+                  onChange={(e) => setForm({ ...form, application_deadline: e.target.value })} 
+                />
+              </div>
+
+              <div className="md:col-span-2 mt-2">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Financial Information</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Tuition Fee</Label>
+                    <div className="relative">
+                      <Input 
+                        type="number" 
+                        className="h-11 rounded-xl border-muted/60 bg-muted/20 pl-10 shadow-sm"
+                        value={form.tuition_fee ?? ""} 
+                        onChange={(e) => setForm({ ...form, tuition_fee: e.target.value as any })} 
+                      />
+                      <DollarSign className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Currency</Label>
+                    <Input 
+                      className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
+                      value={form.currency ?? "USD"} 
+                      onChange={(e) => setForm({ ...form, currency: e.target.value })} 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-primary/80">Application Fee</Label>
+                    <Input 
+                      type="number" 
+                      className="h-11 rounded-xl border-primary/20 bg-primary/5 shadow-sm focus-visible:ring-primary"
+                      value={form.application_fee ?? ""} 
+                      onChange={(e) => setForm({ ...form, application_fee: e.target.value as any })} 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-primary/80">Registration Fee</Label>
+                    <Input 
+                      type="number" 
+                      className="h-11 rounded-xl border-primary/20 bg-primary/5 shadow-sm focus-visible:ring-primary"
+                      value={form.registration_fee ?? ""} 
+                      onChange={(e) => setForm({ ...form, registration_fee: e.target.value as any })} 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-primary/80">EMGS Fee</Label>
+                    <Input 
+                      type="number" 
+                      className="h-11 rounded-xl border-primary/20 bg-primary/5 shadow-sm focus-visible:ring-primary"
+                      value={form.emgs_fee ?? ""} 
+                      onChange={(e) => setForm({ ...form, emgs_fee: e.target.value as any })} 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-primary/80">Others Fee</Label>
+                    <Input 
+                      type="number" 
+                      className="h-11 rounded-xl border-primary/20 bg-primary/5 shadow-sm focus-visible:ring-primary"
+                      value={form.others_fee ?? ""} 
+                      onChange={(e) => setForm({ ...form, others_fee: e.target.value as any })} 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="md:col-span-2 space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Scholarship</Label>
+                <Input 
+                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
+                  placeholder="e.g. Up to 50% merit-based scholarship"
+                  value={form.scholarship ?? ""} 
+                  onChange={(e) => setForm({ ...form, scholarship: e.target.value })} 
+                />
+              </div>
+
+              <div className="md:col-span-2 space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Entry Requirements</Label>
+                <Textarea 
+                  className="min-h-[100px] rounded-2xl border-muted/60 bg-muted/20 shadow-sm focus-visible:ring-primary"
+                  placeholder="List academic and language requirements..."
+                  value={form.requirements ?? ""} 
+                  onChange={(e) => setForm({ ...form, requirements: e.target.value })} 
+                />
+              </div>
+
+              <div className="md:col-span-2 space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Description</Label>
+                <Textarea 
+                  className="min-h-[100px] rounded-2xl border-muted/60 bg-muted/20 shadow-sm focus-visible:ring-primary"
+                  placeholder="Program overview and key highlights..."
+                  value={form.description ?? ""} 
+                  onChange={(e) => setForm({ ...form, description: e.target.value })} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Status</Label>
+                <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
+                  <SelectTrigger className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {UNI_STATUSES.map((s) => (
+                      <SelectItem key={s} value={s} className="capitalize">
+                        {s}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between border-t bg-muted/20 px-6 py-4">
+            <Button 
+              variant="ghost" 
+              className="rounded-xl font-semibold text-muted-foreground hover:bg-muted"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button 
+              className="min-w-[140px] rounded-xl font-bold shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              onClick={save} 
+              disabled={saving}
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                editing ? "Update Program" : "Create Program"
+              )}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 

@@ -147,11 +147,19 @@ function ProgramsPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [compareOpen, setCompareOpen] = useState(false);
-  const view = "grid"; // Fixed to grid view
+  const view = "grid"; 
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [detail, setDetail] = useState<ProgramRow | null>(null);
-  const density = "comfortable"; // Fixed to comfortable density
-  const setDensity = (_: Density) => {}; // No-op to satisfy potential usages
+  const density = "comfortable";
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
+  const setDensity = (_: Density) => {}; 
+
+  // Reset page on filter change
+  useEffect(() => {
+    setPage(1);
+  }, [filters, sort]);
+
 
   // Load bookmarks
   useEffect(() => {

@@ -89,6 +89,11 @@ function NewProgramPage() {
     others_fee: 0,
   } as any);
 
+  // We keep a ref to the form data to preserve it across retry attempts
+  // but since we are using React state and not refreshing the page, 
+  // simply NOT resetting the state on error is enough.
+  // The current handleSave implementation already keeps form state intact on error.
+
   function set<K extends keyof UniversityProgram>(key: K, value: any) {
     setForm((f) => ({ ...f, [key]: value }));
     setErrors((e) => (e[key as string] ? { ...e, [key as string]: undefined } : e));
@@ -430,25 +435,35 @@ function NewProgramPage() {
                 <Label className={labelCls}>Tuition fee</Label>
                 <div className="relative">
                   <Input
-                    type="number" min="0"
+                    type="number" min="0" step="0.01"
                     className={cn(inputCls, "pl-10", errors.tuition_fee && "border-destructive")}
                     placeholder="0.00"
                     value={(form.tuition_fee as any) ?? ""}
                     onChange={(e) => set("tuition_fee", e.target.value)}
                   />
-                  <DollarSign className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <div className="absolute left-3.5 top-1/2 flex h-4 w-4 -translate-y-1/2 items-center justify-center text-[10px] font-bold text-muted-foreground">
+                    {form.currency || "$"}
+                  </div>
                 </div>
                 <FieldError msg={errors.tuition_fee} />
               </div>
 
               <div className="grid gap-2">
                 <Label className={labelCls}>Currency *</Label>
-                <Input
-                  className={cn(inputCls, errors.currency && "border-destructive")}
-                  placeholder="USD"
-                  value={form.currency ?? ""}
-                  onChange={(e) => set("currency", e.target.value.toUpperCase())}
-                />
+                <Select value={form.currency || "USD"} onValueChange={(v) => set("currency", v)}>
+                  <SelectTrigger className={inputCls}>
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD - US Dollar</SelectItem>
+                    <SelectItem value="BDT">BDT - Bangladeshi Taka</SelectItem>
+                    <SelectItem value="GBP">GBP - British Pound</SelectItem>
+                    <SelectItem value="EUR">EUR - Euro</SelectItem>
+                    <SelectItem value="MYR">MYR - Malaysian Ringgit</SelectItem>
+                    <SelectItem value="AUD">AUD - Australian Dollar</SelectItem>
+                    <SelectItem value="CAD">CAD - Canadian Dollar</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FieldError msg={errors.currency} />
               </div>
 
@@ -463,13 +478,18 @@ function NewProgramPage() {
                 ] as const).map(([key, label]) => (
                   <div key={key} className="grid gap-2">
                     <Label className={labelCls}>{label}</Label>
-                    <Input
-                      type="number" min="0"
-                      className={cn("h-10 rounded-lg border-muted-foreground/20 shadow-sm", errors[key] && "border-destructive")}
-                      placeholder="0.00"
-                      value={((form as any)[key]) ?? ""}
-                      onChange={(e) => set(key as any, e.target.value)}
-                    />
+                    <div className="relative">
+                      <Input
+                        type="number" min="0" step="0.01"
+                        className={cn("h-10 pl-8 rounded-lg border-muted-foreground/20 shadow-sm", errors[key] && "border-destructive")}
+                        placeholder="0.00"
+                        value={((form as any)[key]) ?? ""}
+                        onChange={(e) => set(key as any, e.target.value)}
+                      />
+                      <div className="absolute left-2.5 top-1/2 flex h-4 w-4 -translate-y-1/2 items-center justify-center text-[9px] font-bold text-muted-foreground">
+                        {form.currency || "$"}
+                      </div>
+                    </div>
                     <FieldError msg={errors[key]} />
                   </div>
                 ))}

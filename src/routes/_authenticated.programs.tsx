@@ -507,66 +507,8 @@ function ProgramsPage() {
 
       {/* Selection bar */}
       {selected.size > 0 && (
-        <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center px-4">
-          <div className="pointer-events-auto flex items-center gap-3 rounded-full border bg-background/95 px-5 py-2.5 shadow-2xl shadow-primary/10 backdrop-blur">
-            <span className="text-sm font-medium">{selected.size} selected</span>
-            <div className="h-4 w-px bg-border" />
-            <Button size="sm" variant="ghost" onClick={() => setSelected(new Set())}>Clear</Button>
-            <Button size="sm" className="rounded-full bg-gradient-to-r from-primary to-purple-600" disabled={selected.size < 2} onClick={() => setCompareOpen(true)}>
-              <Scale className="mr-1.5 h-3.5 w-3.5" /> Compare
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Compare dialog */}
-      <Dialog open={compareOpen} onOpenChange={setCompareOpen}>
-        <DialogContent className="max-h-[92vh] w-[calc(100vw-1rem)] max-w-6xl overflow-y-auto p-4 sm:p-6">
-          {/* Compare dialog content removed */}
-              <tbody>
-                {([
-                  ["Campus", (r) => r.campus?.name ?? "—", null],
-                  ["Degree", (r) => r.degree ?? "—", null],
-                  ["Duration", (r) => r.duration ?? "—", "shortest"],
-                  ["Intake", (r) => r.intake ?? "—", null],
-                  ["Tuition", (r) => r.tuition_fee ? `${r.currency ?? ""} ${r.tuition_fee.toLocaleString()}` : "—", "cheapest"],
-                  ["Scholarship", (r) => r.scholarship ?? "—", null],
-                  ["Deadline", (r) => r.application_deadline ?? "—", "earliest"],
-                ] as [string, (r: ProgramRow) => string, "cheapest" | "shortest" | "earliest" | null][]).map(([label, fn, hl]) => (
-                  <tr key={label} className="border-b transition-colors hover:bg-muted/40">
-                    <td className="p-2 font-medium text-muted-foreground">{label}</td>
-                    {compareRows.map((r) => {
-                      const isBest =
-                        (hl === "cheapest" && r.id === cheapestId && r.tuition_fee != null) ||
-                        (hl === "shortest" && r.id === shortestId && r.duration) ||
-                        (hl === "earliest" && r.id === earliestId && r.application_deadline);
-                      const hlColor = hl === "cheapest" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                        : hl === "shortest" ? "bg-blue-500/10 text-blue-700 dark:text-blue-400"
-                        : "bg-amber-500/10 text-amber-700 dark:text-amber-500";
-                      return (
-                        <td key={r.id} className="p-2 align-top">
-                          <span className={cn("inline-flex items-center gap-1 rounded-md px-1.5 py-0.5", isBest && `font-semibold ${hlColor}`)}>
-                            {isBest && <CheckCircle2 className="h-3 w-3" />}
-                            {fn(r)}
-                          </span>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-                <tr>
-                  <td />
-                  {compareRows.map((r) => (
-                    <td key={r.id} className="p-2">
-                      <ApplyButton program={r} className="w-full rounded-lg" />
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Selection bar removed */}
+      {/* Compare dialog removed */}
 
       {/* Details drawer */}
       <Sheet open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award, Loader2 } from "lucide-react";
+import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, SearchX } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,9 +43,11 @@ function UniversityDetail() {
   const [programs, setPrograms] = useState<UniversityProgram[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   async function reload() {
     setLoading(true);
+    setLoadError(null);
     try {
       const [u, c, p, a] = await Promise.all([
         getUniversity(universityId),
@@ -55,14 +57,34 @@ function UniversityDetail() {
       ]);
       setUni(u); setCampuses(c); setPrograms(p);
       setApplications((a.data as any[]) ?? []);
-    } catch (e: any) { toast.error(e.message); }
+    } catch (e: any) {
+      const msg = e?.message ?? "Something went wrong while loading this university.";
+      setLoadError(msg);
+      toast.error(msg);
+    }
     finally { setLoading(false); }
   }
 
   useEffect(() => { reload(); /* eslint-disable-next-line */ }, [universityId]);
 
-  if (loading || !uni) {
+  if (loading) {
     return <div className="space-y-4"><Skeleton className="h-32" /><Skeleton className="h-64" /></div>;
+  }
+
+  if (loadError || !uni) {
+    return (
+      <div className="mx-auto flex max-w-md flex-col items-center gap-4 rounded-2xl border border-dashed p-12 text-center">
+        <div className="rounded-full bg-destructive/10 p-4"><AlertCircle className="h-8 w-8 text-destructive" /></div>
+        <div>
+          <h2 className="text-lg font-semibold">Couldn't load this university</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{loadError ?? "This university no longer exists."}</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" className="rounded-xl" onClick={reload}>Try again</Button>
+          <Button asChild className="rounded-xl"><Link to="/universities">Back to universities</Link></Button>
+        </div>
+      </div>
+    );
   }
 
   return (

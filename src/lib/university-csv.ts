@@ -192,10 +192,15 @@ function summarize(rows: PlanRow[]): ImportPlan["summary"] {
   for (const r of rows) s[r.action]++;
   return s;
 }
+// Legacy headers that older exports may still contain — silently ignored on import.
+const LEGACY_IGNORED_HEADERS = ["faculty", "faculty_id", "faculty_name"];
+
 function baseHeaderInfo(kind: ImportKind, headers: string[]) {
   const known = KNOWN_HEADERS[kind];
   const knownHeaders = headers.filter((h) => known.includes(h));
-  const unmappedHeaders = headers.filter((h) => !known.includes(h));
+  const unmappedHeaders = headers.filter(
+    (h) => !known.includes(h) && !LEGACY_IGNORED_HEADERS.includes(h.toLowerCase()),
+  );
   const requiredMissing = headers.includes("name") ? [] : ["name"];
   return { knownHeaders, unmappedHeaders, requiredMissing };
 }

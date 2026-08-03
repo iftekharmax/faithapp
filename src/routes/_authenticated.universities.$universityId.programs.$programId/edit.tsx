@@ -585,4 +585,4 @@ function EditProgramPage() {
   );
 }
 
-export default NewProgramPage;
+export default EditProgramPage;

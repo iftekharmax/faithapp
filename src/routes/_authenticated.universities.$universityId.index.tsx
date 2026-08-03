@@ -112,7 +112,6 @@ function UniversityDetail() {
           <ProgramsTab
             universityId={universityId} programs={programs}
             campuses={campuses} faculties={faculties} canEdit={canEdit} onChange={reload}
-            navigate={navigate}
           />
         </TabsContent>
 
@@ -168,10 +167,11 @@ function MiniStat({ label, value }: { label: string; value: number }) {
 }
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange, navigate }: {
+function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange }: {
   universityId: string; programs: UniversityProgram[]; campuses: Campus[]; faculties: Faculty[];
-  canEdit: boolean; onChange: () => void; navigate: any;
+  canEdit: boolean; onChange: () => void;
 }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<UniversityProgram | null>(null);
   const [form, setForm] = useState<Partial<UniversityProgram>>({ status: "active", currency: "USD" });
@@ -188,7 +188,7 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
   );
 
   function openNew() { navigate({ to: "/universities/$universityId/programs/new", params: { universityId } }); }
-  function openEdit(p: UniversityProgram) { setEditing(p); setForm({ ...p }); setOpen(true); }
+  function openEdit(p: UniversityProgram) { navigate({ to: "/universities/$universityId/programs/$programId/edit", params: { universityId, programId: p.id } }); }
 
   async function save() {
     if (!form.name?.trim()) { toast.error("Program name required"); return; }
@@ -583,6 +583,7 @@ function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; valu
 function CampusesTab({ universityId, campuses, canEdit, onChange }: {
   universityId: string; campuses: Campus[]; canEdit: boolean; onChange: () => void;
 }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Campus | null>(null);
   const [form, setForm] = useState<Partial<Campus>>({ status: "active", is_main: false });
@@ -590,8 +591,8 @@ function CampusesTab({ universityId, campuses, canEdit, onChange }: {
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
   const [saving, setSaving] = useState(false);
 
-  function openNew() { setEditing(null); setForm({ status: "active", is_main: false }); setOpen(true); }
-  function openEdit(c: Campus) { setEditing(c); setForm({ ...c }); setOpen(true); }
+  function openNew() { navigate({ to: "/universities/$universityId/campuses/new", params: { universityId } }); }
+  function openEdit(c: Campus) { navigate({ to: "/universities/$universityId/campuses/$campusId/edit", params: { universityId, campusId: c.id } }); }
 
   async function save() {
     if (!form.name?.trim()) { toast.error("Name required"); return; }
@@ -708,6 +709,7 @@ function CampusesTab({ universityId, campuses, canEdit, onChange }: {
 function FacultiesTab({ universityId, faculties, canEdit, onChange }: {
   universityId: string; faculties: Faculty[]; canEdit: boolean; onChange: () => void;
 }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Faculty | null>(null);
   const [form, setForm] = useState<Partial<Faculty>>({ status: "active" });
@@ -715,8 +717,8 @@ function FacultiesTab({ universityId, faculties, canEdit, onChange }: {
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
   const [saving, setSaving] = useState(false);
 
-  function openNew() { setEditing(null); setForm({ status: "active" }); setOpen(true); }
-  function openEdit(f: Faculty) { setEditing(f); setForm({ ...f }); setOpen(true); }
+  function openNew() { navigate({ to: "/universities/$universityId/faculties/new", params: { universityId } }); }
+  function openEdit(f: Faculty) { navigate({ to: "/universities/$universityId/faculties/$facultyId/edit", params: { universityId, facultyId: f.id } }); }
 
   async function save() {
     if (!form.name?.trim()) { toast.error("Name required"); return; }

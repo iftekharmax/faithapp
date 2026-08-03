@@ -30,8 +30,14 @@ function NewFacultyPage() {
     try {
       await createFaculty({ ...form, university_id: universityId } as any);
       toast.success("Faculty created");
-      navigate({ to: "/universities/$universityId", params: { universityId } });
-    } catch (e: any) { toast.error(e.message); }
+      navigate({ 
+        to: "/universities/$universityId", 
+        params: { universityId },
+        search: (old: any) => ({ ...old, _refresh: Date.now() }) 
+      });
+    } catch (e: any) { 
+      toast.error(e.message ?? "Failed to create faculty"); 
+    }
     finally { setSaving(false); }
   }
 

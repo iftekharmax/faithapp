@@ -337,6 +337,16 @@ export async function listPrograms(opts: {
   if (error) throw error;
   return (data ?? []) as UniversityProgram[];
 }
+export async function getProgram(id: string): Promise<UniversityProgram> {
+  const { data, error } = await supabase
+    .from("university_programs")
+    .select("*, campus:campuses(*), faculty:faculties(*)")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data as UniversityProgram;
+}
+
 export async function createProgram(input: Partial<UniversityProgram>) {
   if (input.name && input.university_id) {
     const scope: Record<string, string | null> = {

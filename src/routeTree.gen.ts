@@ -45,6 +45,9 @@ import { Route as AuthenticatedUniversitiesUniversityIdIndexRouteImport } from '
 import { Route as AuthenticatedUniversitiesUniversityIdProgramsNewRouteImport } from './routes/_authenticated.universities.$universityId.programs.new'
 import { Route as AuthenticatedUniversitiesUniversityIdFacultiesNewRouteImport } from './routes/_authenticated.universities.$universityId.faculties.new'
 import { Route as AuthenticatedUniversitiesUniversityIdCampusesNewRouteImport } from './routes/_authenticated.universities.$universityId.campuses.new'
+import { Route as AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRouteImport } from './routes/_authenticated.universities.$universityId.programs.$programId/edit'
+import { Route as AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRouteImport } from './routes/_authenticated.universities.$universityId.faculties.$facultyId/edit'
+import { Route as AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRouteImport } from './routes/_authenticated.universities.$universityId.campuses.$campusId/edit'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -244,6 +247,26 @@ const AuthenticatedUniversitiesUniversityIdCampusesNewRoute =
     path: '/universities/$universityId/campuses/new',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRoute =
+  AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRouteImport.update({
+    id: '/universities/$universityId/programs/$programId/edit',
+    path: '/universities/$universityId/programs/$programId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRoute =
+  AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRouteImport.update(
+    {
+      id: '/universities/$universityId/faculties/$facultyId/edit',
+      path: '/universities/$universityId/faculties/$facultyId/edit',
+      getParentRoute: () => AuthenticatedRoute,
+    } as any,
+  )
+const AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRoute =
+  AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRouteImport.update({
+    id: '/universities/$universityId/campuses/$campusId/edit',
+    path: '/universities/$universityId/campuses/$campusId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -281,6 +304,9 @@ export interface FileRoutesByFullPath {
   '/universities/$universityId/campuses/new': typeof AuthenticatedUniversitiesUniversityIdCampusesNewRoute
   '/universities/$universityId/faculties/new': typeof AuthenticatedUniversitiesUniversityIdFacultiesNewRoute
   '/universities/$universityId/programs/new': typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
+  '/universities/$universityId/campuses/$campusId/edit': typeof AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRoute
+  '/universities/$universityId/faculties/$facultyId/edit': typeof AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRoute
+  '/universities/$universityId/programs/$programId/edit': typeof AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -318,6 +344,9 @@ export interface FileRoutesByTo {
   '/universities/$universityId/campuses/new': typeof AuthenticatedUniversitiesUniversityIdCampusesNewRoute
   '/universities/$universityId/faculties/new': typeof AuthenticatedUniversitiesUniversityIdFacultiesNewRoute
   '/universities/$universityId/programs/new': typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
+  '/universities/$universityId/campuses/$campusId/edit': typeof AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRoute
+  '/universities/$universityId/faculties/$facultyId/edit': typeof AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRoute
+  '/universities/$universityId/programs/$programId/edit': typeof AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -357,6 +386,9 @@ export interface FileRoutesById {
   '/_authenticated/universities/$universityId/campuses/new': typeof AuthenticatedUniversitiesUniversityIdCampusesNewRoute
   '/_authenticated/universities/$universityId/faculties/new': typeof AuthenticatedUniversitiesUniversityIdFacultiesNewRoute
   '/_authenticated/universities/$universityId/programs/new': typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
+  '/_authenticated/universities/$universityId/campuses/$campusId/edit': typeof AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRoute
+  '/_authenticated/universities/$universityId/faculties/$facultyId/edit': typeof AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRoute
+  '/_authenticated/universities/$universityId/programs/$programId/edit': typeof AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -396,6 +428,9 @@ export interface FileRouteTypes {
     | '/universities/$universityId/campuses/new'
     | '/universities/$universityId/faculties/new'
     | '/universities/$universityId/programs/new'
+    | '/universities/$universityId/campuses/$campusId/edit'
+    | '/universities/$universityId/faculties/$facultyId/edit'
+    | '/universities/$universityId/programs/$programId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -433,6 +468,9 @@ export interface FileRouteTypes {
     | '/universities/$universityId/campuses/new'
     | '/universities/$universityId/faculties/new'
     | '/universities/$universityId/programs/new'
+    | '/universities/$universityId/campuses/$campusId/edit'
+    | '/universities/$universityId/faculties/$facultyId/edit'
+    | '/universities/$universityId/programs/$programId/edit'
   id:
     | '__root__'
     | '/'
@@ -471,6 +509,9 @@ export interface FileRouteTypes {
     | '/_authenticated/universities/$universityId/campuses/new'
     | '/_authenticated/universities/$universityId/faculties/new'
     | '/_authenticated/universities/$universityId/programs/new'
+    | '/_authenticated/universities/$universityId/campuses/$campusId/edit'
+    | '/_authenticated/universities/$universityId/faculties/$facultyId/edit'
+    | '/_authenticated/universities/$universityId/programs/$programId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -735,6 +776,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUniversitiesUniversityIdCampusesNewRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/universities/$universityId/programs/$programId/edit': {
+      id: '/_authenticated/universities/$universityId/programs/$programId/edit'
+      path: '/universities/$universityId/programs/$programId/edit'
+      fullPath: '/universities/$universityId/programs/$programId/edit'
+      preLoaderRoute: typeof AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/universities/$universityId/faculties/$facultyId/edit': {
+      id: '/_authenticated/universities/$universityId/faculties/$facultyId/edit'
+      path: '/universities/$universityId/faculties/$facultyId/edit'
+      fullPath: '/universities/$universityId/faculties/$facultyId/edit'
+      preLoaderRoute: typeof AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/universities/$universityId/campuses/$campusId/edit': {
+      id: '/_authenticated/universities/$universityId/campuses/$campusId/edit'
+      path: '/universities/$universityId/campuses/$campusId/edit'
+      fullPath: '/universities/$universityId/campuses/$campusId/edit'
+      preLoaderRoute: typeof AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -766,6 +828,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedUniversitiesUniversityIdCampusesNewRoute: typeof AuthenticatedUniversitiesUniversityIdCampusesNewRoute
   AuthenticatedUniversitiesUniversityIdFacultiesNewRoute: typeof AuthenticatedUniversitiesUniversityIdFacultiesNewRoute
   AuthenticatedUniversitiesUniversityIdProgramsNewRoute: typeof AuthenticatedUniversitiesUniversityIdProgramsNewRoute
+  AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRoute: typeof AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRoute
+  AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRoute: typeof AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRoute
+  AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRoute: typeof AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -802,6 +867,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedUniversitiesUniversityIdFacultiesNewRoute,
   AuthenticatedUniversitiesUniversityIdProgramsNewRoute:
     AuthenticatedUniversitiesUniversityIdProgramsNewRoute,
+  AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRoute:
+    AuthenticatedUniversitiesUniversityIdCampusesCampusIdEditRoute,
+  AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRoute:
+    AuthenticatedUniversitiesUniversityIdFacultiesFacultyIdEditRoute,
+  AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRoute:
+    AuthenticatedUniversitiesUniversityIdProgramsProgramIdEditRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

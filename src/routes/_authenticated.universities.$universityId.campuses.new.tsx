@@ -32,8 +32,14 @@ function NewCampusPage() {
     try {
       await createCampus({ ...form, university_id: universityId } as any);
       toast.success("Campus created");
-      navigate({ to: "/universities/$universityId", params: { universityId } });
-    } catch (e: any) { toast.error(e.message); }
+      navigate({ 
+        to: "/universities/$universityId", 
+        params: { universityId },
+        search: (old: any) => ({ ...old, _refresh: Date.now() }) 
+      });
+    } catch (e: any) { 
+      toast.error(e.message ?? "Failed to create campus"); 
+    }
     finally { setSaving(false); }
   }
 

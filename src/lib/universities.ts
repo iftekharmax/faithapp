@@ -285,6 +285,11 @@ export async function updateCampus(id: string, input: Partial<Campus>) {
   if (error) throw error;
   return data as Campus;
 }
+export async function getCampus(id: string): Promise<Campus> {
+  const { data, error } = await supabase.from("campuses").select("*").eq("id", id).single();
+  if (error) throw error;
+  return data as Campus;
+}
 export async function deleteCampus(id: string) {
   const { error } = await supabase.from("campuses").delete().eq("id", id);
   if (error) throw error;
@@ -316,6 +321,11 @@ export async function updateFaculty(id: string, input: Partial<Faculty>) {
   if (error) throw error;
   return data as Faculty;
 }
+export async function getFaculty(id: string): Promise<Faculty> {
+  const { data, error } = await supabase.from("faculties").select("*").eq("id", id).single();
+  if (error) throw error;
+  return data as Faculty;
+}
 export async function deleteFaculty(id: string) {
   const { error } = await supabase.from("faculties").delete().eq("id", id);
   if (error) throw error;
@@ -337,6 +347,16 @@ export async function listPrograms(opts: {
   if (error) throw error;
   return (data ?? []) as UniversityProgram[];
 }
+export async function getProgram(id: string): Promise<UniversityProgram> {
+  const { data, error } = await supabase
+    .from("university_programs")
+    .select("*, campus:campuses(*), faculty:faculties(*)")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data as UniversityProgram;
+}
+
 export async function createProgram(input: Partial<UniversityProgram>) {
   if (input.name && input.university_id) {
     const scope: Record<string, string | null> = {

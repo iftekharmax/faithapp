@@ -127,9 +127,22 @@ function RootComponent() {
 
   useEffect(() => {
     // Verify the students table has the columns from the latest migration.
-    // Runs once per session; shows an admin toast when the DB is behind.
-    import("../lib/schema-check").then((m) => m.verifyStudentSchema());
+    // Deferred to idle time so it never competes with first paint or the
+    // initial auth/session round-trip.
+    const run = () => {
+      void import("../lib/schema-check").then((m) => m.verifyStudentSchema());
+    };
+    const ric = (window as any).requestIdleCallback as
+      | ((cb: () => void, opts?: { timeout: number }) => number)
+      | undefined;
+    const id = ric ? ric(run, { timeout: 4000 }) : window.setTimeout(run, 2500);
+    return () => {
+      const cic = (window as any).cancelIdleCallback as ((h: number) => void) | undefined;
+      if (ric && cic) cic(id);
+      else window.clearTimeout(id);
+    };
   }, []);
+
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -656,7 +656,16 @@ function CampusesTab({ universityId, campuses, canEdit, onChange }: {
         </div>
       </CardHeader>
       <CardContent>
-        {campuses.length === 0 ? <p className="py-10 text-center text-sm text-muted-foreground">No campuses yet.</p> : (
+        {campuses.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-12 text-center">
+            <div className="rounded-full bg-primary/10 p-3"><MapPin className="h-6 w-6 text-primary" /></div>
+            <div>
+              <p className="font-semibold">No campuses yet</p>
+              <p className="mt-1 text-sm text-muted-foreground">Add a campus so programs can be linked to a location.</p>
+            </div>
+            {canEdit && <Button onClick={openNew} className="rounded-xl"><Plus className="mr-2 h-4 w-4" />Add campus</Button>}
+          </div>
+        ) : (
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {campuses.map((c) => (
               <div key={c.id} className="rounded-xl border p-4">

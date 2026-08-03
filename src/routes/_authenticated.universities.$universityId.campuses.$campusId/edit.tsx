@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { createCampus, type Campus, UNI_STATUSES, type UniStatus } from "@/lib/universities";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 
-export const Route = createFileRoute("/_authenticated/universities/$universityId/campuses/new")({
+export const Route = createFileRoute("/_authenticated/universities/$universityId/campuses/$campusId/edit")({
   component: () => (
     <RoleGuard roles={["admin", "counselor", "application_team"]}>
       <NewCampusPage />

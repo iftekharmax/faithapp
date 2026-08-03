@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { createFaculty, type Faculty, UNI_STATUSES, type UniStatus } from "@/lib/universities";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 
-export const Route = createFileRoute("/_authenticated/universities/$universityId/faculties/new")({
+export const Route = createFileRoute("/_authenticated/universities/$universityId/faculties/$facultyId/edit")({
   component: () => (
     <RoleGuard roles={["admin", "counselor", "application_team"]}>
       <NewFacultyPage />

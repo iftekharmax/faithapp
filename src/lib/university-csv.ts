@@ -314,7 +314,6 @@ export async function previewProgramsCsv(text: string, universityId?: string): P
   const info = baseHeaderInfo("programs", headers);
   const uni = universityId ? [] : await listUniversities();
   const campCache = new Map<string, Campus[]>();
-  const facCache = new Map<string, Faculty[]>();
   const progCache = new Map<string, UniversityProgram[]>();
   const planRows: PlanRow[] = [];
   for (let i = 0; i < data.length; i++) {
@@ -331,20 +330,14 @@ export async function previewProgramsCsv(text: string, universityId?: string): P
       uid = found;
     }
     if (!campCache.has(uid)) campCache.set(uid, await listCampuses(uid));
-    if (!facCache.has(uid)) facCache.set(uid, await listFaculties(uid));
+    
     if (!progCache.has(uid)) progCache.set(uid, await listPrograms({ universityId: uid }));
-    const camps = campCache.get(uid)!; const facs = facCache.get(uid)!; const progs = progCache.get(uid)!;
+    const camps = campCache.get(uid)!; const progs = progCache.get(uid)!;
     let campus_id: string | null = null;
     if (r.campus) {
       const c = camps.find((x) => x.name.toLowerCase() === r.campus.toLowerCase());
       if (!c) { planRows.push({ rowNumber, raw: r, action: "error", message: `campus not found: ${r.campus}`, displayName }); continue; }
       campus_id = c.id;
-    }
-    let faculty_id: string | null = null;
-    if (r.faculty) {
-      const f = facs.find((x) => x.name.toLowerCase() === r.faculty.toLowerCase());
-      if (!f) { planRows.push({ rowNumber, raw: r, action: "error", message: `faculty not found: ${r.faculty}`, displayName }); continue; }
-      faculty_id = f.id;
     }
     let tuition: number | null = null;
     if (r.tuition_fee && r.tuition_fee.trim() !== "") {
@@ -360,7 +353,7 @@ export async function previewProgramsCsv(text: string, universityId?: string): P
     const payload = {
       university_id: uid, name,
       degree: r.degree || null, duration: r.duration || null,
-      campus_id, faculty_id,
+      campus_id,
       intake: r.intake || null,
       application_deadline: r.application_deadline || null,
       tuition_fee: tuition,
@@ -396,7 +389,6 @@ export async function executeImportPlan(plan: ImportPlan, opts: ImportOptions): 
   switch (plan.kind) {
     case "universities": return executeUniversitiesPlan(plan, opts);
     case "campuses":     return executeCampusesPlan(plan, opts);
-    case "faculties":    return executeFacultiesPlan(plan, opts);
     case "programs":     return executeProgramsPlan(plan, opts);
   }
 }

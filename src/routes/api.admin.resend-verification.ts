@@ -15,7 +15,10 @@ export const Route = createFileRoute("/api/admin/resend-verification")({
     handlers: {
       POST: async ({ request }) => {
         const serviceKey = process.env.SB_SERVICE_ROLE_KEY || import.meta.env.SB_SERVICE_ROLE_KEY;
-        if (!serviceKey) return json({ error: "Server missing SB_SERVICE_ROLE_KEY" }, 500);
+        if (!serviceKey) {
+          console.error("[Auth] Critical: SB_SERVICE_ROLE_KEY is missing in environment");
+          return json({ error: "Configuration error: Admin service is temporarily unavailable." }, 500);
+        }
 
         const token = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
         if (!token) return json({ error: "Unauthorized" }, 401);
@@ -33,7 +36,11 @@ export const Route = createFileRoute("/api/admin/resend-verification")({
           _user_id: callerId,
           _role: "admin",
         });
-        if (rErr || !isAdmin) return json({ error: "Forbidden — admin only" }, 403);
+        
+        if (rErr || !isAdmin) {
+          console.warn(`[Auth] Forbidden access attempt to resend-verification by user ${callerId}`);
+          return json({ error: "Access denied. Admin privileges required." }, 403);
+        }
 
         const body = await request.json().catch(() => ({}));
         const { user_id, email } = body ?? {};

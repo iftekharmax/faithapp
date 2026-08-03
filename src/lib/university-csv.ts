@@ -308,12 +308,6 @@ async function executeCampusesPlan(plan: ImportPlan, opts: ImportOptions): Promi
   return res;
 }
 
-      else { await createFaculty(r.payload as Partial<Faculty>); res.created++; }
-    } catch (e: any) { res.errors.push({ row: r.rowNumber, message: e?.message ?? String(e) }); }
-  }
-  return res;
-}
-
 // ============ PROGRAMS ============
 export async function previewProgramsCsv(text: string, universityId?: string): Promise<ImportPlan> {
   const { headers, rows: data } = parseCsv(text);

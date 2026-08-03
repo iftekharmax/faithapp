@@ -158,8 +158,8 @@ function MiniStat({ label, value }: { label: string; value: number }) {
 }
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange }: {
-  universityId: string; programs: UniversityProgram[]; campuses: Campus[]; faculties: Faculty[];
+function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
+  universityId: string; programs: UniversityProgram[]; campuses: Campus[];
   canEdit: boolean; onChange: () => void;
 }) {
   const navigate = useNavigate();

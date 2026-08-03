@@ -13,21 +13,32 @@ function json(body: unknown, status = 200) {
 
 async function getAdminContext(request: Request) {
   const serviceKey = process.env.SB_SERVICE_ROLE_KEY || import.meta.env.SB_SERVICE_ROLE_KEY;
-  if (!serviceKey) return { error: json({ error: "Server missing SB_SERVICE_ROLE_KEY" }, 500) };
+  if (!serviceKey) {
+    console.error("[Auth] Critical: SB_SERVICE_ROLE_KEY is missing in environment");
+    return { error: json({ error: "Configuration error: Admin service is temporarily unavailable. Please contact support." }, 500) };
+  }
   const token = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
   if (!token) return { error: json({ error: "Unauthorized" }, 401) };
 
   const admin = createClient(SUPABASE_URL, serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+  
   const { data: userData, error: uErr } = await admin.auth.getUser(token);
   if (uErr || !userData.user) return { error: json({ error: "Unauthorized" }, 401) };
+  
   const callerId = userData.user.id;
+  // Use a secure RPC call to verify role. The 'has_role' function must be security definer.
   const { data: isAdmin, error: rErr } = await admin.rpc("has_role", {
     _user_id: callerId,
     _role: "admin",
   });
-  if (rErr || !isAdmin) return { error: json({ error: "Forbidden — admin only" }, 403) };
+
+  if (rErr || !isAdmin) {
+    console.warn(`[Auth] Forbidden access attempt to create-user by user ${callerId}`);
+    return { error: json({ error: "Access denied. Admin privileges required." }, 403) };
+  }
+  
   return { admin, callerId, callerEmail: userData.user.email ?? null };
 }
 

@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/admin/resend-verification")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const serviceKey = process.env.SB_SERVICE_ROLE_KEY;
+        const serviceKey = process.env.SB_SERVICE_ROLE_KEY || import.meta.env.SB_SERVICE_ROLE_KEY;
         if (!serviceKey) return json({ error: "Server missing SB_SERVICE_ROLE_KEY" }, 500);
 
         const token = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");

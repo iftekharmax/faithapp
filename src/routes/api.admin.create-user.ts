@@ -12,7 +12,7 @@ function json(body: unknown, status = 200) {
 }
 
 async function getAdminContext(request: Request) {
-  const serviceKey = process.env.SB_SERVICE_ROLE_KEY;
+  const serviceKey = process.env.SB_SERVICE_ROLE_KEY || import.meta.env.SB_SERVICE_ROLE_KEY;
   if (!serviceKey) return { error: json({ error: "Server missing SB_SERVICE_ROLE_KEY" }, 500) };
   const token = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
   if (!token) return { error: json({ error: "Unauthorized" }, 401) };

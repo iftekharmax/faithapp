@@ -1,4 +1,4 @@
-// CSV helpers for Universities, Countries, Campuses, Faculties, Programs.
+// CSV helpers for Universities, Countries, Campuses, Programs.
 // Supports preview (dry-run), row-level validation, and upsert on import.
 
 import {

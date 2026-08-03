@@ -81,21 +81,18 @@ function UniversitiesPage() {
   useEffect(() => { reload(); /* eslint-disable-next-line */ }, [search, countryFilter, statusFilter]);
   useEffect(() => { setPage(1); }, [search, programFilter, countryFilter, statusFilter]);
 
-  // Program / faculty filter: query cross-university and intersect
+  // Program filter: query cross-university and intersect
   useEffect(() => {
     let cancelled = false;
     async function run() {
       const q = programFilter.trim();
       if (!q) { setProgramMatchIds(null); return; }
       try {
-        const [{ data: progs }, { data: facs }] = await Promise.all([
-          supabase.from("university_programs").select("university_id").ilike("name", `%${q}%`),
-          supabase.from("faculties").select("university_id").ilike("name", `%${q}%`),
-        ]);
+        const { data: progs } = await supabase
+          .from("university_programs").select("university_id").ilike("name", `%${q}%`);
         if (cancelled) return;
         const s = new Set<string>();
         (progs ?? []).forEach((r: any) => s.add(r.university_id));
-        (facs ?? []).forEach((r: any) => s.add(r.university_id));
         setProgramMatchIds(s);
       } catch (e: any) { toast.error(e.message); }
     }

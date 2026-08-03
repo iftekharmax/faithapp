@@ -5,7 +5,7 @@ export const UNI_STATUSES: UniStatus[] = ["active", "inactive", "archived"];
 
 /** Thrown when creating an entity whose natural key already exists. */
 export class DuplicateError extends Error {
-  entity: "university" | "campus" | "faculty" | "program";
+  entity: "university" | "campus" | "program";
   existingId: string;
   entityName: string;
   constructor(entity: DuplicateError["entity"], name: string, existingId: string) {
@@ -22,7 +22,7 @@ function isUniqueViolation(e: any): boolean {
 }
 
 async function findDuplicateId(
-  table: "universities" | "campuses" | "faculties" | "university_programs",
+  table: "universities" | "campuses" | "university_programs",
   name: string,
   scope: Record<string, string | null> = {},
 ): Promise<string | null> {
@@ -74,20 +74,12 @@ export type Campus = {
   updated_at: string;
 };
 
-export type Faculty = {
-  id: string;
-  university_id: string;
-  name: string;
-  status: UniStatus;
-  created_at: string;
-  updated_at: string;
-};
 
 export type UniversityProgram = {
   id: string;
   university_id: string;
   campus_id: string | null;
-  faculty_id: string | null;
+  
   name: string;
   degree: string | null;
   duration: string | null;
@@ -106,7 +98,7 @@ export type UniversityProgram = {
   created_at: string;
   updated_at: string;
   campus?: Campus | null;
-  faculty?: Faculty | null;
+  
 };
 
 // ============ COUNTRIES ============
@@ -295,41 +287,6 @@ export async function deleteCampus(id: string) {
   if (error) throw error;
 }
 
-// ============ FACULTIES ============
-export async function listFaculties(universityId: string): Promise<Faculty[]> {
-  const { data, error } = await supabase.from("faculties").select("*").eq("university_id", universityId).order("name");
-  if (error) throw error;
-  return data as Faculty[];
-}
-export async function createFaculty(input: Partial<Faculty>) {
-  if (input.name && input.university_id) {
-    const dup = await findDuplicateId("faculties", input.name, { university_id: input.university_id });
-    if (dup) throw new DuplicateError("faculty", input.name, dup);
-  }
-  const { data, error } = await supabase.from("faculties").insert(input).select().single();
-  if (error) {
-    if (isUniqueViolation(error) && input.name && input.university_id) {
-      const dup = await findDuplicateId("faculties", input.name, { university_id: input.university_id });
-      if (dup) throw new DuplicateError("faculty", input.name, dup);
-    }
-    throw error;
-  }
-  return data as Faculty;
-}
-export async function updateFaculty(id: string, input: Partial<Faculty>) {
-  const { data, error } = await supabase.from("faculties").update(input).eq("id", id).select().single();
-  if (error) throw error;
-  return data as Faculty;
-}
-export async function getFaculty(id: string): Promise<Faculty> {
-  const { data, error } = await supabase.from("faculties").select("*").eq("id", id).single();
-  if (error) throw error;
-  return data as Faculty;
-}
-export async function deleteFaculty(id: string) {
-  const { error } = await supabase.from("faculties").delete().eq("id", id);
-  if (error) throw error;
-}
 
 // ============ PROGRAMS ============
 export async function listPrograms(opts: {
@@ -337,7 +294,7 @@ export async function listPrograms(opts: {
 } = {}): Promise<UniversityProgram[]> {
   let q = supabase
     .from("university_programs")
-    .select("*, campus:campuses(*), faculty:faculties(*)")
+    .select("*, campus:campuses(*)")
     .order("name");
   if (opts.universityId) q = q.eq("university_id", opts.universityId);
   if (opts.search) q = q.ilike("name", `%${opts.search}%`);
@@ -350,7 +307,7 @@ export async function listPrograms(opts: {
 export async function getProgram(id: string): Promise<UniversityProgram> {
   const { data, error } = await supabase
     .from("university_programs")
-    .select("*, campus:campuses(*), faculty:faculties(*)")
+    .select("*, campus:campuses(*)")
     .eq("id", id)
     .single();
   if (error) throw error;

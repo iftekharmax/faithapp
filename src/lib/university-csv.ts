@@ -2,17 +2,17 @@
 // Supports preview (dry-run), row-level validation, and upsert on import.
 
 import {
-  listUniversities, listCountries, listCampuses, listFaculties, listPrograms,
+  listUniversities, listCountries, listCampuses, listPrograms,
   createUniversity, updateUniversity, createCountry,
-  createCampus, updateCampus, createFaculty, updateFaculty,
+  createCampus, updateCampus,
   createProgram, updateProgram,
-  type University, type Country, type Campus, type Faculty, type UniversityProgram,
+  type University, type Country, type Campus, type UniversityProgram,
   type UniStatus, UNI_STATUSES,
 } from "./universities";
 
 export type CsvRow = Record<string, string>;
 
-export type ImportKind = "universities" | "campuses" | "faculties" | "programs";
+export type ImportKind = "universities" | "campuses" | "programs";
 export type PlanAction = "create" | "update" | "skip" | "error";
 
 export type PlanRow = {
@@ -113,8 +113,7 @@ export function validUrl(v: string | undefined): boolean {
 export const KNOWN_HEADERS: Record<ImportKind, string[]> = {
   universities: ["name","short_name","country","city","website","logo_url","status","description"],
   campuses:     ["university","name","city","address","is_main","status"],
-  faculties:    ["university","name","status"],
-  programs:     ["university","name","degree","duration","campus","faculty","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"],
+  programs:     ["university","name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"],
 };
 
 // ---------- EXPORTS (unchanged shapes) ----------
@@ -152,35 +151,18 @@ export async function exportCampusesCsv(universityId?: string, universityName?: 
   }
   downloadCsv("campuses.csv", toCsv(KNOWN_HEADERS.campuses, rows));
 }
-export async function exportFacultiesCsv(universityId?: string, universityName?: string) {
-  if (universityId) {
-    const list = await listFaculties(universityId);
-    downloadCsv(`faculties-${(universityName ?? "university").toLowerCase().replace(/\s+/g,"-")}.csv`, toCsv(
-      ["name","status"], list.map((f) => ({ name: f.name, status: f.status })),
-    ));
-    return;
-  }
-  const uni = await listUniversities();
-  const rows: Record<string, unknown>[] = [];
-  for (const u of uni) {
-    const fs = await listFaculties(u.id);
-    for (const f of fs) rows.push({ university: u.name, name: f.name, status: f.status });
-  }
-  downloadCsv("faculties.csv", toCsv(KNOWN_HEADERS.faculties, rows));
-}
 export async function exportProgramsCsv(universityId?: string, universityName?: string) {
   if (universityId) {
-    const [progs, camps, facs] = await Promise.all([
-      listPrograms({ universityId }), listCampuses(universityId), listFaculties(universityId),
+    const [progs, camps] = await Promise.all([
+      listPrograms({ universityId }), listCampuses(universityId),
     ]);
     const cById = new Map(camps.map((c) => [c.id, c.name] as const));
-    const fById = new Map(facs.map((f) => [f.id, f.name] as const));
     downloadCsv(`programs-${(universityName ?? "university").toLowerCase().replace(/\s+/g,"-")}.csv`, toCsv(
-      ["name","degree","duration","campus","faculty","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"],
+      ["name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"],
       progs.map((p) => ({
         name: p.name, degree: p.degree ?? "", duration: p.duration ?? "",
         campus: p.campus_id ? cById.get(p.campus_id) ?? "" : "",
-        faculty: p.faculty_id ? fById.get(p.faculty_id) ?? "" : "",
+        
         intake: p.intake ?? "", application_deadline: p.application_deadline ?? "",
         tuition_fee: p.tuition_fee ?? "", currency: p.currency ?? "",
         scholarship: p.scholarship ?? "", requirements: p.requirements ?? "",
@@ -192,11 +174,11 @@ export async function exportProgramsCsv(universityId?: string, universityName?: 
   const [uni, allProgs] = await Promise.all([listUniversities(), listPrograms()]);
   const uById = new Map(uni.map((u) => [u.id, u.name] as const));
   downloadCsv("programs.csv", toCsv(
-    ["university","name","degree","duration","campus","faculty","intake","application_deadline","tuition_fee","currency","scholarship","status"],
+    ["university","name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","status"],
     allProgs.map((p) => ({
       university: uById.get(p.university_id) ?? "",
       name: p.name, degree: p.degree ?? "", duration: p.duration ?? "",
-      campus: p.campus?.name ?? "", faculty: p.faculty?.name ?? "",
+      campus: p.campus?.name ?? "",
       intake: p.intake ?? "", application_deadline: p.application_deadline ?? "",
       tuition_fee: p.tuition_fee ?? "", currency: p.currency ?? "",
       scholarship: p.scholarship ?? "", status: p.status,
@@ -326,43 +308,6 @@ async function executeCampusesPlan(plan: ImportPlan, opts: ImportOptions): Promi
   return res;
 }
 
-// ============ FACULTIES ============
-export async function previewFacultiesCsv(text: string, universityId?: string): Promise<ImportPlan> {
-  const { headers, rows: data } = parseCsv(text);
-  const info = baseHeaderInfo("faculties", headers);
-  const uni = universityId ? [] : await listUniversities();
-  const cache = new Map<string, Faculty[]>();
-  const planRows: PlanRow[] = [];
-  for (let i = 0; i < data.length; i++) {
-    const r = data[i]; const rowNumber = i + 2;
-    const name = (r.name ?? "").trim();
-    const displayName = name || "(no name)";
-    if (!name) { planRows.push({ rowNumber, raw: r, action: "error", message: "name is required", displayName }); continue; }
-    let uid = universityId;
-    if (!uid) {
-      const un = (r.university ?? "").trim();
-      if (!un) { planRows.push({ rowNumber, raw: r, action: "error", message: "university column is required", displayName }); continue; }
-      const found = await resolveUniversityId(uni, un);
-      if (!found) { planRows.push({ rowNumber, raw: r, action: "error", message: `university not found: ${un}`, displayName }); continue; }
-      uid = found;
-    }
-    if (!cache.has(uid)) cache.set(uid, await listFaculties(uid));
-    const existing = cache.get(uid)!.find((f) => f.name.toLowerCase() === name.toLowerCase());
-    const payload = { university_id: uid, name, status: normStatus(r.status) };
-    if (existing) planRows.push({ rowNumber, raw: r, action: "update", existingId: existing.id, displayName, payload });
-    else planRows.push({ rowNumber, raw: r, action: "create", displayName, payload });
-  }
-  return { kind: "faculties", headers, ...info, rows: planRows, summary: summarize(planRows) };
-}
-
-async function executeFacultiesPlan(plan: ImportPlan, opts: ImportOptions): Promise<ImportResult> {
-  const res: ImportResult = { created: 0, updated: 0, skipped: 0, errors: [], dryRun: !!opts.dryRun };
-  for (const r of plan.rows) {
-    if (r.action === "error") { res.errors.push({ row: r.rowNumber, message: r.message ?? "invalid" }); continue; }
-    if (r.action === "update" && !opts.upsert) { res.skipped++; continue; }
-    if (opts.dryRun) { if (r.action === "create") res.created++; else if (r.action === "update") res.updated++; continue; }
-    try {
-      if (r.action === "update" && r.existingId) { await updateFaculty(r.existingId, r.payload as Partial<Faculty>); res.updated++; }
       else { await createFaculty(r.payload as Partial<Faculty>); res.created++; }
     } catch (e: any) { res.errors.push({ row: r.rowNumber, message: e?.message ?? String(e) }); }
   }

@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { cn } from "@/lib/utils";
 import {
-  getUniversity, listCampuses, listFaculties, createProgram,
+  getUniversity, listCampuses, listFaculties, updateProgram, getProgram,
   type University, type Campus, type Faculty, type UniversityProgram, UNI_STATUSES, type UniStatus,
   DuplicateError,
 } from "@/lib/universities";
@@ -24,7 +24,7 @@ import { RoleGuard } from "@/components/layout/RoleGuard";
 export const Route = createFileRoute("/_authenticated/universities/$universityId/programs/$programId/edit")({
   component: () => (
     <RoleGuard roles={["admin", "counselor", "application_team"]}>
-      <NewProgramPage />
+      <EditProgramPage />
     </RoleGuard>
   ),
 });
@@ -66,8 +66,8 @@ function FieldError({ msg }: { msg?: string }) {
 const labelCls = "text-[11px] font-bold uppercase tracking-widest text-muted-foreground";
 const inputCls = "h-11 rounded-xl border-muted-foreground/20 shadow-sm";
 
-function NewProgramPage() {
-  const { universityId } = Route.useParams();
+function EditProgramPage() {
+  const { universityId, programId } = Route.useParams();
   const navigate = useNavigate();
   const [uni, setUni] = useState<University | null>(null);
   const [campuses, setCampuses] = useState<Campus[]>([]);
@@ -135,25 +135,27 @@ function NewProgramPage() {
       setLoading(true);
       setLoadError(null);
       try {
-        const [u, c, f] = await Promise.all([
+        const [u, c, f, p] = await Promise.all([
           getUniversity(universityId),
           listCampuses(universityId),
           listFaculties(universityId),
+          getProgram(programId)
         ]);
         if (!alive) return;
         setUni(u);
         setCampuses(c);
         setFaculties(f);
+        setForm(p);
       } catch (e: any) {
         if (!alive) return;
-        setLoadError(e?.message ?? "Failed to load university data");
+        setLoadError(e?.message ?? "Failed to load university or program data");
       } finally {
         if (alive) setLoading(false);
       }
     }
     load();
     return () => { alive = false; };
-  }, [universityId]);
+  }, [universityId, programId]);
 
   async function handleSave() {
     setSubmitError(null);
@@ -184,9 +186,9 @@ function NewProgramPage() {
 
     setSaving(true);
     try {
-      await createProgram({ ...form, ...parsed.data, university_id: universityId } as any);
-      toast.success("Program created", { 
-        description: `${parsed.data.name} has been added to ${uni?.name ?? "this university"}.` 
+      await updateProgram(programId, { ...form, ...parsed.data } as any);
+      toast.success("Program updated", { 
+        description: `${parsed.data.name} has been updated.` 
       });
       // Navigate back to university details which will refresh the list via its loader
       navigate({ 
@@ -200,8 +202,8 @@ function NewProgramPage() {
         setErrors((prev) => ({ ...prev, name: "A program with this name already exists for the selected campus." }));
         toast.error("Duplicate program", { description: "Change the program name or pick another campus." });
       } else {
-        setSubmitError(e?.message ?? "A network error occurred while creating the program.");
-        toast.error("Could not create program", { description: e?.message ?? "Unexpected error" });
+        setSubmitError(e?.message ?? "A network error occurred while updating the program.");
+        toast.error("Could not update program", { description: e?.message ?? "Unexpected error" });
       }
     } finally {
       setSaving(false);
@@ -226,15 +228,15 @@ function NewProgramPage() {
     );
   }
 
-  if (loadError || !uni) {
+  if (loadError || !uni || !form.id) {
     return (
       <div className="mx-auto flex max-w-md flex-col items-center gap-4 rounded-2xl border border-dashed p-12 text-center">
         <div className="rounded-full bg-destructive/10 p-4">
           <AlertCircle className="h-8 w-8 text-destructive" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold">University not available</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{loadError ?? "We couldn't find this university."}</p>
+          <h2 className="text-lg font-semibold">University or Program not available</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{loadError ?? "We couldn't find the requested data."}</p>
         </div>
         <Button asChild variant="outline" className="rounded-xl">
           <Link to="/universities">Back to universities</Link>
@@ -257,9 +259,9 @@ function NewProgramPage() {
             </Button>
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
-                <Sparkles className="h-3 w-3" /> New program
+                <Sparkles className="h-3 w-3" /> Edit program
               </span>
-              <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Add New Program</h1>
+              <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Edit Program</h1>
               <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                 <School className="h-4 w-4" /> {uni.name}
               </p>
@@ -554,7 +556,7 @@ function NewProgramPage() {
                   disabled={saving}
                 >
                   {saving ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5" />}
-                  {saving ? "Creating Program..." : "Create Program"}
+                  {saving ? "Updating Program..." : "Update Program"}
                 </Button>
                 <Button 
                   variant="outline" 

@@ -285,6 +285,11 @@ export async function updateCampus(id: string, input: Partial<Campus>) {
   if (error) throw error;
   return data as Campus;
 }
+export async function getCampus(id: string): Promise<Campus> {
+  const { data, error } = await supabase.from("campuses").select("*").eq("id", id).single();
+  if (error) throw error;
+  return data as Campus;
+}
 export async function deleteCampus(id: string) {
   const { error } = await supabase.from("campuses").delete().eq("id", id);
   if (error) throw error;
@@ -313,6 +318,11 @@ export async function createFaculty(input: Partial<Faculty>) {
 }
 export async function updateFaculty(id: string, input: Partial<Faculty>) {
   const { data, error } = await supabase.from("faculties").update(input).eq("id", id).select().single();
+  if (error) throw error;
+  return data as Faculty;
+}
+export async function getFaculty(id: string): Promise<Faculty> {
+  const { data, error } = await supabase.from("faculties").select("*").eq("id", id).single();
   if (error) throw error;
   return data as Faculty;
 }

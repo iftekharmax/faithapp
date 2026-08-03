@@ -95,8 +95,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      // Warm up the Supabase connection early so the first auth/data call
+      // doesn't pay DNS + TLS cost.
+      { rel: "preconnect", href: "https://qdveirhlzuzrxaqjevxr.supabase.co", crossOrigin: "anonymous" },
+      { rel: "dns-prefetch", href: "https://qdveirhlzuzrxaqjevxr.supabase.co" },
     ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

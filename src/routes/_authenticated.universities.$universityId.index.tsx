@@ -17,17 +17,15 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   getUniversity, listCampuses, createCampus, updateCampus, deleteCampus,
-  listFaculties, createFaculty, updateFaculty, deleteFaculty,
   listPrograms, createProgram, updateProgram, deleteProgram,
   DuplicateError,
-  type University, type Campus, type Faculty, type UniversityProgram, UNI_STATUSES, type UniStatus,
+  type University, type Campus, type UniversityProgram, UNI_STATUSES, type UniStatus,
 } from "@/lib/universities";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { CsvToolbar } from "@/components/universities/CsvToolbar";
 import {
   exportCampusesCsv, previewCampusesCsv,
-  exportFacultiesCsv, previewFacultiesCsv,
   exportProgramsCsv, previewProgramsCsv,
 } from "@/lib/university-csv";
 
@@ -42,7 +40,6 @@ function UniversityDetail() {
   const canEdit = roles.some((r) => ["admin", "counselor", "application_team"].includes(r));
   const [uni, setUni] = useState<University | null>(null);
   const [campuses, setCampuses] = useState<Campus[]>([]);
-  const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [programs, setPrograms] = useState<UniversityProgram[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,14 +47,13 @@ function UniversityDetail() {
   async function reload() {
     setLoading(true);
     try {
-      const [u, c, f, p, a] = await Promise.all([
+      const [u, c, p, a] = await Promise.all([
         getUniversity(universityId),
         listCampuses(universityId),
-        listFaculties(universityId),
         listPrograms({ universityId }),
         supabase.from("applications").select("id, application_code, status, program, student:students(full_name, student_code)").eq("university_id", universityId).order("created_at", { ascending: false }),
       ]);
-      setUni(u); setCampuses(c); setFaculties(f); setPrograms(p);
+      setUni(u); setCampuses(c); setPrograms(p);
       setApplications((a.data as any[]) ?? []);
     } catch (e: any) { toast.error(e.message); }
     finally { setLoading(false); }
@@ -92,9 +88,8 @@ function UniversityDetail() {
             </div>
             {uni.description && <p className="mt-3 text-sm text-muted-foreground">{uni.description}</p>}
           </div>
-          <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="grid grid-cols-2 gap-3 text-center">
             <MiniStat label="Campuses" value={campuses.length} />
-            <MiniStat label="Faculties" value={faculties.length} />
             <MiniStat label="Programs" value={programs.length} />
           </div>
         </CardContent>
@@ -104,14 +99,13 @@ function UniversityDetail() {
         <TabsList>
           <TabsTrigger value="programs">Programs ({programs.length})</TabsTrigger>
           <TabsTrigger value="campuses">Campuses ({campuses.length})</TabsTrigger>
-          <TabsTrigger value="faculties">Faculties ({faculties.length})</TabsTrigger>
           <TabsTrigger value="applications">Applications ({applications.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="programs" className="mt-4">
           <ProgramsTab
             universityId={universityId} programs={programs}
-            campuses={campuses} faculties={faculties} canEdit={canEdit} onChange={reload}
+            campuses={campuses} canEdit={canEdit} onChange={reload}
           />
         </TabsContent>
 
@@ -119,9 +113,6 @@ function UniversityDetail() {
           <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
         </TabsContent>
 
-        <TabsContent value="faculties" className="mt-4">
-          <FacultiesTab universityId={universityId} faculties={faculties} canEdit={canEdit} onChange={reload} />
-        </TabsContent>
 
         <TabsContent value="applications" className="mt-4">
           <Card><CardHeader><CardTitle>Applications</CardTitle></CardHeader>
@@ -167,8 +158,8 @@ function MiniStat({ label, value }: { label: string; value: number }) {
 }
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onChange }: {
-  universityId: string; programs: UniversityProgram[]; campuses: Campus[]; faculties: Faculty[];
+function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
+  universityId: string; programs: UniversityProgram[]; campuses: Campus[];
   canEdit: boolean; onChange: () => void;
 }) {
   const navigate = useNavigate();
@@ -202,7 +193,7 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
     setSaving(true);
     try {
       const payload: any = { ...form, university_id: universityId };
-      delete payload.campus; delete payload.faculty;
+      delete payload.campus;
       if (payload.tuition_fee === "" || payload.tuition_fee == null) payload.tuition_fee = null;
       else payload.tuition_fee = Number(payload.tuition_fee);
       if (!payload.application_deadline) payload.application_deadline = null;
@@ -212,7 +203,7 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
     } catch (e: any) {
       if (e instanceof DuplicateError) {
         const payload: any = { ...form, university_id: universityId };
-        delete payload.campus; delete payload.faculty;
+        delete payload.campus;
         if (payload.tuition_fee === "" || payload.tuition_fee == null) payload.tuition_fee = null;
         else payload.tuition_fee = Number(payload.tuition_fee);
         if (!payload.application_deadline) payload.application_deadline = null;
@@ -255,7 +246,7 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
             onExport={() => exportProgramsCsv(universityId)}
             onPreview={canEdit ? (text) => previewProgramsCsv(text, universityId) : undefined}
             onImportDone={onChange}
-            templateHeaders={["name","degree","duration","campus","faculty","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"]}
+            templateHeaders={["name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"]}
             templateName="programs-template" canImport={canEdit} />
           {canEdit && <Button onClick={openNew}><Plus className="mr-2 h-4 w-4" />Add program</Button>}
         </div>
@@ -277,7 +268,7 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
                       {p.degree && <span className="inline-flex items-center gap-1"><GraduationCap className="h-3 w-3" />{p.degree}</span>}
                       {p.duration && <span>{p.duration}</span>}
                       {p.campus?.name && <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{p.campus.name}</span>}
-                      {p.faculty?.name && <span>· {p.faculty.name}</span>}
+                      
                     </div>
                   </div>
                   {canEdit && (
@@ -363,18 +354,6 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Faculty</Label>
-                <Select value={form.faculty_id ?? "none"} onValueChange={(v) => setForm({ ...form, faculty_id: v === "none" ? null : v })}>
-                  <SelectTrigger className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm">
-                    <SelectValue placeholder="Select faculty" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {faculties.map((f) => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
 
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Intake</Label>
@@ -706,119 +685,3 @@ function CampusesTab({ universityId, campuses, canEdit, onChange }: {
   );
 }
 
-/* ============ FACULTIES ============ */
-function FacultiesTab({ universityId, faculties, canEdit, onChange }: {
-  universityId: string; faculties: Faculty[]; canEdit: boolean; onChange: () => void;
-}) {
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<Faculty | null>(null);
-  const [form, setForm] = useState<Partial<Faculty>>({ status: "active" });
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
-  const [saving, setSaving] = useState(false);
-
-  function openNew() { navigate({ to: "/universities/$universityId/faculties/new", params: { universityId } }); }
-  function openEdit(f: Faculty) { navigate({ to: "/universities/$universityId/faculties/$facultyId/edit", params: { universityId, facultyId: f.id } }); }
-
-  async function save() {
-    if (!form.name?.trim()) { toast.error("Name required"); return; }
-    setSaving(true);
-    try {
-      const payload = { ...form, university_id: universityId };
-      if (editing) await updateFaculty(editing.id, payload);
-      else await createFaculty(payload);
-      toast.success("Saved"); setOpen(false); onChange();
-    } catch (e: any) {
-      if (e instanceof DuplicateError) setDup({ id: e.existingId, name: e.entityName, payload: { ...form, university_id: universityId } });
-      else toast.error(e.message);
-    } finally { setSaving(false); }
-  }
-  async function mergeDuplicate() {
-    if (!dup) return;
-    setSaving(true);
-    try { await updateFaculty(dup.id, dup.payload); toast.success("Existing faculty updated"); setDup(null); setOpen(false); onChange(); }
-    catch (e: any) { toast.error(e.message); }
-    finally { setSaving(false); }
-  }
-  async function confirmDelete() {
-    if (!deleteId) return;
-    try { await deleteFaculty(deleteId); toast.success("Deleted"); setDeleteId(null); onChange(); }
-    catch (e: any) { toast.error(e.message); }
-  }
-
-  return (
-    <Card>
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
-        <CardTitle>Faculties</CardTitle>
-        <div className="flex flex-wrap items-center gap-2">
-          <CsvToolbar label="faculties"
-            onExport={() => exportFacultiesCsv(universityId)}
-            onPreview={canEdit ? (text) => previewFacultiesCsv(text, universityId) : undefined}
-            onImportDone={onChange}
-            templateHeaders={["name","status"]}
-            templateName="faculties-template" canImport={canEdit} />
-          {canEdit && <Button onClick={openNew}><Plus className="mr-2 h-4 w-4" />Add faculty</Button>}
-        </div>
-      </CardHeader>
-      <CardContent>
-        {faculties.length === 0 ? <p className="py-10 text-center text-sm text-muted-foreground">No faculties yet.</p> : (
-          <Table>
-            <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Status</TableHead><TableHead></TableHead></TableRow></TableHeader>
-            <TableBody>{faculties.map((f) => (
-              <TableRow key={f.id}>
-                <TableCell className="font-medium">{f.name}</TableCell>
-                <TableCell><Badge variant={f.status === "active" ? "default" : "secondary"} className="capitalize">{f.status}</Badge></TableCell>
-                <TableCell className="text-right">
-                  {canEdit && <>
-                    <Button size="icon" variant="ghost" onClick={() => openEdit(f)}><Pencil className="h-4 w-4" /></Button>
-                    <Button size="icon" variant="ghost" onClick={() => setDeleteId(f.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                  </>}
-                </TableCell>
-              </TableRow>
-            ))}</TableBody>
-          </Table>
-        )}
-      </CardContent>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>{editing ? "Edit faculty" : "New faculty"}</DialogTitle></DialogHeader>
-          <div className="grid gap-3">
-            <div><Label>Name *</Label><Input value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-            <div><Label>Status</Label>
-              <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button><Button onClick={save}>Save</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Delete faculty?</AlertDialogTitle><AlertDialogDescription>Programs referencing it will lose the link.</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={!!dup} onOpenChange={(o) => !o && setDup(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Faculty already exists</AlertDialogTitle>
-            <AlertDialogDescription>
-              A faculty named <span className="font-medium">"{dup?.name}"</span> already exists at this university.
-              Update the existing faculty with your changes instead?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={mergeDuplicate} disabled={saving}>Update existing</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </Card>
-  );
-}

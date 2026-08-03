@@ -15,8 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { cn } from "@/lib/utils";
 import {
-  getUniversity, listCampuses, listFaculties, updateProgram, getProgram,
-  type University, type Campus, type Faculty, type UniversityProgram, UNI_STATUSES, type UniStatus,
+  getUniversity, listCampuses, updateProgram, getProgram,
+  type University, type Campus, type UniversityProgram, UNI_STATUSES, type UniStatus,
   DuplicateError,
 } from "@/lib/universities";
 import { RoleGuard } from "@/components/layout/RoleGuard";
@@ -71,7 +71,7 @@ function EditProgramPage() {
   const navigate = useNavigate();
   const [uni, setUni] = useState<University | null>(null);
   const [campuses, setCampuses] = useState<Campus[]>([]);
-  const [faculties, setFaculties] = useState<Faculty[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -135,16 +135,15 @@ function EditProgramPage() {
       setLoading(true);
       setLoadError(null);
       try {
-        const [u, c, f, p] = await Promise.all([
+        const [u, c, p] = await Promise.all([
           getUniversity(universityId),
           listCampuses(universityId),
-          listFaculties(universityId),
           getProgram(programId)
         ]);
         if (!alive) return;
         setUni(u);
         setCampuses(c);
-        setFaculties(f);
+        
         setForm(p);
       } catch (e: any) {
         if (!alive) return;
@@ -351,7 +350,7 @@ function EditProgramPage() {
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6">
                 <div className="grid gap-2">
                   <Label className={labelCls}>Campus</Label>
                   <Select value={form.campus_id ?? "none"} onValueChange={(v) => set("campus_id", v === "none" ? null : v)}>
@@ -361,18 +360,6 @@ function EditProgramPage() {
                     <SelectContent>
                       <SelectItem value="none">None</SelectItem>
                       {campuses.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label className={labelCls}>Faculty</Label>
-                  <Select value={form.faculty_id ?? "none"} onValueChange={(v) => set("faculty_id", v === "none" ? null : v)}>
-                    <SelectTrigger className={inputCls}>
-                      <SelectValue placeholder="Select faculty" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      {faculties.map((f) => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>

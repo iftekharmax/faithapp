@@ -190,6 +190,7 @@ function ProgramsTab({ universityId, programs, campuses, faculties, canEdit, onC
   function openNew() { navigate({ to: "/universities/$universityId/programs/new", params: { universityId } }); }
   function openEdit(p: UniversityProgram) { navigate({ to: "/universities/$universityId/programs/$programId/edit", params: { universityId, programId: p.id } }); }
 
+
   async function save() {
     if (!form.name?.trim()) { toast.error("Program name required"); return; }
     if (form.tuition_fee != null && form.tuition_fee !== "" as any) {

@@ -15,6 +15,7 @@
     "test:e2e": "playwright test",
     "format": "prettier --write .",
     "db:push": "supabase db push",
+    "db:apply": "bash scripts/db-apply.sh",
     "db:pull": "supabase db pull",
     "db:status": "supabase migration list",
     "db:new": "supabase migration new",

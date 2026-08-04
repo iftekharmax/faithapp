@@ -300,13 +300,19 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
               )}
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-12 text-center">
-              <div className="rounded-full bg-muted p-3"><SearchX className="h-6 w-6 text-muted-foreground" /></div>
-              <div>
-                <p className="font-semibold">No matching programs</p>
-                <p className="mt-1 text-sm text-muted-foreground">Try a different search term or degree filter.</p>
+            <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed py-16 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                <SearchX className="h-8 w-8 text-muted-foreground" />
               </div>
-              <Button variant="outline" className="rounded-xl" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>Clear filters</Button>
+              <div className="max-w-xs space-y-2">
+                <p className="text-lg font-bold">No matching programs</p>
+                <p className="text-sm text-muted-foreground">
+                  We couldn't find any programs matching your search or filters.
+                </p>
+              </div>
+              <Button variant="outline" className="rounded-xl px-6 h-10 font-semibold" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
+                Clear all filters
+              </Button>
             </div>
           )
         ) : (

@@ -222,7 +222,7 @@ function ApplicationDetailPage() {
           <span className="text-muted-foreground/30">/</span>
           <span className="font-medium text-foreground">{app.application_code}</span>
         </div>
-        <Button asChild variant="ghost" size="sm" className="h-8 rounded-lg gap-2">
+        <Button asChild variant="ghost" size="sm" className="h-8 rounded-lg gap-2 text-muted-foreground hover:text-foreground">
           <Link to="/applications"><ArrowLeft className="h-3.5 w-3.5" /> Back to list</Link>
         </Button>
       </nav>

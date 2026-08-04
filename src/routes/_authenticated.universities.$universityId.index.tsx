@@ -394,7 +394,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
         )}
       </CardContent>
 
-      <ProgramDetailsDialog program={viewProgram} open={!!viewProgram} onOpenChange={(o: boolean) => !o && setViewProgram(null)} />
+      
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden border-none bg-background sm:rounded-3xl shadow-2xl">
           <div className="relative overflow-hidden bg-primary px-6 py-8 text-primary-foreground">

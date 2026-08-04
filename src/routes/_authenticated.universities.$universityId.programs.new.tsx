@@ -43,7 +43,7 @@ const programSchema = z.object({
   currency: z.string().trim().min(1, "Currency is required").max(10, "Use a short currency code"),
   application_deadline: z
     .string()
-    .min(1, "Application Deadline is required")
+    .optional()
     .refine((v) => !v || !Number.isNaN(new Date(v).getTime()), "Enter a valid date"),
   tuition_fee: feeField,
   application_fee: feeField,
@@ -193,8 +193,8 @@ function NewProgramPage() {
       }
       
       setErrors(next);
-      toast.error("Validation Error", {
-        description: `Missing or invalid fields: ${missingFields.join(", ")}`
+      toast.error("Required fields missing", {
+        description: `Please fill in: ${missingFields.join(", ")}`
       });
       return;
     }
@@ -402,7 +402,7 @@ function NewProgramPage() {
                   <FieldError msg={errors.intake} />
                 </div>
                 <div className="grid gap-2">
-                  <Label className={labelCls}>Application deadline *</Label>
+                  <Label className={labelCls}>Application deadline</Label>
                   <Input
                     type="date"
                     className={cn(inputCls, errors.application_deadline && "border-destructive")}

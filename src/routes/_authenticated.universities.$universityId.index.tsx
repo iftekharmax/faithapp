@@ -29,6 +29,7 @@ import {
   exportCampusesCsv, previewCampusesCsv,
   exportProgramsCsv, previewProgramsCsv,
 } from "@/lib/university-csv";
+import { ProgramDetailsDialog } from "@/components/universities/ProgramDetailsDialog";
 
 export const Route = createFileRoute("/_authenticated/universities/$universityId/")({
   component: UniversityDetail,

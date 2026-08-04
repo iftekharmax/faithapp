@@ -175,12 +175,28 @@ function EditProgramPage() {
 
     if (!parsed.success) {
       const next: Errors = {};
+      const errorFields: string[] = [];
+      
       for (const issue of parsed.error.issues) {
         const key = String(issue.path[0]);
         if (!next[key]) next[key] = issue.message;
+        
+        // Map keys to user friendly names for the toast
+        const fieldName = key === "name" ? "Program Name" :
+                        key === "degree" ? "Degree Level" :
+                        key === "duration" ? "Duration" :
+                        key === "intake" ? "Intake(s)" :
+                        key === "application_deadline" ? "Application Deadline" : key;
+        
+        if (!errorFields.includes(fieldName)) {
+          errorFields.push(fieldName);
+        }
       }
+      
       setErrors(next);
-      toast.error("Please fix the highlighted fields before saving");
+      toast.error("Form Validation Error", {
+        description: `Invalid or missing: ${errorFields.join(", ")}. Please check highlighted fields.`
+      });
       return;
     }
 
@@ -315,7 +331,7 @@ function EditProgramPage() {
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
           <Card className="overflow-hidden rounded-2xl border-none shadow-md ring-1 ring-border">
-            <CardHeader className="border-b bg-muted/30 pb-4">
+            <CardHeader className="border-b bg-muted/30 pb-4 sticky top-0 z-10 backdrop-blur-sm">
               <CardTitle className="flex items-center gap-2 text-base">
                 <BookOpen className="h-4 w-4 text-primary" /> General Information
               </CardTitle>
@@ -377,7 +393,7 @@ function EditProgramPage() {
           </Card>
 
           <Card className="overflow-hidden rounded-2xl border-none shadow-md ring-1 ring-border">
-            <CardHeader className="border-b bg-muted/30 pb-4">
+            <CardHeader className="border-b bg-muted/30 pb-4 sticky top-0 z-10 backdrop-blur-sm">
               <CardTitle className="flex items-center gap-2 text-base">
                 <Calendar className="h-4 w-4 text-primary" /> Admission & Requirements
               </CardTitle>

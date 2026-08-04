@@ -194,8 +194,8 @@ function NewProgramPage() {
       }
       
       setErrors(next);
-      toast.error("Required fields missing", {
-        description: `Please fill in: ${missingFields.join(", ")}`
+      toast.error("Form Validation Error", {
+        description: `Invalid or missing: ${missingFields.join(", ")}. Please check highlighted fields.`
       });
       return;
     }
@@ -331,7 +331,7 @@ function NewProgramPage() {
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
           <Card className="overflow-hidden rounded-2xl border-none shadow-md ring-1 ring-border">
-            <CardHeader className="border-b bg-muted/30 pb-4">
+            <CardHeader className="border-b bg-muted/30 pb-4 sticky top-0 z-10 backdrop-blur-sm">
               <CardTitle className="flex items-center gap-2 text-base">
                 <BookOpen className="h-4 w-4 text-primary" /> General Information
               </CardTitle>
@@ -393,7 +393,7 @@ function NewProgramPage() {
           </Card>
 
           <Card className="overflow-hidden rounded-2xl border-none shadow-md ring-1 ring-border">
-            <CardHeader className="border-b bg-muted/30 pb-4">
+            <CardHeader className="border-b bg-muted/30 pb-4 sticky top-0 z-10 backdrop-blur-sm">
               <CardTitle className="flex items-center gap-2 text-base">
                 <Calendar className="h-4 w-4 text-primary" /> Admission & Requirements
               </CardTitle>

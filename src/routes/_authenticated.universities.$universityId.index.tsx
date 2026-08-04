@@ -297,32 +297,70 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
         ) : (
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((p) => (
-              <div key={p.id} className="rounded-xl border p-4 transition hover:shadow-sm">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-semibold">{p.name}</h3>
-                      <Badge variant={p.status === "active" ? "default" : "secondary"} className="capitalize">{p.status}</Badge>
+              <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
+                <div className="flex flex-1 flex-col p-5">
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <div className="space-y-1.5">
+                      <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
+                        {p.name}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground">
+                        {p.degree && (
+                          <span className="inline-flex items-center gap-1.5">
+                            <GraduationCap className="h-4 w-4 text-primary/70" />
+                            {p.degree}
+                          </span>
+                        )}
+                        {p.duration && (
+                          <>
+                            <span className="text-muted-foreground/30">•</span>
+                            <span>{p.duration}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    <div className="mt-1 flex flex-wrap gap-3 text-xs text-muted-foreground">
-                      {p.degree && <span className="inline-flex items-center gap-1"><GraduationCap className="h-3 w-3" />{p.degree}</span>}
-                      {p.duration && <span>{p.duration}</span>}
-                      {p.campus?.name && <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{p.campus.name}</span>}
-                      
+                    {canEdit && (
+                      <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary" onClick={() => openEdit(p)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(p.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 border-t pt-4">
+                    {p.campus?.name && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <MapPin className="h-4 w-4 shrink-0 text-primary/60" />
+                        <span className="truncate">{p.campus.name}</span>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-2 gap-4">
+                      {p.tuition_fee != null && (
+                        <div className="space-y-0.5">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Tuition Fee</p>
+                          <p className="font-bold text-primary">
+                            {p.currency ?? ""} {p.tuition_fee.toLocaleString()}
+                          </p>
+                        </div>
+                      )}
+                      {p.intake && (
+                        <div className="space-y-0.5 text-right">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Next Intake</p>
+                          <p className="font-semibold text-foreground/90">{p.intake}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {canEdit && (
-                    <div className="flex gap-1">
-                      <Button size="icon" variant="ghost" onClick={() => openEdit(p)}><Pencil className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => setDeleteId(p.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                    </div>
-                  )}
                 </div>
-                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                  {p.intake && <InfoLine icon={Calendar} label="Intake" value={p.intake} />}
-                  {p.application_deadline && <InfoLine icon={Calendar} label="Deadline" value={new Date(p.application_deadline).toLocaleDateString()} />}
-                  {p.tuition_fee != null && <InfoLine icon={DollarSign} label="Tuition" value={`${p.currency ?? ""} ${p.tuition_fee.toLocaleString()}`} />}
-                  {p.scholarship && <InfoLine icon={Award} label="Scholarship" value={p.scholarship} />}
+
+                <div className="bg-muted/30 p-4 pt-0">
+                  <Button className="w-full rounded-xl font-bold shadow-sm transition-all hover:shadow-md" onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}>
+                    Create Application
+                  </Button>
                 </div>
               </div>
             ))}

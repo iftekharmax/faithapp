@@ -41,11 +41,7 @@ const programSchema = z.object({
   duration: z.string().trim().max(60).optional().nullable(),
   intake: z.string().trim().max(120).optional().nullable(),
   currency: z.string().trim().min(1, "Currency is required").max(10, "Use a short currency code"),
-  application_deadline: z
-    .string()
-    .optional()
-    .nullable()
-    .refine((v) => !v || !Number.isNaN(new Date(v).getTime()), "Enter a valid date"),
+  application_deadline: z.string().optional().nullable(),
   tuition_fee: feeField,
   application_fee: feeField,
   registration_fee: feeField,

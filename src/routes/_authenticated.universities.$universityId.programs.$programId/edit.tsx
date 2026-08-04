@@ -405,6 +405,15 @@ function EditProgramPage() {
                   placeholder="Describe academic and English proficiency requirements..."
                 />
               </div>
+
+              <div className="grid gap-2">
+                <Label className={labelCls}>Scholarship</Label>
+                <RichTextEditor
+                  value={form.scholarship ?? ""}
+                  onChange={(html) => set("scholarship", html)}
+                  placeholder="Describe available scholarships and funding opportunities..."
+                />
+              </div>
             </CardContent>
           </Card>
 
@@ -509,19 +518,10 @@ function EditProgramPage() {
           <Card className="overflow-hidden rounded-2xl border-none shadow-md ring-1 ring-border">
             <CardHeader className="border-b bg-muted/30 pb-4">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Award className="h-4 w-4 text-primary" /> Other Details
+                <Award className="h-4 w-4 text-primary" /> Status
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 p-6">
-              <div className="grid gap-2">
-                <Label className={labelCls}>Scholarship</Label>
-                <Input
-                  className={inputCls}
-                  placeholder="Available scholarship details"
-                  value={form.scholarship ?? ""}
-                  onChange={(e) => set("scholarship", e.target.value)}
-                />
-              </div>
               <div className="grid gap-2">
                 <Label className={labelCls}>Status</Label>
                 <Select value={form.status ?? "active"} onValueChange={(v) => set("status", v as UniStatus)}>
@@ -538,7 +538,7 @@ function EditProgramPage() {
 
               <div className="pt-4 flex flex-col gap-3">
                 <Button 
-                  className="h-12 w-full rounded-xl text-base font-semibold shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
+                  className="h-12 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:translate-y-[-1px] active:scale-[0.98]"
                   onClick={handleSave}
                   disabled={saving}
                 >
@@ -547,7 +547,7 @@ function EditProgramPage() {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="h-12 w-full rounded-xl text-base font-semibold"
+                  className="h-12 w-full rounded-xl text-base font-semibold transition-colors hover:bg-muted"
                   asChild
                   disabled={saving}
                 >

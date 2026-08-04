@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import {
   ArrowLeft, Save, Loader2, DollarSign, Award, BookOpen, Clock, School,
@@ -185,7 +186,15 @@ function EditProgramPage() {
 
     setSaving(true);
     try {
-      await updateProgram(programId, { ...form, ...parsed.data } as any);
+      // Sanitize rich text fields
+      const sanitizedForm = {
+        ...form,
+        requirements: form.requirements ? DOMPurify.sanitize(form.requirements) : form.requirements,
+        scholarship: form.scholarship ? DOMPurify.sanitize(form.scholarship) : form.scholarship,
+        description: form.description ? DOMPurify.sanitize(form.description) : form.description,
+      };
+      
+      await updateProgram(programId, { ...sanitizedForm, ...parsed.data } as any);
       toast.success("Program updated", { 
         description: `${parsed.data.name} has been updated.` 
       });

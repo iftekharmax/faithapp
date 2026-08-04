@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import {
   ArrowLeft, Save, Loader2, DollarSign, Award, BookOpen, Clock, School,
@@ -201,7 +202,15 @@ function NewProgramPage() {
 
     setSaving(true);
     try {
-      await createProgram({ ...form, ...parsed.data, university_id: universityId } as any);
+      // Sanitize rich text fields
+      const sanitizedForm = {
+        ...form,
+        requirements: form.requirements ? DOMPurify.sanitize(form.requirements) : form.requirements,
+        scholarship: form.scholarship ? DOMPurify.sanitize(form.scholarship) : form.scholarship,
+        description: form.description ? DOMPurify.sanitize(form.description) : form.description,
+      };
+      
+      await createProgram({ ...sanitizedForm, ...parsed.data, university_id: universityId } as any);
       toast.success("Program created", { 
         description: `${parsed.data.name} has been added to ${uni?.name ?? "this university"}.` 
       });

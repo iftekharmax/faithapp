@@ -304,22 +304,13 @@ function ApplicationsPage() {
                     </TableCell>
 
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center justify-end gap-0.5">
+                      <div className="flex items-center justify-end gap-1">
                         <button
                           type="button"
                           aria-label="Edit application"
                           title="View & Edit"
                           onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label="Edit application"
-                          title="Edit"
-                          onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary active:scale-95"
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
@@ -328,7 +319,7 @@ function ApplicationsPage() {
                           aria-label="Delete application"
                           title="Delete"
                           onClick={() => { setSelected(a); setDeleteOpen(true); }}
-                          className="grid h-8 w-8 place-items-center rounded-md text-red-600 transition-colors hover:bg-red-500/10"
+                          className="grid h-8 w-8 place-items-center rounded-full text-destructive transition-all hover:bg-destructive/10 active:scale-95"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>

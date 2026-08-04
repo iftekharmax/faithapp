@@ -311,12 +311,12 @@ function ApplicationsPage() {
                       </div>
                     </TableCell>
                     <TableCell className="hidden lg:table-cell text-sm" onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>{a.intake || "—"}</TableCell>
-                    <TableCell>
+                    <TableCell onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
                       <Badge variant="secondary" className={statusColor[a.status]}>
                         {APPLICATION_STATUS_LABELS[a.status]}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
                       {docStatuses[a.id] && docStatuses[a.id] !== "none" ? (
                         <Badge
                           variant="secondary"
@@ -328,7 +328,7 @@ function ApplicationsPage() {
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap" onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
                       {a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "—"}
                     </TableCell>
 

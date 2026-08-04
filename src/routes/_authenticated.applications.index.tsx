@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, RefreshCw, Filter, X, FileText, Pencil, Trash2 } from "lucide-react";
+import { Search, Plus, RefreshCw, Filter, X, FileText, Pencil, Trash2, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 import { Button } from "@/components/ui/button";
@@ -80,6 +80,7 @@ function ApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
   
   const [country, setCountry] = useState<string>("all");
   const [university, setUniversity] = useState<string>("all");
@@ -115,7 +116,7 @@ function ApplicationsPage() {
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
-    return apps.filter((a) => {
+    const result = apps.filter((a) => {
       if (term) {
         const hay = [
           a.application_code, a.university, a.program, a.campus,
@@ -130,7 +131,13 @@ function ApplicationsPage() {
       if (intake !== "all" && a.intake !== intake) return false;
       return true;
     });
-  }, [apps, q, status, country, university, intake]);
+
+    return [...result].sort((a, b) => {
+      const dateA = new Date(a.created_at || 0).getTime();
+      const dateB = new Date(b.created_at || 0).getTime();
+      return sortBy === "newest" ? dateB - dateA : dateA - dateB;
+    });
+  }, [apps, q, status, country, university, intake, sortBy]);
 
   useEffect(() => { setPage(1); }, [q, status, country, university, intake]);
 
@@ -179,9 +186,19 @@ function ApplicationsPage() {
                 className="pl-9"
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+                <SelectTrigger className="w-[140px]">
+                  <ArrowUpDown className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
+                  <SelectValue placeholder="Sort" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest first</SelectItem>
+                  <SelectItem value="oldest">Oldest first</SelectItem>
+                </SelectContent>
+              </Select>
               <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger className="w-[180px]"><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectTrigger className="w-[150px]"><SelectValue placeholder="Status" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All statuses</SelectItem>
                   {APPLICATION_STATUSES.map((s) => (
@@ -257,9 +274,16 @@ function ApplicationsPage() {
                     <TableCell colSpan={7} className="p-0">
                       <EmptyState
                         icon={FileText}
-                        title="No applications match your filters"
-                        description="Try adjusting search or clearing filters to see more results."
+                        title="No applications found"
+                        description={q || status !== "all" || country !== "all" || university !== "all" || intake !== "all" 
+                          ? "Try adjusting search or clearing filters to see more results." 
+                          : "Start tracking student applications by creating your first one."}
                         className="border-0 bg-transparent"
+                        action={!loading && apps.length === 0 ? (
+                          <Button asChild size="sm" className="mt-4 rounded-xl">
+                            <Link to="/applications/new"><Plus className="mr-2 h-4 w-4" /> New application</Link>
+                          </Button>
+                        ) : undefined}
                       />
                     </TableCell>
                   </TableRow>

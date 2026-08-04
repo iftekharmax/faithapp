@@ -215,6 +215,18 @@ function ApplicationDetailPage() {
 
   return (
     <div className="space-y-6 pb-24">
+      {/* Breadcrumbs & Back */}
+      <nav className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Link to="/applications" className="hover:text-primary transition-colors">Applications</Link>
+          <span className="text-muted-foreground/30">/</span>
+          <span className="font-medium text-foreground">{app.application_code}</span>
+        </div>
+        <Button asChild variant="ghost" size="sm" className="h-8 rounded-lg gap-2">
+          <Link to="/applications"><ArrowLeft className="h-3.5 w-3.5" /> Back to list</Link>
+        </Button>
+      </nav>
+
       {/* Hero header */}
       <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-5 shadow-sm sm:p-7">
         <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
@@ -222,10 +234,6 @@ function ApplicationDetailPage() {
 
         <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 sm:flex sm:flex-wrap sm:justify-between">
           <div className="flex min-w-0 items-start gap-3 sm:gap-4">
-            <Button asChild variant="ghost" size="icon" className="shrink-0 rounded-full bg-background/60 backdrop-blur hover:bg-background">
-              <Link to="/applications" aria-label="Back to applications"><ArrowLeft className="h-4 w-4" /></Link>
-            </Button>
-
             <div className="hidden h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-md sm:grid">
               <GraduationCap className="h-6 w-6" />
             </div>

@@ -194,12 +194,17 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
   const [degreeFilter, setDegreeFilter] = useState<string>("all");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6;
 
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
   const filtered = programs.filter((p) =>
     (!search || p.name.toLowerCase().includes(search.toLowerCase())) &&
     (degreeFilter === "all" || p.degree === degreeFilter)
   );
+
+  const displayed = filtered.slice(0, page * itemsPerPage);
+  const hasMore = displayed.length < filtered.length;
 
 
   function openNew() { navigate({ to: "/universities/$universityId/programs/new", params: { universityId } }); }
@@ -278,13 +283,21 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
       <CardContent>
         {filtered.length === 0 ? (
           programs.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-12 text-center">
-              <div className="rounded-full bg-primary/10 p-3"><GraduationCap className="h-6 w-6 text-primary" /></div>
-              <div>
-                <p className="font-semibold">No programs yet</p>
-                <p className="mt-1 text-sm text-muted-foreground">Add your first program or import a CSV to get started.</p>
+            <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed py-16 text-center">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                <GraduationCap className="h-10 w-10 text-primary" />
               </div>
-              {canEdit && <Button onClick={openNew} className="rounded-xl"><Plus className="mr-2 h-4 w-4" />Add program</Button>}
+              <div className="max-w-xs space-y-2">
+                <p className="text-xl font-bold">No programs yet</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Start tracking academic programs for this university by creating your first one.
+                </p>
+              </div>
+              {canEdit && (
+                <Button onClick={openNew} className="rounded-xl shadow-lg shadow-primary/25 h-11 px-6 font-bold transition-all hover:scale-[1.02] active:scale-[0.98]">
+                  <Plus className="mr-2 h-5 w-5" /> Create Program
+                </Button>
+              )}
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-12 text-center">
@@ -297,8 +310,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
             </div>
           )
         ) : (
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((p) => (
+          <div className="space-y-8">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {displayed.map((p) => (
               <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
                 <div className="flex flex-1 flex-col p-5">
                   <div className="mb-4 flex items-start justify-between gap-4">

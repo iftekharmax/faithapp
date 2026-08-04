@@ -295,7 +295,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
             </div>
           )
         ) : (
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((p) => (
               <div key={p.id} className="rounded-xl border p-4 transition hover:shadow-sm">
                 <div className="flex items-start justify-between gap-2">

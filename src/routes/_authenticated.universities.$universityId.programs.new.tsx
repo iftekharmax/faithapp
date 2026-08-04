@@ -193,8 +193,8 @@ function NewProgramPage() {
       }
       
       setErrors(next);
-      toast.error("Validation Error", {
-        description: `Missing or invalid fields: ${missingFields.join(", ")}`
+      toast.error("Required fields missing", {
+        description: `Please fill in: ${missingFields.join(", ")}`
       });
       return;
     }

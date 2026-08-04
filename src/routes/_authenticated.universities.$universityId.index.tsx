@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, SearchX } from "lucide-react";
+import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, SearchX, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
@@ -410,7 +411,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
         )}
       </CardContent>
 
-      <ProgramDetailsDialog program={viewProgram} open={!!viewProgram} onOpenChange={(o) => !o && setViewProgram(null)} />
+      <ProgramDetailsDialog program={viewProgram} open={!!viewProgram} onOpenChange={(o: boolean) => !o && setViewProgram(null)} />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden border-none bg-background sm:rounded-3xl shadow-2xl">

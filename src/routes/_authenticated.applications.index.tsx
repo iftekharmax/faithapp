@@ -269,7 +269,7 @@ function ApplicationsPage() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableSkeleton rows={6} columns={7} />
+                  <TableSkeleton rows={6} columns={8} />
                 ) : paged.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="p-0">

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, RefreshCw, Filter, X, Eye, FileText, Pencil, Trash2 } from "lucide-react";
+import { Search, Plus, RefreshCw, Filter, X, FileText, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ import {
   listDocumentStatusByApplication,
   type DocSummaryStatus,
 } from "@/lib/document-requests";
-import { ApplicationViewDialog } from "@/components/applications/ApplicationViewDialog";
+
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/applications/")({
@@ -87,7 +87,6 @@ function ApplicationsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Application | null>(null);
-  const [viewOpen, setViewOpen] = useState(false);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -266,7 +265,7 @@ function ApplicationsPage() {
                   </TableRow>
 
                 ) : paged.map((a) => (
-                  <TableRow key={a.id} className="cursor-pointer"
+                  <TableRow key={a.id} className="cursor-pointer group hover:bg-muted/50 transition-colors"
                     onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
                     <TableCell>
                       <div className="text-sm font-medium">{a.application_code}</div>
@@ -304,22 +303,13 @@ function ApplicationsPage() {
                     </TableCell>
 
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center justify-end gap-0.5">
-                        <button
-                          type="button"
-                          aria-label="View application"
-                          title="View"
-                          onClick={() => { setSelected(a); setViewOpen(true); }}
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </button>
+                      <div className="flex items-center justify-end gap-1">
                         <button
                           type="button"
                           aria-label="Edit application"
-                          title="Edit"
+                          title="View & Edit"
                           onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary active:scale-95"
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
@@ -328,7 +318,7 @@ function ApplicationsPage() {
                           aria-label="Delete application"
                           title="Delete"
                           onClick={() => { setSelected(a); setDeleteOpen(true); }}
-                          className="grid h-8 w-8 place-items-center rounded-md text-red-600 transition-colors hover:bg-red-500/10"
+                          className="grid h-8 w-8 place-items-center rounded-full text-destructive transition-all hover:bg-destructive/10 active:scale-95"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -350,7 +340,7 @@ function ApplicationsPage() {
         </CardContent>
       </Card>
 
-      <ApplicationViewDialog application={selected} open={viewOpen} onOpenChange={setViewOpen} />
+      
 
       <ConfirmDialog
         open={deleteOpen}

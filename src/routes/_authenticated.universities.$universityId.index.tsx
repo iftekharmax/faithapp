@@ -70,30 +70,7 @@ function UniversityDetail() {
   useEffect(() => { reload(); /* eslint-disable-next-line */ }, [universityId]);
 
   if (loading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-48 w-full rounded-3xl" />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map(i => (
-            <Card key={i} className="overflow-hidden rounded-3xl border-none shadow-sm">
-              <div className="p-6 space-y-4">
-                <div className="space-y-2">
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                </div>
-                <Separator />
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1"><Skeleton className="h-3 w-12" /><Skeleton className="h-5 w-20" /></div>
-                  <div className="space-y-1 text-right"><Skeleton className="h-3 w-12 ml-auto" /><Skeleton className="h-5 w-16 ml-auto" /></div>
-                </div>
-                <Skeleton className="h-10 w-full rounded-2xl" />
-                <Skeleton className="h-10 w-full rounded-2xl" />
-              </div>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
+    return <div className="space-y-4"><Skeleton className="h-32" /><Skeleton className="h-64" /></div>;
   }
 
   if (loadError || !uni) {

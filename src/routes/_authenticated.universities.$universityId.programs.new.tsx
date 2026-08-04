@@ -421,6 +421,15 @@ function NewProgramPage() {
                   placeholder="Describe academic and English proficiency requirements..."
                 />
               </div>
+
+              <div className="grid gap-2">
+                <Label className={labelCls}>Scholarship</Label>
+                <RichTextEditor
+                  value={form.scholarship ?? ""}
+                  onChange={(html) => set("scholarship", html)}
+                  placeholder="Describe available scholarships and funding opportunities..."
+                />
+              </div>
             </CardContent>
           </Card>
 

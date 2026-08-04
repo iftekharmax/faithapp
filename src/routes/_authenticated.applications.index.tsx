@@ -307,12 +307,12 @@ function ApplicationsPage() {
                       <div className="flex items-center justify-end gap-0.5">
                         <button
                           type="button"
-                          aria-label="View application"
-                          title="View"
-                          onClick={() => { setSelected(a); setViewOpen(true); }}
+                          aria-label="Edit application"
+                          title="View & Edit"
+                          onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
                           className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                         >
-                          <Eye className="h-4 w-4" />
+                          <Pencil className="h-4 w-4" />
                         </button>
                         <button
                           type="button"

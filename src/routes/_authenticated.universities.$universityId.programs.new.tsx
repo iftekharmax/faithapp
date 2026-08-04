@@ -35,15 +35,15 @@ const feeField = z
   .refine((v) => v == null || (Number.isFinite(v) && v >= 0), "Must be a positive number");
 
 const programSchema = z.object({
-  name: z.string().trim().min(2, "Program name must be at least 2 characters").max(200, "Name is too long"),
-  degree: z.string().trim().max(100).optional().nullable(),
-  duration: z.string().trim().max(60).optional().nullable(),
-  intake: z.string().trim().max(120).optional().nullable(),
+  name: z.string().trim().min(1, "Program Name is required").max(200, "Name is too long"),
+  degree: z.string().trim().min(1, "Degree Level is required").max(100),
+  duration: z.string().trim().min(1, "Duration is required").max(60),
+  campus_id: z.string().min(1, "Campus is required"),
+  intake: z.string().trim().min(1, "Intake(s) is required").max(120),
   currency: z.string().trim().min(1, "Currency is required").max(10, "Use a short currency code"),
   application_deadline: z
     .string()
-    .optional()
-    .nullable()
+    .min(1, "Application Deadline is required")
     .refine((v) => !v || !Number.isNaN(new Date(v).getTime()), "Enter a valid date"),
   tuition_fee: feeField,
   application_fee: feeField,
@@ -160,6 +160,7 @@ function NewProgramPage() {
       name: form.name ?? "",
       degree: form.degree ?? "",
       duration: form.duration ?? "",
+      campus_id: form.campus_id ?? "",
       intake: form.intake ?? "",
       currency: form.currency ?? "",
       application_deadline: form.application_deadline ?? "",
@@ -172,12 +173,29 @@ function NewProgramPage() {
 
     if (!parsed.success) {
       const next: Errors = {};
+      const missingFields: string[] = [];
+      
       for (const issue of parsed.error.issues) {
         const key = String(issue.path[0]);
         if (!next[key]) next[key] = issue.message;
+        
+        // Map keys to user friendly names for the toast
+        const fieldName = key === "name" ? "Program Name" :
+                        key === "degree" ? "Degree Level" :
+                        key === "duration" ? "Duration" :
+                        key === "campus_id" ? "Campus" :
+                        key === "intake" ? "Intake(s)" :
+                        key === "application_deadline" ? "Application Deadline" : key;
+        
+        if (!missingFields.includes(fieldName)) {
+          missingFields.push(fieldName);
+        }
       }
+      
       setErrors(next);
-      toast.error("Please fix the highlighted fields before saving");
+      toast.error("Validation Error", {
+        description: `Missing or invalid fields: ${missingFields.join(", ")}`
+      });
       return;
     }
 
@@ -324,7 +342,7 @@ function NewProgramPage() {
 
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="grid gap-2">
-                  <Label className={labelCls}>Degree level</Label>
+                  <Label className={labelCls}>Degree level *</Label>
                   <Input
                     className={inputCls}
                     placeholder="e.g. Bachelor, Master"
@@ -334,7 +352,7 @@ function NewProgramPage() {
                   <FieldError msg={errors.degree} />
                 </div>
                 <div className="grid gap-2">
-                  <Label className={labelCls}>Duration</Label>
+                  <Label className={labelCls}>Duration *</Label>
                   <div className="relative">
                     <Input
                       className={cn(inputCls, "pl-10")}
@@ -350,7 +368,7 @@ function NewProgramPage() {
 
               <div className="grid gap-6">
                 <div className="grid gap-2">
-                  <Label className={labelCls}>Campus</Label>
+                  <Label className={labelCls}>Campus *</Label>
                   <Select value={form.campus_id ?? "none"} onValueChange={(v) => set("campus_id", v === "none" ? null : v)}>
                     <SelectTrigger className={inputCls}>
                       <SelectValue placeholder="Select campus" />
@@ -374,7 +392,7 @@ function NewProgramPage() {
             <CardContent className="grid gap-6 p-6">
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="grid gap-2">
-                  <Label className={labelCls}>Intake(s)</Label>
+                  <Label className={labelCls}>Intake(s) *</Label>
                   <Input
                     className={inputCls}
                     placeholder="e.g. Jan, Sep"
@@ -384,7 +402,7 @@ function NewProgramPage() {
                   <FieldError msg={errors.intake} />
                 </div>
                 <div className="grid gap-2">
-                  <Label className={labelCls}>Application deadline</Label>
+                  <Label className={labelCls}>Application deadline *</Label>
                   <Input
                     type="date"
                     className={cn(inputCls, errors.application_deadline && "border-destructive")}

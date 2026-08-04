@@ -402,7 +402,7 @@ function NewProgramPage() {
                   <FieldError msg={errors.intake} />
                 </div>
                 <div className="grid gap-2">
-                  <Label className={labelCls}>Application deadline *</Label>
+                  <Label className={labelCls}>Application deadline</Label>
                   <Input
                     type="date"
                     className={cn(inputCls, errors.application_deadline && "border-destructive")}

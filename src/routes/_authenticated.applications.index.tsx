@@ -263,7 +263,8 @@ function ApplicationsPage() {
                   <TableHead className="hidden lg:table-cell">Intake</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Documents</TableHead>
-                  <TableHead className="w-16 text-right">Actions</TableHead>
+                <TableHead className="w-24">Created</TableHead>
+                <TableHead className="w-16 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

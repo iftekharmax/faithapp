@@ -563,16 +563,33 @@ function EditProgramPage() {
 
               <div className="pt-4 flex flex-col gap-3">
                 <Button 
-                  className="h-12 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:translate-y-[-1px] active:scale-[0.98]"
+                  className={cn(
+                    "h-12 w-full rounded-xl text-base font-semibold shadow-lg transition-all active:scale-[0.98]",
+                    saving 
+                      ? "bg-primary/70 cursor-not-allowed opacity-80" 
+                      : "shadow-primary/20 hover:shadow-xl hover:translate-y-[-1px]"
+                  )}
                   onClick={handleSave}
                   disabled={saving}
                 >
-                  {saving ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5" />}
-                  {saving ? "Updating Program..." : "Update Program"}
+                  {saving ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Updating Program...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-5 w-5" />
+                      Update Program
+                    </>
+                  )}
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="h-12 w-full rounded-xl text-base font-semibold transition-colors hover:bg-muted"
+                  className={cn(
+                    "h-12 w-full rounded-xl text-base font-semibold transition-colors hover:bg-muted",
+                    saving && "opacity-50 cursor-not-allowed pointer-events-none"
+                  )}
                   asChild
                   disabled={saving}
                 >

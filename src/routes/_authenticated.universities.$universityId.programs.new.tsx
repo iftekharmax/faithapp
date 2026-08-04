@@ -415,7 +415,6 @@ function NewProgramPage() {
                     value={form.application_deadline ?? ""}
                     onChange={(e) => set("application_deadline", e.target.value || null)}
                   />
-                  <p className="text-[10px] text-muted-foreground mt-1 px-1 italic">Optional: Leave blank if not applicable</p>
                   <FieldError msg={errors.application_deadline} />
                 </div>
               </div>

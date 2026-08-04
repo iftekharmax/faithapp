@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, SearchX } from "lucide-react";
+import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, SearchX, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
@@ -28,6 +29,7 @@ import {
   exportCampusesCsv, previewCampusesCsv,
   exportProgramsCsv, previewProgramsCsv,
 } from "@/lib/university-csv";
+import { ProgramDetailsDialog } from "@/components/universities/ProgramDetailsDialog";
 
 export const Route = createFileRoute("/_authenticated/universities/$universityId/")({
   component: UniversityDetail,
@@ -68,7 +70,30 @@ function UniversityDetail() {
   useEffect(() => { reload(); /* eslint-disable-next-line */ }, [universityId]);
 
   if (loading) {
-    return <div className="space-y-4"><Skeleton className="h-32" /><Skeleton className="h-64" /></div>;
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-48 w-full rounded-3xl" />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map(i => (
+            <Card key={i} className="overflow-hidden rounded-3xl border-none shadow-sm">
+              <div className="p-6 space-y-4">
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+                <Separator />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1"><Skeleton className="h-3 w-12" /><Skeleton className="h-5 w-20" /></div>
+                  <div className="space-y-1 text-right"><Skeleton className="h-3 w-12 ml-auto" /><Skeleton className="h-5 w-16 ml-auto" /></div>
+                </div>
+                <Skeleton className="h-10 w-full rounded-2xl" />
+                <Skeleton className="h-10 w-full rounded-2xl" />
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (loadError || !uni) {
@@ -192,13 +217,19 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
   const [search, setSearch] = useState("");
   const [degreeFilter, setDegreeFilter] = useState<string>("all");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [viewProgram, setViewProgram] = useState<UniversityProgram | null>(null);
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6;
 
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
   const filtered = programs.filter((p) =>
     (!search || p.name.toLowerCase().includes(search.toLowerCase())) &&
     (degreeFilter === "all" || p.degree === degreeFilter)
   );
+
+  const paginated = filtered.slice(0, page * itemsPerPage);
+  const hasMore = paginated.length < filtered.length;
 
   function openNew() { navigate({ to: "/universities/$universityId/programs/new", params: { universityId } }); }
   function openEdit(p: UniversityProgram) { navigate({ to: "/universities/$universityId/programs/$programId/edit", params: { universityId, programId: p.id } }); }
@@ -295,78 +326,93 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
             </div>
           )
         ) : (
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((p) => (
-              <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
-                <div className="flex flex-1 flex-col p-5">
-                  <div className="mb-4 flex items-start justify-between gap-4">
-                    <div className="space-y-1.5">
-                      <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
-                        {p.name}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground">
-                        {p.degree && (
-                          <span className="inline-flex items-center gap-1.5">
-                            <GraduationCap className="h-4 w-4 text-primary/70" />
-                            {p.degree}
-                          </span>
-                        )}
-                        {p.duration && (
-                          <>
-                            <span className="text-muted-foreground/30">•</span>
-                            <span>{p.duration}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    {canEdit && (
-                      <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary" onClick={() => openEdit(p)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(p.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-3 border-t pt-4">
-                    {p.campus?.name && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4 shrink-0 text-primary/60" />
-                        <span className="truncate">{p.campus.name}</span>
-                      </div>
-                    )}
-                    <div className="grid grid-cols-2 gap-4">
-                      {p.tuition_fee != null && (
-                        <div className="space-y-0.5">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Tuition Fee</p>
-                          <p className="font-bold text-primary">
-                            {p.currency ?? ""} {p.tuition_fee.toLocaleString()}
-                          </p>
+          <div className="space-y-8">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {paginated.map((p) => (
+                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="mb-4 flex items-start justify-between gap-4">
+                      <div className="space-y-2">
+                        <h3 className="text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary leading-tight">
+                          {p.name}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-3 text-sm font-semibold text-muted-foreground">
+                          {p.degree && (
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-muted">
+                              <GraduationCap className="h-4 w-4 text-primary/70" />
+                              {p.degree}
+                            </span>
+                          )}
+                          {p.duration && (
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-muted">
+                              <Clock className="h-4 w-4 text-primary/70" />
+                              {p.duration}
+                            </span>
+                          )}
                         </div>
-                      )}
-                      {p.intake && (
-                        <div className="space-y-0.5 text-right">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Next Intake</p>
-                          <p className="font-semibold text-foreground/90">{p.intake}</p>
+                      </div>
+                      {canEdit && (
+                        <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                          <Button size="icon" variant="secondary" className="h-9 w-9 rounded-full shadow-sm" onClick={() => openEdit(p)}>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button size="icon" variant="secondary" className="h-9 w-9 rounded-full shadow-sm text-destructive" onClick={() => setDeleteId(p.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       )}
                     </div>
+
+                    <div className="mt-auto space-y-4 border-t pt-5">
+                      <div className="grid grid-cols-2 gap-4">
+                        {p.tuition_fee != null && (
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Tuition Fee</p>
+                            <p className="text-lg font-black text-primary">
+                              {p.currency ?? ""} {p.tuition_fee.toLocaleString()}
+                            </p>
+                          </div>
+                        )}
+                        {p.intake && (
+                          <div className="space-y-1 text-right">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Next Intake</p>
+                            <p className="font-bold text-foreground/90">{p.intake}</p>
+                          </div>
+                        )}
+                      </div>
+                      {p.campus?.name && (
+                        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground bg-muted/40 p-2 rounded-xl">
+                          <MapPin className="h-3.5 w-3.5 shrink-0 text-primary/60" />
+                          <span className="truncate">{p.campus.name}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2 p-6 pt-0">
+                    <Button className="w-full rounded-2xl h-12 font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]" onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}>
+                      Create Application
+                    </Button>
+                    <Button variant="outline" className="w-full rounded-2xl h-12 font-bold transition-all hover:bg-primary/5 hover:text-primary border-primary/10" onClick={() => setViewProgram(p)}>
+                      Details
+                    </Button>
                   </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="bg-muted/30 p-4 pt-0">
-                  <Button className="w-full rounded-xl font-bold shadow-sm transition-all hover:shadow-md" onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}>
-                    Create Application
-                  </Button>
-                </div>
+            {hasMore && (
+              <div className="flex justify-center pt-4">
+                <Button variant="ghost" className="rounded-2xl font-bold text-primary px-8 h-12 hover:bg-primary/10" onClick={() => setPage(p => p + 1)}>
+                  Load More Programs
+                </Button>
               </div>
-            ))}
+            )}
           </div>
         )}
       </CardContent>
+
+      <ProgramDetailsDialog program={viewProgram} open={!!viewProgram} onOpenChange={(o: boolean) => !o && setViewProgram(null)} />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden border-none bg-background sm:rounded-3xl shadow-2xl">

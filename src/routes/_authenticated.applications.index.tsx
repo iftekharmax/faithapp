@@ -340,7 +340,7 @@ function ApplicationsPage() {
         </CardContent>
       </Card>
 
-      <ApplicationViewDialog application={selected} open={viewOpen} onOpenChange={setViewOpen} />
+      
 
       <ConfirmDialog
         open={deleteOpen}

@@ -290,8 +290,11 @@ function ApplicationsPage() {
                   </TableRow>
 
                 ) : paged.map((a) => (
-                  <TableRow key={a.id} className="cursor-pointer group hover:bg-muted/50 transition-colors"
-                    onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
+                  <TableRow 
+                    key={a.id} 
+                    className="cursor-pointer group hover:bg-muted/50 transition-colors"
+                    onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
+                  >
                     <TableCell>
                       <div className="text-sm font-medium">{a.application_code}</div>
                       <div className="text-[11px] text-muted-foreground">

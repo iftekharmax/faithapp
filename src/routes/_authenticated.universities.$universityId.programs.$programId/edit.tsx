@@ -164,7 +164,7 @@ function EditProgramPage() {
       duration: form.duration ?? "",
       intake: form.intake ?? "",
       currency: form.currency ?? "",
-      application_deadline: form.application_deadline ?? "",
+      application_deadline: form.application_deadline || null,
       tuition_fee: form.tuition_fee ?? "",
       application_fee: (form as any).application_fee ?? "",
       registration_fee: (form as any).registration_fee ?? "",

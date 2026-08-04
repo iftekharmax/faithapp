@@ -272,7 +272,7 @@ function ApplicationsPage() {
                   <TableSkeleton rows={6} columns={7} />
                 ) : paged.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="p-0">
+                    <TableCell colSpan={8} className="p-0">
                       <EmptyState
                         icon={FileText}
                         title="No applications found"

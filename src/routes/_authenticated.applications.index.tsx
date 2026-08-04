@@ -28,7 +28,7 @@ import {
   listDocumentStatusByApplication,
   type DocSummaryStatus,
 } from "@/lib/document-requests";
-import { ApplicationViewDialog } from "@/components/applications/ApplicationViewDialog";
+
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/applications/")({

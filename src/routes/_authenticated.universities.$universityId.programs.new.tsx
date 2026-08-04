@@ -43,7 +43,7 @@ const programSchema = z.object({
   currency: z.string().trim().min(1, "Currency is required").max(10, "Use a short currency code"),
   application_deadline: z
     .string()
-    .min(1, "Application Deadline is required")
+    .optional()
     .refine((v) => !v || !Number.isNaN(new Date(v).getTime()), "Enter a valid date"),
   tuition_fee: feeField,
   application_fee: feeField,

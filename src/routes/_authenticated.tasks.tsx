@@ -15,8 +15,11 @@ import {
   type View as BigView,
   Views,
 } from "react-big-calendar";
+import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
+
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 
@@ -44,7 +47,9 @@ import {
   TASK_STATUSES, TASK_PRIORITIES, TASK_CATEGORIES, TASK_STATUS_LABELS, TASK_PRIORITY_LABELS, TASK_CATEGORY_LABELS,
   TASK_STATUS_STYLE, TASK_PRIORITY_STYLE,
   type Task, type TaskStatus, type TaskPriority, type TaskCategory, type TaskAssignee, type TaskInput,
+  initiateWorkflow, logTaskAction,
 } from "@/lib/tasks";
+
 import { getUndoDurationMs } from "@/lib/undo-prefs";
 import { showUndoToast } from "@/components/ui/undo-toast";
 
@@ -92,6 +97,9 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
+
+const DnDCalendar = withDragAndDrop(BigCalendar);
+
 
 
 interface StoredFilters {
@@ -297,7 +305,7 @@ function TasksPage() {
   );
 
   const onDragStart = (e: DragStartEvent) => setDraggingId(String(e.active.id));
-  const onDragEnd = (e: DragEndEvent) => {
+  const onDragEnd = async (e: DragEndEvent) => {
     setDraggingId(null);
     const overId = e.over?.id;
     const activeId = String(e.active.id);
@@ -306,8 +314,13 @@ function TasksPage() {
     if (!task) return;
     const newStatus = String(overId) as TaskStatus;
     if (!TASK_STATUSES.includes(newStatus)) return;
-    if (task.status !== newStatus) onQuickStatus(task, newStatus);
+    if (task.status !== newStatus) {
+      await onQuickStatus(task, newStatus);
+      await logTaskAction(task.id, "board_move", { from: task.status, to: newStatus });
+    }
   };
+
+
 
   const clearFilters = () => {
     setSearch(""); setTab("all"); setPriority("all");
@@ -329,11 +342,17 @@ function TasksPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <WorkflowSelector onSelect={(template) => {
-              toast.success(`Workflow "${template}" initiated`);
-              load();
+            <WorkflowSelector onSelect={async (template, config) => {
+              try {
+                await initiateWorkflow(template, config);
+                toast.success(`Workflow "${template}" initiated`);
+                await load();
+              } catch (e) {
+                toast.error((e as Error).message);
+              }
             }} />
             <Button onClick={openNew} size="lg" className="shadow-md">
+
               <Plus className="mr-2 h-4 w-4" aria-hidden />New task
             </Button>
           </div>
@@ -426,7 +445,7 @@ function TasksPage() {
       ) : tab === "calendar" ? (
         <Card className="p-4 sm:p-6 overflow-hidden">
           <div className="h-[700px] faith-calendar">
-            <BigCalendar
+            <DnDCalendar
               localizer={localizer}
               events={filtered.map(t => ({
                 id: t.id,
@@ -435,17 +454,56 @@ function TasksPage() {
                 end: t.due_date ? new Date(t.due_date) : (t.start_date ? new Date(t.start_date) : new Date()),
                 resource: t,
               }))}
-              startAccessor="start"
-              endAccessor="end"
+              startAccessor={(e: any) => new Date(e.start)}
+              endAccessor={(e: any) => new Date(e.end)}
+
               defaultView={Views.MONTH}
               views={[Views.MONTH, Views.WEEK, Views.DAY]}
-              onSelectEvent={(e) => setViewing(e.resource)}
-              eventPropGetter={(event) => ({
+              onSelectEvent={(e: any) => setViewing(e.resource)}
+              onEventDrop={async ({ event, start, end }: any) => {
+                const task = event.resource as Task;
+                try {
+                  const updates: TaskInput = {
+                    start_date: start instanceof Date ? start.toISOString() : new Date(start).toISOString(),
+                    due_date: end instanceof Date ? end.toISOString() : new Date(end).toISOString()
+                  };
+                  await updateTask(task.id, updates);
+                  await logTaskAction(task.id, "reschedule_dnd", { 
+                    old: { start: task.start_date, due: task.due_date },
+                    new: { start: updates.start_date, due: updates.due_date }
+                  });
+                  toast.success("Task rescheduled");
+                  await load();
+                } catch (e) {
+                  toast.error((e as Error).message);
+                }
+              }}
+              resizable
+              onEventResize={async ({ event, start, end }: any) => {
+                const task = event.resource as Task;
+                try {
+                  const updates: TaskInput = {
+                    start_date: start instanceof Date ? start.toISOString() : new Date(start).toISOString(),
+                    due_date: end instanceof Date ? end.toISOString() : new Date(end).toISOString()
+                  };
+                  await updateTask(task.id, updates);
+                  await logTaskAction(task.id, "resize_dnd", { 
+                    old: { start: task.start_date, due: task.due_date },
+                    new: { start: updates.start_date, due: updates.due_date }
+                  });
+                  toast.success("Task duration updated");
+                  await load();
+                } catch (e) {
+                  toast.error((e as Error).message);
+                }
+              }}
+              draggableAccessor={() => true}
+              eventPropGetter={(event: any) => ({
                 className: cn(
                   "rounded-md border-l-4 px-2 py-0.5 text-xs font-medium shadow-sm transition-opacity hover:opacity-90",
-                  TASK_PRIORITY_STYLE[event.resource.priority].includes("red") ? "bg-red-500/10 text-red-700 border-red-500" :
-                  TASK_PRIORITY_STYLE[event.resource.priority].includes("orange") ? "bg-orange-500/10 text-orange-700 border-orange-500" :
-                  TASK_PRIORITY_STYLE[event.resource.priority].includes("amber") ? "bg-amber-500/10 text-amber-700 border-amber-500" :
+                  TASK_PRIORITY_STYLE[event.resource.priority as TaskPriority].includes("red") ? "bg-red-500/10 text-red-700 border-red-500" :
+                  TASK_PRIORITY_STYLE[event.resource.priority as TaskPriority].includes("orange") ? "bg-orange-500/10 text-orange-700 border-orange-500" :
+                  TASK_PRIORITY_STYLE[event.resource.priority as TaskPriority].includes("amber") ? "bg-amber-500/10 text-amber-700 border-amber-500" :
                   "bg-primary/10 text-primary border-primary"
                 ),
                 style: { border: 'none' }
@@ -478,6 +536,8 @@ function TasksPage() {
             />
           </div>
         </Card>
+
+
       ) : filtered.length === 0 && view === "list" ? (
 
         <EmptyState

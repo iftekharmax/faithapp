@@ -150,8 +150,8 @@ function TasksPage() {
     total: tasks.length,
     todo: tasks.filter((t) => t.status === "todo").length,
     inProgress: tasks.filter((t) => t.status === "in_progress").length,
-    done: tasks.filter((t) => t.status === "done").length,
-    overdue: tasks.filter((t) => t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()).length,
+    completed: tasks.filter((t) => t.status === "completed" || t.status === "done").length,
+    overdue: tasks.filter((t) => (t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue").length,
   }), [tasks]);
 
   const openNew = () => { setEditing(null); setOpen(true); };

@@ -590,6 +590,7 @@ function BoardColumn({
               key={t.id}
               task={t}
               assignee={t.assignee_id ? users.get(t.assignee_id) ?? null : null}
+              onView={() => onView(t)}
               onEdit={() => onEdit(t)}
               onDelete={() => onDelete(t)}
               onStatusChange={(s) => onStatusChange(t, s)}

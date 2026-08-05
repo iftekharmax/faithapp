@@ -632,80 +632,89 @@ function TaskListRow({
 
   return (
     <Card 
-      className={cn("group transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background cursor-pointer", (t.status === "completed" || t.status === "done") && "opacity-70")} 
+      className={cn(
+        "group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/30 active:scale-[0.99] cursor-pointer bg-card/50 backdrop-blur-sm border-muted/40",
+        (t.status === "completed" || t.status === "done") && "opacity-70 bg-muted/30"
+      )} 
       role="listitem"
       onClick={onView}
     >
-      <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
+      <div className={cn("absolute left-0 top-0 bottom-0 w-1", TASK_PRIORITY_STYLE[t.priority].includes("red") ? "bg-red-500" : TASK_PRIORITY_STYLE[t.priority].includes("orange") ? "bg-orange-500" : "bg-primary/50")} />
+      
+      <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
         <button
           onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
           className={cn(
-            "grid h-9 w-9 shrink-0 place-items-center rounded-lg border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            t.status === "completed" || t.status === "done" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600" :
-              t.status === "in_progress" ? "border-blue-500/40 bg-blue-500/10 text-blue-600" :
-                t.status === "overdue" ? "border-rose-500/40 bg-rose-500/10 text-rose-600" :
-                  "border-border bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary",
+            "grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            t.status === "completed" || t.status === "done" ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
+              t.status === "in_progress" ? "border-blue-500/50 bg-blue-500/10 text-blue-600" :
+                t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600 animate-pulse" :
+                  "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",
           )}
           aria-label={t.status === "completed" || t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
-          aria-pressed={t.status === "completed" || t.status === "done"}
         >
-          <Icon className="h-4 w-4" aria-hidden />
+          <Icon className={cn("h-5 w-5", (t.status === "completed" || t.status === "done") && "scale-110")} aria-hidden />
         </button>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className={cn("font-semibold", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
-            <Badge className={cn("border", TASK_STATUS_STYLE[t.status])} variant="outline">
-              {TASK_STATUS_LABELS[t.status]}
-            </Badge>
-            <Badge className={cn("border", TASK_PRIORITY_STYLE[t.priority])} variant="outline">
-              {TASK_PRIORITY_LABELS[t.priority]}
-            </Badge>
-            {overdue && (
-              <Badge variant="outline" className="border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300">
-                Overdue
+            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
+            <div className="flex gap-1.5 flex-wrap">
+              <Badge variant="secondary" className={cn("h-5 px-2 text-[10px] font-semibold uppercase tracking-wider border shadow-sm", TASK_STATUS_STYLE[t.status])}>
+                {TASK_STATUS_LABELS[t.status]}
               </Badge>
-            )}
+              <Badge variant="outline" className={cn("h-5 px-2 text-[10px] font-semibold uppercase tracking-wider border shadow-sm", TASK_PRIORITY_STYLE[t.priority])}>
+                {TASK_PRIORITY_LABELS[t.priority]}
+              </Badge>
+              {overdue && (
+                <Badge variant="destructive" className="h-5 px-2 text-[10px] font-bold uppercase tracking-wider animate-bounce">
+                  Overdue
+                </Badge>
+              )}
+            </div>
           </div>
+          
           {t.description && (
-            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{t.description}</p>
+            <p className="line-clamp-1 text-sm text-muted-foreground/80 font-medium">{t.description}</p>
           )}
-          <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+          
+          <div className="flex flex-wrap gap-4 pt-1 items-center">
             {t.category && (
-              <span className="inline-flex items-center gap-1"><Tag className="h-3 w-3" aria-hidden />{TASK_CATEGORY_LABELS[t.category]}</span>
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full"><Tag className="h-3 w-3" aria-hidden />{TASK_CATEGORY_LABELS[t.category]}</span>
             )}
             {t.due_date && (
-              <span className={cn("inline-flex items-center gap-1", overdue && "text-rose-600 font-medium")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString()}</span>
+              <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-full", overdue ? "text-rose-600 bg-rose-500/10" : "text-muted-foreground bg-muted/50")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
             )}
             {assignee && (
-              <span className="inline-flex items-center gap-1"><UserIcon className="h-3 w-3" aria-hidden />{assignee.full_name || assignee.email}</span>
+              <div className="flex items-center gap-2 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
+                <div className="h-4 w-4 rounded-full bg-primary/20 grid place-items-center"><UserIcon className="h-2.5 w-2.5 text-primary" /></div>
+                <span className="text-[11px] font-bold text-primary/80">{assignee.full_name?.split(' ')[0] || assignee.email.split('@')[0]}</span>
+              </div>
             )}
-            {t.checklists && t.checklists.length > 0 && (
-              <span className="inline-flex items-center gap-1">
-                <CheckSquare className="h-3 w-3" aria-hidden />
-                {t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}
-              </span>
-            )}
-            {t.comments && t.comments.length > 0 && (
-              <span className="inline-flex items-center gap-1"><MessageSquare className="h-3 w-3" aria-hidden />{t.comments.length}</span>
-            )}
-            {t.attachments && t.attachments.length > 0 && (
-              <span className="inline-flex items-center gap-1"><Paperclip className="h-3 w-3" aria-hidden />{t.attachments.length}</span>
-            )}
+            <div className="flex items-center gap-3 ml-auto">
+               {t.checklists && t.checklists.length > 0 && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/70">
+                        <CheckSquare className="h-3.5 w-3.5" />
+                        <span>{t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Subtasks progress</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              {t.comments && t.comments.length > 0 && (
+                <div className="flex items-center gap-1 text-xs font-bold text-muted-foreground/70"><MessageSquare className="h-3.5 w-3.5" />{t.comments.length}</div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-          <Select value={t.status} onValueChange={(v) => onStatusChange(v as TaskStatus)}>
-            <SelectTrigger className="h-8 w-[130px] text-xs" aria-label={`Status for ${t.title}`}><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {TASK_STATUSES.map((s) => (
-                <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button size="icon" variant="ghost" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
-          <Button size="icon" variant="ghost" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4 text-destructive" aria-hidden /></Button>
+        <div className="flex items-center gap-1 border-l pl-4 sm:ml-2" onClick={(e) => e.stopPropagation()}>
+          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
+          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 hover:text-rose-600 transition-colors" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4" aria-hidden /></Button>
         </div>
       </CardContent>
     </Card>

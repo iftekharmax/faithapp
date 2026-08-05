@@ -666,6 +666,7 @@ function TaskCard({
       {!compact && (onEdit || onDelete || onStatusChange) && (
         <div
           className="mt-2 flex items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >

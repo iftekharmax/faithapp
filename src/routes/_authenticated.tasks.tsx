@@ -609,7 +609,7 @@ function TaskCard({
   return (
     <div className={cn("rounded-xl border bg-background p-3 shadow-sm transition hover:shadow-md", compact && "shadow-lg")}>
       <div className="flex items-start justify-between gap-2">
-        <h3 className={cn("text-sm font-semibold leading-snug", t.status === "done" && "line-through text-muted-foreground")}>{t.title}</h3>
+        <h3 className={cn("text-sm font-semibold leading-snug", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
         <Badge variant="outline" className={cn("shrink-0 border text-[10px]", TASK_PRIORITY_STYLE[t.priority])}>
           {TASK_PRIORITY_LABELS[t.priority]}
         </Badge>

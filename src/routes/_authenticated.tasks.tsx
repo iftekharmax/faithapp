@@ -697,7 +697,7 @@ function TaskListRow({
     <Card 
       className={cn(
         "group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/30 active:scale-[0.99] cursor-pointer bg-card/50 backdrop-blur-sm border-muted/40",
-        (t.status === "completed" || t.status === "done") && "opacity-70 bg-muted/30"
+        t.status === "done" && "opacity-70 bg-muted/30"
       )} 
       role="listitem"
       onClick={onView}

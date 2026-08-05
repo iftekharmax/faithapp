@@ -141,12 +141,36 @@ function TasksPage() {
   const [search, setSearch] = useState(initial.search);
   const [tab, setTab] = useState<TabValue>(initial.tab);
   const [priority, setPriority] = useState<"all" | TaskPriority>(initial.priority);
+  const [department, setDepartment] = useState<string>("all");
   const [view, setView] = useState<ViewMode>(initial.view);
   const [editing, setEditing] = useState<Task | null>(null);
   const [open, setOpen] = useState(false);
   const [viewing, setViewing] = useState<Task | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Task | null>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [savedFilters, setSavedFilters] = useState<Array<{ name: string; filters: any }>>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = localStorage.getItem("faith.tasks.saved_filters");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  });
+
+  const saveCurrentFilter = (name: string) => {
+    const newPreset = { name, filters: { tab, priority, search, department } };
+    const updated = [...savedFilters, newPreset];
+    setSavedFilters(updated);
+    localStorage.setItem("faith.tasks.saved_filters", JSON.stringify(updated));
+    toast.success(`Filter "${name}" saved`);
+  };
+
+  const applyPreset = (preset: any) => {
+    if (preset.filters.tab) setTab(preset.filters.tab);
+    if (preset.filters.priority) setPriority(preset.filters.priority);
+    if (preset.filters.search !== undefined) setSearch(preset.filters.search);
+    if (preset.filters.department) setDepartment(preset.filters.department);
+    toast.success(`Applied preset: ${preset.name}`);
+  };
 
   // Persist filter/view choices
   useEffect(() => {

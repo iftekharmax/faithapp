@@ -684,8 +684,28 @@ function TaskListRow({
         </div>
 
         <div className="flex items-center gap-1 border-l pl-4 sm:ml-2" onClick={(e) => e.stopPropagation()}>
-          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
-          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 hover:text-rose-600 transition-colors" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4" aria-hidden /></Button>
+          <TooltipProvider>
+            {t.status !== 'completed' && t.status !== 'done' && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors" onClick={() => onStatusChange('completed')} aria-label="Mark complete"><CheckCircle2 className="h-4 w-4" aria-hidden /></Button>
+                </TooltipTrigger>
+                <TooltipContent>Quick Complete</TooltipContent>
+              </Tooltip>
+            )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
+              </TooltipTrigger>
+              <TooltipContent>Edit Task</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 hover:text-rose-600 transition-colors" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4" aria-hidden /></Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete Task</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </CardContent>
     </Card>

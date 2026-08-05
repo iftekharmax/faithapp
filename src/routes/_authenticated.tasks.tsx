@@ -621,7 +621,7 @@ function DraggableTaskCard({
       className={cn("cursor-grab touch-none active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl", isDragging && "opacity-40")}
       aria-label={`Drag task ${task.title}. Current status ${TASK_STATUS_LABELS[task.status]}.`}
     >
-      <TaskCard task={task} assignee={assignee} onEdit={onEdit} onDelete={onDelete} onStatusChange={onStatusChange} />
+      <TaskCard task={task} assignee={assignee} onView={onView} onEdit={onEdit} onDelete={onDelete} onStatusChange={onStatusChange} />
     </div>
   );
 }

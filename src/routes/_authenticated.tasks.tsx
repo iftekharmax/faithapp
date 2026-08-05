@@ -935,16 +935,26 @@ function TaskDialog({
           <form onSubmit={submit} className="space-y-6">
             <div className="grid gap-6">
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Task Objective *</Label>
+                <Label htmlFor="title" className={cn("text-sm font-bold uppercase tracking-wider", errors.title ? "text-destructive" : "text-muted-foreground/70")}>
+                  Task Objective <span className="text-destructive">*</span>
+                </Label>
                 <Input 
                   id="title" 
-                  required 
+                  aria-invalid={!!errors.title}
+                  aria-describedby={errors.title ? "title-error" : undefined}
                   autoFocus 
                   value={form.title ?? ""} 
-                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, title: e.target.value }));
+                    if (errors.title) setErrors(prev => ({ ...prev, title: "" }));
+                  }}
                   placeholder="e.g., Review Australia student visa documents"
-                  className="h-12 text-lg font-semibold bg-background/50 border-muted focus:border-primary/50 transition-all shadow-sm"
+                  className={cn(
+                    "h-12 text-lg font-semibold bg-background/50 border-muted focus:border-primary/50 transition-all shadow-sm",
+                    errors.title && "border-destructive focus:border-destructive"
+                  )}
                 />
+                {errors.title && <p id="title-error" className="text-xs font-bold text-destructive animate-in fade-in slide-in-from-top-1">{errors.title}</p>}
               </div>
 
               <div className="space-y-2">

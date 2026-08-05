@@ -605,7 +605,7 @@ function TaskCard({
   onDelete?: () => void;
   onStatusChange?: (s: TaskStatus) => void;
 }) {
-  const overdue = !!(t.due_date && t.status !== "done" && new Date(t.due_date) < new Date());
+  const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
   return (
     <div className={cn("rounded-xl border bg-background p-3 shadow-sm transition hover:shadow-md", compact && "shadow-lg")}>
       <div className="flex items-start justify-between gap-2">

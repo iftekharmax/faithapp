@@ -719,7 +719,7 @@ function TaskListRow({
           onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
           className={cn(
             "grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            t.status === "completed" || t.status === "done" ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
+            t.status === "done" ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
               t.status === "in_progress" ? "border-blue-500/50 bg-blue-500/10 text-blue-600" :
                 t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600 animate-pulse" :
                   "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",

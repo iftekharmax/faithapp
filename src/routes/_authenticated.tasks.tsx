@@ -393,7 +393,7 @@ function TasksPage() {
               key={t.id}
               task={t}
               assignee={t.assignee_id ? userMap.get(t.assignee_id) ?? null : null}
-              onToggleDone={() => onQuickStatus(t, t.status === "done" ? "todo" : "done")}
+              onToggleDone={() => onQuickStatus(t, (t.status === "completed" || t.status === "done") ? "todo" : "completed")}
               onEdit={() => openEdit(t)}
               onDelete={() => setConfirmDelete(t)}
               onStatusChange={(s) => onQuickStatus(t, s)}

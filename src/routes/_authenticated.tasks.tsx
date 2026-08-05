@@ -1,13 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   ListChecks, Plus, Search, Loader2, Trash2, Pencil, Calendar, User as UserIcon,
   CheckCircle2, Circle, Clock, AlertOctagon, Sparkles, LayoutGrid, List as ListIcon, BellRing,
   MoreVertical, ChevronRight, MessageSquare, Paperclip, CheckSquare, History, Tag, ChevronDown,
+  ChevronLeft,
 } from "lucide-react";
 import { WorkflowSelector } from "@/components/tasks/WorkflowSelector";
 
 import { toast } from "sonner";
+import {
+  Calendar as BigCalendar,
+  dateFnsLocalizer,
+  type View as BigView,
+  Views,
+} from "react-big-calendar";
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import { enUS } from "date-fns/locale";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
 import {
   DndContext, DragOverlay, PointerSensor, KeyboardSensor, useSensor, useSensors,
   closestCenter, useDroppable, useDraggable, type DragEndEvent, type DragStartEvent,

@@ -47,7 +47,20 @@ export const Route = createFileRoute("/_authenticated/tasks")({
 });
 
 const STATUS_ICON: Record<TaskStatus, typeof Circle> = {
-  todo: Circle, in_progress: Clock, blocked: AlertOctagon, done: CheckCircle2,
+  draft: Circle,
+  todo: Circle,
+  assigned: UserIcon,
+  in_progress: Clock,
+  waiting_for_student: UserIcon,
+  waiting_for_documents: ListChecks,
+  waiting_for_institution: ListChecks,
+  waiting_for_payment: ListChecks,
+  waiting_for_visa: ListChecks,
+  under_review: Search,
+  completed: CheckCircle2,
+  cancelled: Circle,
+  overdue: AlertOctagon,
+  done: CheckCircle2,
 };
 
 type TabValue = "all" | TaskStatus | "mine";

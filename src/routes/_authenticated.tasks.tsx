@@ -731,7 +731,7 @@ function TaskListRow({
 
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
+            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", t.status === "done" && "line-through text-muted-foreground")}>{t.title}</h3>
             <div className="flex gap-1.5 flex-wrap">
               <Badge variant="secondary" className={cn("h-5 px-2 text-[10px] font-semibold uppercase tracking-wider border shadow-sm", TASK_STATUS_STYLE[t.status])}>
                 {TASK_STATUS_LABELS[t.status]}

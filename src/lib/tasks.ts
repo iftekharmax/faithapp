@@ -116,7 +116,7 @@ export type TaskInput = Partial<Omit<Task, "id" | "created_at" | "updated_at" | 
 export const TASK_STATUSES: TaskStatus[] = [
   "draft", "todo", "assigned", "in_progress", "waiting_for_student", 
   "waiting_for_documents", "waiting_for_institution", "waiting_for_payment", 
-  "waiting_for_visa", "under_review", "completed", "cancelled", "overdue"
+  "waiting_for_visa", "under_review", "done", "cancelled", "overdue"
 ];
 
 export const TASK_PRIORITIES: TaskPriority[] = ["low", "normal", "high", "urgent", "critical"];

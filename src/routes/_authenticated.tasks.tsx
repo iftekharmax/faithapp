@@ -211,7 +211,7 @@ function TasksPage() {
     return tasks.filter((t) => {
       if (tab === "mine" && t.assignee_id !== user?.id) return false;
       if (tab === "overdue") {
-        const isOverdue = !!((t.due_date && (t.status !== "completed" && t.status !== "done") && new Date(t.due_date) < new Date()) || t.status === "overdue");
+        const isOverdue = !!((t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
         if (!isOverdue) return false;
       } else if (tab !== "all" && tab !== "mine" && t.status !== tab) return false;
       if (priority !== "all" && t.priority !== priority) return false;
@@ -224,7 +224,7 @@ function TasksPage() {
     total: tasks.length,
     todo: tasks.filter((t) => t.status === "todo").length,
     inProgress: tasks.filter((t) => t.status === "in_progress").length,
-    completed: tasks.filter((t) => t.status === "completed" || t.status === "done").length,
+    completed: tasks.filter((t) => t.status === "done").length,
     overdue: tasks.filter((t) => (t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue").length,
   }), [tasks]);
 
@@ -416,11 +416,11 @@ function TasksPage() {
 
         <div className="relative mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
           <Stat label="My Tasks" value={tasks.filter(t => t.assignee_id === user?.id).length} tone="primary" />
-          <Stat label="Pending" value={tasks.filter(t => t.status !== "completed" && t.status !== "done").length} tone="slate" />
+          <Stat label="Pending" value={tasks.filter(t => t.status !== "done").length} tone="slate" />
           <Stat label="Waiting" value={tasks.filter(t => t.status.startsWith('waiting_')).length} tone="blue" />
-          <Stat label="Overdue" value={tasks.filter(t => (t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue").length} tone="rose" />
+          <Stat label="Overdue" value={tasks.filter(t => (t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue").length} tone="rose" />
           <Stat label="Urgent" value={tasks.filter(t => t.priority === "urgent" || t.priority === "critical").length} tone="rose" />
-          <Stat label="Done" value={tasks.filter(t => t.status === "completed" || t.status === "done").length} tone="emerald" />
+          <Stat label="Done" value={tasks.filter(t => t.status === "done").length} tone="emerald" />
         </div>
       </div>
 
@@ -691,13 +691,13 @@ function TaskListRow({
   onAssign: (assigneeId: string | null) => void;
 }) {
   const Icon = STATUS_ICON[t.status];
-  const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
+  const overdue = !!((t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
 
   return (
     <Card 
       className={cn(
         "group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/30 active:scale-[0.99] cursor-pointer bg-card/50 backdrop-blur-sm border-muted/40",
-        (t.status === "completed" || t.status === "done") && "opacity-70 bg-muted/30"
+        t.status === "done" && "opacity-70 bg-muted/30"
       )} 
       role="listitem"
       onClick={onView}
@@ -719,19 +719,19 @@ function TaskListRow({
           onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
           className={cn(
             "grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            t.status === "completed" || t.status === "done" ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
+            t.status === "done" ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
               t.status === "in_progress" ? "border-blue-500/50 bg-blue-500/10 text-blue-600" :
                 t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600 animate-pulse" :
                   "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",
           )}
-          aria-label={t.status === "completed" || t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
+          aria-label={t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
         >
-          <Icon className={cn("h-5 w-5", (t.status === "completed" || t.status === "done") && "scale-110")} aria-hidden />
+          <Icon className={cn("h-5 w-5", t.status === "done" && "scale-110")} aria-hidden />
         </button>
 
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
+            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", t.status === "done" && "line-through text-muted-foreground")}>{t.title}</h3>
             <div className="flex gap-1.5 flex-wrap">
               <Badge variant="secondary" className={cn("h-5 px-2 text-[10px] font-semibold uppercase tracking-wider border shadow-sm", TASK_STATUS_STYLE[t.status])}>
                 {TASK_STATUS_LABELS[t.status]}
@@ -805,10 +805,10 @@ function TaskListRow({
 
         <div className="flex items-center gap-1 border-l pl-4 sm:ml-2" onClick={(e) => e.stopPropagation()}>
           <TooltipProvider>
-            {t.status !== 'completed' && t.status !== 'done' && (
+            {t.status !== 'done' && (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors" onClick={() => onStatusChange('completed')} aria-label="Mark complete"><CheckCircle2 className="h-4 w-4" aria-hidden /></Button>
+                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors" onClick={() => onStatusChange('done')} aria-label="Mark complete"><CheckCircle2 className="h-4 w-4" aria-hidden /></Button>
                 </TooltipTrigger>
                 <TooltipContent>Quick Complete</TooltipContent>
               </Tooltip>

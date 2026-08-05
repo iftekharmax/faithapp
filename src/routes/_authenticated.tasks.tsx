@@ -822,3 +822,147 @@ function TaskDialog({
     </Dialog>
   );
 }
+
+function TaskDetailsDialog({
+  task: t,
+  open,
+  onOpenChange,
+  users,
+  onEdit,
+}: {
+  task: Task | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  users: TaskAssignee[];
+  onEdit: (t: Task) => void;
+}) {
+  if (!t) return null;
+  const assignee = t.assignee_id ? users.find((u) => u.id === t.assignee_id) : null;
+  const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <div className="flex items-center gap-2 mb-2">
+            <Badge variant="outline" className={cn("border text-[10px]", TASK_PRIORITY_STYLE[t.priority])}>
+              {TASK_PRIORITY_LABELS[t.priority]}
+            </Badge>
+            <Badge variant="secondary" className="text-[10px]">
+              {TASK_CATEGORY_LABELS[t.category]}
+            </Badge>
+          </div>
+          <DialogTitle className="text-xl font-bold flex items-center gap-2">
+            {(t.status === "completed" || t.status === "done") && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+            {t.title}
+          </DialogTitle>
+          <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4" />
+              <span>Status: {TASK_STATUS_LABELS[t.status]}</span>
+            </div>
+            {t.due_date && (
+              <div className={cn("flex items-center gap-1.5", overdue && "text-rose-600 font-medium")}>
+                <Calendar className="h-4 w-4" />
+                <span>Due: {new Date(t.due_date).toLocaleDateString()}</span>
+              </div>
+            )}
+            {assignee && (
+              <div className="flex items-center gap-1.5">
+                <UserIcon className="h-4 w-4" />
+                <span>Assignee: {assignee.full_name || assignee.email}</span>
+              </div>
+            )}
+          </div>
+        </DialogHeader>
+
+        <div className="space-y-6 py-4">
+          {t.description && (
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <ListIcon className="h-4 w-4" /> Description
+              </h4>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap rounded-lg bg-muted/50 p-3">
+                {t.description}
+              </p>
+            </div>
+          )}
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            {t.checklists && t.checklists.length > 0 && (
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold flex items-center gap-2">
+                  <CheckSquare className="h-4 w-4" /> Checklist
+                </h4>
+                <div className="space-y-2">
+                  {t.checklists.map((item) => (
+                    <div key={item.id} className="flex items-center gap-2 text-sm">
+                      <div className={cn(
+                        "h-4 w-4 rounded border flex items-center justify-center",
+                        item.is_completed ? "bg-primary border-primary text-primary-foreground" : "border-muted-foreground"
+                      )}>
+                        {item.is_completed && <CheckCircle2 className="h-3 w-3" />}
+                      </div>
+                      <span className={cn(item.is_completed && "line-through text-muted-foreground")}>
+                        {item.title}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <History className="h-4 w-4" /> Timeline & Details
+              </h4>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                {t.start_date && <div>Start Date: {new Date(t.start_date).toLocaleDateString()}</div>}
+                {t.reminder_date && (
+                  <div className="flex items-center gap-1.5">
+                    <BellRing className="h-3.5 w-3.5" />
+                    Reminder: {new Date(t.reminder_date).toLocaleDateString()} {t.reminder_time}
+                  </div>
+                )}
+                {t.created_at && <div>Created: {new Date(t.created_at).toLocaleString()}</div>}
+              </div>
+            </div>
+          </div>
+
+          {(t.comments?.length || 0) > 0 && (
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" /> Comments ({t.comments?.length})
+              </h4>
+              <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
+                {t.comments?.map((comment) => (
+                  <div key={comment.id} className="text-sm bg-muted/30 p-2 rounded">
+                    <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                      <span>{users.find(u => u.id === comment.user_id)?.full_name || "User"}</span>
+                      <span>{new Date(comment.created_at).toLocaleString()}</span>
+                    </div>
+                    {comment.content}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter className="sm:justify-between items-center gap-4">
+          <div className="text-xs text-muted-foreground italic">
+            Task ID: {t.id.split('-')[0]}...
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => { onOpenChange(false); onEdit(t); }}>
+              <Pencil className="h-4 w-4 mr-2" /> Edit Task
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+              Close
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

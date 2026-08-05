@@ -434,7 +434,7 @@ function TasksPage() {
       ) : tab === "calendar" ? (
         <Card className="p-4 sm:p-6 overflow-hidden">
           <div className="h-[700px] faith-calendar">
-            <BigCalendar
+            <DnDCalendar
               localizer={localizer}
               events={filtered.map(t => ({
                 id: t.id,
@@ -448,6 +448,44 @@ function TasksPage() {
               defaultView={Views.MONTH}
               views={[Views.MONTH, Views.WEEK, Views.DAY]}
               onSelectEvent={(e) => setViewing(e.resource)}
+              onEventDrop={async ({ event, start, end }) => {
+                const task = (event as any).resource as Task;
+                try {
+                  const updates: TaskInput = {
+                    start_date: start.toISOString(),
+                    due_date: end.toISOString()
+                  };
+                  await updateTask(task.id, updates);
+                  await logTaskAction(task.id, "reschedule_dnd", { 
+                    old: { start: task.start_date, due: task.due_date },
+                    new: { start: updates.start_date, due: updates.due_date }
+                  });
+                  toast.success("Task rescheduled");
+                  await load();
+                } catch (e) {
+                  toast.error((e as Error).message);
+                }
+              }}
+              resizable
+              onEventResize={async ({ event, start, end }) => {
+                const task = (event as any).resource as Task;
+                try {
+                  const updates: TaskInput = {
+                    start_date: start.toISOString(),
+                    due_date: end.toISOString()
+                  };
+                  await updateTask(task.id, updates);
+                  await logTaskAction(task.id, "resize_dnd", { 
+                    old: { start: task.start_date, due: task.due_date },
+                    new: { start: updates.start_date, due: updates.due_date }
+                  });
+                  toast.success("Task duration updated");
+                  await load();
+                } catch (e) {
+                  toast.error((e as Error).message);
+                }
+              }}
+              draggableAccessor={() => true}
               eventPropGetter={(event) => ({
                 className: cn(
                   "rounded-md border-l-4 px-2 py-0.5 text-xs font-medium shadow-sm transition-opacity hover:opacity-90",
@@ -486,6 +524,7 @@ function TasksPage() {
             />
           </div>
         </Card>
+
       ) : filtered.length === 0 && view === "list" ? (
 
         <EmptyState

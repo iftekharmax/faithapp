@@ -448,6 +448,8 @@ function TasksPage() {
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="mine">My Tasks</SelectItem>
+                  <SelectItem value="waiting_for_approval">Waiting Approval</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
                   <SelectItem value="overdue">Overdue</SelectItem>
                   <DropdownMenuSeparator />
                   {TASK_STATUSES.map(s => <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>)}

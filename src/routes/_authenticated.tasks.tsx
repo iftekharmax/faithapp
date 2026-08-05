@@ -414,18 +414,58 @@ function TasksPage() {
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden />
         </div>
       ) : tab === "calendar" ? (
-        <Card className="p-6 h-[600px] flex items-center justify-center border-dashed">
-          <div className="text-center space-y-2">
-            <Calendar className="h-12 w-12 mx-auto text-muted-foreground opacity-20" />
-            <h3 className="font-semibold text-lg">Calendar Visualizer</h3>
-            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-              Interactive timeline visualization for {filtered.length} active tasks scheduled this month.
-            </p>
-            <div className="grid grid-cols-7 gap-1 mt-4 max-w-md mx-auto opacity-40">
-              {Array.from({ length: 28 }).map((_, i) => (
-                <div key={i} className="h-10 w-10 border rounded bg-muted/50" />
-              ))}
-            </div>
+        <Card className="p-4 sm:p-6 overflow-hidden">
+          <div className="h-[700px] faith-calendar">
+            <BigCalendar
+              localizer={localizer}
+              events={filtered.map(t => ({
+                id: t.id,
+                title: t.title,
+                start: t.start_date ? new Date(t.start_date) : (t.due_date ? new Date(t.due_date) : new Date()),
+                end: t.due_date ? new Date(t.due_date) : (t.start_date ? new Date(t.start_date) : new Date()),
+                resource: t,
+              }))}
+              startAccessor="start"
+              endAccessor="end"
+              defaultView={Views.MONTH}
+              views={[Views.MONTH, Views.WEEK, Views.DAY]}
+              onSelectEvent={(e) => setViewing(e.resource)}
+              eventPropGetter={(event) => ({
+                className: cn(
+                  "rounded-md border-l-4 px-2 py-0.5 text-xs font-medium shadow-sm transition-opacity hover:opacity-90",
+                  TASK_PRIORITY_STYLE[event.resource.priority].includes("red") ? "bg-red-500/10 text-red-700 border-red-500" :
+                  TASK_PRIORITY_STYLE[event.resource.priority].includes("orange") ? "bg-orange-500/10 text-orange-700 border-orange-500" :
+                  TASK_PRIORITY_STYLE[event.resource.priority].includes("amber") ? "bg-amber-500/10 text-amber-700 border-amber-500" :
+                  "bg-primary/10 text-primary border-primary"
+                ),
+                style: { border: 'none' }
+              })}
+              components={{
+                toolbar: (props) => (
+                  <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
+                      <Button variant="ghost" size="sm" onClick={() => props.onNavigate('PREV')}><ChevronLeft className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="sm" onClick={() => props.onNavigate('TODAY')} className="text-xs font-bold uppercase tracking-wider">Today</Button>
+                      <Button variant="ghost" size="sm" onClick={() => props.onNavigate('NEXT')}><ChevronRight className="h-4 w-4" /></Button>
+                    </div>
+                    <h2 className="text-lg font-bold tracking-tight">{props.label}</h2>
+                    <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
+                      {(['month', 'week', 'day'] as const).map((v) => (
+                        <Button
+                          key={v}
+                          variant={props.view === v ? "secondary" : "ghost"}
+                          size="sm"
+                          onClick={() => props.onView(v)}
+                          className={cn("text-xs capitalize", props.view === v && "shadow-sm")}
+                        >
+                          {v}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }}
+            />
           </div>
         </Card>
       ) : filtered.length === 0 && view === "list" ? (

@@ -692,19 +692,44 @@ function TaskListRow({
   onStatusChange: (s: TaskStatus) => void;
   onAssign: (assigneeId: string | null) => void;
 }) {
+  const { user, hasRole } = useAuth();
   const Icon = STATUS_ICON[t.status];
-  const overdue = !!((t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
+  const overdue = !!((t.due_date && t.status !== "done" && t.status !== "approved" && new Date(t.due_date) < new Date()) || t.status === "overdue");
+  
+  const isAdmin = hasRole("admin");
+  const isCounselor = hasRole("counselor");
+  const isApplicationTeam = hasRole("application_team");
+  const isAssignee = t.assignee_id === user?.id;
+
+  // Role-based actions
+  const canApprove = isAdmin && t.status === "waiting_for_approval";
+  const canRequestApproval = (isCounselor || isApplicationTeam) && isAssignee && t.status !== "done" && t.status !== "approved" && t.status !== "waiting_for_approval";
+  const canEdit = isAdmin || t.assigned_by === user?.id;
+  const canDelete = isAdmin;
+
+  const handleCompleteRequest = () => {
+    if (isAdmin) {
+      onStatusChange("done");
+    } else {
+      onStatusChange("waiting_for_approval");
+      toast.success("Approval requested from Admin");
+    }
+  };
 
   return (
     <Card 
       className={cn(
         "group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/30 active:scale-[0.99] cursor-pointer bg-card/50 backdrop-blur-sm border-muted/40",
-        t.status === "done" && "opacity-70 bg-muted/30"
+        (t.status === "done" || t.status === "approved") && "opacity-70 bg-muted/30"
       )} 
       role="listitem"
       onClick={onView}
     >
-      <div className={cn("absolute left-0 top-0 bottom-0 w-1", TASK_PRIORITY_STYLE[t.priority].includes("red") ? "bg-red-500" : TASK_PRIORITY_STYLE[t.priority].includes("orange") ? "bg-orange-500" : "bg-primary/50")} />
+      <div className={cn("absolute left-0 top-0 bottom-0 w-1", 
+        TASK_PRIORITY_STYLE[t.priority].includes("red") ? "bg-red-500" : 
+        TASK_PRIORITY_STYLE[t.priority].includes("orange") ? "bg-orange-500" : 
+        t.status === "approved" ? "bg-emerald-500" : "bg-primary/50")} 
+      />
       
       <CardContent 
         className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center"
@@ -718,22 +743,30 @@ function TaskListRow({
         aria-label={`View details for task: ${t.title}`}
       >
         <button
-          onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            if (t.status === "waiting_for_approval" && isAdmin) {
+              onStatusChange("approved");
+            } else if (canRequestApproval || isAdmin) {
+              handleCompleteRequest();
+            }
+          }}
+          disabled={t.status === "approved" || (t.status === "waiting_for_approval" && !isAdmin)}
           className={cn(
             "grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            t.status === "done" ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
+            (t.status === "done" || t.status === "approved") ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
+              t.status === "waiting_for_approval" ? "border-orange-500/50 bg-orange-500/10 text-orange-600 animate-pulse" :
               t.status === "in_progress" ? "border-blue-500/50 bg-blue-500/10 text-blue-600" :
-                t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600 animate-pulse" :
-                  "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",
+              t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600" :
+              "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",
           )}
-          aria-label={t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
         >
-          <Icon className={cn("h-5 w-5", t.status === "done" && "scale-110")} aria-hidden />
+          <Icon className={cn("h-5 w-5", (t.status === "done" || t.status === "approved") && "scale-110")} aria-hidden />
         </button>
 
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", t.status === "done" && "line-through text-muted-foreground")}>{t.title}</h3>
+            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", (t.status === "done" || t.status === "approved") && "line-through text-muted-foreground")}>{t.title}</h3>
             <div className="flex gap-1.5 flex-wrap">
               <Badge variant="secondary" className={cn("h-5 px-2 text-[10px] font-semibold uppercase tracking-wider border shadow-sm", TASK_STATUS_STYLE[t.status])}>
                 {TASK_STATUS_LABELS[t.status]}
@@ -760,16 +793,18 @@ function TaskListRow({
             {t.due_date && (
               <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-full", overdue ? "text-rose-600 bg-rose-500/10" : "text-muted-foreground bg-muted/50")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
             )}
-            <Select value={t.assignee_id ?? "none"} onValueChange={(v) => onAssign(v === "none" ? null : v)}>
+            
+            <Select 
+              value={t.assignee_id ?? "none"} 
+              onValueChange={(v) => onAssign(v === "none" ? null : v)}
+              disabled={!isAdmin && t.assigned_by !== user?.id}
+            >
               <SelectTrigger 
                 className="h-6 w-auto min-w-[100px] border-primary/10 bg-primary/5 px-2 py-0 rounded-full text-[11px] font-bold text-primary hover:bg-primary/10" 
                 onClick={(e) => e.stopPropagation()}
-                aria-label={`Assign task ${t.title}`}
               >
                 <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 rounded-full bg-primary/20 grid place-items-center">
-                    <UserIcon className="h-2.5 w-2.5 text-primary" />
-                  </div>
+                  <UserIcon className="h-2.5 w-2.5" />
                   <SelectValue placeholder="Unassigned">
                     {assignee ? (assignee.full_name?.split(' ')[0] || assignee.email.split('@')[0]) : "Assign"}
                   </SelectValue>
@@ -784,22 +819,13 @@ function TaskListRow({
                 ))}
               </SelectContent>
             </Select>
+
             <div className="flex items-center gap-3 ml-auto">
                {t.checklists && t.checklists.length > 0 && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/70">
-                        <CheckSquare className="h-3.5 w-3.5" />
-                        <span>{t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Subtasks progress</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-              {t.comments && t.comments.length > 0 && (
-                <div className="flex items-center gap-1 text-xs font-bold text-muted-foreground/70"><MessageSquare className="h-3.5 w-3.5" />{t.comments.length}</div>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/70">
+                  <CheckSquare className="h-3.5 w-3.5" />
+                  <span>{t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}</span>
+                </div>
               )}
             </div>
           </div>
@@ -807,26 +833,28 @@ function TaskListRow({
 
         <div className="flex items-center gap-1 border-l pl-4 sm:ml-2" onClick={(e) => e.stopPropagation()}>
           <TooltipProvider>
-            {t.status !== 'done' && (
+            {canApprove && (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors" onClick={() => onStatusChange('done')} aria-label="Mark complete"><CheckCircle2 className="h-4 w-4" aria-hidden /></Button>
+                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20" onClick={() => onStatusChange('approved')}><CheckCircle2 className="h-4 w-4" /></Button>
                 </TooltipTrigger>
-                <TooltipContent>Quick Complete</TooltipContent>
+                <TooltipContent>Approve Task</TooltipContent>
               </Tooltip>
             )}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
-              </TooltipTrigger>
-              <TooltipContent>Edit Task</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 hover:text-rose-600 transition-colors" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4" aria-hidden /></Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete Task</TooltipContent>
-            </Tooltip>
+            {canRequestApproval && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full bg-orange-500/10 text-orange-600 hover:bg-orange-500/20" onClick={handleCompleteRequest}><Clock className="h-4 w-4" /></Button>
+                </TooltipTrigger>
+                <TooltipContent>Request Approval</TooltipContent>
+              </Tooltip>
+            )}
+            {canEdit && (
+              <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10" onClick={onEdit}><Pencil className="h-4 w-4" /></Button>
+            )}
+            {canDelete && (
+              <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 text-rose-600" onClick={onDelete}><Trash2 className="h-4 w-4" /></Button>
+            )}
           </TooltipProvider>
         </div>
       </CardContent>

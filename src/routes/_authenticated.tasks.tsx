@@ -373,15 +373,16 @@ function TasksPage() {
       <Card>
         <CardContent className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:p-4">
           <Tabs value={tab} onValueChange={(v) => setTab(v as TabValue)} className="flex-1 min-w-0">
-            <TabsList className="w-full flex-wrap justify-start sm:w-auto" aria-label="Filter tasks by status">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="mine">Mine</TabsTrigger>
+            <TabsList className="w-full flex-wrap justify-start sm:w-auto bg-muted/40 p-1 gap-1" aria-label="Filter tasks by status">
+              <TabsTrigger value="all" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">All</TabsTrigger>
+              <TabsTrigger value="mine" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Mine</TabsTrigger>
               {TASK_STATUSES.map((s) => (
-                <TabsTrigger key={s} value={s}>{TASK_STATUS_LABELS[s]}</TabsTrigger>
+                <TabsTrigger key={s} value={s} className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all hidden lg:inline-flex">
+                  {TASK_STATUS_LABELS[s]}
+                </TabsTrigger>
               ))}
-              <TabsTrigger value="overdue">Overdue</TabsTrigger>
-              <TabsTrigger value="calendar">Calendar View</TabsTrigger>
-
+              <TabsTrigger value="overdue" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Overdue</TabsTrigger>
+              <TabsTrigger value="calendar" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Calendar</TabsTrigger>
             </TabsList>
           </Tabs>
           <div className="flex flex-wrap items-center gap-2">
@@ -632,80 +633,89 @@ function TaskListRow({
 
   return (
     <Card 
-      className={cn("group transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background cursor-pointer", (t.status === "completed" || t.status === "done") && "opacity-70")} 
+      className={cn(
+        "group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/30 active:scale-[0.99] cursor-pointer bg-card/50 backdrop-blur-sm border-muted/40",
+        (t.status === "completed" || t.status === "done") && "opacity-70 bg-muted/30"
+      )} 
       role="listitem"
       onClick={onView}
     >
-      <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
+      <div className={cn("absolute left-0 top-0 bottom-0 w-1", TASK_PRIORITY_STYLE[t.priority].includes("red") ? "bg-red-500" : TASK_PRIORITY_STYLE[t.priority].includes("orange") ? "bg-orange-500" : "bg-primary/50")} />
+      
+      <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
         <button
           onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
           className={cn(
-            "grid h-9 w-9 shrink-0 place-items-center rounded-lg border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            t.status === "completed" || t.status === "done" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600" :
-              t.status === "in_progress" ? "border-blue-500/40 bg-blue-500/10 text-blue-600" :
-                t.status === "overdue" ? "border-rose-500/40 bg-rose-500/10 text-rose-600" :
-                  "border-border bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary",
+            "grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            t.status === "completed" || t.status === "done" ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
+              t.status === "in_progress" ? "border-blue-500/50 bg-blue-500/10 text-blue-600" :
+                t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600 animate-pulse" :
+                  "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",
           )}
           aria-label={t.status === "completed" || t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
-          aria-pressed={t.status === "completed" || t.status === "done"}
         >
-          <Icon className="h-4 w-4" aria-hidden />
+          <Icon className={cn("h-5 w-5", (t.status === "completed" || t.status === "done") && "scale-110")} aria-hidden />
         </button>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className={cn("font-semibold", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
-            <Badge className={cn("border", TASK_STATUS_STYLE[t.status])} variant="outline">
-              {TASK_STATUS_LABELS[t.status]}
-            </Badge>
-            <Badge className={cn("border", TASK_PRIORITY_STYLE[t.priority])} variant="outline">
-              {TASK_PRIORITY_LABELS[t.priority]}
-            </Badge>
-            {overdue && (
-              <Badge variant="outline" className="border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300">
-                Overdue
+            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
+            <div className="flex gap-1.5 flex-wrap">
+              <Badge variant="secondary" className={cn("h-5 px-2 text-[10px] font-semibold uppercase tracking-wider border shadow-sm", TASK_STATUS_STYLE[t.status])}>
+                {TASK_STATUS_LABELS[t.status]}
               </Badge>
-            )}
+              <Badge variant="outline" className={cn("h-5 px-2 text-[10px] font-semibold uppercase tracking-wider border shadow-sm", TASK_PRIORITY_STYLE[t.priority])}>
+                {TASK_PRIORITY_LABELS[t.priority]}
+              </Badge>
+              {overdue && (
+                <Badge variant="destructive" className="h-5 px-2 text-[10px] font-bold uppercase tracking-wider animate-bounce">
+                  Overdue
+                </Badge>
+              )}
+            </div>
           </div>
+          
           {t.description && (
-            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{t.description}</p>
+            <p className="line-clamp-1 text-sm text-muted-foreground/80 font-medium">{t.description}</p>
           )}
-          <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+          
+          <div className="flex flex-wrap gap-4 pt-1 items-center">
             {t.category && (
-              <span className="inline-flex items-center gap-1"><Tag className="h-3 w-3" aria-hidden />{TASK_CATEGORY_LABELS[t.category]}</span>
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full"><Tag className="h-3 w-3" aria-hidden />{TASK_CATEGORY_LABELS[t.category]}</span>
             )}
             {t.due_date && (
-              <span className={cn("inline-flex items-center gap-1", overdue && "text-rose-600 font-medium")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString()}</span>
+              <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-full", overdue ? "text-rose-600 bg-rose-500/10" : "text-muted-foreground bg-muted/50")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
             )}
             {assignee && (
-              <span className="inline-flex items-center gap-1"><UserIcon className="h-3 w-3" aria-hidden />{assignee.full_name || assignee.email}</span>
+              <div className="flex items-center gap-2 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
+                <div className="h-4 w-4 rounded-full bg-primary/20 grid place-items-center"><UserIcon className="h-2.5 w-2.5 text-primary" /></div>
+                <span className="text-[11px] font-bold text-primary/80">{assignee.full_name?.split(' ')[0] || assignee.email.split('@')[0]}</span>
+              </div>
             )}
-            {t.checklists && t.checklists.length > 0 && (
-              <span className="inline-flex items-center gap-1">
-                <CheckSquare className="h-3 w-3" aria-hidden />
-                {t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}
-              </span>
-            )}
-            {t.comments && t.comments.length > 0 && (
-              <span className="inline-flex items-center gap-1"><MessageSquare className="h-3 w-3" aria-hidden />{t.comments.length}</span>
-            )}
-            {t.attachments && t.attachments.length > 0 && (
-              <span className="inline-flex items-center gap-1"><Paperclip className="h-3 w-3" aria-hidden />{t.attachments.length}</span>
-            )}
+            <div className="flex items-center gap-3 ml-auto">
+               {t.checklists && t.checklists.length > 0 && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/70">
+                        <CheckSquare className="h-3.5 w-3.5" />
+                        <span>{t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Subtasks progress</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              {t.comments && t.comments.length > 0 && (
+                <div className="flex items-center gap-1 text-xs font-bold text-muted-foreground/70"><MessageSquare className="h-3.5 w-3.5" />{t.comments.length}</div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-          <Select value={t.status} onValueChange={(v) => onStatusChange(v as TaskStatus)}>
-            <SelectTrigger className="h-8 w-[130px] text-xs" aria-label={`Status for ${t.title}`}><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {TASK_STATUSES.map((s) => (
-                <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button size="icon" variant="ghost" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
-          <Button size="icon" variant="ghost" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4 text-destructive" aria-hidden /></Button>
+        <div className="flex items-center gap-1 border-l pl-4 sm:ml-2" onClick={(e) => e.stopPropagation()}>
+          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
+          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 hover:text-rose-600 transition-colors" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4" aria-hidden /></Button>
         </div>
       </CardContent>
     </Card>
@@ -898,88 +908,154 @@ function TaskDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" aria-hidden />
-            {editing ? "Edit task" : "New task"}
-          </DialogTitle>
-        </DialogHeader>
-        <form onSubmit={submit} className="space-y-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="title">Title *</Label>
-            <Input id="title" required autoFocus value={form.title ?? ""} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="desc">Description</Label>
-            <Textarea id="desc" rows={3} value={form.description ?? ""} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="task-status">Status</Label>
-              <Select value={form.status ?? "todo"} onValueChange={(v) => setForm((f) => ({ ...f, status: v as TaskStatus }))}>
-                <SelectTrigger id="task-status"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {TASK_STATUSES.map((s) => <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>)}
-                </SelectContent>
-              </Select>
+      <DialogContent className="max-w-2xl p-0 overflow-hidden border-none shadow-2xl">
+        <div className="bg-gradient-to-br from-primary/10 via-background to-background p-6">
+          <DialogHeader className="mb-6">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-fuchsia-500 grid place-items-center shadow-lg shadow-primary/20">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-2xl font-bold tracking-tight">
+                  {editing ? "Refine Task" : "Create New Task"}
+                </DialogTitle>
+                <p className="text-sm text-muted-foreground font-medium">
+                  {editing ? "Update the details and objectives of this task." : "Define clear goals and assign team members."}
+                </p>
+              </div>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="task-category">Category</Label>
-              <Select value={form.category ?? "internal"} onValueChange={(v) => setForm((f) => ({ ...f, category: v as TaskCategory }))}>
-                <SelectTrigger id="task-category"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {TASK_CATEGORIES.map((c) => <SelectItem key={c} value={c}>{TASK_CATEGORY_LABELS[c]}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="task-priority">Priority</Label>
-              <Select value={form.priority ?? "normal"} onValueChange={(v) => setForm((f) => ({ ...f, priority: v as TaskPriority }))}>
-                <SelectTrigger id="task-priority"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {TASK_PRIORITIES.map((p) => <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="task-assignee">Assignee</Label>
-              <Select value={form.assignee_id ?? "none"} onValueChange={(v) => setForm((f) => ({ ...f, assignee_id: v === "none" ? null : v }))}>
-                <SelectTrigger id="task-assignee"><SelectValue placeholder="Unassigned" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Unassigned</SelectItem>
-                  {users.map((u) => <SelectItem key={u.id} value={u.id}>{u.full_name || u.email}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          </DialogHeader>
 
-          <div className="grid gap-4 sm:grid-cols-2 border-t pt-4 mt-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="start">Start date</Label>
-              <Input id="start" type="date" value={form.start_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value || null }))} />
+          <form onSubmit={submit} className="space-y-6">
+            <div className="grid gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="title" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Task Objective *</Label>
+                <Input 
+                  id="title" 
+                  required 
+                  autoFocus 
+                  value={form.title ?? ""} 
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  placeholder="e.g., Review Australia student visa documents"
+                  className="h-12 text-lg font-semibold bg-background/50 border-muted focus:border-primary/50 transition-all shadow-sm"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="desc" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Strategic Context</Label>
+                <Textarea 
+                  id="desc" 
+                  rows={3} 
+                  value={form.description ?? ""} 
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  placeholder="Provide detailed instructions or background information..."
+                  className="bg-background/50 border-muted focus:border-primary/50 resize-none font-medium"
+                />
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="task-assignee" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Lead Assignee</Label>
+                  <Select value={form.assignee_id ?? "none"} onValueChange={(v) => setForm((f) => ({ ...f, assignee_id: v === "none" ? null : v }))}>
+                    <SelectTrigger id="task-assignee" className="h-11 bg-background/50 border-muted font-bold">
+                      <div className="flex items-center gap-2">
+                        <UserIcon className="h-4 w-4 text-primary/70" />
+                        <SelectValue placeholder="Select lead..." />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none" className="font-bold text-muted-foreground">Unassigned</SelectItem>
+                      {users.map((u) => (
+                        <SelectItem key={u.id} value={u.id} className="font-semibold">
+                          {u.full_name || u.email}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="task-priority" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Execution Priority</Label>
+                  <Select value={form.priority ?? "normal"} onValueChange={(v) => setForm((f) => ({ ...f, priority: v as TaskPriority }))}>
+                    <SelectTrigger id="task-priority" className="h-11 bg-background/50 border-muted font-bold">
+                      <div className="flex items-center gap-2">
+                        <AlertOctagon className="h-4 w-4 text-primary/70" />
+                        <SelectValue />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TASK_PRIORITIES.map((p) => (
+                        <SelectItem key={p} value={p} className="font-semibold">
+                          {TASK_PRIORITY_LABELS[p]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-3">
+                <div className="space-y-2">
+                  <Label htmlFor="task-status" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Current Status</Label>
+                  <Select value={form.status ?? "todo"} onValueChange={(v) => setForm((f) => ({ ...f, status: v as TaskStatus }))}>
+                    <SelectTrigger id="task-status" className="h-10 bg-background/50 border-muted font-bold">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TASK_STATUSES.map((s) => (
+                        <SelectItem key={s} value={s} className="font-semibold">
+                          {TASK_STATUS_LABELS[s]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="task-category" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Operational Category</Label>
+                  <Select value={form.category ?? "internal"} onValueChange={(v) => setForm((f) => ({ ...f, category: v as TaskCategory }))}>
+                    <SelectTrigger id="task-category" className="h-10 bg-background/50 border-muted font-bold">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TASK_CATEGORIES.map((c) => (
+                        <SelectItem key={c} value={c} className="font-semibold">
+                          {TASK_CATEGORY_LABELS[c]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="due" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Target Deadline</Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input 
+                      id="due" 
+                      type="date" 
+                      value={form.due_date ?? ""} 
+                      onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value || null }))}
+                      className="h-10 pl-9 bg-background/50 border-muted font-bold focus:border-primary/50"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="due">Due date</Label>
-              <Input id="due" type="date" value={form.due_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value || null }))} />
+
+            <div className="flex items-center justify-between border-t border-primary/10 pt-6">
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} className="font-bold text-muted-foreground hover:bg-muted/50 rounded-xl px-6">
+                Discard
+              </Button>
+              <Button type="submit" disabled={saving} className="min-w-[160px] h-12 rounded-xl bg-gradient-to-r from-primary to-fuchsia-600 hover:shadow-lg hover:shadow-primary/25 transition-all font-bold text-base">
+                {saving ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-5 w-5" />
+                )}
+                {editing ? "Update Task" : "Deploy Task"}
+              </Button>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="reminder-date">Reminder date</Label>
-              <Input id="reminder-date" type="date" value={form.reminder_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, reminder_date: e.target.value || null }))} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="reminder-time">Reminder time</Label>
-              <Input id="reminder-time" type="time" value={form.reminder_time ?? ""} onChange={(e) => setForm((f) => ({ ...f, reminder_time: e.target.value || null }))} />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving}>
-              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />}
-              {editing ? "Save changes" : "Create task"}
-            </Button>
-          </DialogFooter>
-        </form>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

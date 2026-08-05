@@ -627,11 +627,12 @@ function DraggableTaskCard({
 }
 
 function TaskCard({
-  task: t, assignee, compact, onEdit, onDelete, onStatusChange,
+  task: t, assignee, compact, onView, onEdit, onDelete, onStatusChange,
 }: {
   task: Task;
   assignee: TaskAssignee | null;
   compact?: boolean;
+  onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
   onStatusChange?: (s: TaskStatus) => void;

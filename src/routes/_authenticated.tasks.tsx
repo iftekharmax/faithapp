@@ -479,7 +479,7 @@ function TaskListRow({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className={cn("font-semibold", t.status === "done" && "line-through text-muted-foreground")}>{t.title}</h3>
+            <h3 className={cn("font-semibold", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
             <Badge className={cn("border", TASK_STATUS_STYLE[t.status])} variant="outline">
               {TASK_STATUS_LABELS[t.status]}
             </Badge>

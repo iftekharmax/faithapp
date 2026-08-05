@@ -991,9 +991,14 @@ function TaskDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="task-priority" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Execution Priority</Label>
-                  <Select value={form.priority ?? "normal"} onValueChange={(v) => setForm((f) => ({ ...f, priority: v as TaskPriority }))}>
-                    <SelectTrigger id="task-priority" className="h-11 bg-background/50 border-muted font-bold">
+                  <Label htmlFor="task-priority" className={cn("text-sm font-bold uppercase tracking-wider", errors.priority ? "text-destructive" : "text-muted-foreground/70")}>
+                    Execution Priority <span className="text-destructive">*</span>
+                  </Label>
+                  <Select value={form.priority ?? "normal"} onValueChange={(v) => {
+                    setForm((f) => ({ ...f, priority: v as TaskPriority }));
+                    if (errors.priority) setErrors(prev => ({ ...prev, priority: "" }));
+                  }}>
+                    <SelectTrigger id="task-priority" className={cn("h-11 bg-background/50 border-muted font-bold", errors.priority && "border-destructive")}>
                       <div className="flex items-center gap-2">
                         <AlertOctagon className="h-4 w-4 text-primary/70" />
                         <SelectValue />
@@ -1007,6 +1012,7 @@ function TaskDialog({
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.priority && <p className="text-xs font-bold text-destructive">{errors.priority}</p>}
                 </div>
               </div>
 

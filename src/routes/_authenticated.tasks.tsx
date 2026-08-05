@@ -602,7 +602,17 @@ function TaskListRow({
     >
       <div className={cn("absolute left-0 top-0 bottom-0 w-1", TASK_PRIORITY_STYLE[t.priority].includes("red") ? "bg-red-500" : TASK_PRIORITY_STYLE[t.priority].includes("orange") ? "bg-orange-500" : "bg-primary/50")} />
       
-      <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+      <CardContent 
+        className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onView();
+          }
+        }}
+        tabIndex={0}
+        aria-label={`View details for task: ${t.title}`}
+      >
         <button
           onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
           className={cn(

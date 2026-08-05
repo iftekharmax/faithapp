@@ -726,7 +726,7 @@ function TaskListRow({
           )}
           aria-label={t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
         >
-          <Icon className={cn("h-5 w-5", (t.status === "completed" || t.status === "done") && "scale-110")} aria-hidden />
+          <Icon className={cn("h-5 w-5", t.status === "done" && "scale-110")} aria-hidden />
         </button>
 
         <div className="min-w-0 flex-1 space-y-1">

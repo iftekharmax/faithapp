@@ -138,11 +138,13 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   waiting_for_institution: "Waiting for Institution",
   waiting_for_payment: "Waiting for Payment",
   waiting_for_visa: "Waiting for Visa",
+  waiting_for_approval: "Waiting for Approval",
   under_review: "Under Review",
   completed: "Completed",
   cancelled: "Cancelled",
   overdue: "Overdue",
   done: "Done",
+  approved: "Approved",
 };
 
 export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {

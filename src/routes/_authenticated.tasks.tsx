@@ -460,7 +460,7 @@ function TaskListRow({
   const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
 
   return (
-    <Card className={cn("group transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background", t.status === "done" && "opacity-70")} role="listitem">
+    <Card className={cn("group transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background", (t.status === "completed" || t.status === "done") && "opacity-70")} role="listitem">
       <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
         <button
           onClick={onToggleDone}

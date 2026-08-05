@@ -397,7 +397,7 @@ function TasksPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
-              <p className="text-sm text-muted-foreground">Roles: Application Team, Counselor ka task dewa hobe tara task complete korbe and admin task check kore approved korbe</p>
+              <p className="text-sm text-muted-foreground">Add an audit log and notifications for task status changes, completion actions, and admin approvals.</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

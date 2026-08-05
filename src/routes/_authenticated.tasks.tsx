@@ -369,71 +369,31 @@ function TasksPage() {
         </div>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardContent className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:p-4">
-          <Tabs value={tab} onValueChange={(v) => setTab(v as TabValue)} className="flex-1 min-w-0">
-            <TabsList className="w-full flex-wrap justify-start sm:w-auto bg-muted/40 p-1 gap-1" aria-label="Filter tasks by status">
-              <TabsTrigger value="all" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">All</TabsTrigger>
-              <TabsTrigger value="mine" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Mine</TabsTrigger>
-              {TASK_STATUSES.map((s) => (
-                <TabsTrigger key={s} value={s} className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all hidden lg:inline-flex">
-                  {TASK_STATUS_LABELS[s]}
-                </TabsTrigger>
-              ))}
-              <TabsTrigger value="overdue" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Overdue</TabsTrigger>
-              <TabsTrigger value="calendar" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Calendar</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative min-w-0 flex-1 sm:w-64 sm:flex-none">
-              <Search aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
+      {/* Advanced Filters */}
+      <Card className="border-none shadow-sm bg-card/50 backdrop-blur">
+        <CardContent className="p-4 flex flex-col gap-4">
+          <div className="flex flex-wrap items-center gap-3">
+             <Input 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search tasks..."
-                className="pl-9"
-                aria-label="Search tasks"
+                placeholder="Search tasks by title or description..."
+                className="w-full sm:max-w-xs h-9"
               />
-            </div>
-            <Select value={priority} onValueChange={(v) => setPriority(v as typeof priority)}>
-              <SelectTrigger className="w-[130px]" aria-label="Filter by priority"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All priority</SelectItem>
-                {TASK_PRIORITIES.map((p) => (
-                  <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <div className="inline-flex rounded-lg border bg-muted/40 p-0.5" role="group" aria-label="View mode">
-              <button
-                type="button"
-                onClick={() => setView("list")}
-                aria-pressed={view === "list"}
-                aria-label="List view"
-                className={cn(
-                  "grid h-8 w-9 place-items-center rounded-md text-muted-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  view === "list" && "bg-background text-foreground shadow-sm",
-                )}
-              >
-                <ListIcon className="h-4 w-4" aria-hidden />
-              </button>
-              <button
-                type="button"
-                onClick={() => setView("board")}
-                aria-pressed={view === "board"}
-                aria-label="Board view"
-                className={cn(
-                  "grid h-8 w-9 place-items-center rounded-md text-muted-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  view === "board" && "bg-background text-foreground shadow-sm",
-                )}
-              >
-                <LayoutGrid className="h-4 w-4" aria-hidden />
-              </button>
-            </div>
-            {(tab !== "all" || priority !== "all" || search) && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>Clear</Button>
-            )}
+              <Select value={tab} onValueChange={(v) => setTab(v as TabValue)}>
+                <SelectTrigger className="w-[150px] h-9"><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  {TASK_STATUSES.map(s => <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={priority} onValueChange={(v) => setPriority(v as typeof priority)}>
+                <SelectTrigger className="w-[150px] h-9"><SelectValue placeholder="Priority" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Priority</SelectItem>
+                  {TASK_PRIORITIES.map(p => <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Button variant="outline" size="sm" onClick={clearFilters} className="h-9">Clear Filters</Button>
           </div>
         </CardContent>
       </Card>

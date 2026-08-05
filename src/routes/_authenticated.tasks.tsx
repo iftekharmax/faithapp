@@ -466,9 +466,9 @@ function TaskListRow({
           onClick={onToggleDone}
           className={cn(
             "grid h-9 w-9 shrink-0 place-items-center rounded-lg border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            t.status === "done" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600" :
+            t.status === "completed" || t.status === "done" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600" :
               t.status === "in_progress" ? "border-blue-500/40 bg-blue-500/10 text-blue-600" :
-                t.status === "blocked" ? "border-rose-500/40 bg-rose-500/10 text-rose-600" :
+                t.status === "overdue" ? "border-rose-500/40 bg-rose-500/10 text-rose-600" :
                   "border-border bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary",
           )}
           aria-label={t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}

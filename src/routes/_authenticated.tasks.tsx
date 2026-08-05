@@ -305,12 +305,13 @@ function TasksPage() {
           </Button>
         </div>
 
-        <div className="relative mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
-          <Stat label="Total" value={stats.total} tone="primary" />
-          <Stat label="To do" value={stats.todo} tone="slate" />
-          <Stat label="In progress" value={stats.inProgress} tone="blue" />
-          <Stat label="Done" value={stats.completed} tone="emerald" />
-          <Stat label="Overdue" value={stats.overdue} tone="rose" />
+        <div className="relative mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+          <Stat label="My Tasks" value={tasks.filter(t => t.assignee_id === user?.id).length} tone="primary" />
+          <Stat label="Pending" value={tasks.filter(t => t.status !== "completed" && t.status !== "done").length} tone="slate" />
+          <Stat label="Waiting" value={tasks.filter(t => t.status.startsWith('waiting_')).length} tone="blue" />
+          <Stat label="Overdue" value={tasks.filter(t => (t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue").length} tone="rose" />
+          <Stat label="Urgent" value={tasks.filter(t => t.priority === "urgent" || t.priority === "critical").length} tone="rose" />
+          <Stat label="Done" value={tasks.filter(t => t.status === "completed" || t.status === "done").length} tone="emerald" />
         </div>
       </div>
 

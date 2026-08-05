@@ -447,13 +447,13 @@ function TasksPage() {
               endAccessor="end"
               defaultView={Views.MONTH}
               views={[Views.MONTH, Views.WEEK, Views.DAY]}
-              onSelectEvent={(e) => setViewing(e.resource)}
-              onEventDrop={async ({ event, start, end }) => {
-                const task = (event as any).resource as Task;
+              onSelectEvent={(e: any) => setViewing(e.resource)}
+              onEventDrop={async ({ event, start, end }: any) => {
+                const task = event.resource as Task;
                 try {
                   const updates: TaskInput = {
-                    start_date: start.toISOString(),
-                    due_date: end.toISOString()
+                    start_date: start instanceof Date ? start.toISOString() : new Date(start).toISOString(),
+                    due_date: end instanceof Date ? end.toISOString() : new Date(end).toISOString()
                   };
                   await updateTask(task.id, updates);
                   await logTaskAction(task.id, "reschedule_dnd", { 
@@ -467,12 +467,12 @@ function TasksPage() {
                 }
               }}
               resizable
-              onEventResize={async ({ event, start, end }) => {
-                const task = (event as any).resource as Task;
+              onEventResize={async ({ event, start, end }: any) => {
+                const task = event.resource as Task;
                 try {
                   const updates: TaskInput = {
-                    start_date: start.toISOString(),
-                    due_date: end.toISOString()
+                    start_date: start instanceof Date ? start.toISOString() : new Date(start).toISOString(),
+                    due_date: end instanceof Date ? end.toISOString() : new Date(end).toISOString()
                   };
                   await updateTask(task.id, updates);
                   await logTaskAction(task.id, "resize_dnd", { 
@@ -486,12 +486,12 @@ function TasksPage() {
                 }
               }}
               draggableAccessor={() => true}
-              eventPropGetter={(event) => ({
+              eventPropGetter={(event: any) => ({
                 className: cn(
                   "rounded-md border-l-4 px-2 py-0.5 text-xs font-medium shadow-sm transition-opacity hover:opacity-90",
-                  TASK_PRIORITY_STYLE[event.resource.priority].includes("red") ? "bg-red-500/10 text-red-700 border-red-500" :
-                  TASK_PRIORITY_STYLE[event.resource.priority].includes("orange") ? "bg-orange-500/10 text-orange-700 border-orange-500" :
-                  TASK_PRIORITY_STYLE[event.resource.priority].includes("amber") ? "bg-amber-500/10 text-amber-700 border-amber-500" :
+                  TASK_PRIORITY_STYLE[event.resource.priority as TaskPriority].includes("red") ? "bg-red-500/10 text-red-700 border-red-500" :
+                  TASK_PRIORITY_STYLE[event.resource.priority as TaskPriority].includes("orange") ? "bg-orange-500/10 text-orange-700 border-orange-500" :
+                  TASK_PRIORITY_STYLE[event.resource.priority as TaskPriority].includes("amber") ? "bg-amber-500/10 text-amber-700 border-amber-500" :
                   "bg-primary/10 text-primary border-primary"
                 ),
                 style: { border: 'none' }
@@ -524,6 +524,7 @@ function TasksPage() {
             />
           </div>
         </Card>
+
 
       ) : filtered.length === 0 && view === "list" ? (
 

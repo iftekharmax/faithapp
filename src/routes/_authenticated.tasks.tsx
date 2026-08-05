@@ -428,27 +428,70 @@ function TasksPage() {
       <Card className="border-none shadow-sm bg-card/50 backdrop-blur">
         <CardContent className="p-4 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
-             <Input 
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search tasks by title or description..."
-                className="w-full sm:max-w-xs h-9"
-              />
+             <div className="relative w-full sm:max-w-xs">
+                <Search aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search tasks..."
+                  className="pl-9 h-9"
+                  aria-label="Search tasks"
+                />
+              </div>
+              
               <Select value={tab} onValueChange={(v) => setTab(v as TabValue)}>
-                <SelectTrigger className="w-[150px] h-9"><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectTrigger className="w-[140px] h-9" aria-label="Status filter"><SelectValue placeholder="Status" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="mine">My Tasks</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                  <DropdownMenuSeparator />
                   {TASK_STATUSES.map(s => <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>)}
                 </SelectContent>
               </Select>
+
               <Select value={priority} onValueChange={(v) => setPriority(v as typeof priority)}>
-                <SelectTrigger className="w-[150px] h-9"><SelectValue placeholder="Priority" /></SelectTrigger>
+                <SelectTrigger className="w-[140px] h-9" aria-label="Priority filter"><SelectValue placeholder="Priority" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Priority</SelectItem>
                   {TASK_PRIORITIES.map(p => <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>)}
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="sm" onClick={clearFilters} className="h-9">Clear Filters</Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-9 gap-2">
+                    <Settings2 className="h-4 w-4" /> Presets
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Saved Filters</DropdownMenuLabel>
+                  {savedFilters.length === 0 ? (
+                    <div className="px-2 py-4 text-center text-xs text-muted-foreground italic">No presets saved</div>
+                  ) : (
+                    savedFilters.map((preset, idx) => (
+                      <DropdownMenuItem key={idx} onClick={() => applyPreset(preset)}>
+                        {preset.name}
+                      </DropdownMenuItem>
+                    ))
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => {
+                    const name = prompt("Filter Name:");
+                    if (name) saveCurrentFilter(name);
+                  }}>
+                    Save Current View...
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <div className="flex items-center gap-1 bg-muted/40 p-0.5 rounded-lg border ml-auto">
+                <Button variant={view === "list" ? "secondary" : "ghost"} size="icon" className="h-8 w-8" onClick={() => setView("list")} aria-label="List view"><ListIcon className="h-4 w-4" /></Button>
+                <Button variant={view === "board" ? "secondary" : "ghost"} size="icon" className="h-8 w-8" onClick={() => setView("board")} aria-label="Board view"><LayoutGrid className="h-4 w-4" /></Button>
+                <Button variant={tab === "calendar" ? "secondary" : "ghost"} size="icon" className="h-8 w-8" onClick={() => setTab("calendar")} aria-label="Calendar view"><Calendar className="h-4 w-4" /></Button>
+              </div>
+
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9 text-muted-foreground hover:text-foreground">Reset</Button>
           </div>
         </CardContent>
       </Card>

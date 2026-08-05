@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ListChecks, Plus, Search, Loader2, Trash2, Pencil, Calendar, User as UserIcon,
   CheckCircle2, Circle, Clock, AlertOctagon, Sparkles, LayoutGrid, List as ListIcon, BellRing,
+  MoreVertical, ChevronRight, MessageSquare, Paperclip, CheckSquare, History, Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -17,17 +18,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import {
   listTasks, createTask, updateTask, deleteTask, listAssignableUsers, runTaskReminders,
-  TASK_STATUSES, TASK_PRIORITIES, TASK_STATUS_LABELS, TASK_PRIORITY_LABELS,
+  TASK_STATUSES, TASK_PRIORITIES, TASK_CATEGORIES, TASK_STATUS_LABELS, TASK_PRIORITY_LABELS, TASK_CATEGORY_LABELS,
   TASK_STATUS_STYLE, TASK_PRIORITY_STYLE,
-  type Task, type TaskStatus, type TaskPriority, type TaskAssignee, type TaskInput,
+  type Task, type TaskStatus, type TaskPriority, type TaskCategory, type TaskAssignee, type TaskInput,
 } from "@/lib/tasks";
 import { getUndoDurationMs } from "@/lib/undo-prefs";
 import { showUndoToast } from "@/components/ui/undo-toast";
@@ -47,7 +49,20 @@ export const Route = createFileRoute("/_authenticated/tasks")({
 });
 
 const STATUS_ICON: Record<TaskStatus, typeof Circle> = {
-  todo: Circle, in_progress: Clock, blocked: AlertOctagon, done: CheckCircle2,
+  draft: Circle,
+  todo: Circle,
+  assigned: UserIcon,
+  in_progress: Clock,
+  waiting_for_student: UserIcon,
+  waiting_for_documents: ListChecks,
+  waiting_for_institution: ListChecks,
+  waiting_for_payment: ListChecks,
+  waiting_for_visa: ListChecks,
+  under_review: Search,
+  completed: CheckCircle2,
+  cancelled: Circle,
+  overdue: AlertOctagon,
+  done: CheckCircle2,
 };
 
 type TabValue = "all" | TaskStatus | "mine";
@@ -85,6 +100,7 @@ function TasksPage() {
   const [view, setView] = useState<ViewMode>(initial.view);
   const [editing, setEditing] = useState<Task | null>(null);
   const [open, setOpen] = useState(false);
+  const [viewing, setViewing] = useState<Task | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Task | null>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
 
@@ -126,7 +142,10 @@ function TasksPage() {
     const q = search.toLowerCase().trim();
     return tasks.filter((t) => {
       if (tab === "mine" && t.assignee_id !== user?.id) return false;
-      if (tab !== "all" && tab !== "mine" && t.status !== tab) return false;
+      if (tab === "overdue") {
+        const isOverdue = !!((t.due_date && (t.status !== "completed" && t.status !== "done") && new Date(t.due_date) < new Date()) || t.status === "overdue");
+        if (!isOverdue) return false;
+      } else if (tab !== "all" && tab !== "mine" && t.status !== tab) return false;
       if (priority !== "all" && t.priority !== priority) return false;
       if (q && !(`${t.title} ${t.description ?? ""}`.toLowerCase().includes(q))) return false;
       return true;
@@ -137,8 +156,8 @@ function TasksPage() {
     total: tasks.length,
     todo: tasks.filter((t) => t.status === "todo").length,
     inProgress: tasks.filter((t) => t.status === "in_progress").length,
-    done: tasks.filter((t) => t.status === "done").length,
-    overdue: tasks.filter((t) => t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()).length,
+    completed: tasks.filter((t) => t.status === "completed" || t.status === "done").length,
+    overdue: tasks.filter((t) => (t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue").length,
   }), [tasks]);
 
   const openNew = () => { setEditing(null); setOpen(true); };
@@ -287,12 +306,13 @@ function TasksPage() {
           </Button>
         </div>
 
-        <div className="relative mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
-          <Stat label="Total" value={stats.total} tone="primary" />
-          <Stat label="To do" value={stats.todo} tone="slate" />
-          <Stat label="In progress" value={stats.inProgress} tone="blue" />
-          <Stat label="Done" value={stats.done} tone="emerald" />
-          <Stat label="Overdue" value={stats.overdue} tone="rose" />
+        <div className="relative mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+          <Stat label="My Tasks" value={tasks.filter(t => t.assignee_id === user?.id).length} tone="primary" />
+          <Stat label="Pending" value={tasks.filter(t => t.status !== "completed" && t.status !== "done").length} tone="slate" />
+          <Stat label="Waiting" value={tasks.filter(t => t.status.startsWith('waiting_')).length} tone="blue" />
+          <Stat label="Overdue" value={tasks.filter(t => (t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue").length} tone="rose" />
+          <Stat label="Urgent" value={tasks.filter(t => t.priority === "urgent" || t.priority === "critical").length} tone="rose" />
+          <Stat label="Done" value={tasks.filter(t => t.status === "completed" || t.status === "done").length} tone="emerald" />
         </div>
       </div>
 
@@ -306,6 +326,7 @@ function TasksPage() {
               {TASK_STATUSES.map((s) => (
                 <TabsTrigger key={s} value={s}>{TASK_STATUS_LABELS[s]}</TabsTrigger>
               ))}
+              <TabsTrigger value="overdue">Overdue</TabsTrigger>
             </TabsList>
           </Tabs>
           <div className="flex flex-wrap items-center gap-2">
@@ -380,7 +401,8 @@ function TasksPage() {
               key={t.id}
               task={t}
               assignee={t.assignee_id ? userMap.get(t.assignee_id) ?? null : null}
-              onToggleDone={() => onQuickStatus(t, t.status === "done" ? "todo" : "done")}
+              onToggleDone={() => onQuickStatus(t, (t.status === "completed" || t.status === "done") ? "todo" : "completed")}
+              onView={() => setViewing(t)}
               onEdit={() => openEdit(t)}
               onDelete={() => setConfirmDelete(t)}
               onStatusChange={(s) => onQuickStatus(t, s)}
@@ -391,11 +413,12 @@ function TasksPage() {
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {TASK_STATUSES.map((s) => (
-              <BoardColumn
+               <BoardColumn
                 key={s}
                 status={s}
                 tasks={filtered.filter((t) => t.status === s)}
                 users={userMap}
+                onView={setViewing}
                 onEdit={openEdit}
                 onDelete={(t) => setConfirmDelete(t)}
                 onStatusChange={onQuickStatus}
@@ -420,6 +443,14 @@ function TasksPage() {
         onSave={onSaveTask}
       />
 
+      <TaskDetailsDialog
+        open={!!viewing}
+        onOpenChange={(open) => !open && setViewing(null)}
+        task={viewing}
+        users={users}
+        onEdit={openEdit}
+      />
+
       <ConfirmDialog
         open={!!confirmDelete}
         onOpenChange={(v) => { if (!v) setConfirmDelete(null); }}
@@ -434,39 +465,44 @@ function TasksPage() {
 }
 
 function TaskListRow({
-  task: t, assignee, onToggleDone, onEdit, onDelete, onStatusChange,
+  task: t, assignee, onToggleDone, onView, onEdit, onDelete, onStatusChange,
 }: {
   task: Task;
   assignee: TaskAssignee | null;
   onToggleDone: () => void;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
   onStatusChange: (s: TaskStatus) => void;
 }) {
   const Icon = STATUS_ICON[t.status];
-  const overdue = !!(t.due_date && t.status !== "done" && new Date(t.due_date) < new Date());
+  const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
 
   return (
-    <Card className={cn("group transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background", t.status === "done" && "opacity-70")} role="listitem">
+    <Card 
+      className={cn("group transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background cursor-pointer", (t.status === "completed" || t.status === "done") && "opacity-70")} 
+      role="listitem"
+      onClick={onView}
+    >
       <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
         <button
-          onClick={onToggleDone}
+          onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
           className={cn(
             "grid h-9 w-9 shrink-0 place-items-center rounded-lg border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            t.status === "done" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600" :
+            t.status === "completed" || t.status === "done" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600" :
               t.status === "in_progress" ? "border-blue-500/40 bg-blue-500/10 text-blue-600" :
-                t.status === "blocked" ? "border-rose-500/40 bg-rose-500/10 text-rose-600" :
+                t.status === "overdue" ? "border-rose-500/40 bg-rose-500/10 text-rose-600" :
                   "border-border bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary",
           )}
-          aria-label={t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
-          aria-pressed={t.status === "done"}
+          aria-label={t.status === "completed" || t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
+          aria-pressed={t.status === "completed" || t.status === "done"}
         >
           <Icon className="h-4 w-4" aria-hidden />
         </button>
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className={cn("font-semibold", t.status === "done" && "line-through text-muted-foreground")}>{t.title}</h3>
+            <h3 className={cn("font-semibold", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
             <Badge className={cn("border", TASK_STATUS_STYLE[t.status])} variant="outline">
               {TASK_STATUS_LABELS[t.status]}
             </Badge>
@@ -483,16 +519,31 @@ function TaskListRow({
             <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{t.description}</p>
           )}
           <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+            {t.category && (
+              <span className="inline-flex items-center gap-1"><Tag className="h-3 w-3" aria-hidden />{TASK_CATEGORY_LABELS[t.category]}</span>
+            )}
             {t.due_date && (
-              <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString()}</span>
+              <span className={cn("inline-flex items-center gap-1", overdue && "text-rose-600 font-medium")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString()}</span>
             )}
             {assignee && (
               <span className="inline-flex items-center gap-1"><UserIcon className="h-3 w-3" aria-hidden />{assignee.full_name || assignee.email}</span>
             )}
+            {t.checklists && t.checklists.length > 0 && (
+              <span className="inline-flex items-center gap-1">
+                <CheckSquare className="h-3 w-3" aria-hidden />
+                {t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}
+              </span>
+            )}
+            {t.comments && t.comments.length > 0 && (
+              <span className="inline-flex items-center gap-1"><MessageSquare className="h-3 w-3" aria-hidden />{t.comments.length}</span>
+            )}
+            {t.attachments && t.attachments.length > 0 && (
+              <span className="inline-flex items-center gap-1"><Paperclip className="h-3 w-3" aria-hidden />{t.attachments.length}</span>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
           <Select value={t.status} onValueChange={(v) => onStatusChange(v as TaskStatus)}>
             <SelectTrigger className="h-8 w-[130px] text-xs" aria-label={`Status for ${t.title}`}><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -510,7 +561,7 @@ function TaskListRow({
 }
 
 function BoardColumn({
-  status, tasks, users, onEdit, onDelete, onStatusChange,
+  status, tasks, users, onEdit, onDelete, onStatusChange, onView,
 }: {
   status: TaskStatus;
   tasks: Task[];
@@ -518,6 +569,7 @@ function BoardColumn({
   onEdit: (t: Task) => void;
   onDelete: (t: Task) => void;
   onStatusChange: (t: Task, s: TaskStatus) => void;
+  onView: (t: Task) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   const Icon = STATUS_ICON[status];
@@ -548,6 +600,7 @@ function BoardColumn({
               key={t.id}
               task={t}
               assignee={t.assignee_id ? users.get(t.assignee_id) ?? null : null}
+              onView={() => onView(t)}
               onEdit={() => onEdit(t)}
               onDelete={() => onDelete(t)}
               onStatusChange={(s) => onStatusChange(t, s)}
@@ -560,10 +613,11 @@ function BoardColumn({
 }
 
 function DraggableTaskCard({
-  task, assignee, onEdit, onDelete, onStatusChange,
+  task, assignee, onView, onEdit, onDelete, onStatusChange,
 }: {
   task: Task;
   assignee: TaskAssignee | null;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
   onStatusChange: (s: TaskStatus) => void;
@@ -577,26 +631,30 @@ function DraggableTaskCard({
       className={cn("cursor-grab touch-none active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl", isDragging && "opacity-40")}
       aria-label={`Drag task ${task.title}. Current status ${TASK_STATUS_LABELS[task.status]}.`}
     >
-      <TaskCard task={task} assignee={assignee} onEdit={onEdit} onDelete={onDelete} onStatusChange={onStatusChange} />
+      <TaskCard task={task} assignee={assignee} onView={onView} onEdit={onEdit} onDelete={onDelete} onStatusChange={onStatusChange} />
     </div>
   );
 }
 
 function TaskCard({
-  task: t, assignee, compact, onEdit, onDelete, onStatusChange,
+  task: t, assignee, compact, onView, onEdit, onDelete, onStatusChange,
 }: {
   task: Task;
   assignee: TaskAssignee | null;
   compact?: boolean;
+  onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
   onStatusChange?: (s: TaskStatus) => void;
 }) {
-  const overdue = !!(t.due_date && t.status !== "done" && new Date(t.due_date) < new Date());
+  const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
   return (
-    <div className={cn("rounded-xl border bg-background p-3 shadow-sm transition hover:shadow-md", compact && "shadow-lg")}>
+    <div 
+      className={cn("rounded-xl border bg-background p-3 shadow-sm transition hover:shadow-md cursor-pointer", compact && "shadow-lg")}
+      onClick={onView}
+    >
       <div className="flex items-start justify-between gap-2">
-        <h3 className={cn("text-sm font-semibold leading-snug", t.status === "done" && "line-through text-muted-foreground")}>{t.title}</h3>
+        <h3 className={cn("text-sm font-semibold leading-snug", (t.status === "completed" || t.status === "done") && "line-through text-muted-foreground")}>{t.title}</h3>
         <Badge variant="outline" className={cn("shrink-0 border text-[10px]", TASK_PRIORITY_STYLE[t.priority])}>
           {TASK_PRIORITY_LABELS[t.priority]}
         </Badge>
@@ -618,6 +676,7 @@ function TaskCard({
       {!compact && (onEdit || onDelete || onStatusChange) && (
         <div
           className="mt-2 flex items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
@@ -671,9 +730,11 @@ function TaskDialog({
     if (!open) return;
     setForm(editing ? {
       title: editing.title, description: editing.description,
-      status: editing.status, priority: editing.priority,
-      due_date: editing.due_date, assignee_id: editing.assignee_id,
-    } : { status: "todo", priority: "normal" });
+      status: editing.status, priority: editing.priority, category: editing.category,
+      due_date: editing.due_date, start_date: editing.start_date,
+      reminder_date: editing.reminder_date, reminder_time: editing.reminder_time,
+      assignee_id: editing.assignee_id,
+    } : { status: "todo", priority: "normal", category: "internal" });
   }, [open, editing]);
 
   const submit = async (e: React.FormEvent) => {
@@ -712,6 +773,15 @@ function TaskDialog({
               </Select>
             </div>
             <div className="space-y-1.5">
+              <Label htmlFor="task-category">Category</Label>
+              <Select value={form.category ?? "internal"} onValueChange={(v) => setForm((f) => ({ ...f, category: v as TaskCategory }))}>
+                <SelectTrigger id="task-category"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {TASK_CATEGORIES.map((c) => <SelectItem key={c} value={c}>{TASK_CATEGORY_LABELS[c]}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
               <Label htmlFor="task-priority">Priority</Label>
               <Select value={form.priority ?? "normal"} onValueChange={(v) => setForm((f) => ({ ...f, priority: v as TaskPriority }))}>
                 <SelectTrigger id="task-priority"><SelectValue /></SelectTrigger>
@@ -719,10 +789,6 @@ function TaskDialog({
                   {TASK_PRIORITIES.map((p) => <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>)}
                 </SelectContent>
               </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="due">Due date</Label>
-              <Input id="due" type="date" value={form.due_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value || null }))} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="task-assignee">Assignee</Label>
@@ -735,6 +801,25 @@ function TaskDialog({
               </Select>
             </div>
           </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 border-t pt-4 mt-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="start">Start date</Label>
+              <Input id="start" type="date" value={form.start_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value || null }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="due">Due date</Label>
+              <Input id="due" type="date" value={form.due_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value || null }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="reminder-date">Reminder date</Label>
+              <Input id="reminder-date" type="date" value={form.reminder_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, reminder_date: e.target.value || null }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="reminder-time">Reminder time</Label>
+              <Input id="reminder-time" type="time" value={form.reminder_time ?? ""} onChange={(e) => setForm((f) => ({ ...f, reminder_time: e.target.value || null }))} />
+            </div>
+          </div>
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button type="submit" disabled={saving}>
@@ -743,6 +828,150 @@ function TaskDialog({
             </Button>
           </DialogFooter>
         </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function TaskDetailsDialog({
+  task: t,
+  open,
+  onOpenChange,
+  users,
+  onEdit,
+}: {
+  task: Task | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  users: TaskAssignee[];
+  onEdit: (t: Task) => void;
+}) {
+  if (!t) return null;
+  const assignee = t.assignee_id ? users.find((u) => u.id === t.assignee_id) : null;
+  const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <div className="flex items-center gap-2 mb-2">
+            <Badge variant="outline" className={cn("border text-[10px]", TASK_PRIORITY_STYLE[t.priority])}>
+              {TASK_PRIORITY_LABELS[t.priority]}
+            </Badge>
+            <Badge variant="secondary" className="text-[10px]">
+              {TASK_CATEGORY_LABELS[t.category]}
+            </Badge>
+          </div>
+          <DialogTitle className="text-xl font-bold flex items-center gap-2">
+            {(t.status === "completed" || t.status === "done") && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+            {t.title}
+          </DialogTitle>
+          <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4" />
+              <span>Status: {TASK_STATUS_LABELS[t.status]}</span>
+            </div>
+            {t.due_date && (
+              <div className={cn("flex items-center gap-1.5", overdue && "text-rose-600 font-medium")}>
+                <Calendar className="h-4 w-4" />
+                <span>Due: {new Date(t.due_date).toLocaleDateString()}</span>
+              </div>
+            )}
+            {assignee && (
+              <div className="flex items-center gap-1.5">
+                <UserIcon className="h-4 w-4" />
+                <span>Assignee: {assignee.full_name || assignee.email}</span>
+              </div>
+            )}
+          </div>
+        </DialogHeader>
+
+        <div className="space-y-6 py-4">
+          {t.description && (
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <ListIcon className="h-4 w-4" /> Description
+              </h4>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap rounded-lg bg-muted/50 p-3">
+                {t.description}
+              </p>
+            </div>
+          )}
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            {t.checklists && t.checklists.length > 0 && (
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold flex items-center gap-2">
+                  <CheckSquare className="h-4 w-4" /> Checklist
+                </h4>
+                <div className="space-y-2">
+                  {t.checklists.map((item) => (
+                    <div key={item.id} className="flex items-center gap-2 text-sm">
+                      <div className={cn(
+                        "h-4 w-4 rounded border flex items-center justify-center",
+                        item.is_completed ? "bg-primary border-primary text-primary-foreground" : "border-muted-foreground"
+                      )}>
+                        {item.is_completed && <CheckCircle2 className="h-3 w-3" />}
+                      </div>
+                      <span className={cn(item.is_completed && "line-through text-muted-foreground")}>
+                        {item.title}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <History className="h-4 w-4" /> Timeline & Details
+              </h4>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                {t.start_date && <div>Start Date: {new Date(t.start_date).toLocaleDateString()}</div>}
+                {t.reminder_date && (
+                  <div className="flex items-center gap-1.5">
+                    <BellRing className="h-3.5 w-3.5" />
+                    Reminder: {new Date(t.reminder_date).toLocaleDateString()} {t.reminder_time}
+                  </div>
+                )}
+                {t.created_at && <div>Created: {new Date(t.created_at).toLocaleString()}</div>}
+              </div>
+            </div>
+          </div>
+
+          {(t.comments?.length || 0) > 0 && (
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" /> Comments ({t.comments?.length})
+              </h4>
+              <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
+                {t.comments?.map((comment) => (
+                  <div key={comment.id} className="text-sm bg-muted/30 p-2 rounded">
+                    <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                      <span>{users.find(u => u.id === comment.user_id)?.full_name || "User"}</span>
+                      <span>{new Date(comment.created_at).toLocaleString()}</span>
+                    </div>
+                    {comment.content}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter className="sm:justify-between items-center gap-4">
+          <div className="text-xs text-muted-foreground italic">
+            Task ID: {t.id.split('-')[0]}...
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => { onOpenChange(false); onEdit(t); }}>
+              <Pencil className="h-4 w-4 mr-2" /> Edit Task
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+              Close
+            </Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

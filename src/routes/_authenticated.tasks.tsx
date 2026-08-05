@@ -272,13 +272,35 @@ function TasksPage() {
         showUndoToast({
           title: `Moved “${t.title}” to ${TASK_STATUS_LABELS[status]}`,
           description: `Was ${TASK_STATUS_LABELS[prevStatus]}`,
-          undoLabel: `Revert to ${TASK_STATUS_LABELS[prevStatus]}`,
+          undoLabel: "Undo Change",
           onUndo: () => onQuickStatus({ ...t, status }, prevStatus, { silent: true }),
-          link: { label: "Open task", onClick: () => { setEditing({ ...t, status }); setOpen(true); } },
+          link: { label: "Open task", onClick: () => { setViewing({ ...t, status }); } },
         });
       }
     } catch (e) {
       setTasks((prev) => prev.map((x) => x.id === t.id ? { ...x, status: prevStatus } : x));
+      toast.error((e as Error).message);
+    }
+  };
+
+  const onQuickAssign = async (t: Task, assigneeId: string | null) => {
+    const prevAssigneeId = t.assignee_id;
+    if (prevAssigneeId === assigneeId) return;
+    
+    // optimistic
+    setTasks((prev) => prev.map((x) => x.id === t.id ? { ...x, assignee_id: assigneeId } : x));
+    
+    try {
+      await updateTask(t.id, { assignee_id: assigneeId });
+      const nextUser = assigneeId ? users.find(u => u.id === assigneeId) : null;
+      showUndoToast({
+        title: `Assigned “${t.title}”`,
+        description: nextUser ? `Assigned to ${nextUser.full_name || nextUser.email}` : "Task unassigned",
+        undoLabel: "Undo Assign",
+        onUndo: () => onQuickAssign({ ...t, assignee_id: assigneeId }, prevAssigneeId),
+      });
+    } catch (e) {
+      setTasks((prev) => prev.map((x) => x.id === t.id ? { ...x, assignee_id: prevAssigneeId } : x));
       toast.error((e as Error).message);
     }
   };

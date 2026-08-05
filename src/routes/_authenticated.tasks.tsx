@@ -305,7 +305,7 @@ function TasksPage() {
   );
 
   const onDragStart = (e: DragStartEvent) => setDraggingId(String(e.active.id));
-  const onDragEnd = (e: DragEndEvent) => {
+  const onDragEnd = async (e: DragEndEvent) => {
     setDraggingId(null);
     const overId = e.over?.id;
     const activeId = String(e.active.id);
@@ -319,6 +319,7 @@ function TasksPage() {
       await logTaskAction(task.id, "board_move", { from: task.status, to: newStatus });
     }
   };
+
 
 
   const clearFilters = () => {

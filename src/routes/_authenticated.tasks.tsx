@@ -1018,9 +1018,14 @@ function TaskDialog({
 
               <div className="grid gap-6 sm:grid-cols-3">
                 <div className="space-y-2">
-                  <Label htmlFor="task-status" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Current Status</Label>
-                  <Select value={form.status ?? "todo"} onValueChange={(v) => setForm((f) => ({ ...f, status: v as TaskStatus }))}>
-                    <SelectTrigger id="task-status" className="h-10 bg-background/50 border-muted font-bold">
+                  <Label htmlFor="task-status" className={cn("text-sm font-bold uppercase tracking-wider", errors.status ? "text-destructive" : "text-muted-foreground/70")}>
+                    Current Status <span className="text-destructive">*</span>
+                  </Label>
+                  <Select value={form.status ?? "todo"} onValueChange={(v) => {
+                    setForm((f) => ({ ...f, status: v as TaskStatus }));
+                    if (errors.status) setErrors(prev => ({ ...prev, status: "" }));
+                  }}>
+                    <SelectTrigger id="task-status" className={cn("h-10 bg-background/50 border-muted font-bold", errors.status && "border-destructive")}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1031,6 +1036,7 @@ function TaskDialog({
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.status && <p className="text-xs font-bold text-destructive">{errors.status}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="task-category" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Operational Category</Label>

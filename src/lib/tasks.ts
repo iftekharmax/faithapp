@@ -247,16 +247,80 @@ export async function createTask(input: TaskInput): Promise<Task> {
   const payload = { ...input, assigned_by: sess.user?.id ?? null };
   const { data, error } = await supabase.from("tasks").insert(payload).select("*").single();
   if (error) throw error;
+  
+  await logTaskAction(data.id, "create", { payload });
   return data as Task;
 }
 
 export async function updateTask(id: string, patch: TaskInput): Promise<Task> {
+  const { data: oldTask } = await supabase.from("tasks").select("*").eq("id", id).single();
   const { data, error } = await supabase.from("tasks").update(patch).eq("id", id).select("*").single();
   if (error) throw error;
+
+  if (patch.status && oldTask && patch.status !== oldTask.status) {
+    await logTaskAction(id, "status_change", { from: oldTask.status, to: patch.status });
+    
+    // Notify relevant parties
+    if (patch.status === "waiting_for_approval") {
+      await createNotification({
+        task_id: id,
+        title: "Approval Requested",
+        message: `Task "${data.title}" requires admin approval.`,
+        type: "approval_request",
+        role: "admin"
+      });
+    } else if (patch.status === "approved") {
+      if (data.assignee_id) {
+        await createNotification({
+          user_id: data.assignee_id,
+          task_id: id,
+          title: "Task Approved",
+          message: `Your task "${data.title}" has been approved.`,
+          type: "approved"
+        });
+      }
+    }
+  } else {
+    await logTaskAction(id, "update", { patch });
+  }
+
   return data as Task;
 }
 
+export async function createNotification(notif: { 
+  user_id?: string; 
+  task_id: string; 
+  title: string; 
+  message: string; 
+  type: string;
+  role?: string;
+}) {
+  if (notif.user_id) {
+    await supabase.from("task_notifications").insert({
+      user_id: notif.user_id,
+      task_id: notif.task_id,
+      title: notif.title,
+      message: notif.message,
+      type: notif.type
+    });
+  } else if (notif.role === "admin") {
+    // Get all admins to notify
+    const { data: admins } = await supabase.from("user_roles").select("user_id").eq("role", "admin");
+    if (admins) {
+      const notifs = admins.map(a => ({
+        user_id: a.user_id,
+        task_id: notif.task_id,
+        title: notif.title,
+        message: notif.message,
+        type: notif.type
+      }));
+      await supabase.from("task_notifications").insert(notifs);
+    }
+  }
+}
+
 export async function deleteTask(id: string): Promise<void> {
+  await logTaskAction(id, "delete", {});
   const { error } = await supabase.from("tasks").delete().eq("id", id);
   if (error) throw error;
 }

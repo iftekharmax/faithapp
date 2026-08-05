@@ -140,7 +140,10 @@ function TasksPage() {
     const q = search.toLowerCase().trim();
     return tasks.filter((t) => {
       if (tab === "mine" && t.assignee_id !== user?.id) return false;
-      if (tab !== "all" && tab !== "mine" && t.status !== tab) return false;
+      if (tab === "overdue") {
+        const isOverdue = !!((t.due_date && (t.status !== "completed" && t.status !== "done") && new Date(t.due_date) < new Date()) || t.status === "overdue");
+        if (!isOverdue) return false;
+      } else if (tab !== "all" && tab !== "mine" && t.status !== tab) return false;
       if (priority !== "all" && t.priority !== priority) return false;
       if (q && !(`${t.title} ${t.description ?? ""}`.toLowerCase().includes(q))) return false;
       return true;

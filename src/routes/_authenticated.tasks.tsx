@@ -393,7 +393,7 @@ function TasksPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
-              <p className="text-sm text-muted-foreground">Coordinate work across your teams</p>
+              <p className="text-sm text-muted-foreground">Roles: Application Team, Counselor ka task dewa hobe tara task complete korbe and admin task check kore approved korbe</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

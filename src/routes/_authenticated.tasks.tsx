@@ -84,6 +84,16 @@ type ViewMode = "list" | "board";
 
 const FILTERS_KEY = "faith.tasks.filters.v1";
 
+const locales = { "en-US": enUS };
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
+
+
 interface StoredFilters {
   tab: TabValue;
   priority: "all" | TaskPriority;

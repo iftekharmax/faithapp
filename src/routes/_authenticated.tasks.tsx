@@ -79,6 +79,9 @@ interface StoredFilters {
 
 const DEFAULT_FILTERS: StoredFilters = { tab: "all", priority: "all", view: "list", search: "" };
 
+type WorkflowType = 'Australia Student' | 'UK Student' | 'Canada Student' | 'USA Student' | 'Bachelor' | 'Masters' | 'Visa Processing' | 'Finance';
+
+
 function loadFilters(): StoredFilters {
   if (typeof window === "undefined") return DEFAULT_FILTERS;
   try {

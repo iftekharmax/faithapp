@@ -25,9 +25,9 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import {
   listTasks, createTask, updateTask, deleteTask, listAssignableUsers, runTaskReminders,
-  TASK_STATUSES, TASK_PRIORITIES, TASK_STATUS_LABELS, TASK_PRIORITY_LABELS,
+  TASK_STATUSES, TASK_PRIORITIES, TASK_CATEGORIES, TASK_STATUS_LABELS, TASK_PRIORITY_LABELS, TASK_CATEGORY_LABELS,
   TASK_STATUS_STYLE, TASK_PRIORITY_STYLE,
-  type Task, type TaskStatus, type TaskPriority, type TaskAssignee, type TaskInput,
+  type Task, type TaskStatus, type TaskPriority, type TaskCategory, type TaskAssignee, type TaskInput,
 } from "@/lib/tasks";
 import { getUndoDurationMs } from "@/lib/undo-prefs";
 import { showUndoToast } from "@/components/ui/undo-toast";

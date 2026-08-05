@@ -292,31 +292,41 @@ function ApplicationsPage() {
                 ) : paged.map((a) => (
                   <TableRow 
                     key={a.id} 
-                    className="cursor-pointer group hover:bg-muted/50 transition-colors"
+                    role="link"
+                    tabIndex={0}
+                    aria-label={`View application ${a.application_code}`}
+                    onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } });
+                      }
+                    }}
+                    className="group cursor-pointer transition-colors hover:bg-muted/50 focus-visible:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
                   >
-                    <TableCell onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
+                    <TableCell>
                       <div className="text-sm font-medium hover:text-primary transition-colors">{a.application_code}</div>
                       <div className="text-[11px] text-muted-foreground">
                         {a.country || "—"} {a.campus ? `· ${a.campus}` : ""}
                       </div>
                     </TableCell>
-                    <TableCell className="hidden md:table-cell" onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
+                    <TableCell className="hidden md:table-cell">
                       <div className="text-sm">{a.student?.full_name || "—"}</div>
                       <div className="text-[11px] text-muted-foreground">{a.student?.student_code || ""}</div>
                     </TableCell>
-                    <TableCell className="hidden lg:table-cell" onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
+                    <TableCell className="hidden lg:table-cell">
                       <div className="text-sm truncate max-w-[240px] hover:text-primary transition-colors">{a.university}</div>
                       <div className="text-[11px] text-muted-foreground truncate max-w-[240px]">
                         {a.program}{a.degree ? ` · ${a.degree}` : ""}
                       </div>
                     </TableCell>
-                    <TableCell className="hidden lg:table-cell text-sm" onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>{a.intake || "—"}</TableCell>
-                    <TableCell onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
+                    <TableCell className="hidden lg:table-cell text-sm">{a.intake || "—"}</TableCell>
+                    <TableCell>
                       <Badge variant="secondary" className={statusColor[a.status]}>
                         {APPLICATION_STATUS_LABELS[a.status]}
                       </Badge>
                     </TableCell>
-                    <TableCell onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
+                    <TableCell>
                       {docStatuses[a.id] && docStatuses[a.id] !== "none" ? (
                         <Badge
                           variant="secondary"
@@ -328,7 +338,7 @@ function ApplicationsPage() {
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap" onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}>
+                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                       {a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "—"}
                     </TableCell>
 

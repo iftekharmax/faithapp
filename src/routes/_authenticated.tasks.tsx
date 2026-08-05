@@ -15,8 +15,11 @@ import {
   type View as BigView,
   Views,
 } from "react-big-calendar";
+import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
+
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 
@@ -44,7 +47,9 @@ import {
   TASK_STATUSES, TASK_PRIORITIES, TASK_CATEGORIES, TASK_STATUS_LABELS, TASK_PRIORITY_LABELS, TASK_CATEGORY_LABELS,
   TASK_STATUS_STYLE, TASK_PRIORITY_STYLE,
   type Task, type TaskStatus, type TaskPriority, type TaskCategory, type TaskAssignee, type TaskInput,
+  initiateWorkflow, logTaskAction,
 } from "@/lib/tasks";
+
 import { getUndoDurationMs } from "@/lib/undo-prefs";
 import { showUndoToast } from "@/components/ui/undo-toast";
 
@@ -92,6 +97,9 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
+
+const DnDCalendar = withDragAndDrop(BigCalendar);
+
 
 
 interface StoredFilters {

@@ -4,7 +4,7 @@ import {
   ListChecks, Plus, Search, Loader2, Trash2, Pencil, Calendar, User as UserIcon,
   CheckCircle2, Circle, Clock, AlertOctagon, Sparkles, LayoutGrid, List as ListIcon, BellRing,
   MoreVertical, ChevronRight, MessageSquare, Paperclip, CheckSquare, History, Tag, ChevronDown,
-  ChevronLeft,
+  ChevronLeft, Settings2, UserPlus,
 } from "lucide-react";
 import { WorkflowSelector } from "@/components/tasks/WorkflowSelector";
 

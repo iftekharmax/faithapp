@@ -724,7 +724,7 @@ function TaskListRow({
                 t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600 animate-pulse" :
                   "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",
           )}
-          aria-label={t.status === "completed" || t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
+          aria-label={t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
         >
           <Icon className={cn("h-5 w-5", (t.status === "completed" || t.status === "done") && "scale-110")} aria-hidden />
         </button>

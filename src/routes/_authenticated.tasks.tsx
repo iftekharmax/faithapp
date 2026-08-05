@@ -684,9 +684,11 @@ function TaskDialog({
     if (!open) return;
     setForm(editing ? {
       title: editing.title, description: editing.description,
-      status: editing.status, priority: editing.priority,
-      due_date: editing.due_date, assignee_id: editing.assignee_id,
-    } : { status: "todo", priority: "normal" });
+      status: editing.status, priority: editing.priority, category: editing.category,
+      due_date: editing.due_date, start_date: editing.start_date,
+      reminder_date: editing.reminder_date, reminder_time: editing.reminder_time,
+      assignee_id: editing.assignee_id,
+    } : { status: "todo", priority: "normal", category: "internal" });
   }, [open, editing]);
 
   const submit = async (e: React.FormEvent) => {

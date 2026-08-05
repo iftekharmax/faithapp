@@ -193,7 +193,7 @@ export async function listTasks(filters?: any): Promise<Task[]> {
     assignees:task_assignees(user_id),
     followers:task_followers(user_id),
     checklists:task_checklists(*),
-    dependencies:task_dependencies(depends_on_task_id),
+    task_dependencies!task_dependencies_task_id_fkey(depends_on_task_id),
     attachments:task_attachments(*)
   `);
   

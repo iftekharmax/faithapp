@@ -551,7 +551,7 @@ function TaskListRow({
 }
 
 function BoardColumn({
-  status, tasks, users, onEdit, onDelete, onStatusChange,
+  status, tasks, users, onEdit, onDelete, onStatusChange, onView,
 }: {
   status: TaskStatus;
   tasks: Task[];
@@ -559,6 +559,7 @@ function BoardColumn({
   onEdit: (t: Task) => void;
   onDelete: (t: Task) => void;
   onStatusChange: (t: Task, s: TaskStatus) => void;
+  onView: (t: Task) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   const Icon = STATUS_ICON[status];

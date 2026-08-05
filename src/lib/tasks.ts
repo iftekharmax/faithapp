@@ -155,9 +155,39 @@ export const TASK_CATEGORY_LABELS: Record<TaskCategory, string> = {
   custom: "Custom Task",
 };
 
+export const TASK_STATUS_STYLE: Record<TaskStatus, string> = {
+  draft: "bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20",
+  todo: "bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20",
+  assigned: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20",
+  in_progress: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20",
+  waiting_for_student: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+  waiting_for_documents: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+  waiting_for_institution: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+  waiting_for_payment: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+  waiting_for_visa: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+  under_review: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20",
+  completed: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
+  cancelled: "bg-slate-500/10 text-slate-500 border-slate-500/20",
+  overdue: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20",
+  done: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
+};
+
+export const TASK_PRIORITY_STYLE: Record<TaskPriority, string> = {
+  low: "bg-muted text-muted-foreground border-border",
+  normal: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20",
+  high: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+  urgent: "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20",
+  critical: "bg-red-500/10 text-red-700 dark:text-red-300 border-red-500/20",
+};
+
+export interface TaskAssignee {
+  id: string;
+  full_name: string | null;
+  email: string;
+  avatar_url?: string | null;
+}
+
 export async function listTasks(filters?: any): Promise<Task[]> {
-  // Fix the relationship by joining on user_id to profiles directly if possible, 
-  // or handle the potential missing relation error.
   let query = supabase.from("tasks").select(`
     *,
     assignees:task_assignees(user_id),
@@ -174,7 +204,6 @@ export async function listTasks(filters?: any): Promise<Task[]> {
   const { data, error } = await query.order("created_at", { ascending: false });
   if (error) throw error;
 
-  // Manually fetch comments to avoid the specific profile relationship issue in the main join
   const taskIds = data?.map(t => t.id) || [];
   if (taskIds.length > 0) {
     const { data: comments } = await supabase
@@ -216,13 +245,13 @@ export async function deleteTask(id: string): Promise<void> {
   if (error) throw error;
 }
 
-export async function listAssignableUsers() {
+export async function listAssignableUsers(): Promise<TaskAssignee[]> {
   const { data, error } = await supabase
     .from("profiles")
     .select("id, full_name, email, avatar_url")
     .order("full_name", { ascending: true });
   if (error) return [];
-  return data ?? [];
+  return (data as TaskAssignee[]) ?? [];
 }
 
 export async function runTaskReminders(): Promise<number> {

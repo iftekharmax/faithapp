@@ -846,22 +846,38 @@ function TaskDialog({
   onSave: (patch: TaskInput) => Promise<void>;
 }) {
   const [form, setForm] = useState<TaskInput>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setErrors({});
+      return;
+    }
     setForm(editing ? {
       title: editing.title, description: editing.description,
       status: editing.status, priority: editing.priority, category: editing.category,
       due_date: editing.due_date, start_date: editing.start_date,
       reminder_date: editing.reminder_date, reminder_time: editing.reminder_time,
       assignee_id: editing.assignee_id,
-    } : { status: "todo", priority: "normal", category: "internal" });
+    } : { status: "todo", priority: "normal", category: "internal", title: "" });
   }, [open, editing]);
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!form.title?.trim()) newErrors.title = "Task objective is required";
+    if (!form.status) newErrors.status = "Status is required";
+    if (!form.priority) newErrors.priority = "Priority is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title?.trim()) return;
+    if (!validate()) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
     setSaving(true);
     try { await onSave(form); } finally { setSaving(false); }
   };

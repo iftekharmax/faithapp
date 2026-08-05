@@ -373,15 +373,16 @@ function TasksPage() {
       <Card>
         <CardContent className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:p-4">
           <Tabs value={tab} onValueChange={(v) => setTab(v as TabValue)} className="flex-1 min-w-0">
-            <TabsList className="w-full flex-wrap justify-start sm:w-auto" aria-label="Filter tasks by status">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="mine">Mine</TabsTrigger>
+            <TabsList className="w-full flex-wrap justify-start sm:w-auto bg-muted/40 p-1 gap-1" aria-label="Filter tasks by status">
+              <TabsTrigger value="all" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">All</TabsTrigger>
+              <TabsTrigger value="mine" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Mine</TabsTrigger>
               {TASK_STATUSES.map((s) => (
-                <TabsTrigger key={s} value={s}>{TASK_STATUS_LABELS[s]}</TabsTrigger>
+                <TabsTrigger key={s} value={s} className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all hidden lg:inline-flex">
+                  {TASK_STATUS_LABELS[s]}
+                </TabsTrigger>
               ))}
-              <TabsTrigger value="overdue">Overdue</TabsTrigger>
-              <TabsTrigger value="calendar">Calendar View</TabsTrigger>
-
+              <TabsTrigger value="overdue" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Overdue</TabsTrigger>
+              <TabsTrigger value="calendar" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Calendar</TabsTrigger>
             </TabsList>
           </Tabs>
           <div className="flex flex-wrap items-center gap-2">

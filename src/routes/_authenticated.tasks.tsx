@@ -532,7 +532,7 @@ function TaskListRow({
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
           <Select value={t.status} onValueChange={(v) => onStatusChange(v as TaskStatus)}>
             <SelectTrigger className="h-8 w-[130px] text-xs" aria-label={`Status for ${t.title}`}><SelectValue /></SelectTrigger>
             <SelectContent>

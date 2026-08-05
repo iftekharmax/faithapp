@@ -14,7 +14,7 @@ export type TaskStatus =
   | "completed" 
   | "cancelled" 
   | "overdue"
-  | "done"; // Legacy support
+  | "done";
 
 export type TaskPriority = "low" | "normal" | "high" | "urgent" | "critical";
 
@@ -90,13 +90,15 @@ export interface Task {
   created_at: string;
   updated_at: string;
   
-  // Relations (often included in joins)
+  // Relations
   assignees?: { user_id: string }[];
   followers?: { user_id: string }[];
   checklists?: TaskChecklistItem[];
   comments?: TaskComment[];
   attachments?: TaskAttachment[];
   subtasks?: Task[];
+  dependencies?: { depends_on_task_id: string }[];
+  is_blocked?: boolean;
 }
 
 export type TaskInput = Partial<Omit<Task, "id" | "created_at" | "updated_at" | "completed_at">>;
@@ -128,7 +130,7 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   completed: "Completed",
   cancelled: "Cancelled",
   overdue: "Overdue",
-  done: "Done", // Legacy
+  done: "Done",
 };
 
 export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
@@ -153,38 +155,15 @@ export const TASK_CATEGORY_LABELS: Record<TaskCategory, string> = {
   custom: "Custom Task",
 };
 
-export const TASK_STATUS_STYLE: Record<TaskStatus, string> = {
-  draft: "bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20",
-  todo: "bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20",
-  assigned: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20",
-  in_progress: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20",
-  waiting_for_student: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
-  waiting_for_documents: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
-  waiting_for_institution: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
-  waiting_for_payment: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
-  waiting_for_visa: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
-  under_review: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20",
-  completed: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
-  cancelled: "bg-slate-500/10 text-slate-500 border-slate-500/20",
-  overdue: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20",
-  done: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
-};
-
-export const TASK_PRIORITY_STYLE: Record<TaskPriority, string> = {
-  low: "bg-muted text-muted-foreground border-border",
-  normal: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20",
-  high: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
-  urgent: "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20",
-  critical: "bg-red-500/10 text-red-700 dark:text-red-300 border-red-500/20",
-};
-
 export async function listTasks(filters?: any): Promise<Task[]> {
+  // Fix the relationship by joining on user_id to profiles directly if possible, 
+  // or handle the potential missing relation error.
   let query = supabase.from("tasks").select(`
     *,
     assignees:task_assignees(user_id),
     followers:task_followers(user_id),
     checklists:task_checklists(*),
-    comments:task_comments(*, user:profiles(full_name, avatar_url)),
+    dependencies:task_dependencies(depends_on_task_id),
     attachments:task_attachments(*)
   `);
   
@@ -194,12 +173,33 @@ export async function listTasks(filters?: any): Promise<Task[]> {
   
   const { data, error } = await query.order("created_at", { ascending: false });
   if (error) throw error;
+
+  // Manually fetch comments to avoid the specific profile relationship issue in the main join
+  const taskIds = data?.map(t => t.id) || [];
+  if (taskIds.length > 0) {
+    const { data: comments } = await supabase
+      .from("task_comments")
+      .select("*, user_profile:profiles!task_comments_user_id_fkey(full_name, avatar_url)")
+      .in("task_id", taskIds);
+    
+    if (comments) {
+      data.forEach(task => {
+        task.comments = comments
+          .filter(c => c.task_id === task.id)
+          .map(c => ({
+            ...c,
+            user: c.user_profile
+          }));
+      });
+    }
+  }
+
   return (data as Task[]) ?? [];
 }
 
 export async function createTask(input: TaskInput): Promise<Task> {
   const { data: sess } = await supabase.auth.getUser();
-  const payload = { ...input, assigned_by: sess.user?.id ?? null, created_by: sess.user?.id ?? null };
+  const payload = { ...input, assigned_by: sess.user?.id ?? null };
   const { data, error } = await supabase.from("tasks").insert(payload).select("*").single();
   if (error) throw error;
   return data as Task;
@@ -216,20 +216,13 @@ export async function deleteTask(id: string): Promise<void> {
   if (error) throw error;
 }
 
-export interface TaskAssignee {
-  id: string;
-  full_name: string | null;
-  email: string;
-  avatar_url?: string | null;
-}
-
-export async function listAssignableUsers(): Promise<TaskAssignee[]> {
+export async function listAssignableUsers() {
   const { data, error } = await supabase
     .from("profiles")
     .select("id, full_name, email, avatar_url")
     .order("full_name", { ascending: true });
   if (error) return [];
-  return (data as TaskAssignee[]) ?? [];
+  return data ?? [];
 }
 
 export async function runTaskReminders(): Promise<number> {
@@ -242,27 +235,10 @@ export async function runTaskReminders(): Promise<number> {
   }
 }
 
-// Checklist Actions
-export async function addChecklistItem(taskId: string, title: string) {
-  const { data, error } = await supabase.from("task_checklists").insert({ task_id: taskId, title }).select("*").single();
-  if (error) throw error;
-  return data;
-}
-
-export async function toggleChecklistItem(id: string, is_completed: boolean) {
-  const { error } = await supabase.from("task_checklists").update({ is_completed }).eq("id", id);
-  if (error) throw error;
-}
-
-// Comment Actions
-export async function addTaskComment(taskId: string, content: string, parentId?: string) {
-  const { data: sess } = await supabase.auth.getUser();
-  const { data, error } = await supabase.from("task_comments").insert({ 
-    task_id: taskId, 
-    content, 
-    parent_id: parentId, 
-    user_id: sess.user?.id 
-  }).select("*").single();
-  if (error) throw error;
-  return data;
+export async function listWorkflowTemplates() {
+  const { data, error } = await supabase
+    .from("task_workflow_templates")
+    .select("*, steps:task_workflow_steps(*)");
+  if (error) return [];
+  return data ?? [];
 }

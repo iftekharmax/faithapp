@@ -10,11 +10,13 @@ export type TaskStatus =
   | "waiting_for_institution" 
   | "waiting_for_payment" 
   | "waiting_for_visa" 
+  | "waiting_for_approval"
   | "under_review" 
   | "completed" 
   | "cancelled" 
   | "overdue"
-  | "done";
+  | "done"
+  | "approved";
 
 export type TaskPriority = "low" | "normal" | "high" | "urgent" | "critical";
 

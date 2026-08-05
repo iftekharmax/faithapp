@@ -320,6 +320,7 @@ function TasksPage() {
               {TASK_STATUSES.map((s) => (
                 <TabsTrigger key={s} value={s}>{TASK_STATUS_LABELS[s]}</TabsTrigger>
               ))}
+              <TabsTrigger value="overdue">Overdue</TabsTrigger>
             </TabsList>
           </Tabs>
           <div className="flex flex-wrap items-center gap-2">

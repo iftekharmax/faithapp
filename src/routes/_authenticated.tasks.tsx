@@ -211,7 +211,7 @@ function TasksPage() {
     return tasks.filter((t) => {
       if (tab === "mine" && t.assignee_id !== user?.id) return false;
       if (tab === "overdue") {
-        const isOverdue = !!((t.due_date && (t.status !== "completed" && t.status !== "done") && new Date(t.due_date) < new Date()) || t.status === "overdue");
+        const isOverdue = !!((t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
         if (!isOverdue) return false;
       } else if (tab !== "all" && tab !== "mine" && t.status !== tab) return false;
       if (priority !== "all" && t.priority !== priority) return false;

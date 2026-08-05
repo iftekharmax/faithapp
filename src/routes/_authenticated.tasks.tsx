@@ -727,6 +727,15 @@ function TaskDialog({
               </Select>
             </div>
             <div className="space-y-1.5">
+              <Label htmlFor="task-category">Category</Label>
+              <Select value={form.category ?? "internal"} onValueChange={(v) => setForm((f) => ({ ...f, category: v as TaskCategory }))}>
+                <SelectTrigger id="task-category"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {TASK_CATEGORIES.map((c) => <SelectItem key={c} value={c}>{TASK_CATEGORY_LABELS[c]}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
               <Label htmlFor="task-priority">Priority</Label>
               <Select value={form.priority ?? "normal"} onValueChange={(v) => setForm((f) => ({ ...f, priority: v as TaskPriority }))}>
                 <SelectTrigger id="task-priority"><SelectValue /></SelectTrigger>
@@ -734,10 +743,6 @@ function TaskDialog({
                   {TASK_PRIORITIES.map((p) => <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>)}
                 </SelectContent>
               </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="due">Due date</Label>
-              <Input id="due" type="date" value={form.due_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value || null }))} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="task-assignee">Assignee</Label>
@@ -748,6 +753,25 @@ function TaskDialog({
                   {users.map((u) => <SelectItem key={u.id} value={u.id}>{u.full_name || u.email}</SelectItem>)}
                 </SelectContent>
               </Select>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 border-t pt-4 mt-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="start">Start date</Label>
+              <Input id="start" type="date" value={form.start_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value || null }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="due">Due date</Label>
+              <Input id="due" type="date" value={form.due_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value || null }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="reminder-date">Reminder date</Label>
+              <Input id="reminder-date" type="date" value={form.reminder_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, reminder_date: e.target.value || null }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="reminder-time">Reminder time</Label>
+              <Input id="reminder-time" type="time" value={form.reminder_time ?? ""} onChange={(e) => setForm((f) => ({ ...f, reminder_time: e.target.value || null }))} />
             </div>
           </div>
           <DialogFooter>

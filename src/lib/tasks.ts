@@ -101,6 +101,16 @@ export interface Task {
   is_blocked?: boolean;
 }
 
+export interface TaskAuditLog {
+  id: string;
+  task_id: string;
+  user_id: string | null;
+  action: string;
+  changes: any;
+  created_at: string;
+}
+
+
 export type TaskInput = Partial<Omit<Task, "id" | "created_at" | "updated_at" | "completed_at">>;
 
 export const TASK_STATUSES: TaskStatus[] = [
@@ -271,3 +281,47 @@ export async function listWorkflowTemplates() {
   if (error) return [];
   return data ?? [];
 }
+
+export async function logTaskAction(taskId: string, action: string, changes: any) {
+  const { data: sess } = await supabase.auth.getUser();
+  const { error } = await supabase.from("task_audit_logs").insert({
+    task_id: taskId,
+    user_id: sess.user?.id ?? null,
+    action,
+    changes
+  });
+  if (error) console.error("Audit log error:", error);
+}
+
+export async function initiateWorkflow(templateName: string, config: { country?: string; program?: string; deadline?: string }) {
+  const { data: sess } = await supabase.auth.getUser();
+  const { data: template, error: templateError } = await supabase
+    .from("task_workflow_templates")
+    .select("*, steps:task_workflow_steps(*)")
+    .eq("name", templateName)
+    .single();
+    
+  if (templateError) throw templateError;
+  
+  const tasks = [];
+  for (const step of (template.steps || [])) {
+    const due = config.deadline ? new Date(config.deadline) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    // Add logic for specific step offsets if defined in DB
+    
+    const { data: task, error: taskError } = await supabase.from("tasks").insert({
+      title: `${step.title} (${config.country || 'General'})`,
+      description: `${step.description || ''}\n\nContext: ${config.program || 'N/A'}`,
+      status: 'todo',
+      priority: 'normal',
+      category: step.category || 'internal',
+      due_date: due.toISOString(),
+      assigned_by: sess.user?.id ?? null
+    }).select("*").single();
+    
+    if (taskError) throw taskError;
+    tasks.push(task);
+  }
+  
+  return tasks;
+}
+

@@ -1355,19 +1355,28 @@ function TaskDetailsDialog({
           {(t.comments?.length || 0) > 0 && (
             <div className="space-y-3">
               <h4 className="text-sm font-semibold flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" /> Comments ({t.comments?.length})
+                <MessageSquare className="h-4 w-4" /> Comments & Activity
               </h4>
-              <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
-                {t.comments?.map((comment) => (
-                  <div key={comment.id} className="text-sm bg-muted/30 p-2 rounded">
-                    <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-                      <span>{users.find(u => u.id === comment.user_id)?.full_name || "User"}</span>
-                      <span>{new Date(comment.created_at).toLocaleString()}</span>
+              <Tabs defaultValue="comments" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="comments" className="text-xs">Comments ({t.comments?.length})</TabsTrigger>
+                  <TabsTrigger value="activity" className="text-xs">Audit Log</TabsTrigger>
+                </TabsList>
+                <TabsContent value="comments" className="space-y-3 pt-3 max-h-[250px] overflow-y-auto pr-2">
+                  {t.comments?.map((comment) => (
+                    <div key={comment.id} className="text-sm bg-muted/30 p-2 rounded border border-muted/50">
+                      <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                        <span className="font-bold">{users.find(u => u.id === comment.user_id)?.full_name || "User"}</span>
+                        <span>{new Date(comment.created_at).toLocaleString()}</span>
+                      </div>
+                      {comment.content}
                     </div>
-                    {comment.content}
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </TabsContent>
+                <TabsContent value="activity" className="pt-3">
+                  <ActivityLog taskId={t.id} users={users} />
+                </TabsContent>
+              </Tabs>
             </div>
           )}
         </div>

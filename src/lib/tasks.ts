@@ -179,11 +179,13 @@ export const TASK_STATUS_STYLE: Record<TaskStatus, string> = {
   waiting_for_institution: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
   waiting_for_payment: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
   waiting_for_visa: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+  waiting_for_approval: "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20",
   under_review: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20",
   completed: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
   cancelled: "bg-slate-500/10 text-slate-500 border-slate-500/20",
   overdue: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20",
   done: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
+  approved: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]",
 };
 
 export const TASK_PRIORITY_STYLE: Record<TaskPriority, string> = {

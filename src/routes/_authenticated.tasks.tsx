@@ -24,6 +24,15 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
+
+import {
   DndContext, DragOverlay, PointerSensor, KeyboardSensor, useSensor, useSensors,
   closestCenter, useDroppable, useDraggable, type DragEndEvent, type DragStartEvent,
 } from "@dnd-kit/core";

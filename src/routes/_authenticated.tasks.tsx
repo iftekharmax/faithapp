@@ -454,11 +454,12 @@ function TasksPage() {
 }
 
 function TaskListRow({
-  task: t, assignee, onToggleDone, onEdit, onDelete, onStatusChange,
+  task: t, assignee, onToggleDone, onView, onEdit, onDelete, onStatusChange,
 }: {
   task: Task;
   assignee: TaskAssignee | null;
   onToggleDone: () => void;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
   onStatusChange: (s: TaskStatus) => void;
@@ -467,10 +468,14 @@ function TaskListRow({
   const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
 
   return (
-    <Card className={cn("group transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background", (t.status === "completed" || t.status === "done") && "opacity-70")} role="listitem">
+    <Card 
+      className={cn("group transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background cursor-pointer", (t.status === "completed" || t.status === "done") && "opacity-70")} 
+      role="listitem"
+      onClick={onView}
+    >
       <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
         <button
-          onClick={onToggleDone}
+          onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
           className={cn(
             "grid h-9 w-9 shrink-0 place-items-center rounded-lg border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             t.status === "completed" || t.status === "done" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600" :

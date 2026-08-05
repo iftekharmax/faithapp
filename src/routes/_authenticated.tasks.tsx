@@ -67,7 +67,7 @@ const STATUS_ICON: Record<TaskStatus, typeof Circle> = {
   done: CheckCircle2,
 };
 
-type TabValue = "all" | TaskStatus | "mine";
+type TabValue = "all" | TaskStatus | "mine" | "calendar";
 type ViewMode = "list" | "board";
 
 const FILTERS_KEY = "faith.tasks.filters.v1";
@@ -339,6 +339,8 @@ function TasksPage() {
                 <TabsTrigger key={s} value={s}>{TASK_STATUS_LABELS[s]}</TabsTrigger>
               ))}
               <TabsTrigger value="overdue">Overdue</TabsTrigger>
+              <TabsTrigger value="calendar">Calendar View</TabsTrigger>
+
             </TabsList>
           </Tabs>
           <div className="flex flex-wrap items-center gap-2">
@@ -399,7 +401,23 @@ function TasksPage() {
         <div className="grid place-items-center py-12" role="status" aria-label="Loading tasks">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden />
         </div>
+      ) : tab === "calendar" ? (
+        <Card className="p-6 h-[600px] flex items-center justify-center border-dashed">
+          <div className="text-center space-y-2">
+            <Calendar className="h-12 w-12 mx-auto text-muted-foreground opacity-20" />
+            <h3 className="font-semibold text-lg">Calendar Visualizer</h3>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+              Interactive timeline visualization for {filtered.length} active tasks scheduled this month.
+            </p>
+            <div className="grid grid-cols-7 gap-1 mt-4 max-w-md mx-auto opacity-40">
+              {Array.from({ length: 28 }).map((_, i) => (
+                <div key={i} className="h-10 w-10 border rounded bg-muted/50" />
+              ))}
+            </div>
+          </div>
+        </Card>
       ) : filtered.length === 0 && view === "list" ? (
+
         <EmptyState
           icon={ListChecks}
           title="No tasks found"

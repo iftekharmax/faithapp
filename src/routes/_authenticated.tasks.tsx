@@ -600,15 +600,17 @@ function TasksPage() {
 }
 
 function TaskListRow({
-  task: t, assignee, onToggleDone, onView, onEdit, onDelete, onStatusChange,
+  task: t, assignee, users, onToggleDone, onView, onEdit, onDelete, onStatusChange, onAssign,
 }: {
   task: Task;
   assignee: TaskAssignee | null;
+  users: TaskAssignee[];
   onToggleDone: () => void;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
   onStatusChange: (s: TaskStatus) => void;
+  onAssign: (assigneeId: string | null) => void;
 }) {
   const Icon = STATUS_ICON[t.status];
   const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");

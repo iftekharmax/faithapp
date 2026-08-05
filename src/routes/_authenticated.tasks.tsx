@@ -603,10 +603,11 @@ function BoardColumn({
 }
 
 function DraggableTaskCard({
-  task, assignee, onEdit, onDelete, onStatusChange,
+  task, assignee, onView, onEdit, onDelete, onStatusChange,
 }: {
   task: Task;
   assignee: TaskAssignee | null;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
   onStatusChange: (s: TaskStatus) => void;

@@ -86,11 +86,13 @@ const STATUS_ICON: Record<TaskStatus, typeof Circle> = {
   waiting_for_institution: ListChecks,
   waiting_for_payment: ListChecks,
   waiting_for_visa: ListChecks,
+  waiting_for_approval: Clock,
   under_review: Search,
   completed: CheckCircle2,
   cancelled: Circle,
   overdue: AlertOctagon,
   done: CheckCircle2,
+  approved: CheckCircle2,
 };
 
 type TabValue = "all" | TaskStatus | "mine" | "calendar";

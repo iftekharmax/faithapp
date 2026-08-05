@@ -496,12 +496,26 @@ function TaskListRow({
           {t.description && (
             <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{t.description}</p>
           )}
-          <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+            {t.category && (
+              <span className="inline-flex items-center gap-1"><Tag className="h-3 w-3" aria-hidden />{TASK_CATEGORY_LABELS[t.category]}</span>
+            )}
             {t.due_date && (
-              <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString()}</span>
+              <span className={cn("inline-flex items-center gap-1", overdue && "text-rose-600 font-medium")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString()}</span>
             )}
             {assignee && (
               <span className="inline-flex items-center gap-1"><UserIcon className="h-3 w-3" aria-hidden />{assignee.full_name || assignee.email}</span>
+            )}
+            {t.checklists && t.checklists.length > 0 && (
+              <span className="inline-flex items-center gap-1">
+                <CheckSquare className="h-3 w-3" aria-hidden />
+                {t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}
+              </span>
+            )}
+            {t.comments && t.comments.length > 0 && (
+              <span className="inline-flex items-center gap-1"><MessageSquare className="h-3 w-3" aria-hidden />{t.comments.length}</span>
+            )}
+            {t.attachments && t.attachments.length > 0 && (
+              <span className="inline-flex items-center gap-1"><Paperclip className="h-3 w-3" aria-hidden />{t.attachments.length}</span>
             )}
           </div>
         </div>

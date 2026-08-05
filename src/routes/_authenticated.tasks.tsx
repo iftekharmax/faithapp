@@ -691,7 +691,7 @@ function TaskListRow({
   onAssign: (assigneeId: string | null) => void;
 }) {
   const Icon = STATUS_ICON[t.status];
-  const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
+  const overdue = !!((t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
 
   return (
     <Card 

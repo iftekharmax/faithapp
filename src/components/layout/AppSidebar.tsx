@@ -18,7 +18,9 @@ import {
   Building,
   ShieldCheck,
   Database,
+  TrendingUp,
 } from "lucide-react";
+
 
 import {
   Sidebar,
@@ -75,8 +77,10 @@ const usersGroup: NavGroupItem = {
 
 const adminNav: NavItem[] = [
   { title: "Audit Log", url: "/audit-logs", icon: ScrollText, roles: ["admin"] },
+  { title: "Reports", url: "/reports", icon: TrendingUp, roles: ["admin"] },
   { title: "Schema status", url: "/admin/schema", icon: Database, roles: ["admin"] },
 ];
+
 
 
 const accountNav: NavItem[] = [

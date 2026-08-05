@@ -3,8 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ListChecks, Plus, Search, Loader2, Trash2, Pencil, Calendar, User as UserIcon,
   CheckCircle2, Circle, Clock, AlertOctagon, Sparkles, LayoutGrid, List as ListIcon, BellRing,
-  MoreVertical, ChevronRight, MessageSquare, Paperclip, CheckSquare, History, Tag,
+  MoreVertical, ChevronRight, MessageSquare, Paperclip, CheckSquare, History, Tag, ChevronDown,
 } from "lucide-react";
+import { WorkflowSelector } from "@/components/tasks/WorkflowSelector";
+
 import { toast } from "sonner";
 import {
   DndContext, DragOverlay, PointerSensor, KeyboardSensor, useSensor, useSensors,
@@ -304,9 +306,16 @@ function TasksPage() {
               <p className="text-sm text-muted-foreground">Coordinate work across your teams</p>
             </div>
           </div>
-          <Button onClick={openNew} size="lg" className="shadow-md">
-            <Plus className="mr-2 h-4 w-4" aria-hidden />New task
-          </Button>
+          <div className="flex items-center gap-2">
+            <WorkflowSelector onSelect={(template) => {
+              toast.success(`Workflow "${template}" initiated`);
+              load();
+            }} />
+            <Button onClick={openNew} size="lg" className="shadow-md">
+              <Plus className="mr-2 h-4 w-4" aria-hidden />New task
+            </Button>
+          </div>
+
         </div>
 
         <div className="relative mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
@@ -865,7 +874,14 @@ function TaskDetailsDialog({
               {TASK_CATEGORY_LABELS[t.category]}
             </Badge>
           </div>
+          {t.dependencies && t.dependencies.length > 0 && (
+            <div className="flex items-center gap-2 mb-2 p-2 bg-amber-500/10 border border-amber-500/20 rounded-md">
+              <AlertOctagon className="h-4 w-4 text-amber-600" />
+              <span className="text-xs font-medium text-amber-700"> Prerequisite task pending. Completion blocked.</span>
+            </div>
+          )}
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
+
             {(t.status === "completed" || t.status === "done") && <CheckCircle2 className="h-5 w-5 text-green-500" />}
             {t.title}
           </DialogTitle>

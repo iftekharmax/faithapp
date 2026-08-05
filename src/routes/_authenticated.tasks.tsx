@@ -411,11 +411,12 @@ function TasksPage() {
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {TASK_STATUSES.map((s) => (
-              <BoardColumn
+               <BoardColumn
                 key={s}
                 status={s}
                 tasks={filtered.filter((t) => t.status === s)}
                 users={userMap}
+                onView={setViewing}
                 onEdit={openEdit}
                 onDelete={(t) => setConfirmDelete(t)}
                 onStatusChange={onQuickStatus}

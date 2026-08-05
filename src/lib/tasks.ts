@@ -10,11 +10,13 @@ export type TaskStatus =
   | "waiting_for_institution" 
   | "waiting_for_payment" 
   | "waiting_for_visa" 
+  | "waiting_for_approval"
   | "under_review" 
   | "completed" 
   | "cancelled" 
   | "overdue"
-  | "done";
+  | "done"
+  | "approved";
 
 export type TaskPriority = "low" | "normal" | "high" | "urgent" | "critical";
 
@@ -116,7 +118,7 @@ export type TaskInput = Partial<Omit<Task, "id" | "created_at" | "updated_at" | 
 export const TASK_STATUSES: TaskStatus[] = [
   "draft", "todo", "assigned", "in_progress", "waiting_for_student", 
   "waiting_for_documents", "waiting_for_institution", "waiting_for_payment", 
-  "waiting_for_visa", "under_review", "done", "cancelled", "overdue"
+  "waiting_for_visa", "waiting_for_approval", "under_review", "done", "approved", "cancelled", "overdue"
 ];
 
 export const TASK_PRIORITIES: TaskPriority[] = ["low", "normal", "high", "urgent", "critical"];
@@ -136,11 +138,13 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   waiting_for_institution: "Waiting for Institution",
   waiting_for_payment: "Waiting for Payment",
   waiting_for_visa: "Waiting for Visa",
+  waiting_for_approval: "Waiting for Approval",
   under_review: "Under Review",
   completed: "Completed",
   cancelled: "Cancelled",
   overdue: "Overdue",
   done: "Done",
+  approved: "Approved",
 };
 
 export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
@@ -175,11 +179,13 @@ export const TASK_STATUS_STYLE: Record<TaskStatus, string> = {
   waiting_for_institution: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
   waiting_for_payment: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
   waiting_for_visa: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+  waiting_for_approval: "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20",
   under_review: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20",
   completed: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
   cancelled: "bg-slate-500/10 text-slate-500 border-slate-500/20",
   overdue: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20",
   done: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
+  approved: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]",
 };
 
 export const TASK_PRIORITY_STYLE: Record<TaskPriority, string> = {
@@ -241,16 +247,80 @@ export async function createTask(input: TaskInput): Promise<Task> {
   const payload = { ...input, assigned_by: sess.user?.id ?? null };
   const { data, error } = await supabase.from("tasks").insert(payload).select("*").single();
   if (error) throw error;
+  
+  await logTaskAction(data.id, "create", { payload });
   return data as Task;
 }
 
 export async function updateTask(id: string, patch: TaskInput): Promise<Task> {
+  const { data: oldTask } = await supabase.from("tasks").select("*").eq("id", id).single();
   const { data, error } = await supabase.from("tasks").update(patch).eq("id", id).select("*").single();
   if (error) throw error;
+
+  if (patch.status && oldTask && patch.status !== oldTask.status) {
+    await logTaskAction(id, "status_change", { from: oldTask.status, to: patch.status });
+    
+    // Notify relevant parties
+    if (patch.status === "waiting_for_approval") {
+      await createNotification({
+        task_id: id,
+        title: "Approval Requested",
+        message: `Task "${data.title}" requires admin approval.`,
+        type: "approval_request",
+        role: "admin"
+      });
+    } else if (patch.status === "approved") {
+      if (data.assignee_id) {
+        await createNotification({
+          user_id: data.assignee_id,
+          task_id: id,
+          title: "Task Approved",
+          message: `Your task "${data.title}" has been approved.`,
+          type: "approved"
+        });
+      }
+    }
+  } else {
+    await logTaskAction(id, "update", { patch });
+  }
+
   return data as Task;
 }
 
+export async function createNotification(notif: { 
+  user_id?: string; 
+  task_id: string; 
+  title: string; 
+  message: string; 
+  type: string;
+  role?: string;
+}) {
+  if (notif.user_id) {
+    await supabase.from("task_notifications").insert({
+      user_id: notif.user_id,
+      task_id: notif.task_id,
+      title: notif.title,
+      message: notif.message,
+      type: notif.type
+    });
+  } else if (notif.role === "admin") {
+    // Get all admins to notify
+    const { data: admins } = await supabase.from("user_roles").select("user_id").eq("role", "admin");
+    if (admins) {
+      const notifs = admins.map(a => ({
+        user_id: a.user_id,
+        task_id: notif.task_id,
+        title: notif.title,
+        message: notif.message,
+        type: notif.type
+      }));
+      await supabase.from("task_notifications").insert(notifs);
+    }
+  }
+}
+
 export async function deleteTask(id: string): Promise<void> {
+  await logTaskAction(id, "delete", {});
   const { error } = await supabase.from("tasks").delete().eq("id", id);
   if (error) throw error;
 }

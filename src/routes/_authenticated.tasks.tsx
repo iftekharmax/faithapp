@@ -44,7 +44,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -56,8 +56,10 @@ import {
   TASK_STATUSES, TASK_PRIORITIES, TASK_CATEGORIES, TASK_STATUS_LABELS, TASK_PRIORITY_LABELS, TASK_CATEGORY_LABELS,
   TASK_STATUS_STYLE, TASK_PRIORITY_STYLE,
   type Task, type TaskStatus, type TaskPriority, type TaskCategory, type TaskAssignee, type TaskInput,
+  type TaskAuditLog,
   initiateWorkflow, logTaskAction,
 } from "@/lib/tasks";
+import { supabase } from "@/lib/supabase";
 
 import { getUndoDurationMs } from "@/lib/undo-prefs";
 import { showUndoToast } from "@/components/ui/undo-toast";
@@ -86,11 +88,13 @@ const STATUS_ICON: Record<TaskStatus, typeof Circle> = {
   waiting_for_institution: ListChecks,
   waiting_for_payment: ListChecks,
   waiting_for_visa: ListChecks,
+  waiting_for_approval: Clock,
   under_review: Search,
   completed: CheckCircle2,
   cancelled: Circle,
   overdue: AlertOctagon,
   done: CheckCircle2,
+  approved: CheckCircle2,
 };
 
 type TabValue = "all" | TaskStatus | "mine" | "calendar";
@@ -393,7 +397,7 @@ function TasksPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
-              <p className="text-sm text-muted-foreground">Roles: Application Team, Counselor ka task dewa hobe tara task complete korbe and admin task check kore approved korbe</p>
+              <p className="text-sm text-muted-foreground">Add an audit log and notifications for task status changes, completion actions, and admin approvals.</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -416,11 +420,11 @@ function TasksPage() {
 
         <div className="relative mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
           <Stat label="My Tasks" value={tasks.filter(t => t.assignee_id === user?.id).length} tone="primary" />
-          <Stat label="Pending" value={tasks.filter(t => t.status !== "done").length} tone="slate" />
-          <Stat label="Waiting" value={tasks.filter(t => t.status.startsWith('waiting_')).length} tone="blue" />
-          <Stat label="Overdue" value={tasks.filter(t => (t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue").length} tone="rose" />
+          <Stat label="Wait Approval" value={tasks.filter(t => t.status === "waiting_for_approval").length} tone="blue" />
+          <Stat label="Pending" value={tasks.filter(t => t.status !== "done" && t.status !== "approved").length} tone="slate" />
+          <Stat label="Overdue" value={tasks.filter(t => (t.due_date && t.status !== "done" && t.status !== "approved" && new Date(t.due_date) < new Date()) || t.status === "overdue").length} tone="rose" />
           <Stat label="Urgent" value={tasks.filter(t => t.priority === "urgent" || t.priority === "critical").length} tone="rose" />
-          <Stat label="Done" value={tasks.filter(t => t.status === "done").length} tone="emerald" />
+          <Stat label="Approved" value={tasks.filter(t => t.status === "approved" || t.status === "done").length} tone="emerald" />
         </div>
       </div>
 
@@ -444,6 +448,8 @@ function TasksPage() {
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="mine">My Tasks</SelectItem>
+                  <SelectItem value="waiting_for_approval">Waiting Approval</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
                   <SelectItem value="overdue">Overdue</SelectItem>
                   <DropdownMenuSeparator />
                   {TASK_STATUSES.map(s => <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>)}
@@ -690,19 +696,44 @@ function TaskListRow({
   onStatusChange: (s: TaskStatus) => void;
   onAssign: (assigneeId: string | null) => void;
 }) {
+  const { user, hasRole } = useAuth();
   const Icon = STATUS_ICON[t.status];
-  const overdue = !!((t.due_date && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
+  const overdue = !!((t.due_date && t.status !== "done" && t.status !== "approved" && new Date(t.due_date) < new Date()) || t.status === "overdue");
+  
+  const isAdmin = hasRole("admin");
+  const isCounselor = hasRole("counselor");
+  const isApplicationTeam = hasRole("application_team");
+  const isAssignee = t.assignee_id === user?.id;
+
+  // Role-based actions
+  const canApprove = isAdmin && t.status === "waiting_for_approval";
+  const canRequestApproval = (isCounselor || isApplicationTeam) && isAssignee && t.status !== "done" && t.status !== "approved" && t.status !== "waiting_for_approval";
+  const canEdit = isAdmin || t.assigned_by === user?.id;
+  const canDelete = isAdmin;
+
+  const handleCompleteRequest = () => {
+    if (isAdmin) {
+      onStatusChange("done");
+    } else {
+      onStatusChange("waiting_for_approval");
+      toast.success("Approval requested from Admin");
+    }
+  };
 
   return (
     <Card 
       className={cn(
         "group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/30 active:scale-[0.99] cursor-pointer bg-card/50 backdrop-blur-sm border-muted/40",
-        t.status === "done" && "opacity-70 bg-muted/30"
+        (t.status === "done" || t.status === "approved") && "opacity-70 bg-muted/30"
       )} 
       role="listitem"
       onClick={onView}
     >
-      <div className={cn("absolute left-0 top-0 bottom-0 w-1", TASK_PRIORITY_STYLE[t.priority].includes("red") ? "bg-red-500" : TASK_PRIORITY_STYLE[t.priority].includes("orange") ? "bg-orange-500" : "bg-primary/50")} />
+      <div className={cn("absolute left-0 top-0 bottom-0 w-1", 
+        TASK_PRIORITY_STYLE[t.priority].includes("red") ? "bg-red-500" : 
+        TASK_PRIORITY_STYLE[t.priority].includes("orange") ? "bg-orange-500" : 
+        t.status === "approved" ? "bg-emerald-500" : "bg-primary/50")} 
+      />
       
       <CardContent 
         className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center"
@@ -716,22 +747,30 @@ function TaskListRow({
         aria-label={`View details for task: ${t.title}`}
       >
         <button
-          onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            if (t.status === "waiting_for_approval" && isAdmin) {
+              onStatusChange("approved");
+            } else if (canRequestApproval || isAdmin) {
+              handleCompleteRequest();
+            }
+          }}
+          disabled={t.status === "approved" || (t.status === "waiting_for_approval" && !isAdmin)}
           className={cn(
             "grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            t.status === "done" ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
+            (t.status === "done" || t.status === "approved") ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.1)]" :
+              t.status === "waiting_for_approval" ? "border-orange-500/50 bg-orange-500/10 text-orange-600 animate-pulse" :
               t.status === "in_progress" ? "border-blue-500/50 bg-blue-500/10 text-blue-600" :
-                t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600 animate-pulse" :
-                  "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",
+              t.status === "overdue" ? "border-rose-500/50 bg-rose-500/10 text-rose-600" :
+              "border-border bg-muted/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary",
           )}
-          aria-label={t.status === "done" ? `Mark ${t.title} as to do` : `Mark ${t.title} as done`}
         >
-          <Icon className={cn("h-5 w-5", t.status === "done" && "scale-110")} aria-hidden />
+          <Icon className={cn("h-5 w-5", (t.status === "done" || t.status === "approved") && "scale-110")} aria-hidden />
         </button>
 
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", t.status === "done" && "line-through text-muted-foreground")}>{t.title}</h3>
+            <h3 className={cn("text-base font-bold tracking-tight transition-colors group-hover:text-primary", (t.status === "done" || t.status === "approved") && "line-through text-muted-foreground")}>{t.title}</h3>
             <div className="flex gap-1.5 flex-wrap">
               <Badge variant="secondary" className={cn("h-5 px-2 text-[10px] font-semibold uppercase tracking-wider border shadow-sm", TASK_STATUS_STYLE[t.status])}>
                 {TASK_STATUS_LABELS[t.status]}
@@ -758,16 +797,18 @@ function TaskListRow({
             {t.due_date && (
               <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-full", overdue ? "text-rose-600 bg-rose-500/10" : "text-muted-foreground bg-muted/50")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
             )}
-            <Select value={t.assignee_id ?? "none"} onValueChange={(v) => onAssign(v === "none" ? null : v)}>
+            
+            <Select 
+              value={t.assignee_id ?? "none"} 
+              onValueChange={(v) => onAssign(v === "none" ? null : v)}
+              disabled={!isAdmin && t.assigned_by !== user?.id}
+            >
               <SelectTrigger 
                 className="h-6 w-auto min-w-[100px] border-primary/10 bg-primary/5 px-2 py-0 rounded-full text-[11px] font-bold text-primary hover:bg-primary/10" 
                 onClick={(e) => e.stopPropagation()}
-                aria-label={`Assign task ${t.title}`}
               >
                 <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 rounded-full bg-primary/20 grid place-items-center">
-                    <UserIcon className="h-2.5 w-2.5 text-primary" />
-                  </div>
+                  <UserIcon className="h-2.5 w-2.5" />
                   <SelectValue placeholder="Unassigned">
                     {assignee ? (assignee.full_name?.split(' ')[0] || assignee.email.split('@')[0]) : "Assign"}
                   </SelectValue>
@@ -782,22 +823,13 @@ function TaskListRow({
                 ))}
               </SelectContent>
             </Select>
+
             <div className="flex items-center gap-3 ml-auto">
                {t.checklists && t.checklists.length > 0 && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/70">
-                        <CheckSquare className="h-3.5 w-3.5" />
-                        <span>{t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Subtasks progress</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-              {t.comments && t.comments.length > 0 && (
-                <div className="flex items-center gap-1 text-xs font-bold text-muted-foreground/70"><MessageSquare className="h-3.5 w-3.5" />{t.comments.length}</div>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground/70">
+                  <CheckSquare className="h-3.5 w-3.5" />
+                  <span>{t.checklists.filter(c => c.is_completed).length}/{t.checklists.length}</span>
+                </div>
               )}
             </div>
           </div>
@@ -805,26 +837,28 @@ function TaskListRow({
 
         <div className="flex items-center gap-1 border-l pl-4 sm:ml-2" onClick={(e) => e.stopPropagation()}>
           <TooltipProvider>
-            {t.status !== 'done' && (
+            {canApprove && (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors" onClick={() => onStatusChange('done')} aria-label="Mark complete"><CheckCircle2 className="h-4 w-4" aria-hidden /></Button>
+                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20" onClick={() => onStatusChange('approved')}><CheckCircle2 className="h-4 w-4" /></Button>
                 </TooltipTrigger>
-                <TooltipContent>Quick Complete</TooltipContent>
+                <TooltipContent>Approve Task</TooltipContent>
               </Tooltip>
             )}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
-              </TooltipTrigger>
-              <TooltipContent>Edit Task</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 hover:text-rose-600 transition-colors" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4" aria-hidden /></Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete Task</TooltipContent>
-            </Tooltip>
+            {canRequestApproval && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full bg-orange-500/10 text-orange-600 hover:bg-orange-500/20" onClick={handleCompleteRequest}><Clock className="h-4 w-4" /></Button>
+                </TooltipTrigger>
+                <TooltipContent>Request Approval</TooltipContent>
+              </Tooltip>
+            )}
+            {canEdit && (
+              <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10" onClick={onEdit}><Pencil className="h-4 w-4" /></Button>
+            )}
+            {canDelete && (
+              <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 text-rose-600" onClick={onDelete}><Trash2 className="h-4 w-4" /></Button>
+            )}
           </TooltipProvider>
         </div>
       </CardContent>
@@ -1325,19 +1359,28 @@ function TaskDetailsDialog({
           {(t.comments?.length || 0) > 0 && (
             <div className="space-y-3">
               <h4 className="text-sm font-semibold flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" /> Comments ({t.comments?.length})
+                <MessageSquare className="h-4 w-4" /> Comments & Activity
               </h4>
-              <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
-                {t.comments?.map((comment) => (
-                  <div key={comment.id} className="text-sm bg-muted/30 p-2 rounded">
-                    <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-                      <span>{users.find(u => u.id === comment.user_id)?.full_name || "User"}</span>
-                      <span>{new Date(comment.created_at).toLocaleString()}</span>
+              <Tabs defaultValue="comments" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="comments" className="text-xs">Comments ({t.comments?.length})</TabsTrigger>
+                  <TabsTrigger value="activity" className="text-xs">Audit Log</TabsTrigger>
+                </TabsList>
+                <TabsContent value="comments" className="space-y-3 pt-3 max-h-[250px] overflow-y-auto pr-2">
+                  {t.comments?.map((comment) => (
+                    <div key={comment.id} className="text-sm bg-muted/30 p-2 rounded border border-muted/50">
+                      <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                        <span className="font-bold">{users.find(u => u.id === comment.user_id)?.full_name || "User"}</span>
+                        <span>{new Date(comment.created_at).toLocaleString()}</span>
+                      </div>
+                      {comment.content}
                     </div>
-                    {comment.content}
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </TabsContent>
+                <TabsContent value="activity" className="pt-3">
+                  <ActivityLog taskId={t.id} users={users} />
+                </TabsContent>
+              </Tabs>
             </div>
           )}
         </div>
@@ -1357,5 +1400,57 @@ function TaskDetailsDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ActivityLog({ taskId, users }: { taskId: string; users: TaskAssignee[] }) {
+  const [logs, setLogs] = useState<TaskAuditLog[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase
+        .from("task_audit_logs")
+        .select("*")
+        .eq("task_id", taskId)
+        .order("created_at", { ascending: false });
+      if (data) setLogs(data);
+      setLoading(false);
+    }
+    load();
+  }, [taskId]);
+
+  if (loading) return <div className="flex justify-center p-4"><Loader2 className="h-4 w-4 animate-spin" /></div>;
+  if (logs.length === 0) return <div className="text-center text-xs text-muted-foreground p-4">No activity recorded yet.</div>;
+
+  return (
+    <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2">
+      {logs.map((log) => {
+        const user = users.find(u => u.id === log.user_id);
+        return (
+          <div key={log.id} className="flex gap-3 text-xs">
+            <div className="h-6 w-6 rounded-full bg-muted grid place-items-center shrink-0">
+              <History className="h-3 w-3" />
+            </div>
+            <div className="flex-1 space-y-0.5">
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-primary">{user?.full_name || "System"}</span>
+                <span className="text-[10px] text-muted-foreground">{new Date(log.created_at).toLocaleString()}</span>
+              </div>
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-foreground uppercase text-[9px] mr-1">{log.action}:</span>
+                {log.action === "status_change" ? (
+                  <span>Changed status from <b>{log.changes.from}</b> to <b>{log.changes.to}</b></span>
+                ) : log.action === "create" ? (
+                  <span>Task created</span>
+                ) : (
+                  <span>Task updated</span>
+                )}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }

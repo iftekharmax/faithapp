@@ -304,7 +304,7 @@ function TasksPage() {
           <Stat label="Total" value={stats.total} tone="primary" />
           <Stat label="To do" value={stats.todo} tone="slate" />
           <Stat label="In progress" value={stats.inProgress} tone="blue" />
-          <Stat label="Done" value={stats.done} tone="emerald" />
+          <Stat label="Done" value={stats.completed} tone="emerald" />
           <Stat label="Overdue" value={stats.overdue} tone="rose" />
         </div>
       </div>

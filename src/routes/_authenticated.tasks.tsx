@@ -99,8 +99,8 @@ function TasksPage() {
   const [view, setView] = useState<ViewMode>(initial.view);
   const [editing, setEditing] = useState<Task | null>(null);
   const [open, setOpen] = useState(false);
+  const [viewing, setViewing] = useState<Task | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Task | null>(null);
-  const [draggingId, setDraggingId] = useState<string | null>(null);
 
   // Persist filter/view choices
   useEffect(() => {

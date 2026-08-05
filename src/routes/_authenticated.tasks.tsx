@@ -4,7 +4,7 @@ import {
   ListChecks, Plus, Search, Loader2, Trash2, Pencil, Calendar, User as UserIcon,
   CheckCircle2, Circle, Clock, AlertOctagon, Sparkles, LayoutGrid, List as ListIcon, BellRing,
   MoreVertical, ChevronRight, MessageSquare, Paperclip, CheckSquare, History, Tag, ChevronDown,
-  ChevronLeft,
+  ChevronLeft, Settings2, UserPlus,
 } from "lucide-react";
 import { WorkflowSelector } from "@/components/tasks/WorkflowSelector";
 
@@ -22,6 +22,15 @@ import { enUS } from "date-fns/locale";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 
 import {
   DndContext, DragOverlay, PointerSensor, KeyboardSensor, useSensor, useSensors,
@@ -132,12 +141,36 @@ function TasksPage() {
   const [search, setSearch] = useState(initial.search);
   const [tab, setTab] = useState<TabValue>(initial.tab);
   const [priority, setPriority] = useState<"all" | TaskPriority>(initial.priority);
+  const [department, setDepartment] = useState<string>("all");
   const [view, setView] = useState<ViewMode>(initial.view);
   const [editing, setEditing] = useState<Task | null>(null);
   const [open, setOpen] = useState(false);
   const [viewing, setViewing] = useState<Task | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Task | null>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [savedFilters, setSavedFilters] = useState<Array<{ name: string; filters: any }>>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = localStorage.getItem("faith.tasks.saved_filters");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  });
+
+  const saveCurrentFilter = (name: string) => {
+    const newPreset = { name, filters: { tab, priority, search, department } };
+    const updated = [...savedFilters, newPreset];
+    setSavedFilters(updated);
+    localStorage.setItem("faith.tasks.saved_filters", JSON.stringify(updated));
+    toast.success(`Filter "${name}" saved`);
+  };
+
+  const applyPreset = (preset: any) => {
+    if (preset.filters.tab) setTab(preset.filters.tab);
+    if (preset.filters.priority) setPriority(preset.filters.priority);
+    if (preset.filters.search !== undefined) setSearch(preset.filters.search);
+    if (preset.filters.department) setDepartment(preset.filters.department);
+    toast.success(`Applied preset: ${preset.name}`);
+  };
 
   // Persist filter/view choices
   useEffect(() => {
@@ -272,13 +305,35 @@ function TasksPage() {
         showUndoToast({
           title: `Moved “${t.title}” to ${TASK_STATUS_LABELS[status]}`,
           description: `Was ${TASK_STATUS_LABELS[prevStatus]}`,
-          undoLabel: `Revert to ${TASK_STATUS_LABELS[prevStatus]}`,
+          undoLabel: "Undo Change",
           onUndo: () => onQuickStatus({ ...t, status }, prevStatus, { silent: true }),
-          link: { label: "Open task", onClick: () => { setEditing({ ...t, status }); setOpen(true); } },
+          link: { label: "Open task", onClick: () => { setViewing({ ...t, status }); } },
         });
       }
     } catch (e) {
       setTasks((prev) => prev.map((x) => x.id === t.id ? { ...x, status: prevStatus } : x));
+      toast.error((e as Error).message);
+    }
+  };
+
+  const onQuickAssign = async (t: Task, assigneeId: string | null) => {
+    const prevAssigneeId = t.assignee_id;
+    if (prevAssigneeId === assigneeId) return;
+    
+    // optimistic
+    setTasks((prev) => prev.map((x) => x.id === t.id ? { ...x, assignee_id: assigneeId } : x));
+    
+    try {
+      await updateTask(t.id, { assignee_id: assigneeId });
+      const nextUser = assigneeId ? users.find(u => u.id === assigneeId) : null;
+      showUndoToast({
+        title: `Assigned “${t.title}”`,
+        description: nextUser ? `Assigned to ${nextUser.full_name || nextUser.email}` : "Task unassigned",
+        undoLabel: "Undo Assign",
+        onUndo: () => onQuickAssign({ ...t, assignee_id: assigneeId }, prevAssigneeId),
+      });
+    } catch (e) {
+      setTasks((prev) => prev.map((x) => x.id === t.id ? { ...x, assignee_id: prevAssigneeId } : x));
       toast.error((e as Error).message);
     }
   };
@@ -369,71 +424,74 @@ function TasksPage() {
         </div>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardContent className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:p-4">
-          <Tabs value={tab} onValueChange={(v) => setTab(v as TabValue)} className="flex-1 min-w-0">
-            <TabsList className="w-full flex-wrap justify-start sm:w-auto bg-muted/40 p-1 gap-1" aria-label="Filter tasks by status">
-              <TabsTrigger value="all" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">All</TabsTrigger>
-              <TabsTrigger value="mine" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Mine</TabsTrigger>
-              {TASK_STATUSES.map((s) => (
-                <TabsTrigger key={s} value={s} className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all hidden lg:inline-flex">
-                  {TASK_STATUS_LABELS[s]}
-                </TabsTrigger>
-              ))}
-              <TabsTrigger value="overdue" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Overdue</TabsTrigger>
-              <TabsTrigger value="calendar" className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">Calendar</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative min-w-0 flex-1 sm:w-64 sm:flex-none">
-              <Search aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search tasks..."
-                className="pl-9"
-                aria-label="Search tasks"
-              />
-            </div>
-            <Select value={priority} onValueChange={(v) => setPriority(v as typeof priority)}>
-              <SelectTrigger className="w-[130px]" aria-label="Filter by priority"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All priority</SelectItem>
-                {TASK_PRIORITIES.map((p) => (
-                  <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <div className="inline-flex rounded-lg border bg-muted/40 p-0.5" role="group" aria-label="View mode">
-              <button
-                type="button"
-                onClick={() => setView("list")}
-                aria-pressed={view === "list"}
-                aria-label="List view"
-                className={cn(
-                  "grid h-8 w-9 place-items-center rounded-md text-muted-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  view === "list" && "bg-background text-foreground shadow-sm",
-                )}
-              >
-                <ListIcon className="h-4 w-4" aria-hidden />
-              </button>
-              <button
-                type="button"
-                onClick={() => setView("board")}
-                aria-pressed={view === "board"}
-                aria-label="Board view"
-                className={cn(
-                  "grid h-8 w-9 place-items-center rounded-md text-muted-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  view === "board" && "bg-background text-foreground shadow-sm",
-                )}
-              >
-                <LayoutGrid className="h-4 w-4" aria-hidden />
-              </button>
-            </div>
-            {(tab !== "all" || priority !== "all" || search) && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>Clear</Button>
-            )}
+      {/* Advanced Filters */}
+      <Card className="border-none shadow-sm bg-card/50 backdrop-blur">
+        <CardContent className="p-4 flex flex-col gap-4">
+          <div className="flex flex-wrap items-center gap-3">
+             <div className="relative w-full sm:max-w-xs">
+                <Search aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search tasks..."
+                  className="pl-9 h-9"
+                  aria-label="Search tasks"
+                />
+              </div>
+              
+              <Select value={tab} onValueChange={(v) => setTab(v as TabValue)}>
+                <SelectTrigger className="w-[140px] h-9" aria-label="Status filter"><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="mine">My Tasks</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                  <DropdownMenuSeparator />
+                  {TASK_STATUSES.map(s => <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <Select value={priority} onValueChange={(v) => setPriority(v as typeof priority)}>
+                <SelectTrigger className="w-[140px] h-9" aria-label="Priority filter"><SelectValue placeholder="Priority" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Priority</SelectItem>
+                  {TASK_PRIORITIES.map(p => <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-9 gap-2">
+                    <Settings2 className="h-4 w-4" /> Presets
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Saved Filters</DropdownMenuLabel>
+                  {savedFilters.length === 0 ? (
+                    <div className="px-2 py-4 text-center text-xs text-muted-foreground italic">No presets saved</div>
+                  ) : (
+                    savedFilters.map((preset, idx) => (
+                      <DropdownMenuItem key={idx} onClick={() => applyPreset(preset)}>
+                        {preset.name}
+                      </DropdownMenuItem>
+                    ))
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => {
+                    const name = prompt("Filter Name:");
+                    if (name) saveCurrentFilter(name);
+                  }}>
+                    Save Current View...
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <div className="flex items-center gap-1 bg-muted/40 p-0.5 rounded-lg border ml-auto">
+                <Button variant={view === "list" ? "secondary" : "ghost"} size="icon" className="h-8 w-8" onClick={() => setView("list")} aria-label="List view"><ListIcon className="h-4 w-4" /></Button>
+                <Button variant={view === "board" ? "secondary" : "ghost"} size="icon" className="h-8 w-8" onClick={() => setView("board")} aria-label="Board view"><LayoutGrid className="h-4 w-4" /></Button>
+                <Button variant={tab === "calendar" ? "secondary" : "ghost"} size="icon" className="h-8 w-8" onClick={() => setTab("calendar")} aria-label="Calendar view"><Calendar className="h-4 w-4" /></Button>
+              </div>
+
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9 text-muted-foreground hover:text-foreground">Reset</Button>
           </div>
         </CardContent>
       </Card>
@@ -554,11 +612,13 @@ function TasksPage() {
               key={t.id}
               task={t}
               assignee={t.assignee_id ? userMap.get(t.assignee_id) ?? null : null}
+              users={users}
               onToggleDone={() => onQuickStatus(t, (t.status === "completed" || t.status === "done") ? "todo" : "completed")}
               onView={() => setViewing(t)}
               onEdit={() => openEdit(t)}
               onDelete={() => setConfirmDelete(t)}
               onStatusChange={(s) => onQuickStatus(t, s)}
+              onAssign={(uid) => onQuickAssign(t, uid)}
             />
           ))}
         </div>
@@ -618,15 +678,17 @@ function TasksPage() {
 }
 
 function TaskListRow({
-  task: t, assignee, onToggleDone, onView, onEdit, onDelete, onStatusChange,
+  task: t, assignee, users, onToggleDone, onView, onEdit, onDelete, onStatusChange, onAssign,
 }: {
   task: Task;
   assignee: TaskAssignee | null;
+  users: TaskAssignee[];
   onToggleDone: () => void;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
   onStatusChange: (s: TaskStatus) => void;
+  onAssign: (assigneeId: string | null) => void;
 }) {
   const Icon = STATUS_ICON[t.status];
   const overdue = !!((t.due_date && t.status !== "completed" && t.status !== "done" && new Date(t.due_date) < new Date()) || t.status === "overdue");
@@ -642,7 +704,17 @@ function TaskListRow({
     >
       <div className={cn("absolute left-0 top-0 bottom-0 w-1", TASK_PRIORITY_STYLE[t.priority].includes("red") ? "bg-red-500" : TASK_PRIORITY_STYLE[t.priority].includes("orange") ? "bg-orange-500" : "bg-primary/50")} />
       
-      <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+      <CardContent 
+        className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onView();
+          }
+        }}
+        tabIndex={0}
+        aria-label={`View details for task: ${t.title}`}
+      >
         <button
           onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
           className={cn(
@@ -686,12 +758,30 @@ function TaskListRow({
             {t.due_date && (
               <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-full", overdue ? "text-rose-600 bg-rose-500/10" : "text-muted-foreground bg-muted/50")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
             )}
-            {assignee && (
-              <div className="flex items-center gap-2 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
-                <div className="h-4 w-4 rounded-full bg-primary/20 grid place-items-center"><UserIcon className="h-2.5 w-2.5 text-primary" /></div>
-                <span className="text-[11px] font-bold text-primary/80">{assignee.full_name?.split(' ')[0] || assignee.email.split('@')[0]}</span>
-              </div>
-            )}
+            <Select value={t.assignee_id ?? "none"} onValueChange={(v) => onAssign(v === "none" ? null : v)}>
+              <SelectTrigger 
+                className="h-6 w-auto min-w-[100px] border-primary/10 bg-primary/5 px-2 py-0 rounded-full text-[11px] font-bold text-primary hover:bg-primary/10" 
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`Assign task ${t.title}`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-primary/20 grid place-items-center">
+                    <UserIcon className="h-2.5 w-2.5 text-primary" />
+                  </div>
+                  <SelectValue placeholder="Unassigned">
+                    {assignee ? (assignee.full_name?.split(' ')[0] || assignee.email.split('@')[0]) : "Assign"}
+                  </SelectValue>
+                </div>
+              </SelectTrigger>
+              <SelectContent onClick={(e) => e.stopPropagation()}>
+                <SelectItem value="none">Unassigned</SelectItem>
+                {users.map((u) => (
+                  <SelectItem key={u.id} value={u.id}>
+                    {u.full_name || u.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <div className="flex items-center gap-3 ml-auto">
                {t.checklists && t.checklists.length > 0 && (
                 <TooltipProvider>
@@ -714,8 +804,28 @@ function TaskListRow({
         </div>
 
         <div className="flex items-center gap-1 border-l pl-4 sm:ml-2" onClick={(e) => e.stopPropagation()}>
-          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
-          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 hover:text-rose-600 transition-colors" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4" aria-hidden /></Button>
+          <TooltipProvider>
+            {t.status !== 'completed' && t.status !== 'done' && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors" onClick={() => onStatusChange('completed')} aria-label="Mark complete"><CheckCircle2 className="h-4 w-4" aria-hidden /></Button>
+                </TooltipTrigger>
+                <TooltipContent>Quick Complete</TooltipContent>
+              </Tooltip>
+            )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" onClick={onEdit} aria-label={`Edit task ${t.title}`}><Pencil className="h-4 w-4" aria-hidden /></Button>
+              </TooltipTrigger>
+              <TooltipContent>Edit Task</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-rose-500/10 hover:text-rose-600 transition-colors" onClick={onDelete} aria-label={`Delete task ${t.title}`}><Trash2 className="h-4 w-4" aria-hidden /></Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete Task</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </CardContent>
     </Card>
@@ -886,22 +996,38 @@ function TaskDialog({
   onSave: (patch: TaskInput) => Promise<void>;
 }) {
   const [form, setForm] = useState<TaskInput>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setErrors({});
+      return;
+    }
     setForm(editing ? {
       title: editing.title, description: editing.description,
       status: editing.status, priority: editing.priority, category: editing.category,
       due_date: editing.due_date, start_date: editing.start_date,
       reminder_date: editing.reminder_date, reminder_time: editing.reminder_time,
       assignee_id: editing.assignee_id,
-    } : { status: "todo", priority: "normal", category: "internal" });
+    } : { status: "todo", priority: "normal", category: "internal", title: "" });
   }, [open, editing]);
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!form.title?.trim()) newErrors.title = "Task objective is required";
+    if (!form.status) newErrors.status = "Status is required";
+    if (!form.priority) newErrors.priority = "Priority is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title?.trim()) return;
+    if (!validate()) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
     setSaving(true);
     try { await onSave(form); } finally { setSaving(false); }
   };
@@ -929,16 +1055,26 @@ function TaskDialog({
           <form onSubmit={submit} className="space-y-6">
             <div className="grid gap-6">
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Task Objective *</Label>
+                <Label htmlFor="title" className={cn("text-sm font-bold uppercase tracking-wider", errors.title ? "text-destructive" : "text-muted-foreground/70")}>
+                  Task Objective <span className="text-destructive">*</span>
+                </Label>
                 <Input 
                   id="title" 
-                  required 
+                  aria-invalid={!!errors.title}
+                  aria-describedby={errors.title ? "title-error" : undefined}
                   autoFocus 
                   value={form.title ?? ""} 
-                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, title: e.target.value }));
+                    if (errors.title) setErrors(prev => ({ ...prev, title: "" }));
+                  }}
                   placeholder="e.g., Review Australia student visa documents"
-                  className="h-12 text-lg font-semibold bg-background/50 border-muted focus:border-primary/50 transition-all shadow-sm"
+                  className={cn(
+                    "h-12 text-lg font-semibold bg-background/50 border-muted focus:border-primary/50 transition-all shadow-sm",
+                    errors.title && "border-destructive focus:border-destructive"
+                  )}
                 />
+                {errors.title && <p id="title-error" className="text-xs font-bold text-destructive animate-in fade-in slide-in-from-top-1">{errors.title}</p>}
               </div>
 
               <div className="space-y-2">
@@ -975,9 +1111,14 @@ function TaskDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="task-priority" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Execution Priority</Label>
-                  <Select value={form.priority ?? "normal"} onValueChange={(v) => setForm((f) => ({ ...f, priority: v as TaskPriority }))}>
-                    <SelectTrigger id="task-priority" className="h-11 bg-background/50 border-muted font-bold">
+                  <Label htmlFor="task-priority" className={cn("text-sm font-bold uppercase tracking-wider", errors.priority ? "text-destructive" : "text-muted-foreground/70")}>
+                    Execution Priority <span className="text-destructive">*</span>
+                  </Label>
+                  <Select value={form.priority ?? "normal"} onValueChange={(v) => {
+                    setForm((f) => ({ ...f, priority: v as TaskPriority }));
+                    if (errors.priority) setErrors(prev => ({ ...prev, priority: "" }));
+                  }}>
+                    <SelectTrigger id="task-priority" className={cn("h-11 bg-background/50 border-muted font-bold", errors.priority && "border-destructive")}>
                       <div className="flex items-center gap-2">
                         <AlertOctagon className="h-4 w-4 text-primary/70" />
                         <SelectValue />
@@ -991,14 +1132,20 @@ function TaskDialog({
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.priority && <p className="text-xs font-bold text-destructive">{errors.priority}</p>}
                 </div>
               </div>
 
               <div className="grid gap-6 sm:grid-cols-3">
                 <div className="space-y-2">
-                  <Label htmlFor="task-status" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Current Status</Label>
-                  <Select value={form.status ?? "todo"} onValueChange={(v) => setForm((f) => ({ ...f, status: v as TaskStatus }))}>
-                    <SelectTrigger id="task-status" className="h-10 bg-background/50 border-muted font-bold">
+                  <Label htmlFor="task-status" className={cn("text-sm font-bold uppercase tracking-wider", errors.status ? "text-destructive" : "text-muted-foreground/70")}>
+                    Current Status <span className="text-destructive">*</span>
+                  </Label>
+                  <Select value={form.status ?? "todo"} onValueChange={(v) => {
+                    setForm((f) => ({ ...f, status: v as TaskStatus }));
+                    if (errors.status) setErrors(prev => ({ ...prev, status: "" }));
+                  }}>
+                    <SelectTrigger id="task-status" className={cn("h-10 bg-background/50 border-muted font-bold", errors.status && "border-destructive")}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1009,6 +1156,7 @@ function TaskDialog({
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.status && <p className="text-xs font-bold text-destructive">{errors.status}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="task-category" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Operational Category</Label>

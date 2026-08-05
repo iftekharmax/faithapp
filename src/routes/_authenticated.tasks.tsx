@@ -443,8 +443,9 @@ function TasksPage() {
                 end: t.due_date ? new Date(t.due_date) : (t.start_date ? new Date(t.start_date) : new Date()),
                 resource: t,
               }))}
-              startAccessor="start"
-              endAccessor="end"
+              startAccessor={(e: any) => new Date(e.start)}
+              endAccessor={(e: any) => new Date(e.end)}
+
               defaultView={Views.MONTH}
               views={[Views.MONTH, Views.WEEK, Views.DAY]}
               onSelectEvent={(e: any) => setViewing(e.resource)}

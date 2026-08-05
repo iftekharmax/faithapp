@@ -1398,3 +1398,55 @@ function TaskDetailsDialog({
     </Dialog>
   );
 }
+
+function ActivityLog({ taskId, users }: { taskId: string; users: TaskAssignee[] }) {
+  const [logs, setLogs] = useState<TaskAuditLog[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase
+        .from("task_audit_logs")
+        .select("*")
+        .eq("task_id", taskId)
+        .order("created_at", { ascending: false });
+      if (data) setLogs(data);
+      setLoading(false);
+    }
+    load();
+  }, [taskId]);
+
+  if (loading) return <div className="flex justify-center p-4"><Loader2 className="h-4 w-4 animate-spin" /></div>;
+  if (logs.length === 0) return <div className="text-center text-xs text-muted-foreground p-4">No activity recorded yet.</div>;
+
+  return (
+    <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2">
+      {logs.map((log) => {
+        const user = users.find(u => u.id === log.user_id);
+        return (
+          <div key={log.id} className="flex gap-3 text-xs">
+            <div className="h-6 w-6 rounded-full bg-muted grid place-items-center shrink-0">
+              <History className="h-3 w-3" />
+            </div>
+            <div className="flex-1 space-y-0.5">
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-primary">{user?.full_name || "System"}</span>
+                <span className="text-[10px] text-muted-foreground">{new Date(log.created_at).toLocaleString()}</span>
+              </div>
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-foreground uppercase text-[9px] mr-1">{log.action}:</span>
+                {log.action === "status_change" ? (
+                  <span>Changed status from <b>{log.changes.from}</b> to <b>{log.changes.to}</b></span>
+                ) : log.action === "create" ? (
+                  <span>Task created</span>
+                ) : (
+                  <span>Task updated</span>
+                )}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

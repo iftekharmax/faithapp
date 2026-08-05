@@ -441,6 +441,14 @@ function TasksPage() {
         onSave={onSaveTask}
       />
 
+      <TaskDetailsDialog
+        open={!!viewing}
+        onOpenChange={(open) => !open && setViewing(null)}
+        task={viewing}
+        users={users}
+        onEdit={openEdit}
+      />
+
       <ConfirmDialog
         open={!!confirmDelete}
         onOpenChange={(v) => { if (!v) setConfirmDelete(null); }}

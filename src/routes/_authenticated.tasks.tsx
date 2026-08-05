@@ -907,88 +907,154 @@ function TaskDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" aria-hidden />
-            {editing ? "Edit task" : "New task"}
-          </DialogTitle>
-        </DialogHeader>
-        <form onSubmit={submit} className="space-y-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="title">Title *</Label>
-            <Input id="title" required autoFocus value={form.title ?? ""} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="desc">Description</Label>
-            <Textarea id="desc" rows={3} value={form.description ?? ""} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="task-status">Status</Label>
-              <Select value={form.status ?? "todo"} onValueChange={(v) => setForm((f) => ({ ...f, status: v as TaskStatus }))}>
-                <SelectTrigger id="task-status"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {TASK_STATUSES.map((s) => <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>)}
-                </SelectContent>
-              </Select>
+      <DialogContent className="max-w-2xl p-0 overflow-hidden border-none shadow-2xl">
+        <div className="bg-gradient-to-br from-primary/10 via-background to-background p-6">
+          <DialogHeader className="mb-6">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-fuchsia-500 grid place-items-center shadow-lg shadow-primary/20">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-2xl font-bold tracking-tight">
+                  {editing ? "Refine Task" : "Create New Task"}
+                </DialogTitle>
+                <p className="text-sm text-muted-foreground font-medium">
+                  {editing ? "Update the details and objectives of this task." : "Define clear goals and assign team members."}
+                </p>
+              </div>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="task-category">Category</Label>
-              <Select value={form.category ?? "internal"} onValueChange={(v) => setForm((f) => ({ ...f, category: v as TaskCategory }))}>
-                <SelectTrigger id="task-category"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {TASK_CATEGORIES.map((c) => <SelectItem key={c} value={c}>{TASK_CATEGORY_LABELS[c]}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="task-priority">Priority</Label>
-              <Select value={form.priority ?? "normal"} onValueChange={(v) => setForm((f) => ({ ...f, priority: v as TaskPriority }))}>
-                <SelectTrigger id="task-priority"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {TASK_PRIORITIES.map((p) => <SelectItem key={p} value={p}>{TASK_PRIORITY_LABELS[p]}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="task-assignee">Assignee</Label>
-              <Select value={form.assignee_id ?? "none"} onValueChange={(v) => setForm((f) => ({ ...f, assignee_id: v === "none" ? null : v }))}>
-                <SelectTrigger id="task-assignee"><SelectValue placeholder="Unassigned" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Unassigned</SelectItem>
-                  {users.map((u) => <SelectItem key={u.id} value={u.id}>{u.full_name || u.email}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          </DialogHeader>
 
-          <div className="grid gap-4 sm:grid-cols-2 border-t pt-4 mt-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="start">Start date</Label>
-              <Input id="start" type="date" value={form.start_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value || null }))} />
+          <form onSubmit={submit} className="space-y-6">
+            <div className="grid gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="title" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Task Objective *</Label>
+                <Input 
+                  id="title" 
+                  required 
+                  autoFocus 
+                  value={form.title ?? ""} 
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  placeholder="e.g., Review Australia student visa documents"
+                  className="h-12 text-lg font-semibold bg-background/50 border-muted focus:border-primary/50 transition-all shadow-sm"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="desc" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Strategic Context</Label>
+                <Textarea 
+                  id="desc" 
+                  rows={3} 
+                  value={form.description ?? ""} 
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  placeholder="Provide detailed instructions or background information..."
+                  className="bg-background/50 border-muted focus:border-primary/50 resize-none font-medium"
+                />
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="task-assignee" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Lead Assignee</Label>
+                  <Select value={form.assignee_id ?? "none"} onValueChange={(v) => setForm((f) => ({ ...f, assignee_id: v === "none" ? null : v }))}>
+                    <SelectTrigger id="task-assignee" className="h-11 bg-background/50 border-muted font-bold">
+                      <div className="flex items-center gap-2">
+                        <UserIcon className="h-4 w-4 text-primary/70" />
+                        <SelectValue placeholder="Select lead..." />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none" className="font-bold text-muted-foreground">Unassigned</SelectItem>
+                      {users.map((u) => (
+                        <SelectItem key={u.id} value={u.id} className="font-semibold">
+                          {u.full_name || u.email}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="task-priority" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Execution Priority</Label>
+                  <Select value={form.priority ?? "normal"} onValueChange={(v) => setForm((f) => ({ ...f, priority: v as TaskPriority }))}>
+                    <SelectTrigger id="task-priority" className="h-11 bg-background/50 border-muted font-bold">
+                      <div className="flex items-center gap-2">
+                        <AlertOctagon className="h-4 w-4 text-primary/70" />
+                        <SelectValue />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TASK_PRIORITIES.map((p) => (
+                        <SelectItem key={p} value={p} className="font-semibold">
+                          {TASK_PRIORITY_LABELS[p]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-3">
+                <div className="space-y-2">
+                  <Label htmlFor="task-status" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Current Status</Label>
+                  <Select value={form.status ?? "todo"} onValueChange={(v) => setForm((f) => ({ ...f, status: v as TaskStatus }))}>
+                    <SelectTrigger id="task-status" className="h-10 bg-background/50 border-muted font-bold">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TASK_STATUSES.map((s) => (
+                        <SelectItem key={s} value={s} className="font-semibold">
+                          {TASK_STATUS_LABELS[s]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="task-category" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Operational Category</Label>
+                  <Select value={form.category ?? "internal"} onValueChange={(v) => setForm((f) => ({ ...f, category: v as TaskCategory }))}>
+                    <SelectTrigger id="task-category" className="h-10 bg-background/50 border-muted font-bold">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TASK_CATEGORIES.map((c) => (
+                        <SelectItem key={c} value={c} className="font-semibold">
+                          {TASK_CATEGORY_LABELS[c]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="due" className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70">Target Deadline</Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input 
+                      id="due" 
+                      type="date" 
+                      value={form.due_date ?? ""} 
+                      onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value || null }))}
+                      className="h-10 pl-9 bg-background/50 border-muted font-bold focus:border-primary/50"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="due">Due date</Label>
-              <Input id="due" type="date" value={form.due_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value || null }))} />
+
+            <div className="flex items-center justify-between border-t border-primary/10 pt-6">
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} className="font-bold text-muted-foreground hover:bg-muted/50 rounded-xl px-6">
+                Discard
+              </Button>
+              <Button type="submit" disabled={saving} className="min-w-[160px] h-12 rounded-xl bg-gradient-to-r from-primary to-fuchsia-600 hover:shadow-lg hover:shadow-primary/25 transition-all font-bold text-base">
+                {saving ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-5 w-5" />
+                )}
+                {editing ? "Update Task" : "Deploy Task"}
+              </Button>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="reminder-date">Reminder date</Label>
-              <Input id="reminder-date" type="date" value={form.reminder_date ?? ""} onChange={(e) => setForm((f) => ({ ...f, reminder_date: e.target.value || null }))} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="reminder-time">Reminder time</Label>
-              <Input id="reminder-time" type="time" value={form.reminder_time ?? ""} onChange={(e) => setForm((f) => ({ ...f, reminder_time: e.target.value || null }))} />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving}>
-              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />}
-              {editing ? "Save changes" : "Create task"}
-            </Button>
-          </DialogFooter>
-        </form>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

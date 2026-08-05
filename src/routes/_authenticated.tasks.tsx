@@ -56,8 +56,10 @@ import {
   TASK_STATUSES, TASK_PRIORITIES, TASK_CATEGORIES, TASK_STATUS_LABELS, TASK_PRIORITY_LABELS, TASK_CATEGORY_LABELS,
   TASK_STATUS_STYLE, TASK_PRIORITY_STYLE,
   type Task, type TaskStatus, type TaskPriority, type TaskCategory, type TaskAssignee, type TaskInput,
+  type TaskAuditLog,
   initiateWorkflow, logTaskAction,
 } from "@/lib/tasks";
+import { supabase } from "@/lib/supabase";
 
 import { getUndoDurationMs } from "@/lib/undo-prefs";
 import { showUndoToast } from "@/components/ui/undo-toast";

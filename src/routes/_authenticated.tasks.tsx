@@ -314,8 +314,12 @@ function TasksPage() {
     if (!task) return;
     const newStatus = String(overId) as TaskStatus;
     if (!TASK_STATUSES.includes(newStatus)) return;
-    if (task.status !== newStatus) onQuickStatus(task, newStatus);
+    if (task.status !== newStatus) {
+      await onQuickStatus(task, newStatus);
+      await logTaskAction(task.id, "board_move", { from: task.status, to: newStatus });
+    }
   };
+
 
   const clearFilters = () => {
     setSearch(""); setTab("all"); setPriority("all");
@@ -337,11 +341,17 @@ function TasksPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <WorkflowSelector onSelect={(template) => {
-              toast.success(`Workflow "${template}" initiated`);
-              load();
+            <WorkflowSelector onSelect={async (template, config) => {
+              try {
+                await initiateWorkflow(template, config);
+                toast.success(`Workflow "${template}" initiated`);
+                await load();
+              } catch (e) {
+                toast.error((e as Error).message);
+              }
             }} />
             <Button onClick={openNew} size="lg" className="shadow-md">
+
               <Plus className="mr-2 h-4 w-4" aria-hidden />New task
             </Button>
           </div>

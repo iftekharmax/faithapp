@@ -496,6 +496,7 @@ function TaskListRow({
           {t.description && (
             <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{t.description}</p>
           )}
+          <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
             {t.category && (
               <span className="inline-flex items-center gap-1"><Tag className="h-3 w-3" aria-hidden />{TASK_CATEGORY_LABELS[t.category]}</span>
             )}

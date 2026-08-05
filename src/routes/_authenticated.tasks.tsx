@@ -400,6 +400,7 @@ function TasksPage() {
               task={t}
               assignee={t.assignee_id ? userMap.get(t.assignee_id) ?? null : null}
               onToggleDone={() => onQuickStatus(t, (t.status === "completed" || t.status === "done") ? "todo" : "completed")}
+              onView={() => setViewing(t)}
               onEdit={() => openEdit(t)}
               onDelete={() => setConfirmDelete(t)}
               onStatusChange={(s) => onQuickStatus(t, s)}

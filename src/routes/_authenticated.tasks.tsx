@@ -682,12 +682,30 @@ function TaskListRow({
             {t.due_date && (
               <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-full", overdue ? "text-rose-600 bg-rose-500/10" : "text-muted-foreground bg-muted/50")}><Calendar className="h-3 w-3" aria-hidden />{new Date(t.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
             )}
-            {assignee && (
-              <div className="flex items-center gap-2 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
-                <div className="h-4 w-4 rounded-full bg-primary/20 grid place-items-center"><UserIcon className="h-2.5 w-2.5 text-primary" /></div>
-                <span className="text-[11px] font-bold text-primary/80">{assignee.full_name?.split(' ')[0] || assignee.email.split('@')[0]}</span>
-              </div>
-            )}
+            <Select value={t.assignee_id ?? "none"} onValueChange={(v) => onAssign(v === "none" ? null : v)}>
+              <SelectTrigger 
+                className="h-6 w-auto min-w-[100px] border-primary/10 bg-primary/5 px-2 py-0 rounded-full text-[11px] font-bold text-primary hover:bg-primary/10" 
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`Assign task ${t.title}`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-primary/20 grid place-items-center">
+                    <UserIcon className="h-2.5 w-2.5 text-primary" />
+                  </div>
+                  <SelectValue placeholder="Unassigned">
+                    {assignee ? (assignee.full_name?.split(' ')[0] || assignee.email.split('@')[0]) : "Assign"}
+                  </SelectValue>
+                </div>
+              </SelectTrigger>
+              <SelectContent onClick={(e) => e.stopPropagation()}>
+                <SelectItem value="none">Unassigned</SelectItem>
+                {users.map((u) => (
+                  <SelectItem key={u.id} value={u.id}>
+                    {u.full_name || u.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <div className="flex items-center gap-3 ml-auto">
                {t.checklists && t.checklists.length > 0 && (
                 <TooltipProvider>

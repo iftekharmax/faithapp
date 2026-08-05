@@ -33,6 +33,7 @@ import { Route as AuthenticatedUniversitiesIndexRouteImport } from './routes/_au
 import { Route as AuthenticatedStudentsIndexRouteImport } from './routes/_authenticated.students.index'
 import { Route as AuthenticatedCounselorsIndexRouteImport } from './routes/_authenticated.counselors.index'
 import { Route as AuthenticatedApplicationsIndexRouteImport } from './routes/_authenticated.applications.index'
+import { Route as ApiPublicTaskDigestRouteImport } from './routes/api/public/task-digest'
 import { Route as ApiAdminResendVerificationRouteImport } from './routes/api.admin.resend-verification'
 import { Route as ApiAdminCreateUserRouteImport } from './routes/api.admin.create-user'
 import { Route as AuthenticatedStudentsNewRouteImport } from './routes/_authenticated.students.new'
@@ -174,6 +175,11 @@ const AuthenticatedApplicationsIndexRoute =
     path: '/applications/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiPublicTaskDigestRoute = ApiPublicTaskDigestRouteImport.update({
+  id: '/api/public/task-digest',
+  path: '/api/public/task-digest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAdminResendVerificationRoute =
   ApiAdminResendVerificationRouteImport.update({
     id: '/api/admin/resend-verification',
@@ -287,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/students/new': typeof AuthenticatedStudentsNewRoute
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
+  '/api/public/task-digest': typeof ApiPublicTaskDigestRoute
   '/applications/': typeof AuthenticatedApplicationsIndexRoute
   '/counselors/': typeof AuthenticatedCounselorsIndexRoute
   '/students/': typeof AuthenticatedStudentsIndexRoute
@@ -326,6 +333,7 @@ export interface FileRoutesByTo {
   '/students/new': typeof AuthenticatedStudentsNewRoute
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
+  '/api/public/task-digest': typeof ApiPublicTaskDigestRoute
   '/applications': typeof AuthenticatedApplicationsIndexRoute
   '/counselors': typeof AuthenticatedCounselorsIndexRoute
   '/students': typeof AuthenticatedStudentsIndexRoute
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/_authenticated/students/new': typeof AuthenticatedStudentsNewRoute
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
+  '/api/public/task-digest': typeof ApiPublicTaskDigestRoute
   '/_authenticated/applications/': typeof AuthenticatedApplicationsIndexRoute
   '/_authenticated/counselors/': typeof AuthenticatedCounselorsIndexRoute
   '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
@@ -408,6 +417,7 @@ export interface FileRouteTypes {
     | '/students/new'
     | '/api/admin/create-user'
     | '/api/admin/resend-verification'
+    | '/api/public/task-digest'
     | '/applications/'
     | '/counselors/'
     | '/students/'
@@ -447,6 +457,7 @@ export interface FileRouteTypes {
     | '/students/new'
     | '/api/admin/create-user'
     | '/api/admin/resend-verification'
+    | '/api/public/task-digest'
     | '/applications'
     | '/counselors'
     | '/students'
@@ -487,6 +498,7 @@ export interface FileRouteTypes {
     | '/_authenticated/students/new'
     | '/api/admin/create-user'
     | '/api/admin/resend-verification'
+    | '/api/public/task-digest'
     | '/_authenticated/applications/'
     | '/_authenticated/counselors/'
     | '/_authenticated/students/'
@@ -504,6 +516,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   ApiAdminCreateUserRoute: typeof ApiAdminCreateUserRoute
   ApiAdminResendVerificationRoute: typeof ApiAdminResendVerificationRoute
+  ApiPublicTaskDigestRoute: typeof ApiPublicTaskDigestRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -675,6 +688,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/applications/'
       preLoaderRoute: typeof AuthenticatedApplicationsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/task-digest': {
+      id: '/api/public/task-digest'
+      path: '/api/public/task-digest'
+      fullPath: '/api/public/task-digest'
+      preLoaderRoute: typeof ApiPublicTaskDigestRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/admin/resend-verification': {
       id: '/api/admin/resend-verification'
@@ -874,7 +894,18 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   ApiAdminCreateUserRoute: ApiAdminCreateUserRoute,
   ApiAdminResendVerificationRoute: ApiAdminResendVerificationRoute,
+  ApiPublicTaskDigestRoute: ApiPublicTaskDigestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

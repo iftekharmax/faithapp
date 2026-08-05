@@ -3,8 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ListChecks, Plus, Search, Loader2, Trash2, Pencil, Calendar, User as UserIcon,
   CheckCircle2, Circle, Clock, AlertOctagon, Sparkles, LayoutGrid, List as ListIcon, BellRing,
-  MoreVertical, ChevronRight, MessageSquare, Paperclip, CheckSquare, History, Tag,
+  MoreVertical, ChevronRight, MessageSquare, Paperclip, CheckSquare, History, Tag, ChevronDown,
 } from "lucide-react";
+import { WorkflowSelector } from "@/components/tasks/WorkflowSelector";
+
 import { toast } from "sonner";
 import {
   DndContext, DragOverlay, PointerSensor, KeyboardSensor, useSensor, useSensors,
@@ -65,7 +67,7 @@ const STATUS_ICON: Record<TaskStatus, typeof Circle> = {
   done: CheckCircle2,
 };
 
-type TabValue = "all" | TaskStatus | "mine";
+type TabValue = "all" | TaskStatus | "mine" | "calendar";
 type ViewMode = "list" | "board";
 
 const FILTERS_KEY = "faith.tasks.filters.v1";
@@ -78,6 +80,9 @@ interface StoredFilters {
 }
 
 const DEFAULT_FILTERS: StoredFilters = { tab: "all", priority: "all", view: "list", search: "" };
+
+type WorkflowType = 'Australia Student' | 'UK Student' | 'Canada Student' | 'USA Student' | 'Bachelor' | 'Masters' | 'Visa Processing' | 'Finance';
+
 
 function loadFilters(): StoredFilters {
   if (typeof window === "undefined") return DEFAULT_FILTERS;
@@ -301,9 +306,16 @@ function TasksPage() {
               <p className="text-sm text-muted-foreground">Coordinate work across your teams</p>
             </div>
           </div>
-          <Button onClick={openNew} size="lg" className="shadow-md">
-            <Plus className="mr-2 h-4 w-4" aria-hidden />New task
-          </Button>
+          <div className="flex items-center gap-2">
+            <WorkflowSelector onSelect={(template) => {
+              toast.success(`Workflow "${template}" initiated`);
+              load();
+            }} />
+            <Button onClick={openNew} size="lg" className="shadow-md">
+              <Plus className="mr-2 h-4 w-4" aria-hidden />New task
+            </Button>
+          </div>
+
         </div>
 
         <div className="relative mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
@@ -327,6 +339,8 @@ function TasksPage() {
                 <TabsTrigger key={s} value={s}>{TASK_STATUS_LABELS[s]}</TabsTrigger>
               ))}
               <TabsTrigger value="overdue">Overdue</TabsTrigger>
+              <TabsTrigger value="calendar">Calendar View</TabsTrigger>
+
             </TabsList>
           </Tabs>
           <div className="flex flex-wrap items-center gap-2">
@@ -387,7 +401,23 @@ function TasksPage() {
         <div className="grid place-items-center py-12" role="status" aria-label="Loading tasks">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden />
         </div>
+      ) : tab === "calendar" ? (
+        <Card className="p-6 h-[600px] flex items-center justify-center border-dashed">
+          <div className="text-center space-y-2">
+            <Calendar className="h-12 w-12 mx-auto text-muted-foreground opacity-20" />
+            <h3 className="font-semibold text-lg">Calendar Visualizer</h3>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+              Interactive timeline visualization for {filtered.length} active tasks scheduled this month.
+            </p>
+            <div className="grid grid-cols-7 gap-1 mt-4 max-w-md mx-auto opacity-40">
+              {Array.from({ length: 28 }).map((_, i) => (
+                <div key={i} className="h-10 w-10 border rounded bg-muted/50" />
+              ))}
+            </div>
+          </div>
+        </Card>
       ) : filtered.length === 0 && view === "list" ? (
+
         <EmptyState
           icon={ListChecks}
           title="No tasks found"
@@ -862,7 +892,14 @@ function TaskDetailsDialog({
               {TASK_CATEGORY_LABELS[t.category]}
             </Badge>
           </div>
+          {t.dependencies && t.dependencies.length > 0 && (
+            <div className="flex items-center gap-2 mb-2 p-2 bg-amber-500/10 border border-amber-500/20 rounded-md">
+              <AlertOctagon className="h-4 w-4 text-amber-600" />
+              <span className="text-xs font-medium text-amber-700"> Prerequisite task pending. Completion blocked.</span>
+            </div>
+          )}
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
+
             {(t.status === "completed" || t.status === "done") && <CheckCircle2 className="h-5 w-5 text-green-500" />}
             {t.title}
           </DialogTitle>

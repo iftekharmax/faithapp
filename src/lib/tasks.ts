@@ -14,7 +14,7 @@ export type TaskStatus =
   | "completed" 
   | "cancelled" 
   | "overdue"
-  | "done"; // Legacy support
+  | "done";
 
 export type TaskPriority = "low" | "normal" | "high" | "urgent" | "critical";
 
@@ -90,13 +90,15 @@ export interface Task {
   created_at: string;
   updated_at: string;
   
-  // Relations (often included in joins)
+  // Relations
   assignees?: { user_id: string }[];
   followers?: { user_id: string }[];
   checklists?: TaskChecklistItem[];
   comments?: TaskComment[];
   attachments?: TaskAttachment[];
   subtasks?: Task[];
+  dependencies?: { depends_on_task_id: string }[];
+  is_blocked?: boolean;
 }
 
 export type TaskInput = Partial<Omit<Task, "id" | "created_at" | "updated_at" | "completed_at">>;
@@ -128,7 +130,7 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   completed: "Completed",
   cancelled: "Cancelled",
   overdue: "Overdue",
-  done: "Done", // Legacy
+  done: "Done",
 };
 
 export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
@@ -178,13 +180,20 @@ export const TASK_PRIORITY_STYLE: Record<TaskPriority, string> = {
   critical: "bg-red-500/10 text-red-700 dark:text-red-300 border-red-500/20",
 };
 
+export interface TaskAssignee {
+  id: string;
+  full_name: string | null;
+  email: string;
+  avatar_url?: string | null;
+}
+
 export async function listTasks(filters?: any): Promise<Task[]> {
   let query = supabase.from("tasks").select(`
     *,
     assignees:task_assignees(user_id),
     followers:task_followers(user_id),
     checklists:task_checklists(*),
-    comments:task_comments(*, user:profiles(full_name, avatar_url)),
+    dependencies:task_dependencies(depends_on_task_id),
     attachments:task_attachments(*)
   `);
   
@@ -194,12 +203,32 @@ export async function listTasks(filters?: any): Promise<Task[]> {
   
   const { data, error } = await query.order("created_at", { ascending: false });
   if (error) throw error;
+
+  const taskIds = data?.map(t => t.id) || [];
+  if (taskIds.length > 0) {
+    const { data: comments } = await supabase
+      .from("task_comments")
+      .select("*, user_profile:profiles!task_comments_user_id_fkey(full_name, avatar_url)")
+      .in("task_id", taskIds);
+    
+    if (comments) {
+      data.forEach(task => {
+        task.comments = comments
+          .filter(c => c.task_id === task.id)
+          .map(c => ({
+            ...c,
+            user: c.user_profile
+          }));
+      });
+    }
+  }
+
   return (data as Task[]) ?? [];
 }
 
 export async function createTask(input: TaskInput): Promise<Task> {
   const { data: sess } = await supabase.auth.getUser();
-  const payload = { ...input, assigned_by: sess.user?.id ?? null, created_by: sess.user?.id ?? null };
+  const payload = { ...input, assigned_by: sess.user?.id ?? null };
   const { data, error } = await supabase.from("tasks").insert(payload).select("*").single();
   if (error) throw error;
   return data as Task;
@@ -214,13 +243,6 @@ export async function updateTask(id: string, patch: TaskInput): Promise<Task> {
 export async function deleteTask(id: string): Promise<void> {
   const { error } = await supabase.from("tasks").delete().eq("id", id);
   if (error) throw error;
-}
-
-export interface TaskAssignee {
-  id: string;
-  full_name: string | null;
-  email: string;
-  avatar_url?: string | null;
 }
 
 export async function listAssignableUsers(): Promise<TaskAssignee[]> {
@@ -242,27 +264,10 @@ export async function runTaskReminders(): Promise<number> {
   }
 }
 
-// Checklist Actions
-export async function addChecklistItem(taskId: string, title: string) {
-  const { data, error } = await supabase.from("task_checklists").insert({ task_id: taskId, title }).select("*").single();
-  if (error) throw error;
-  return data;
-}
-
-export async function toggleChecklistItem(id: string, is_completed: boolean) {
-  const { error } = await supabase.from("task_checklists").update({ is_completed }).eq("id", id);
-  if (error) throw error;
-}
-
-// Comment Actions
-export async function addTaskComment(taskId: string, content: string, parentId?: string) {
-  const { data: sess } = await supabase.auth.getUser();
-  const { data, error } = await supabase.from("task_comments").insert({ 
-    task_id: taskId, 
-    content, 
-    parent_id: parentId, 
-    user_id: sess.user?.id 
-  }).select("*").single();
-  if (error) throw error;
-  return data;
+export async function listWorkflowTemplates() {
+  const { data, error } = await supabase
+    .from("task_workflow_templates")
+    .select("*, steps:task_workflow_steps(*)");
+  if (error) return [];
+  return data ?? [];
 }

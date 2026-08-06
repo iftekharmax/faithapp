@@ -179,26 +179,28 @@ function UniversityDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      <header className="sticky top-0 z-30 w-full border-b bg-white/80 backdrop-blur-md">
+    <div className="min-h-screen bg-[#FDFDFF]">
+      {/* Top Utility Header - ApplyBoard Style */}
+      <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between gap-4">
-            <div className="flex items-center gap-4 overflow-hidden">
-              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 rounded-xl hover:bg-slate-100" asChild>
-                <Link to="/universities"><ArrowLeft className="h-4 w-4" /></Link>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0 rounded-2xl hover:bg-slate-50 hover:text-blue-600 transition-all" asChild>
+                <Link to="/universities"><ArrowLeft className="h-5 w-5" /></Link>
               </Button>
-              <nav className="flex items-center gap-2 overflow-hidden text-sm font-medium">
-                <Link to="/" className="text-muted-foreground hover:text-primary whitespace-nowrap">Dashboard</Link>
-                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
-                <Link to="/universities" className="text-muted-foreground hover:text-primary whitespace-nowrap">Universities</Link>
-                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+              <nav className="hidden items-center gap-2 overflow-hidden text-sm font-semibold md:flex">
+                <Link to="/" className="text-slate-400 hover:text-blue-600 transition-colors">Dashboard</Link>
+                <ChevronRight className="h-4 w-4 text-slate-300" />
+                <Link to="/universities" className="text-slate-400 hover:text-blue-600 transition-colors">Universities</Link>
+                <ChevronRight className="h-4 w-4 text-slate-300" />
                 <span className="truncate text-slate-900 font-bold">{uni.name}</span>
               </nav>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="hidden rounded-xl font-semibold sm:flex hover:bg-slate-50"><Share2 className="mr-2 h-4 w-4" /> Share</Button>
-              <Button variant="outline" size="sm" className="hidden rounded-xl font-semibold sm:flex hover:bg-slate-50"><Download className="mr-2 h-4 w-4" /> Export</Button>
-              <Button className="rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-4 w-4" /> Create Application</Button>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" className="h-11 rounded-2xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 hover:border-blue-200 transition-all"><Share2 className="mr-2 h-4 w-4" /> Share</Button>
+              <Button className="h-11 rounded-2xl bg-blue-600 px-6 font-bold text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>
+                <Plus className="mr-2 h-5 w-5" /> Start Application
+              </Button>
             </div>
           </div>
         </div>
@@ -206,81 +208,115 @@ function UniversityDetail() {
 
       <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
-          <section className="grid gap-6 md:grid-cols-[1fr,500px] lg:grid-cols-[1fr,600px] xl:grid-cols-[1fr,720px]">
-            <Card className="relative overflow-hidden rounded-[24px] bg-white p-6 shadow-sm ring-1 ring-slate-200 lg:p-8">
-              <div className="flex flex-col gap-6 lg:gap-8">
-                <div className="flex flex-col gap-6 sm:flex-row sm:items-start lg:gap-8">
-                  <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 lg:h-[140px] lg:w-[140px]">
-                    {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" /> : <Building2 className="h-16 w-16 text-slate-300" />}
+          
+          {/* Hero Section - Agency Style */}
+          <section className="relative overflow-hidden rounded-[40px] bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 lg:p-12">
+            <div className="absolute right-0 top-0 -mr-24 -mt-24 h-96 w-96 rounded-full bg-blue-50/50 blur-3xl" />
+            
+            <div className="relative flex flex-col gap-10 lg:flex-row lg:items-center">
+              <div className="flex h-[180px] w-[180px] shrink-0 items-center justify-center rounded-[32px] bg-white p-4 shadow-2xl shadow-blue-100 ring-1 ring-slate-50 lg:h-[220px] lg:w-[220px]">
+                {uni.logo_url ? (
+                  <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
+                ) : (
+                  <Building2 className="h-20 w-20 text-slate-200" />
+                )}
+              </div>
+              
+              <div className="flex flex-1 flex-col gap-6">
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">{uni.name}</h1>
+                    <Badge className={cn("rounded-2xl px-4 py-1.5 text-xs font-bold uppercase tracking-widest border-none shadow-sm", 
+                      uni.status === "active" ? "bg-emerald-500 text-white" : "bg-slate-500 text-white"
+                    )}>
+                      {uni.status === "active" ? "Verified Institution" : uni.status}
+                    </Badge>
                   </div>
-                  <div className="flex flex-col gap-3 lg:gap-4">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-2xl font-black tracking-tighter text-slate-900 leading-none lg:text-[42px]">{uni.name}</h1>
-                      <Badge className={cn("rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest", uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm shadow-emerald-500/20" : "bg-slate-500 hover:bg-slate-600 text-white shadow-sm shadow-slate-500/20")}>
-                        {uni.status === "active" ? "• Active" : uni.status}
-                      </Badge>
+                  
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600"><MapPin className="h-4 w-4" /></div>
+                      <span className="text-sm font-bold text-slate-600">{uni.city || 'Kuala Lumpur'}, Malaysia</span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-slate-500 lg:gap-6">
-                      <div className="flex items-center gap-2"><span>MY</span> <span className="font-black uppercase tracking-widest text-[10px] text-slate-400">Malaysia</span></div>
-                      <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-300" /> <span className="font-black uppercase tracking-widest text-[10px] text-slate-400">{uni.city || 'Negeri Sembilan'}</span></div>
-                      {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 font-black uppercase tracking-widest text-[10px] hover:underline"><span>Website</span> <ExternalLink className="h-3.5 w-3.5" /></a>}
+                    {uni.website && (
+                      <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 text-blue-600 hover:underline">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50"><Globe className="h-4 w-4" /></div>
+                        <span className="text-sm font-bold uppercase tracking-widest">Official Site</span>
+                      </a>
+                    )}
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600"><ShieldCheck className="h-4 w-4" /></div>
+                      <span className="text-sm font-bold text-slate-600">Accredited by MQA & MOHE</span>
                     </div>
-                    <p className="max-w-4xl text-sm leading-relaxed text-slate-500 font-bold lg:text-[15px]">
-                      {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
-                    </p>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-50">
-                  <HeroMetaItem icon={Landmark} label="Partner Since" value="2010" />
-                  <HeroMetaItem icon={Building2} label="University Type" value="Private" />
-                  <HeroMetaItem icon={Users} label="Public / Private" value="Private" />
-                  <HeroMetaItem icon={ShieldCheck} label="Accreditation" value="MQA, MOHE" />
+
+                <p className="max-w-4xl text-lg leading-relaxed text-slate-500 font-medium">
+                  {uni.description || 'Global leader in education excellence, providing world-class programs and career-oriented learning environments. Explore a diverse range of undergraduate and postgraduate degrees designed for the future.'}
+                </p>
+
+                <div className="flex flex-wrap gap-4 pt-4">
+                  <Button size="lg" className="h-14 rounded-2xl bg-blue-600 px-8 font-black text-lg text-white shadow-xl shadow-blue-600/30 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>
+                    Start Application <ArrowRight className="ml-2 h-6 w-6" />
+                  </Button>
+                  <Button size="lg" variant="outline" className="h-14 rounded-2xl border-slate-200 bg-white px-8 font-black text-lg text-slate-700 hover:bg-slate-50 hover:border-blue-200 transition-all">
+                    View Programs <ChevronRight className="ml-1 h-5 w-5" />
+                  </Button>
                 </div>
               </div>
-            </Card>
-
-            <div className="grid grid-cols-2 grid-rows-4 gap-3 lg:grid-cols-4 lg:grid-rows-2 lg:gap-4">
-              <HeroStatCard label="Programs" value="155" icon={GradIcon} color="blue" growth="12%" />
-              <HeroStatCard label="Campuses" value="4" icon={School} color="emerald" growth="0%" />
-              <HeroStatCard label="Applications" value="3,241" icon={FileText} color="orange" growth="18%" />
-              <HeroStatCard label="Students" value="8,925" icon={Users} color="purple" growth="14%" />
-              <HeroStatCard label="Faculties" value="12" icon={BookOpen} color="cyan" growth="8%" />
-              <HeroStatCard label="Counselors" value="24" icon={Briefcase} color="pink" growth="9%" />
-              <HeroStatCard label="Offer Letters" value="1,245" icon={Award} color="blue" growth="16%" />
-              <HeroStatCard label="Visa Files" value="832" icon={Plane} color="emerald" growth="11%" />
             </div>
           </section>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <Button size="lg" className="h-12 rounded-xl bg-[#2563EB] px-8 font-black text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
-            <Button size="lg" variant="outline" className="h-12 rounded-xl border-blue-200 bg-white px-8 font-black text-[#2563EB] hover:bg-blue-50" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>
-            <ActionIconButton icon={Download} label="Export Programs" />
-            <ActionIconButton icon={Plus} label="Import Programs" />
-            <ActionIconButton icon={FileText} label="Template" />
-            <ActionIconButton icon={Share2} label="Share University" />
-          </div>
+          {/* KPI Dashboard Section */}
+          <section className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-8">
+            <HeroStatCard label="Programs" value="155+" icon={GradIcon} color="blue" growth="Top Rated" />
+            <HeroStatCard label="Campuses" value="04" icon={School} color="emerald" />
+            <HeroStatCard label="Global Rank" value="#12" icon={Trophy} color="orange" growth="Trending" />
+            <HeroStatCard label="Students" value="8.9k" icon={Users} color="purple" growth="+14%" />
+            <HeroStatCard label="Faculties" value="12" icon={BookOpen} color="cyan" />
+            <HeroStatCard label="Partners" value="24" icon={Briefcase} color="pink" />
+            <HeroStatCard label="Offers" value="1.2k" icon={Award} color="blue" growth="+16%" />
+            <HeroStatCard label="Visa Rate" value="98%" icon={Zap} color="emerald" growth="Elite" />
+          </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),320px] lg:grid-cols-[minmax(0,1fr),360px] gap-8 items-start">
-            <div className="flex flex-col gap-6 lg:gap-8 min-w-0">
+          {/* Main Layout Grid */}
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1fr),340px] lg:grid-cols-[minmax(0,1fr),380px] xl:grid-cols-[minmax(0,1fr),420px] items-start">
+            
+            {/* Left Content Area */}
+            <div className="flex flex-col gap-8 min-w-0">
               <Tabs defaultValue="programs" className="w-full">
-                <div className="sticky top-[72px] z-20">
-                  <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
-                    <TabsTrigger value="programs" className="rounded-xl px-8 font-black data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all group">Programs <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white transition-colors">155</Badge></TabsTrigger>
-                    <TabsTrigger value="campuses" className="rounded-xl px-8 font-black data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all group">Campuses <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white transition-colors">4</Badge></TabsTrigger>
-                    <TabsTrigger value="applications" className="rounded-xl px-8 font-black data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all group">Applications <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white transition-colors">3,241</Badge></TabsTrigger>
+                <div className="sticky top-[80px] z-20">
+                  <TabsList className="h-16 w-full justify-start gap-3 rounded-[24px] bg-white p-2 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 sm:w-auto">
+                    <TabsTrigger value="programs" className="rounded-2xl px-10 font-black text-lg data-[state=active]:bg-blue-600 data-[state=active]:text-white transition-all group">
+                      Programs 
+                      <Badge className="ml-3 bg-slate-100 text-slate-500 font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">155</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="campuses" className="rounded-2xl px-10 font-black text-lg data-[state=active]:bg-blue-600 data-[state=active]:text-white transition-all group">
+                      Campuses
+                      <Badge className="ml-3 bg-slate-100 text-slate-500 font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">4</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="applications" className="rounded-2xl px-10 font-black text-lg data-[state=active]:bg-blue-600 data-[state=active]:text-white transition-all group">
+                      Activity
+                    </TabsTrigger>
                   </TabsList>
                 </div>
-                <TabsContent value="programs" className="mt-8 outline-none">
+
+                <TabsContent value="programs" className="mt-8 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} />
                 </TabsContent>
-                <TabsContent value="campuses" className="mt-8 outline-none">
+                
+                <TabsContent value="campuses" className="mt-8 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
                 </TabsContent>
-                <TabsContent value="applications" className="mt-8 outline-none">
-                  <Card className="rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
-                    <CardHeader className="border-b bg-slate-50/50 p-6"><CardTitle className="text-xl font-bold">Linked Applications</CardTitle></CardHeader>
+
+                <TabsContent value="applications" className="mt-8 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <Card className="rounded-[40px] border-none bg-white shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 overflow-hidden">
+                    <CardHeader className="border-b border-slate-50 bg-slate-50/30 p-8">
+                      <CardTitle className="text-2xl font-black text-slate-900">Recent Applications</CardTitle>
+                    </CardHeader>
                     <CardContent className="p-0">
                       {applications.length === 0 ? (
+
                         <div className="flex flex-col items-center py-20 text-center"><div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 mb-6"><FileText className="h-10 w-10 text-slate-300" /></div><h3 className="text-lg font-bold text-slate-900">No applications found</h3><p className="mt-2 text-slate-500">No students have applied to this university yet.</p><Button className="mt-8 rounded-xl font-bold" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>Start First Application</Button></div>
                       ) : (
                         <div className="overflow-x-auto"><Table><TableHeader><TableRow className="border-slate-100 bg-slate-50/50 hover:bg-slate-50/50"><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Application Code</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Student Name</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Program</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Status</TableHead><TableHead className="py-4"></TableHead></TableRow></TableHeader><TableBody>{applications.map((a) => <TableRow key={a.id} className="group border-slate-50 transition-colors hover:bg-slate-50/80"><TableCell className="py-4 font-mono text-sm font-bold text-blue-600">{a.application_code}</TableCell><TableCell className="py-4"><div className="flex flex-col"><span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span><span className="text-xs text-slate-400">{a.student?.student_code}</span></div></TableCell><TableCell className="py-4 font-medium text-slate-600">{a.program}</TableCell><TableCell className="py-4"><Badge variant="outline" className="rounded-full border-slate-200 bg-white px-3 py-1 font-bold text-slate-600 capitalize">{String(a.status).replace(/_/g, " ")}</Badge></TableCell><TableCell className="py-4 text-right"><Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-blue-600 hover:text-white" asChild><Link to="/applications/$applicationId" params={{ applicationId: a.id }}>View <ArrowRight className="ml-2 h-4 w-4" /></Link></Button></TableCell></TableRow>)}</TableBody></Table></div>
@@ -292,31 +328,62 @@ function UniversityDetail() {
             </div>
 
             <aside className="sticky top-[100px] flex flex-col gap-6">
-              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <div className="mb-6 flex items-center justify-between"><h3 className="text-lg font-black text-slate-900">University Overview</h3><DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 rounded-full"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem>Edit Details</DropdownMenuItem><DropdownMenuItem>Settings</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div>
-                <div className="space-y-4">
+              <Card className="rounded-[32px] border-none bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className="text-xl font-black text-slate-900">Institution Info</h3>
+                  <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl hover:bg-slate-50"><MoreVertical className="h-5 w-5 text-slate-400" /></Button>
+                </div>
+                <div className="space-y-5">
                   <OverviewItem icon={Globe} label="Country" value={uni.country?.name || "Malaysia"} flag="🇲🇾" />
-                  <OverviewItem icon={MapPin} label="State" value={uni.city || "Negeri Sembilan"} />
-                  <OverviewItem icon={ExternalLink} label="Website" value="www.newinti.edu.my" isLink />
-                  <div className="pt-4 mt-4 border-t border-slate-50 space-y-4">
-                    <OverviewStat label="Total Programs" value="155" icon={GradIcon} /><OverviewStat label="Total Applications" value="3,241" icon={FileText} /><OverviewStat label="Total Students" value="8,925" icon={Users} />
+                  <OverviewItem icon={MapPin} label="State/Province" value={uni.city || "Negeri Sembilan"} />
+                  <OverviewItem icon={ExternalLink} label="Official Link" value="Visit University Site" isLink />
+                  <div className="pt-6 mt-6 border-t border-slate-50 space-y-5">
+                    <OverviewStat label="Active Programs" value="155" icon={GradIcon} />
+                    <OverviewStat label="Verified Status" value="MQA Certified" icon={ShieldCheck} />
+                    <OverviewStat label="Institution" value="Private Research" icon={Building2} />
                   </div>
                 </div>
               </Card>
-              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <div className="mb-6 flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600"><Calendar className="h-5 w-5" /></div><h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3></div>
-                <div className="space-y-4"><IntakeItem label="January 2025" days="28 days" /><IntakeItem label="April 2025" days="118 days" /><IntakeItem label="August 2025" days="240 days" /></div>
-                <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-blue-600">View All Intakes <ArrowRight className="ml-2 h-4 w-4" /></Button>
+
+              <Card className="rounded-[32px] border-none bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-sm"><Calendar className="h-6 w-6" /></div>
+                  <h3 className="text-xl font-black text-slate-900">Upcoming Intakes</h3>
+                </div>
+                <div className="space-y-4">
+                  <IntakeItem label="January 2025" days="Applications Open" status="primary" />
+                  <IntakeItem label="April 2025" days="Early Bird" status="secondary" />
+                  <IntakeItem label="August 2025" days="Upcoming" status="muted" />
+                </div>
+                <Button variant="ghost" className="mt-8 w-full h-12 rounded-2xl font-black text-slate-500 hover:text-blue-600 hover:bg-blue-50">View Academic Calendar <ArrowRight className="ml-2 h-5 w-5" /></Button>
               </Card>
-              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <h3 className="mb-6 text-lg font-black text-slate-900">Quick Actions</h3>
-                <div className="space-y-2"><SidebarAction icon={Plus} label="Create Program" /><SidebarAction icon={Plus} label="Create Application" /><SidebarAction icon={Download} label="Import Programs" /><SidebarAction icon={Download} label="Export Programs" /><SidebarAction icon={Download} label="Download Brochure" /></div>
+
+              <Card className="rounded-[32px] border-none bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
+                <h3 className="mb-6 text-xl font-black text-slate-900">Student Services</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <SidebarAction icon={Plus} label="New Application" />
+                  <SidebarAction icon={Plus} label="Add Program" />
+                  <SidebarAction icon={Download} label="Export List" />
+                  <SidebarAction icon={Share2} label="Share Profile" />
+                </div>
               </Card>
-              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>
-                <div className="space-y-4"><div className="flex justify-between text-sm font-black"><span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span><span className="text-blue-600">64%</span></div><div className="h-2 w-full overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-blue-600 shadow-sm shadow-blue-500/50" style={{ width: '64%' }} /></div><p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p></div>
+
+              <Card className="group relative overflow-hidden rounded-[32px] border-none bg-blue-600 p-8 text-white shadow-2xl shadow-blue-600/30">
+                <div className="absolute right-0 top-0 -mr-12 -mt-12 h-32 w-32 rounded-full bg-white/10 blur-2xl transition-transform group-hover:scale-150" />
+                <h3 className="mb-6 text-xl font-black tracking-tight">Application Goal</h3>
+                <div className="space-y-5">
+                  <div className="flex justify-between text-sm font-black">
+                    <span>3,241 <span className="text-blue-200 font-bold">of 5,000</span></span>
+                    <span className="text-white">64%</span>
+                  </div>
+                  <div className="h-3 w-full overflow-hidden rounded-full bg-white/20">
+                    <div className="h-full bg-white shadow-lg shadow-white/50 transition-all duration-1000" style={{ width: '64%' }} />
+                  </div>
+                  <p className="text-sm font-bold text-blue-100 leading-relaxed">Reach the 5,000 application milestone to unlock Elite Partner rewards.</p>
+                </div>
               </Card>
             </aside>
+
           </div>
         </div>
       </main>
@@ -483,43 +550,44 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
     <div className="space-y-6">
 
 
-      <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="relative flex-1 min-w-[300px]">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      <div className="relative overflow-hidden rounded-[32px] bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
+        <div className="absolute right-0 top-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-blue-50/30 blur-3xl" />
+        <div className="relative flex flex-col gap-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="relative flex-1 min-w-[320px]">
+              <Search className="absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
               <Input 
-                placeholder="Search programs..." 
+                placeholder="Search programs by name, degree or keyword..." 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
-                className="pl-11 h-12 rounded-xl border-slate-100 bg-slate-50 focus-visible:ring-primary shadow-inner" 
+                className="pl-14 h-14 rounded-2xl border-none bg-slate-50 text-base font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/20 shadow-inner" 
               />
             </div>
+            <div className="flex items-center gap-3">
+              <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20">
+                <LayoutGrid className="h-6 w-6" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-100 shadow-inner">
+                <ListIcon className="h-6 w-6" />
+              </Button>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-50">
             <FilterSelect icon={GraduationCap} placeholder="All Degrees" value={degreeFilter} onValueChange={setDegreeFilter} options={degrees} />
             <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
             <FilterSelect icon={MapPin} label="All Campuses" placeholder="All Campuses" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Clock} label="Study Mode" placeholder="Study Mode" value="all" onValueChange={() => {}} options={[]} />
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-50">
             <FilterSelect icon={Calendar} label="All Intakes" placeholder="All Intakes" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Award} label="All Scholarships" placeholder="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={ListIcon} label="Sort by: Newest" placeholder="Sort by: Newest" value="newest" onValueChange={() => {}} options={[]} />
-            <Button variant="ghost" className="h-10 rounded-xl font-bold text-slate-500 hover:text-primary" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
-              <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
-            </Button>
-
-            <div className="ml-auto flex items-center gap-2">
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-blue-600 text-white hover:bg-blue-700">
-                <LayoutGrid className="h-5 w-5" />
-              </Button>
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-100 shadow-inner">
-                <ListIcon className="h-5 w-5" />
+            
+            <div className="ml-auto flex items-center gap-4">
+              <Button variant="ghost" className="h-12 rounded-2xl font-black text-slate-500 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
+                <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
               </Button>
             </div>
           </div>
         </div>
-      </Card>
+      </div>
+
 
       <div>
         {filtered.length === 0 ? (
@@ -560,75 +628,80 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           <div className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p) => (
-                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[24px] bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-blue-500/10">
-
-                  <div className="flex flex-1 flex-col p-6">
-                    <div className="mb-4 flex items-start justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-blue-600">
+                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[32px] bg-white shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-600/10">
+                  <div className="absolute right-0 top-0 h-24 w-24 translate-x-12 -translate-y-12 rounded-full bg-blue-50 transition-transform group-hover:scale-150" />
+                  
+                  <div className="flex flex-1 flex-col p-8">
+                    <div className="mb-6 flex items-start justify-between gap-4">
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2 mb-3">
+                          <span className="inline-flex items-center rounded-xl bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-blue-600 shadow-sm shadow-blue-500/5">
                             {p.degree || "Bachelor's Degree"}
                           </span>
                           {p.status === 'active' && (
-                            <Badge className="h-4 border-none bg-emerald-500 text-white text-[9px] font-black px-1.5 uppercase tracking-widest rounded-full">
+                            <Badge className="h-5 border-none bg-emerald-500 text-white text-[10px] font-black px-2.5 uppercase tracking-widest rounded-xl shadow-sm shadow-emerald-500/20">
                               Active
                             </Badge>
                           )}
                         </div>
-                        <h3 className="text-[17px] font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors leading-tight min-h-[42px] line-clamp-2">
+                        <h3 className="text-xl font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors leading-tight min-h-[56px] line-clamp-2">
                           {p.name}
                         </h3>
-                        <div className="flex flex-col gap-1.5 pt-2">
-                          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-                            <Clock className="h-3.5 w-3.5" />
-                            <span>{p.duration || '3 Years (9 Semesters)'}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-                            <Calendar className="h-3.5 w-3.5" />
-                            <span>{p.intake || 'January, April, August'}</span>
-                          </div>
-                        </div>
                       </div>
                       
-                      <div className="flex flex-col gap-2 items-center">
+                      <div className="relative flex flex-col gap-2 items-center">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-slate-50">
-                              <MoreVertical className="h-4 w-4 text-slate-400" />
+                            <Button size="icon" variant="ghost" className="h-10 w-10 rounded-2xl hover:bg-slate-50 text-slate-400">
+                              <MoreVertical className="h-5 w-5" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="rounded-xl border-none shadow-2xl ring-1 ring-slate-100">
-                            <DropdownMenuItem onClick={() => openEdit(p)}><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}><Plus className="mr-2 h-4 w-4" /> Apply</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
+                          <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100 p-2">
+                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-xl font-bold py-2.5"><Pencil className="mr-3 h-4 w-4" /> Edit Program</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-xl font-bold py-2.5 text-blue-600 focus:text-blue-600"><Plus className="mr-3 h-4 w-4" /> Apply Now</DropdownMenuItem>
+                            <DropdownMenuSeparator className="my-2 bg-slate-50" />
+                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-bold py-2.5 text-destructive focus:text-destructive"><Trash2 className="mr-3 h-4 w-4" /> Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-colors">
-                          <Heart className="h-4 w-4" />
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl text-slate-200 hover:text-rose-500 hover:bg-rose-50 transition-all hover:scale-110 group/heart">
+                          <Heart className="h-5 w-5 absolute opacity-0 group-hover/heart:opacity-10" fill="currentColor" />
+                          <Heart className="h-5 w-5" />
                         </Button>
+
                       </div>
                     </div>
 
-                    <div className="mt-auto space-y-4 pt-4 border-t border-slate-50">
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                      <div className="flex items-center gap-3 text-sm font-bold text-slate-500">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 text-slate-400"><Clock className="h-4 w-4" /></div>
+                        <span>{p.duration || '3 Years'}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm font-bold text-slate-500">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 text-slate-400"><Calendar className="h-4 w-4" /></div>
+                        <span>{p.intake || 'Multiple'}</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-auto pt-6 border-t border-slate-50">
                       <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Tuition Fee</p>
-                          <p className="text-lg font-black text-blue-600 tracking-tight">
+                        <div className="space-y-1">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Tuition</p>
+                          <p className="text-2xl font-black text-blue-600 tracking-tight">
                             {p.currency || 'MYR'} {p.tuition_fee ? p.tuition_fee.toLocaleString() : '89,474'}
                           </p>
                         </div>
                         <Button 
-                          size="sm" 
-                          className="rounded-xl font-black bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all px-4 h-9 shadow-sm shadow-blue-500/10 group/btn"
+                          size="lg" 
+                          className="rounded-[20px] font-black bg-blue-600 text-white hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30 transition-all px-6 h-12 group/btn"
                           onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}
                         >
-                          Apply Now <ChevronRight className="ml-1 h-3.5 w-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
+                          Apply <ArrowRight className="ml-2 h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
                         </Button>
                       </div>
                     </div>
                   </div>
                 </div>
+
 
               ))}
 
@@ -977,19 +1050,28 @@ function OverviewStat({ label, value, icon: Icon }: { label: string; value: stri
   );
 }
 
-function IntakeItem({ label, days }: { label: string; days: string }) {
+function IntakeItem({ label, days, status = 'primary' }: { label: string; days: string; status?: 'primary' | 'secondary' | 'muted' }) {
+  const statusColors = {
+    primary: "text-blue-600 bg-blue-50 shadow-sm shadow-blue-500/10",
+    secondary: "text-emerald-600 bg-emerald-50 shadow-sm shadow-emerald-500/10",
+    muted: "text-slate-500 bg-slate-100"
+  };
+
   return (
     <div className="flex items-center justify-between group cursor-default">
-      <div className="flex items-center gap-3">
-        <div className="flex h-5 w-5 items-center justify-center text-slate-300">
-          <Calendar className="h-4 w-4" />
+      <div className="flex items-center gap-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-300 transition-colors group-hover:bg-blue-50 group-hover:text-blue-400">
+          <Calendar className="h-5 w-5" />
         </div>
-        <span className="text-sm font-bold text-slate-900">{label}</span>
+        <span className="text-base font-black text-slate-900">{label}</span>
       </div>
-      <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">In {days}</span>
+      <span className={cn("text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl", statusColors[status])}>
+        {days}
+      </span>
     </div>
   );
 }
+
 
 function SidebarAction({ icon: Icon, label }: { icon: any; label: string }) {
   return (

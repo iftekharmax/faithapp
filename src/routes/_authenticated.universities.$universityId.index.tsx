@@ -577,82 +577,134 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           <div className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p) => (
-                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[32px] bg-white shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-600/10">
-                  <div className="absolute right-0 top-0 h-24 w-24 translate-x-12 -translate-y-12 rounded-full bg-blue-50 transition-transform group-hover:scale-150" />
-                  
-                  <div className="flex flex-1 flex-col p-8">
-                    <div className="mb-6 flex items-start justify-between gap-4">
+                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md">
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="mb-4 flex items-start justify-between gap-4">
                       <div className="space-y-2">
-                        <div className="flex flex-wrap items-center gap-2 mb-3">
-                          <span className="inline-flex items-center rounded-xl bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-blue-600 shadow-sm shadow-blue-500/5">
-                            {p.degree || "Bachelor's Degree"}
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center rounded-lg bg-orange-50 px-2.5 py-1 text-[10px] font-bold text-orange-600">
+                            <Star className="mr-1 h-3 w-3 fill-orange-600" /> Featured
                           </span>
-                          {p.status === 'active' && (
-                            <Badge className="h-5 border-none bg-emerald-500 text-white text-[10px] font-black px-2.5 uppercase tracking-widest rounded-xl shadow-sm shadow-emerald-500/20">
-                              Active
-                            </Badge>
+                          {p.status === "active" && (
+                            <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-600">
+                              <Zap className="mr-1 h-3 w-3 fill-emerald-600" /> Active
+                            </span>
                           )}
                         </div>
-                        <h3 className="text-xl font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors leading-tight min-h-[56px] line-clamp-2">
-                          {p.name}
-                        </h3>
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50/50 p-2 shrink-0">
+                            <Activity className="h-8 w-8 text-blue-600" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-bold leading-tight text-slate-900 line-clamp-2">
+                              {p.name}
+                            </h3>
+                            <p className="text-sm font-medium text-slate-500 mt-0.5">{uni?.name || "University"}</p>
+                          </div>
+                        </div>
+                        <div className="space-y-1.5 pt-2">
+                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                            <GraduationCap className="h-4 w-4" />
+                            <span>{p.degree || "Bachelor's Degree"}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                            <Clock className="h-4 w-4" />
+                            <span>{p.duration || "3 Years (9 Semesters)"}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                            <MapPin className="h-4 w-4" />
+                            <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Main Campus"}</span>
+                          </div>
+                        </div>
                       </div>
-                      
-                      <div className="relative flex flex-col gap-2 items-center">
+                      <div className="flex flex-col gap-2">
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 shadow-sm border border-slate-100">
+                          <Heart className="h-5 w-5" />
+                        </Button>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="ghost" className="h-10 w-10 rounded-2xl hover:bg-slate-50 text-slate-400">
+                            <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full border border-slate-100 shadow-sm text-slate-400">
                               <MoreVertical className="h-5 w-5" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100 p-2">
-                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-xl font-bold py-2.5"><Pencil className="mr-3 h-4 w-4" /> Edit Program</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-xl font-bold py-2.5 text-blue-600 focus:text-blue-600"><Plus className="mr-3 h-4 w-4" /> Apply Now</DropdownMenuItem>
-                            <DropdownMenuSeparator className="my-2 bg-slate-50" />
-                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-bold py-2.5 text-destructive focus:text-destructive"><Trash2 className="mr-3 h-4 w-4" /> Delete</DropdownMenuItem>
+                          <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
+                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg font-bold"><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg font-bold text-blue-600"><Plus className="mr-2 h-4 w-4" /> Apply</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg font-bold text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl text-slate-200 hover:text-rose-500 hover:bg-rose-50 transition-all hover:scale-110 group/heart">
-                          <Heart className="h-5 w-5 absolute opacity-0 group-hover/heart:opacity-10" fill="currentColor" />
-                          <Heart className="h-5 w-5" />
-                        </Button>
-
                       </div>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                      <div className="flex items-center gap-3 text-sm font-bold text-slate-500">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 text-slate-400"><Clock className="h-4 w-4" /></div>
-                        <span>{p.duration || '3 Years'}</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm font-bold text-slate-500">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 text-slate-400"><Calendar className="h-4 w-4" /></div>
-                        <span>{p.intake || 'Multiple'}</span>
-                      </div>
-                    </div>
-
-                    <div className="mt-auto pt-6 border-t border-slate-50">
-                      <div className="flex items-center justify-between">
+                    <div className="mt-4 pt-4 border-t border-slate-50">
+                      <div className="grid grid-cols-3 gap-2 text-center">
                         <div className="space-y-1">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Tuition</p>
-                          <p className="text-2xl font-black text-blue-600 tracking-tight">
-                            {p.currency || 'MYR'} {p.tuition_fee ? p.tuition_fee.toLocaleString() : '89,474'}
+                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tuition Fee</p>
+                          <p className="text-sm font-black text-blue-600">
+                            {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                           </p>
                         </div>
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Scholarship</p>
+                          <p className="text-sm font-black text-emerald-600">Up to 30%</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">App. Fee</p>
+                          <p className="text-sm font-black text-slate-900">{p.currency || "MYR"} {p.application_fee || "200"}</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 space-y-1">
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Next Intake</p>
+                        <div className="flex flex-wrap gap-2">
+                          {(p.intake || "January, April, August").split(",").map((intake, i) => (
+                            <span key={i} className="rounded-lg bg-blue-50 px-3 py-1 text-[11px] font-bold text-blue-600">
+                              {intake.trim()}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mt-6 grid grid-cols-3 gap-4 border-t border-slate-50 pt-4">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                            <FileText className="h-3 w-3" />
+                            <span className="text-[9px] font-bold uppercase tracking-wider">Applications</span>
+                          </div>
+                          <p className="text-sm font-black text-slate-700">312</p>
+                        </div>
+                        <div className="text-center border-x border-slate-50">
+                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                            <UserCheck className="h-3 w-3" />
+                            <span className="text-[9px] font-bold uppercase tracking-wider">Acceptance</span>
+                          </div>
+                          <p className="text-sm font-black text-slate-700">62%</p>
+                        </div>
+                        <div className="text-center">
+                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                            <ShieldCheck className="h-3 w-3" />
+                            <span className="text-[9px] font-bold uppercase tracking-wider">Visa Success</span>
+                          </div>
+                          <p className="text-sm font-black text-slate-700">91%</p>
+                        </div>
+                      </div>
+                      <div className="mt-6 flex gap-3">
                         <Button 
-                          size="lg" 
-                          className="rounded-[20px] font-black bg-blue-600 text-white hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30 transition-all px-6 h-12 group/btn"
+                          className="flex-1 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20"
                           onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}
                         >
-                          Apply <ArrowRight className="ml-2 h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
+                          Create Application
+                        </Button>
+                        <Button variant="outline" className="flex-1 rounded-xl border-slate-200 font-bold text-slate-700 hover:bg-slate-50">
+                          View Details
+                        </Button>
+                        <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl border-slate-200">
+                          <MoreVertical className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
                   </div>
                 </div>
+              ))
 
-
-              ))}
 
           </div>
 

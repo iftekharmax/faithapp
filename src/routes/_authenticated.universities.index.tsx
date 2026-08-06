@@ -419,7 +419,8 @@ function UniversitiesPage() {
           </div>
 
           {/* Pagination */}
-          <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-slate-200 pt-8 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-6 pt-8 sm:flex-row">
+
 
             <div className="flex items-center gap-4">
               <div className="text-sm font-semibold text-slate-500">

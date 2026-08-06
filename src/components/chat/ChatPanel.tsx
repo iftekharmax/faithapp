@@ -250,16 +250,11 @@ export function ChatPanel() {
       Object.keys(timers).forEach((k) => clearTimeout(timers[k]));
       typingTimersRef.current = {};
       setTypingUsers((prev) => (prev.length ? [] : prev));
-    }, 20_000);
-
-    // On tab becoming visible again, refetch immediately.
-    const onVis = () => { if (!document.hidden) void reload(); };
-    document.addEventListener("visibilitychange", onVis);
+    }, 60_000); // Increased interval to reduce background activity
 
     return () => {
       cancelled = true;
       clearInterval(reconcile);
-      document.removeEventListener("visibilitychange", onVis);
       // Save the current scroll position before switching away.
       if (vp && activeId) threadScrollRef.current[activeId] = vp.scrollTop;
       vp?.removeEventListener("scroll", onScroll);
@@ -1412,7 +1407,7 @@ export function ChatPanel() {
               {active.type === "application" && active.application_id && (
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase mb-2">Application</p>
-                  <Link to={`/applications/${active.application_id}`} className="text-xs text-primary hover:underline">View application →</Link>
+                  <Link to="/applications/$applicationId" params={{ applicationId: active.application_id }} className="text-xs text-primary hover:underline">View application →</Link>
                 </div>
               )}
             </ScrollArea>

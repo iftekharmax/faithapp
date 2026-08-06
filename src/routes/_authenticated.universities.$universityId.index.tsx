@@ -233,7 +233,7 @@ function UniversityDetail() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-50">
                   <HeroMetaItem icon={Landmark} label="Partner Since" value="2010" />
                   <HeroMetaItem icon={Building2} label="University Type" value="Private" />
-                  <HeroMetaItem icon={Globe} label="Public / Private" value="Private" />
+                  <HeroMetaItem icon={Users} label="Public / Private" value="Private" />
                   <HeroMetaItem icon={ShieldCheck} label="Accreditation" value="MQA, MOHE" />
                 </div>
               </div>

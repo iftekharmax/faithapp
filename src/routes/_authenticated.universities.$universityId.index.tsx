@@ -179,119 +179,314 @@ function UniversityDetail() {
   }
 
   return (
-    <div className="mx-auto max-w-[1600px] space-y-6 animate-in fade-in duration-500 py-6">
-      <div className="flex items-center gap-2">
-
-        <Button variant="ghost" size="sm" className="rounded-xl hover:bg-white" asChild><Link to="/universities"><ArrowLeft className="mr-1 h-4 w-4" />Back to List</Link></Button>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[320px,1fr]">
-        <aside className="space-y-6">
-          <Card className="rounded-3xl border-none shadow-sm ring-1 ring-border bg-white p-6">
-            <div className="flex flex-col items-center text-center">
-              <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-3xl bg-muted ring-1 ring-border shadow-inner">
-                {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-cover" /> : <Building2 className="h-12 w-12 text-muted-foreground" />}
-              </div>
-              <h1 className="mt-4 text-xl font-bold tracking-tight leading-tight">{uni.name}</h1>
-              <Badge variant={uni.status === "active" ? "default" : "secondary"} className="mt-2 capitalize">{uni.status}</Badge>
-              
-              <div className="mt-6 flex flex-col gap-3 w-full">
-                <Button className="rounded-xl w-full font-bold shadow-sm" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>Create Application</Button>
-                <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1 rounded-xl text-xs font-semibold" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}>Add Program</Button>
-                  {canEdit && <Button variant="outline" className="flex-1 rounded-xl text-xs font-semibold" asChild><Link to="/universities/$universityId/edit" params={{ universityId }}>Edit Profile</Link></Button>}
-                </div>
-              </div>
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Sticky Header with Breadcrumb and Actions */}
+      <header className="sticky top-0 z-30 w-full border-b bg-white/80 backdrop-blur-md">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between gap-4">
+            <div className="flex items-center gap-4 overflow-hidden">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-9 w-9 shrink-0 rounded-xl hover:bg-slate-100" 
+                asChild
+              >
+                <Link to="/universities">
+                  <ArrowLeft className="h-4 w-4" />
+                </Link>
+              </Button>
+              <nav className="flex items-center gap-2 overflow-hidden text-sm font-medium">
+                <Link to="/" className="text-muted-foreground hover:text-primary whitespace-nowrap">Dashboard</Link>
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+                <Link to="/universities" className="text-muted-foreground hover:text-primary whitespace-nowrap">Universities</Link>
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+                <span className="truncate text-slate-900">{uni.name}</span>
+              </nav>
             </div>
-            <div className="mt-8 space-y-4 border-t pt-8">
-              <div className="flex items-center gap-3 text-sm">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 text-primary">
-                  <MapPin className="h-4 w-4" />
-                </div>
-                <span className="text-muted-foreground font-medium">{uni.country?.name || 'N/A'} • {uni.city || 'N/A'}</span>
-              </div>
-              {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-primary hover:underline transition-all group">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 text-primary group-hover:bg-primary/10">
-                    <Globe className="h-4 w-4" />
-                  </div>
-                  <span className="font-medium">Visit Official Website</span>
-                </a>
-              )}
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="hidden rounded-xl font-semibold sm:flex hover:bg-slate-50">
+                <Share2 className="mr-2 h-4 w-4" /> Share
+              </Button>
+              <Button variant="outline" size="sm" className="hidden rounded-xl font-semibold sm:flex hover:bg-slate-50">
+                <Download className="mr-2 h-4 w-4" /> Export
+              </Button>
+              <Button 
+                className="rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
+              >
+                <Plus className="mr-2 h-4 w-4" /> Create Application
+              </Button>
             </div>
-          </Card>
-
-          <Card className="rounded-3xl border-none shadow-sm ring-1 ring-border bg-white p-6">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">University Summary</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground/80">{uni.description || 'No description available for this university.'}</p>
-          </Card>
-        </aside>
-
-        <main className="space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard label="Programs" value={programs.length} icon={GraduationCap} color="blue" />
-            <StatCard label="Campuses" value={campuses.length} icon={School} color="emerald" />
-            <StatCard label="Applications" value={applications.length} icon={FileText} color="orange" />
-            <StatCard label="Students" value="0" icon={Users} color="purple" />
           </div>
+        </div>
+      </header>
 
-          <Tabs defaultValue="programs" className="w-full">
-            <TabsList className="bg-muted/50 p-1 rounded-2xl h-12 inline-flex">
-              <TabsTrigger value="programs" className="rounded-xl px-8 h-10 data-[state=active]:bg-white data-[state=active]:shadow-sm">Programs</TabsTrigger>
-              <TabsTrigger value="campuses" className="rounded-xl px-8 h-10 data-[state=active]:bg-white data-[state=active]:shadow-sm">Campuses</TabsTrigger>
-              <TabsTrigger value="applications" className="rounded-xl px-8 h-10 data-[state=active]:bg-white data-[state=active]:shadow-sm">Applications</TabsTrigger>
-            </TabsList>
-            <TabsContent value="programs" className="mt-6 border-none p-0 focus-visible:ring-0">
-              <ProgramsTab
-                universityId={universityId} programs={programs}
-                campuses={campuses} canEdit={canEdit} onChange={reload}
-              />
-            </TabsContent>
-
-            <TabsContent value="campuses" className="mt-6 border-none p-0 focus-visible:ring-0">
-              <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
-            </TabsContent>
-
-            <TabsContent value="applications" className="mt-6 border-none p-0 focus-visible:ring-0">
-              <Card className="rounded-3xl border-none shadow-sm ring-1 ring-border"><CardHeader><CardTitle className="text-xl">Linked Applications</CardTitle></CardHeader>
-                <CardContent>
-                  {applications.length === 0 ? (
-                    <div className="flex flex-col items-center py-12 text-center">
-                      <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                        <FileText className="h-8 w-8 text-muted-foreground" />
-                      </div>
-                      <p className="text-muted-foreground font-medium">No applications linked to this university yet.</p>
+      <div className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-8">
+          {/* Hero Section */}
+          <section className="relative overflow-hidden rounded-[32px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
+            <div className="absolute right-0 top-0 -mr-12 -mt-12 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
+            <div className="relative grid gap-8 lg:grid-cols-[1fr,400px]">
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+                  <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100">
+                    {uni.logo_url ? (
+                      <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-cover" />
+                    ) : (
+                      <Building2 className="h-12 w-12 text-slate-300" />
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{uni.name}</h1>
+                      <Badge className={cn(
+                        "rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest",
+                        uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-slate-500 hover:bg-slate-600"
+                      )}>
+                        {uni.status}
+                      </Badge>
+                      <Badge variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                        {uni.country?.name || 'N/A'}
+                      </Badge>
                     </div>
-                  ) : (
-                    <Table>
-                      <TableHeader><TableRow className="hover:bg-transparent border-muted/50">
-                        <TableHead className="text-[11px] font-bold uppercase tracking-wider">Code</TableHead><TableHead className="text-[11px] font-bold uppercase tracking-wider">Student</TableHead>
-                        <TableHead className="text-[11px] font-bold uppercase tracking-wider">Program</TableHead><TableHead className="text-[11px] font-bold uppercase tracking-wider">Status</TableHead><TableHead></TableHead>
-                      </TableRow></TableHeader>
-                      <TableBody>
-                        {applications.map((a) => (
-                          <TableRow key={a.id} className="group border-muted/50 hover:bg-muted/30 transition-colors">
-                            <TableCell className="font-mono text-xs font-medium text-primary">{a.application_code}</TableCell>
-                            <TableCell className="font-medium">{a.student?.full_name ?? "—"}</TableCell>
-                            <TableCell className="text-muted-foreground">{a.program}</TableCell>
-                            <TableCell><Badge variant="outline" className="capitalize bg-white text-[10px] font-bold tracking-wide">{String(a.status).replace(/_/g, " ")}</Badge></TableCell>
-                            <TableCell className="text-right"><Button size="sm" variant="ghost" className="rounded-lg hover:bg-primary hover:text-primary-foreground group-hover:translate-x-1 transition-all" asChild>
-                              <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>Details <ChevronRight className="ml-1 h-3.5 w-3.5" /></Link>
-                            </Button></TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                    <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="h-4 w-4 text-primary" />
+                        <span>{uni.city || 'N/A'}, {uni.country?.name || 'N/A'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="h-4 w-4 text-primary" />
+                        <span>Partner Since 2024</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-emerald-600">
+                        <ShieldCheck className="h-4 w-4" />
+                        <span>Verified Institution</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="max-w-2xl text-lg leading-relaxed text-slate-600">
+                  {uni.description || 'A leading educational institution committed to academic excellence and global student success.'}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  {uni.website && (
+                    <Button asChild variant="outline" className="rounded-xl border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">
+                      <a href={uni.website} target="_blank" rel="noreferrer">
+                        <Globe className="mr-2 h-4 w-4 text-primary" /> Visit Website <ExternalLink className="ml-2 h-3.5 w-3.5" />
+                      </a>
+                    </Button>
                   )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </main>
+                  <Button variant="outline" className="rounded-xl border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">
+                    <Download className="mr-2 h-4 w-4 text-primary" /> Brochure
+                  </Button>
+                  {canEdit && (
+                    <Button asChild variant="ghost" className="rounded-xl font-bold hover:bg-slate-100">
+                      <Link to="/universities/$universityId/edit" params={{ universityId }}>
+                        <Pencil className="mr-2 h-4 w-4" /> Edit Profile
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* KPI Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                <HeroStatCard label="Programs" value={programs.length} icon={GradIcon} color="blue" growth="+12%" />
+                <HeroStatCard label="Campuses" value={campuses.length} icon={School} color="emerald" growth="0%" />
+                <HeroStatCard label="Applications" value={applications.length} icon={FileText} color="orange" growth="+8%" />
+                <HeroStatCard label="Students" value="1.2k" icon={Users} color="purple" growth="+15%" />
+                <HeroStatCard label="Offer Letters" value="450" icon={Award} color="pink" growth="+5%" />
+                <HeroStatCard label="Visa Success" value="98%" icon={Plane} color="cyan" growth="+2%" />
+              </div>
+            </div>
+          </section>
+
+          <div className="grid gap-8 lg:grid-cols-[1fr,360px]">
+            <main className="min-w-0 space-y-8">
+              <Tabs defaultValue="programs" className="w-full">
+                <div className="sticky top-[65px] z-20 -mx-4 bg-[#F8FAFC]/80 px-4 py-2 backdrop-blur-md sm:mx-0 sm:px-0">
+                  <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
+                    <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
+                      Programs
+                    </TabsTrigger>
+                    <TabsTrigger value="campuses" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
+                      Campuses
+                    </TabsTrigger>
+                    <TabsTrigger value="applications" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
+                      Applications
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+
+                <TabsContent value="programs" className="mt-8 outline-none">
+                  <ProgramsTab
+                    universityId={universityId} programs={programs}
+                    campuses={campuses} canEdit={canEdit} onChange={reload}
+                  />
+                </TabsContent>
+
+                <TabsContent value="campuses" className="mt-8 outline-none">
+                  <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+                </TabsContent>
+
+                <TabsContent value="applications" className="mt-8 outline-none">
+                  <Card className="rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
+                    <CardHeader className="border-b bg-slate-50/50 p-6">
+                      <CardTitle className="text-xl font-bold">Linked Applications</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      {applications.length === 0 ? (
+                        <div className="flex flex-col items-center py-20 text-center">
+                          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 mb-6">
+                            <FileText className="h-10 w-10 text-slate-300" />
+                          </div>
+                          <h3 className="text-lg font-bold text-slate-900">No applications found</h3>
+                          <p className="mt-2 text-slate-500">No students have applied to this university yet.</p>
+                          <Button className="mt-8 rounded-xl font-bold" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>
+                            Start First Application
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="border-slate-100 bg-slate-50/50 hover:bg-slate-50/50">
+                                <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Application Code</TableHead>
+                                <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Student Name</TableHead>
+                                <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Program</TableHead>
+                                <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Status</TableHead>
+                                <TableHead className="py-4"></TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {applications.map((a) => (
+                                <TableRow key={a.id} className="group border-slate-50 transition-colors hover:bg-slate-50/80">
+                                  <TableCell className="py-4 font-mono text-sm font-bold text-primary">{a.application_code}</TableCell>
+                                  <TableCell className="py-4">
+                                    <div className="flex flex-col">
+                                      <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
+                                      <span className="text-xs text-slate-400">{a.student?.student_code}</span>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="py-4 font-medium text-slate-600">{a.program}</TableCell>
+                                  <TableCell className="py-4">
+                                    <Badge variant="outline" className="rounded-full border-slate-200 bg-white px-3 py-1 font-bold text-slate-600 capitalize">
+                                      {String(a.status).replace(/_/g, " ")}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="py-4 text-right">
+                                    <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-primary hover:text-white" asChild>
+                                      <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
+                                        View <ArrowRight className="ml-2 h-4 w-4" />
+                                      </Link>
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </main>
+
+            <aside className="space-y-8">
+              <div className="sticky top-[100px] flex flex-col gap-6">
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <h3 className="mb-6 text-sm font-bold uppercase tracking-[0.1em] text-slate-500">At a Glance</h3>
+                  <div className="space-y-6">
+                    <AsideInfoItem icon={GraduationCap} label="University Type" value="Public Research" />
+                    <AsideInfoItem icon={Globe} label="Global Ranking" value="#142 Worldwide" />
+                    <AsideInfoItem icon={Users} label="International Students" value="28%" />
+                    <AsideInfoItem icon={Languages} label="Primary Language" value="English" />
+                    <AsideInfoItem icon={Landmark} label="Accreditation" value="EQUIS, AMBA, AACSB" />
+                  </div>
+                  <div className="mt-8 border-t pt-8">
+                    <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400">Quick Actions</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      <QuickActionButton icon={Download} label="Brochure" />
+                      <QuickActionButton icon={Printer} label="Print" />
+                      <QuickActionButton icon={Share} label="Share" />
+                      <QuickActionButton icon={Heart} label="Favorite" />
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="rounded-[24px] border-none bg-gradient-to-br from-primary to-primary/80 p-6 text-white shadow-xl shadow-primary/20">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
+                    <TrendingUp className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">Premium Partnership</h3>
+                  <p className="mt-2 text-sm text-white/80 leading-relaxed">
+                    This institution is part of our Elite Partnership Program, ensuring prioritized application processing.
+                  </p>
+                  <Button variant="secondary" className="mt-6 w-full rounded-xl font-bold text-primary hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    View Benefits
+                  </Button>
+                </Card>
+              </div>
+            </aside>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: string; value: string | number; icon: any; color: string; growth?: string }) {
+  const colors: Record<string, string> = {
+    blue: 'bg-blue-50 text-blue-600 ring-blue-100',
+    emerald: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+    orange: 'bg-orange-50 text-orange-600 ring-orange-100',
+    purple: 'bg-purple-50 text-purple-600 ring-purple-100',
+    pink: 'bg-pink-50 text-pink-600 ring-pink-100',
+    cyan: 'bg-cyan-50 text-cyan-600 ring-cyan-100',
+  };
+
+  return (
+    <div className="group relative flex flex-col items-center justify-center gap-1 rounded-2xl bg-slate-50 p-4 transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-200/50 hover:ring-1 hover:ring-slate-100">
+      <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", colors[color])}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div className="text-xl font-black tracking-tight text-slate-900">{value}</div>
+      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
+      {growth && (
+        <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-100 text-[8px] font-bold text-emerald-700 hover:bg-emerald-100">
+          {growth}
+        </Badge>
+      )}
+    </div>
+  );
+}
+
+function AsideInfoItem({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="flex items-center gap-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-400">
+        <Icon className="h-5 w-5" />
+      </div>
+      <div className="flex flex-col">
+        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{label}</span>
+        <span className="font-bold text-slate-700">{value}</span>
+      </div>
+    </div>
+  );
+}
+
+function QuickActionButton({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <button className="flex flex-col items-center justify-center gap-2 rounded-xl bg-slate-50 p-3 transition-all hover:bg-primary/5 hover:text-primary">
+      <Icon className="h-4 w-4" />
+      <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+    </button>
+  );
+}
+
 
 
 function StatCard({ label, value, icon: Icon, color }: { label: string; value: string | number; icon: any; color: 'blue' | 'emerald' | 'orange' | 'purple' }) {

@@ -578,19 +578,15 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                         <h3 className="text-[17px] font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors leading-tight min-h-[42px] line-clamp-2">
                           {p.name}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-muted-foreground pt-1">
-                          {p.duration && (
-                            <div className="flex items-center gap-1.5">
-                              <Clock className="h-3.5 w-3.5 text-muted-foreground/60" />
-                              <span>{p.duration}</span>
-                            </div>
-                          )}
-                          {p.intake && (
-                            <div className="flex items-center gap-1.5">
-                              <Calendar className="h-3.5 w-3.5 text-muted-foreground/60" />
-                              <span>{p.intake}</span>
-                            </div>
-                          )}
+                        <div className="flex flex-col gap-1.5 pt-2">
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+                            <Clock className="h-3.5 w-3.5" />
+                            <span>{p.duration || '3 Years (9 Semesters)'}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+                            <Calendar className="h-3.5 w-3.5" />
+                            <span>{p.intake || 'January, April, August'}</span>
+                          </div>
                         </div>
                       </div>
                       

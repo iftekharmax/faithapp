@@ -550,43 +550,44 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
     <div className="space-y-6">
 
 
-      <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="relative flex-1 min-w-[300px]">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      <div className="relative overflow-hidden rounded-[32px] bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
+        <div className="absolute right-0 top-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-blue-50/30 blur-3xl" />
+        <div className="relative flex flex-col gap-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="relative flex-1 min-w-[320px]">
+              <Search className="absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
               <Input 
-                placeholder="Search programs..." 
+                placeholder="Search programs by name, degree or keyword..." 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
-                className="pl-11 h-12 rounded-xl border-slate-100 bg-slate-50 focus-visible:ring-primary shadow-inner" 
+                className="pl-14 h-14 rounded-2xl border-none bg-slate-50 text-base font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/20 shadow-inner" 
               />
             </div>
+            <div className="flex items-center gap-3">
+              <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20">
+                <LayoutGrid className="h-6 w-6" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-100 shadow-inner">
+                <ListIcon className="h-6 w-6" />
+              </Button>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-50">
             <FilterSelect icon={GraduationCap} placeholder="All Degrees" value={degreeFilter} onValueChange={setDegreeFilter} options={degrees} />
             <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
             <FilterSelect icon={MapPin} label="All Campuses" placeholder="All Campuses" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Clock} label="Study Mode" placeholder="Study Mode" value="all" onValueChange={() => {}} options={[]} />
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-50">
             <FilterSelect icon={Calendar} label="All Intakes" placeholder="All Intakes" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Award} label="All Scholarships" placeholder="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={ListIcon} label="Sort by: Newest" placeholder="Sort by: Newest" value="newest" onValueChange={() => {}} options={[]} />
-            <Button variant="ghost" className="h-10 rounded-xl font-bold text-slate-500 hover:text-primary" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
-              <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
-            </Button>
-
-            <div className="ml-auto flex items-center gap-2">
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-blue-600 text-white hover:bg-blue-700">
-                <LayoutGrid className="h-5 w-5" />
-              </Button>
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-100 shadow-inner">
-                <ListIcon className="h-5 w-5" />
+            
+            <div className="ml-auto flex items-center gap-4">
+              <Button variant="ghost" className="h-12 rounded-2xl font-black text-slate-500 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
+                <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
               </Button>
             </div>
           </div>
         </div>
-      </Card>
+      </div>
+
 
       <div>
         {filtered.length === 0 ? (

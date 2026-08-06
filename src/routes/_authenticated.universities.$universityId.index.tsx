@@ -310,7 +310,7 @@ function UniversityDetail() {
               </Card>
               <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
                 <h3 className="mb-6 text-lg font-black text-slate-900">Quick Actions</h3>
-                <div className="space-y-2"><SidebarAction icon={Plus} label="Create Program" /><SidebarAction icon={Plus} label="Create Application" /><SidebarAction icon={Download} label="Import Programs" /><SidebarAction icon={Download} label="Export Programs" /><SidebarAction icon={FileText} label="Download Brochure" /></div>
+                <div className="space-y-2"><SidebarAction icon={Plus} label="Create Program" /><SidebarAction icon={Plus} label="Create Application" /><SidebarAction icon={Download} label="Import Programs" /><SidebarAction icon={Download} label="Export Programs" /><SidebarAction icon={Download} label="Download Brochure" /></div>
               </Card>
               <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
                 <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>

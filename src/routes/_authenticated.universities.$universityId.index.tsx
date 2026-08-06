@@ -718,7 +718,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p) => (
                 <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl border-none bg-white shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10 hover:ring-primary/20">
 

@@ -497,8 +497,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
             </div>
             <FilterSelect icon={GraduationCap} placeholder="All Degrees" value={degreeFilter} onValueChange={setDegreeFilter} options={degrees} />
             <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={MapPin} label="All Campuses" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Clock} label="Study Mode" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={MapPin} label="All Campuses" placeholder="All Campuses" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Clock} label="Study Mode" placeholder="Study Mode" value="all" onValueChange={() => {}} options={[]} />
           </div>
           
           <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-50">

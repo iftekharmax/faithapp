@@ -415,7 +415,7 @@ function UniversityDetail() {
                     </div>
 
                     <div className="space-y-5">
-                      <AsideInfoItem icon={GraduationCap} label="University Type" value={uni.type || "Public Research"} />
+                      <AsideInfoItem icon={GraduationCap} label="University Type" value="Public Research" />
                       <AsideInfoItem icon={Globe} label="Global Ranking" value="#142 Worldwide" />
                       <AsideInfoItem icon={Users} label="Int'l Students" value="28%" />
                       <AsideInfoItem icon={Calendar} label="Next Intake" value="September 2026" />

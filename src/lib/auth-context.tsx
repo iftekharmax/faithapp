@@ -159,7 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         hadSessionRef.current = true;
         setSessionTimedOut(false);
         // Load data if we don't have it yet
-        if (roles.length === 0) {
+        if (roles.length === 0 && !rolesLoading) {
           void loadUserData(currentSession.user.id).finally(() => {
             if (mounted) setLoading(false);
           });

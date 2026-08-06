@@ -950,9 +950,9 @@ function CampusesTab({ universityId, campuses, canEdit, onChange }: {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
-
+    </Card>
   );
 }
+
 
 

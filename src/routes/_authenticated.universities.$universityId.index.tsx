@@ -337,8 +337,8 @@ function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: stri
   };
 
   return (
-    <div className="group relative flex flex-col items-center justify-center gap-1 rounded-2xl bg-slate-50 p-4 transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-200/50 hover:ring-1 hover:ring-slate-100">
-      <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", colors[color])}>
+    <div className="group relative flex flex-col items-center justify-center gap-1 rounded-2xl bg-[#F8FAFC] p-4 transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-200/50 hover:ring-1 hover:ring-slate-100">
+      <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shadow-sm", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
       <div className="text-xl font-black tracking-tight text-slate-900">{value}</div>

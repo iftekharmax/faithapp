@@ -189,28 +189,28 @@ function NewApplicationPage() {
   const err = (k: string) => errors[k] ?? null;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 pb-24">
-      <header className="mb-8">
-        <Button asChild variant="ghost" size="sm" className="mb-2 -ml-3 text-muted-foreground hover:text-foreground">
+    <div className="mx-auto max-w-5xl space-y-8 pb-24 animate-in fade-in zoom-in-95 duration-500">
+      <header className="mb-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-8 text-white shadow-lg">
+        <Button asChild variant="ghost" size="sm" className="-ml-3 text-white hover:bg-white/20">
           <Link to="/applications"><ArrowLeft className="mr-2 h-4 w-4" /> Back to applications</Link>
         </Button>
-        <h1 className="text-3xl font-bold tracking-tight">Create new application</h1>
-        <p className="mt-1 text-muted-foreground">Capture student application details and fee information.</p>
+        <h1 className="text-4xl font-extrabold tracking-tight mt-4">Create New Application</h1>
+        <p className="mt-2 text-indigo-100/90 text-lg">Streamline student journeys with this colorful management tool.</p>
       </header>
 
-      <div className="grid gap-6">
-        <Card className="shadow-none border-border/50">
-          <CardHeader className="bg-muted/30 border-b border-border/50">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">1</span>
+      <div className="grid gap-8">
+        <Card className="shadow-xl shadow-indigo-500/5 border-indigo-100 rounded-3xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100/50">
+            <CardTitle className="text-xl font-bold text-indigo-900 flex items-center gap-3">
+              <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-indigo-600 text-white text-sm shadow-md">1</span>
               Student & Academic Program
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-6 p-6 md:grid-cols-2">
+          <CardContent className="grid gap-6 p-8 md:grid-cols-2">
             <Field label="Student" error={err("student_id")}>
               <Select value={form.student_id ?? ""} onValueChange={(v) => set("student_id", v)}>
-                <SelectTrigger className="h-10"><SelectValue placeholder="Select student" /></SelectTrigger>
-                <SelectContent>
+                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500"><SelectValue placeholder="Select student" /></SelectTrigger>
+                <SelectContent className="rounded-xl">
                   {students.map((s) => (
                     <SelectItem key={s.id} value={s.id}>{s.full_name} ({s.student_code})</SelectItem>
                   ))}
@@ -220,14 +220,14 @@ function NewApplicationPage() {
 
             <Field label="Country" error={err("country")}>
               <Select value={countryId} onValueChange={setCountryId} disabled={!countries.length}>
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder={countries.length ? "Select country" : "No countries available"} />
+                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500">
+                  <SelectValue placeholder="Select country" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl">
                   {countries.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
                       <span className="inline-flex items-center gap-2">
-                        {c.flag_url && <img src={c.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}
+                        {c.flag_url && <img src={c.flag_url} alt="" className="h-4 w-6 rounded-sm object-cover shadow-sm" />}
                         {c.name}
                       </span>
                     </SelectItem>
@@ -238,14 +238,10 @@ function NewApplicationPage() {
 
             <Field label="University" error={err("university")}>
               <Select value={universityId} onValueChange={setUniversityId} disabled={!countryId || loadingUnis}>
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder={
-                    !countryId ? "Select a country first" :
-                    loadingUnis ? "Loading…" :
-                    universities.length ? "Select university" : "No universities in this country"
-                  } />
+                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500">
+                  <SelectValue placeholder={!countryId ? "Select a country first" : "Select university"} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl">
                   {universities.map((u) => (
                     <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>
                   ))}
@@ -255,14 +251,10 @@ function NewApplicationPage() {
 
             <Field label="Campus" error={err("campus")}>
               <Select value={campusId} onValueChange={setCampusId} disabled={!universityId || loadingCampuses}>
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder={
-                    !universityId ? "Select a university first" :
-                    loadingCampuses ? "Loading…" :
-                    campuses.length ? "Select campus" : "No campuses listed"
-                  } />
+                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500">
+                  <SelectValue placeholder="Select campus" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl">
                   <SelectItem value={NONE}>— No specific campus —</SelectItem>
                   {campuses.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
@@ -275,30 +267,21 @@ function NewApplicationPage() {
 
             <Field label="Program" error={err("program")}>
               <Select value={programId} onValueChange={setProgramId} disabled={!universityId || loadingPrograms}>
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder={
-                    !universityId ? "Select a university first" :
-                    loadingPrograms ? "Loading…" :
-                    filteredPrograms.length ? "Select program" : "No programs available"
-                  } />
+                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500">
+                  <SelectValue placeholder="Select program" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl">
                   {filteredPrograms.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.name}{p.degree ? ` — ${p.degree}` : ""}
-                    </SelectItem>
+                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </Field>
 
             <Field label="Degree" error={err("degree")}>
-              <Select
-                value={form.degree || NONE}
-                onValueChange={(v) => set("degree", v === NONE ? "" : v)}
-              >
-                <SelectTrigger className="h-10"><SelectValue placeholder="Select degree" /></SelectTrigger>
-                <SelectContent>
+              <Select value={form.degree || NONE} onValueChange={(v) => set("degree", v === NONE ? "" : v)}>
+                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500"><SelectValue placeholder="Select degree" /></SelectTrigger>
+                <SelectContent className="rounded-xl">
                   <SelectItem value={NONE}>— None —</SelectItem>
                   {["Foundation","Diploma","Bachelor","Master","MBA","PhD","Certificate"].map((d) => (
                     <SelectItem key={d} value={d}>{d}</SelectItem>
@@ -309,40 +292,41 @@ function NewApplicationPage() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-none border-border/50">
-          <CardHeader className="bg-muted/30 border-b border-border/50">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">2</span>
-              Financial & Workflow Details
+        <Card className="shadow-xl shadow-purple-500/5 border-purple-100 rounded-3xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-100/50">
+            <CardTitle className="text-xl font-bold text-purple-900 flex items-center gap-3">
+              <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-purple-600 text-white text-sm shadow-md">2</span>
+              Financial & Workflow
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid gap-4 md:grid-cols-2">
+          <CardContent className="p-8 space-y-8">
+            <div className="grid gap-6 md:grid-cols-2">
               <Field label="Intake" error={err("intake")}>
-                <Input className="h-10" placeholder="e.g. Fall 2026" value={form.intake ?? ""} onChange={(e) => set("intake", e.target.value)} />
+                <Input className="h-12 rounded-xl border-purple-200 focus:ring-2 focus:ring-purple-500" value={form.intake ?? ""} onChange={(e) => set("intake", e.target.value)} />
               </Field>
               <Field label="Scholarship" error={err("scholarship")}>
-                <Input className="h-10" value={form.scholarship ?? ""} onChange={(e) => set("scholarship", e.target.value)} />
+                <Input className="h-12 rounded-xl border-purple-200 focus:ring-2 focus:ring-purple-500" value={form.scholarship ?? ""} onChange={(e) => set("scholarship", e.target.value)} />
               </Field>
             </div>
 
-            <div className="rounded-lg border bg-muted/20 p-4 space-y-4">
-              <Label className="text-sm font-semibold text-foreground">Fees Breakdown</Label>
+            <div className="rounded-2xl border-2 border-purple-100 bg-purple-50/30 p-6 space-y-4">
+              <Label className="text-base font-bold text-purple-900 flex items-center gap-2">💰 Financial Breakdown</Label>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <Field label="Application fee" error={err("application_fee")}>
-                  <Input type="number" className="h-10" value={form.application_fee ?? ""} onChange={(e) => set("application_fee", e.target.value === "" ? null : Number(e.target.value))} />
+                <Field label="App Fee" error={err("application_fee")}>
+                  <Input type="number" className="h-12 rounded-xl border-purple-200" value={form.application_fee ?? ""} onChange={(e) => set("application_fee", e.target.value === "" ? null : Number(e.target.value))} />
                 </Field>
-                <Field label="Registration fee" error={err("registration_fee")}>
-                  <Input type="number" className="h-10" value={form.registration_fee ?? ""} onChange={(e) => set("registration_fee", e.target.value === "" ? null : Number(e.target.value))} />
+                <Field label="Reg Fee" error={err("registration_fee")}>
+                  <Input type="number" className="h-12 rounded-xl border-purple-200" value={form.registration_fee ?? ""} onChange={(e) => set("registration_fee", e.target.value === "" ? null : Number(e.target.value))} />
                 </Field>
-                <Field label="EMGS fee" error={err("emgs_fee")}>
-                  <Input type="number" className="h-10" value={form.emgs_fee ?? ""} onChange={(e) => set("emgs_fee", e.target.value === "" ? null : Number(e.target.value))} />
+                <Field label="EMGS Fee" error={err("emgs_fee")}>
+                  <Input type="number" className="h-12 rounded-xl border-purple-200" value={form.emgs_fee ?? ""} onChange={(e) => set("emgs_fee", e.target.value === "" ? null : Number(e.target.value))} />
                 </Field>
-                <Field label="Others fee" error={err("others_fee")}>
-                  <Input type="number" className="h-10" value={form.others_fee ?? ""} onChange={(e) => set("others_fee", e.target.value === "" ? null : Number(e.target.value))} />
+                <Field label="Others Fee" error={err("others_fee")}>
+                  <Input type="number" className="h-12 rounded-xl border-purple-200" value={form.others_fee ?? ""} onChange={(e) => set("others_fee", e.target.value === "" ? null : Number(e.target.value))} />
                 </Field>
               </div>
             </div>
+
 
             <div className="grid gap-4 md:grid-cols-2">
               <Field label="Status">

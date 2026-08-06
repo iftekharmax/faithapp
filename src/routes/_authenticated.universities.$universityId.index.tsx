@@ -180,7 +180,7 @@ function UniversityDetail() {
     <div className="mx-auto max-w-[1600px] space-y-6 animate-in fade-in duration-500 py-6">
       <div className="flex items-center gap-2">
 
-        <Button variant="ghost" size="sm" asChild><Link to="/universities"><ArrowLeft className="mr-1 h-4 w-4" />Back</Link></Button>
+        <Button variant="ghost" size="sm" className="rounded-xl hover:bg-white" asChild><Link to="/universities"><ArrowLeft className="mr-1 h-4 w-4" />Back to List</Link></Button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[320px,1fr]">

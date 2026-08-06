@@ -997,7 +997,7 @@ function IntakeItem({ label, days }: { label: string; days: string }) {
 function SidebarAction({ icon: Icon, label }: { icon: any; label: string }) {
   return (
     <Button variant="ghost" className="w-full justify-start rounded-xl py-6 px-4 font-bold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-all group">
-      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors shadow-sm">
         <Icon className="h-4 w-4" />
       </div>
       {label}

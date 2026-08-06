@@ -43,7 +43,7 @@ export const Route = createFileRoute("/_authenticated/programs")({
 type ApplyIntent = "apply" | "enroll";
 const APPLY_BUSY_MS = 2400;
 
-function notifyApply(r: { id: string; name: string }, intent: ApplyIntent) {
+function notifyApply(r: { id: string; name: string }, intent: ApplyIntent, navigate: ReturnType<typeof useNavigate>) {
   const verb = intent === "enroll" ? "Enrollment" : "Application";
   toast.success(`${verb} started for “${r.name}”`, {
     description:
@@ -54,7 +54,7 @@ function notifyApply(r: { id: string; name: string }, intent: ApplyIntent) {
     action: {
       label: "View application status",
       onClick: () => {
-        if (typeof window !== "undefined") window.location.href = "/applications";
+        navigate({ to: "/applications" });
       },
     },
   });
@@ -69,12 +69,13 @@ function ApplyButton({
   className?: string;
   label?: string;
 }) {
+  const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const text = label ?? (intent === "enroll" ? "Apply / Enroll" : "Apply");
   const onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (busy) { e.preventDefault(); e.stopPropagation(); return; }
     setBusy(true);
-    notifyApply(program, intent);
+    notifyApply(program, intent, navigate);
     window.setTimeout(() => setBusy(false), APPLY_BUSY_MS);
   };
   return (

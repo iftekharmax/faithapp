@@ -198,6 +198,7 @@ function UniversityDetail() {
               <Building2 className="h-12 w-12 text-slate-200" />
             )}
           </div>
+
           
           <div className="flex-1 space-y-4">
             <div className="flex flex-wrap items-center gap-3">

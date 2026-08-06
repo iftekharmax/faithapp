@@ -215,7 +215,7 @@ function UniversityDetail() {
                   </div>
                   <div className="flex flex-col gap-3 lg:gap-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-tight lg:text-[34px]">{uni.name}</h1>
+                      <h1 className="text-2xl font-black tracking-tighter text-slate-900 leading-none lg:text-[42px]">{uni.name}</h1>
                       <Badge className={cn("rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest", uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm shadow-emerald-500/20" : "bg-slate-500 hover:bg-slate-600 text-white shadow-sm shadow-slate-500/20")}>
                         {uni.status === "active" ? "• Active" : uni.status}
                       </Badge>

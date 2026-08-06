@@ -255,49 +255,57 @@ function UniversitiesPage() {
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pageItems.map((u) => (
-              <Card key={u.id} className="group overflow-hidden transition hover:shadow-md">
-                <div className="flex items-start gap-3 border-b bg-gradient-to-br from-primary/5 to-transparent p-4">
-                  <div className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-background ring-1 ring-border">
-                    {u.logo_url ? <img src={u.logo_url} alt={u.name} className="h-full w-full object-cover" /> : <Building2 className="h-7 w-7 text-muted-foreground" />}
+              <Card key={u.id} className="group overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="relative flex items-start gap-4 p-5">
+                  <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-100">
+                    {u.logo_url ? <img src={u.logo_url} alt={u.name} className="h-full w-full object-cover" /> : <Building2 className="h-8 w-8 text-slate-300" />}
                   </div>
                   <div className="min-w-0 flex-1">
                     <button
                       onClick={() => navigate({ to: "/universities/$universityId", params: { universityId: u.id } })}
-                      className="line-clamp-2 text-left text-base font-semibold hover:text-primary"
+                      className="line-clamp-2 text-left text-lg font-bold text-slate-900 hover:text-primary"
                     >{u.name}</button>
-                    <div className="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
-                      {u.country?.flag_url && <img src={u.country.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}
-                      <span>{u.country?.name ?? "—"}</span>
-                      {u.city && <><span>·</span><span>{u.city}</span></>}
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                      <div className="flex items-center gap-1.5 font-medium text-slate-700">
+                        {u.country?.flag_url && <img src={u.country.flag_url} alt="" className="h-4 w-6 rounded-sm object-cover shadow-sm" />}
+                        {u.country?.name ?? "Global"}
+                      </div>
+                      {u.city && <span>• {u.city}</span>}
                     </div>
                   </div>
-                  <StatusBadge status={u.status} />
-                </div>
-                <CardContent className="space-y-3 p-4">
-                  {u.description && <p className="line-clamp-2 text-xs text-muted-foreground">{u.description}</p>}
-                  <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1"><GraduationCap className="h-3.5 w-3.5" />{u.program_count ?? 0} programs</span>
-                    <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" />{u.application_count ?? 0} applications</span>
+                  <div className="absolute right-4 top-4">
+                    <StatusBadge status={u.status} />
                   </div>
-                  <div className="flex items-center justify-between pt-2">
-                    {u.website ? (
-                      <a href={u.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
-                        Website <ExternalLink className="h-3 w-3" />
-                      </a>
-                    ) : <span className="text-xs text-muted-foreground">No website</span>}
-                    <div className="flex gap-1">
-                      <Button size="sm" variant="ghost" asChild>
-                        <Link to="/universities/$universityId" params={{ universityId: u.id }}>Open</Link>
+                </div>
+                
+                <CardContent className="px-5 pb-5 pt-0">
+                  <p className="mb-4 line-clamp-2 text-sm text-slate-600 leading-relaxed">{u.description || "No description available."}</p>
+                  
+                  <div className="mb-4 grid grid-cols-2 gap-2">
+                    <StatChip label="Programs" value={u.program_count ?? 0} />
+                    <StatChip label="Campuses" value={(u as any).campus_count ?? 0} />
+                    <StatChip label="Applications" value={u.application_count ?? 0} />
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 border-t pt-4">
+                    <div className="flex gap-1.5">
+                      <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="View Details" asChild>
+                        <Link to="/universities/$universityId" params={{ universityId: u.id }}><GraduationCap className="h-4 w-4 text-slate-600" /></Link>
                       </Button>
-                      {canEdit && (
-                        <>
-                          <Button size="icon" variant="ghost" onClick={() => openEdit(u)}><Pencil className="h-4 w-4" /></Button>
-                          {isAdmin && (
-                            <Button size="icon" variant="ghost" onClick={() => setDeleteTarget(u)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                          )}
-                        </>
+                      <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="Edit" onClick={() => openEdit(u)}>
+                        <Pencil className="h-4 w-4 text-slate-600" />
+                      </Button>
+                      {isAdmin && (
+                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-red-50" title="Delete" onClick={() => setDeleteTarget(u)}>
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
                       )}
                     </div>
+                    {u.website && (
+                      <Button variant="secondary" size="sm" className="rounded-full px-4 text-xs" asChild>
+                        <a href={u.website} target="_blank" rel="noreferrer">Visit Website</a>
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>

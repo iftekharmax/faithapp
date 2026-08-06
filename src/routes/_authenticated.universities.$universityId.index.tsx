@@ -561,7 +561,6 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           )}
         </div>
       )}
-    </CardContent>
 
       
       <Dialog open={open} onOpenChange={setOpen}>

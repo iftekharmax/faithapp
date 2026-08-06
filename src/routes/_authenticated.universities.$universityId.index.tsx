@@ -251,19 +251,19 @@ function UniversityDetail() {
             </div>
           </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),320px] lg:grid-cols-[minmax(0,1fr),360px] gap-6 items-start">
-            <div className="flex flex-col gap-6 lg:gap-8 min-w-0">
-              <div className="flex flex-wrap items-center gap-3">
-                <Button size="lg" className="h-12 rounded-xl bg-[#2563EB] px-8 font-black text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
-                <Button size="lg" variant="outline" className="h-12 rounded-xl border-blue-200 bg-white px-8 font-black text-[#2563EB] hover:bg-blue-50" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>
-                <ActionIconButton icon={Download} label="Export Programs" />
-                <ActionIconButton icon={Plus} label="Import Programs" />
-                <ActionIconButton icon={FileText} label="Template" />
-                <ActionIconButton icon={Share2} label="Share University" />
-              </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button size="lg" className="h-12 rounded-xl bg-[#2563EB] px-8 font-black text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
+            <Button size="lg" variant="outline" className="h-12 rounded-xl border-blue-200 bg-white px-8 font-black text-[#2563EB] hover:bg-blue-50" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>
+            <ActionIconButton icon={Download} label="Export Programs" />
+            <ActionIconButton icon={Plus} label="Import Programs" />
+            <ActionIconButton icon={FileText} label="Template" />
+            <ActionIconButton icon={Share2} label="Share University" />
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),320px] lg:grid-cols-[minmax(0,1fr),360px] gap-8 items-start">
+            <div className="flex flex-col gap-6 lg:gap-8 min-w-0">
               <Tabs defaultValue="programs" className="w-full">
-                <div className="sticky top-[72px] z-20 px-4 py-2 sm:px-0">
+                <div className="sticky top-[72px] z-20">
                   <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
                     <TabsTrigger value="programs" className="rounded-xl px-8 font-black data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all group">Programs <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white transition-colors">155</Badge></TabsTrigger>
                     <TabsTrigger value="campuses" className="rounded-xl px-8 font-black data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all group">Campuses <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white transition-colors">4</Badge></TabsTrigger>

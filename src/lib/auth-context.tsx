@@ -126,27 +126,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       if (!mounted) return;
 
-      if (event === "TOKEN_REFRESHED") {
-        if (s) {
-          setSession(s);
-          scheduleProactiveRefresh(s);
+      // Only respond to events that indicate a real session state change
+      if (
+        event === "SIGNED_IN" || 
+        event === "SIGNED_OUT" || 
+        event === "USER_UPDATED" || 
+        event === "TOKEN_REFRESHED"
+      ) {
+        setSession(s);
+        scheduleProactiveRefresh(s);
+
+        if (s?.user) {
+          hadSessionRef.current = true;
+          void loadUserData(s.user.id);
+        } else {
+          setProfile(null);
+          setRoles([]);
         }
-        return;
-      }
-
-      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") {
-        return;
-      }
-
-      setSession(s);
-      scheduleProactiveRefresh(s);
-
-      if (s?.user) {
-        hadSessionRef.current = true;
-        void loadUserData(s.user.id);
-      } else {
-        setProfile(null);
-        setRoles([]);
       }
     });
 
@@ -154,14 +150,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
-      setSession(data.session);
-      scheduleProactiveRefresh(data.session);
-      if (data.session?.user) {
+      
+      const currentSession = data.session;
+      setSession(currentSession);
+      scheduleProactiveRefresh(currentSession);
+      
+      if (currentSession?.user) {
         hadSessionRef.current = true;
         setSessionTimedOut(false);
-        void loadUserData(data.session.user.id).finally(() => {
+        // Load data if we don't have it yet
+        if (roles.length === 0) {
+          void loadUserData(currentSession.user.id).finally(() => {
+            if (mounted) setLoading(false);
+          });
+        } else {
           setLoading(false);
-        });
+        }
       } else {
         setSessionTimedOut(false);
         setLoading(false);

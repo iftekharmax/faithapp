@@ -43,8 +43,13 @@ import { cn } from "@/lib/utils";
 
 
 export const Route = createFileRoute("/_authenticated/universities/$universityId/")({
-  component: UniversityDetail,
+  component: () => (
+    <div className="bg-[#F8FAFC] min-h-screen">
+      <UniversityDetail />
+    </div>
+  ),
 });
+
 
 function UniversityDetail() {
   const { universityId } = Route.useParams();

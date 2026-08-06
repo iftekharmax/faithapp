@@ -8,12 +8,7 @@ export function RoleGuard({ roles, children }: { roles: AppRole[]; children: Rea
   const { hasAnyRole, rolesLoading } = useAuth();
   
   if (rolesLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
-        <p className="mt-4 text-sm text-muted-foreground animate-pulse">Verifying access...</p>
-      </div>
-    );
+    return null;
   }
 
   if (!hasAnyRole(roles)) {

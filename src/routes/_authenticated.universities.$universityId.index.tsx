@@ -502,9 +502,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           </div>
           
           <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-50">
-            <FilterSelect icon={Calendar} label="All Intakes" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Award} label="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={ListIcon} label="Sort by: Newest" value="newest" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Calendar} label="All Intakes" placeholder="All Intakes" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Award} label="All Scholarships" placeholder="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={ListIcon} label="Sort by: Newest" placeholder="Sort by: Newest" value="newest" onValueChange={() => {}} options={[]} />
             <Button variant="ghost" className="h-10 rounded-xl font-bold text-slate-500 hover:text-primary" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
               <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
             </Button>

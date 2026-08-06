@@ -299,31 +299,28 @@ function UniversitiesPage() {
       </div>
 
       {loading ? (
-        <div className="mx-auto max-w-[1600px] px-6 py-6">
-          <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))' }}>
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-[420px] rounded-2xl bg-white border border-slate-100 animate-pulse" />
-            ))}
-          </div>
+        <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))' }}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="h-[420px] rounded-2xl bg-white border border-slate-100 animate-pulse" />
+          ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="mx-auto max-w-[1600px] px-6 py-6">
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white p-20 text-center shadow-sm">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 text-slate-400">
-              <Building2 className="h-10 w-10" />
-            </div>
-            <h3 className="mb-2 text-xl font-bold text-slate-900">No Universities Found</h3>
-            <p className="mb-8 max-w-sm text-sm font-medium text-slate-500 leading-relaxed">We couldn't find any universities matching your criteria. Create your first university to get started.</p>
-            {canEdit && (
-              <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-8 font-semibold text-white shadow-lg shadow-indigo-100 hover:bg-indigo-700">
-                <Plus className="mr-2 h-5 w-5" /> Create University
-              </Button>
-            )}
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white p-20 text-center shadow-sm">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 text-slate-400">
+            <Building2 className="h-10 w-10" />
           </div>
+          <h3 className="mb-2 text-xl font-bold text-slate-900">No Universities Found</h3>
+          <p className="mb-8 max-w-sm text-sm font-medium text-slate-500 leading-relaxed">We couldn't find any universities matching your criteria. Create your first university to get started.</p>
+          {canEdit && (
+            <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-8 font-semibold text-white shadow-lg shadow-indigo-100 hover:bg-indigo-700">
+              <Plus className="mr-2 h-5 w-5" /> Create University
+            </Button>
+          )}
         </div>
       ) : (
-        <div className="mx-auto max-w-[1600px] px-6 py-6 space-y-8">
+        <div className="space-y-8">
           <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))' }}>
+
 
             {pageItems.map((u) => (
               <Card key={u.id} className="group flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/5">

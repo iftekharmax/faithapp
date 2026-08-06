@@ -1,16 +1,27 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Loader2, Save, User, GraduationCap, DollarSign, FileText, Layout, X } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   APPLICATION_STATUSES, APPLICATION_STATUS_LABELS,
   createApplication, listStudentsLite,
@@ -188,184 +199,271 @@ function NewApplicationPage() {
 
   const err = (k: string) => errors[k] ?? null;
 
+  const totalFee = useMemo(() => {
+    return (Number(form.application_fee) || 0) +
+           (Number(form.registration_fee) || 0) +
+           (Number(form.emgs_fee) || 0) +
+           (Number(form.others_fee) || 0);
+  }, [form.application_fee, form.registration_fee, form.emgs_fee, form.others_fee]);
+
   return (
-    <div className="mx-auto max-w-5xl space-y-8 pb-24 animate-in fade-in zoom-in-95 duration-500">
-      <header className="mb-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-8 text-white shadow-lg">
-        <Button asChild variant="ghost" size="sm" className="-ml-3 text-white hover:bg-white/20">
-          <Link to="/applications"><ArrowLeft className="mr-2 h-4 w-4" /> Back to applications</Link>
-        </Button>
-        <h1 className="text-4xl font-extrabold tracking-tight mt-4">Create New Application</h1>
-        <p className="mt-2 text-indigo-100/90 text-lg">Streamline student journeys with this colorful management tool.</p>
-      </header>
+    <div className="min-h-screen bg-[#F8FAFC] pb-20 animate-in fade-in duration-500">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col gap-6">
+          {/* Breadcrumb */}
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/applications">Applications</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Create New Application</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
-      <div className="grid gap-8">
-        <Card className="shadow-xl shadow-indigo-500/5 border-indigo-100 rounded-3xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100/50">
-            <CardTitle className="text-xl font-bold text-indigo-900 flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-indigo-600 text-white text-sm shadow-md">1</span>
-              Student & Academic Program
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-6 p-8 md:grid-cols-2">
-            <Field label="Student" error={err("student_id")}>
-              <Select value={form.student_id ?? ""} onValueChange={(v) => set("student_id", v)}>
-                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500"><SelectValue placeholder="Select student" /></SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  {students.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>{s.full_name} ({s.student_code})</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field label="Country" error={err("country")}>
-              <Select value={countryId} onValueChange={setCountryId} disabled={!countries.length}>
-                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500">
-                  <SelectValue placeholder="Select country" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  {countries.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      <span className="inline-flex items-center gap-2">
-                        {c.flag_url && <img src={c.flag_url} alt="" className="h-4 w-6 rounded-sm object-cover shadow-sm" />}
-                        {c.name}
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field label="University" error={err("university")}>
-              <Select value={universityId} onValueChange={setUniversityId} disabled={!countryId || loadingUnis}>
-                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500">
-                  <SelectValue placeholder={!countryId ? "Select a country first" : "Select university"} />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  {universities.map((u) => (
-                    <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field label="Campus" error={err("campus")}>
-              <Select value={campusId} onValueChange={setCampusId} disabled={!universityId || loadingCampuses}>
-                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500">
-                  <SelectValue placeholder="Select campus" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value={NONE}>— No specific campus —</SelectItem>
-                  {campuses.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}{c.is_main ? " (Main)" : ""}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field label="Program" error={err("program")}>
-              <Select value={programId} onValueChange={setProgramId} disabled={!universityId || loadingPrograms}>
-                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500">
-                  <SelectValue placeholder="Select program" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  {filteredPrograms.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field label="Degree" error={err("degree")}>
-              <Select value={form.degree || NONE} onValueChange={(v) => set("degree", v === NONE ? "" : v)}>
-                <SelectTrigger className="h-12 rounded-xl border-indigo-200 focus:ring-2 focus:ring-indigo-500"><SelectValue placeholder="Select degree" /></SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value={NONE}>— None —</SelectItem>
-                  {["Foundation","Diploma","Bachelor","Master","MBA","PhD","Certificate"].map((d) => (
-                    <SelectItem key={d} value={d}>{d}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-xl shadow-purple-500/5 border-purple-100 rounded-3xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-100/50">
-            <CardTitle className="text-xl font-bold text-purple-900 flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-purple-600 text-white text-sm shadow-md">2</span>
-              Financial & Workflow
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-8 space-y-8">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Field label="Intake" error={err("intake")}>
-                <Input className="h-12 rounded-xl border-purple-200 focus:ring-2 focus:ring-purple-500" value={form.intake ?? ""} onChange={(e) => set("intake", e.target.value)} />
-              </Field>
-              <Field label="Scholarship" error={err("scholarship")}>
-                <Input className="h-12 rounded-xl border-purple-200 focus:ring-2 focus:ring-purple-500" value={form.scholarship ?? ""} onChange={(e) => set("scholarship", e.target.value)} />
-              </Field>
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Create New Application</h1>
+              <p className="text-sm text-slate-500 mt-1">Create and manage a student admission application.</p>
             </div>
-
-            <div className="rounded-2xl border-2 border-purple-100 bg-purple-50/30 p-6 space-y-4">
-              <Label className="text-base font-bold text-purple-900 flex items-center gap-2">💰 Financial Breakdown</Label>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <Field label="App Fee" error={err("application_fee")}>
-                  <Input type="number" className="h-12 rounded-xl border-purple-200" value={form.application_fee ?? ""} onChange={(e) => set("application_fee", e.target.value === "" ? null : Number(e.target.value))} />
-                </Field>
-                <Field label="Reg Fee" error={err("registration_fee")}>
-                  <Input type="number" className="h-12 rounded-xl border-purple-200" value={form.registration_fee ?? ""} onChange={(e) => set("registration_fee", e.target.value === "" ? null : Number(e.target.value))} />
-                </Field>
-                <Field label="EMGS Fee" error={err("emgs_fee")}>
-                  <Input type="number" className="h-12 rounded-xl border-purple-200" value={form.emgs_fee ?? ""} onChange={(e) => set("emgs_fee", e.target.value === "" ? null : Number(e.target.value))} />
-                </Field>
-                <Field label="Others Fee" error={err("others_fee")}>
-                  <Input type="number" className="h-12 rounded-xl border-purple-200" value={form.others_fee ?? ""} onChange={(e) => set("others_fee", e.target.value === "" ? null : Number(e.target.value))} />
-                </Field>
-              </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={() => navigate({ to: "/applications" })} disabled={saving}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={submit} disabled={!canSubmit}>
+                {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                Save Application
+              </Button>
             </div>
+          </div>
 
+          <div className="grid gap-8">
+            {/* Section 1: Student & Academic Program */}
+            <Card className="rounded-[16px] border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                    <User className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg font-semibold text-slate-900">Student & Academic Program</CardTitle>
+                    <CardDescription className="text-xs text-slate-500">Enter student details and choose the destination university and program.</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <Separator className="bg-slate-100" />
+              <CardContent className="p-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <ModernField label="Student" error={err("student_id")} required icon={<User className="h-4 w-4" />}>
+                    <Select value={form.student_id ?? ""} onValueChange={(v) => set("student_id", v)}>
+                      <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
+                        <SelectValue placeholder="Select student" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {students.map((s) => (
+                          <SelectItem key={s.id} value={s.id}>{s.full_name} ({s.student_code})</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </ModernField>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Status">
-                <Select value={form.status ?? "draft"} onValueChange={(v) => set("status", v as any)}>
-                  <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {APPLICATION_STATUSES.map((s) => (
-                      <SelectItem key={s} value={s}>{APPLICATION_STATUS_LABELS[s]}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            </div>
-            
-            <Field label="Internal Notes" error={err("notes")}>
-              <Textarea className="min-h-[120px]" value={form.notes ?? ""} onChange={(e) => set("notes", e.target.value)} />
-            </Field>
-          </CardContent>
-        </Card>
+                  <ModernField label="Country" error={err("country")} icon={<Layout className="h-4 w-4" />}>
+                    <Select value={countryId} onValueChange={setCountryId} disabled={!countries.length}>
+                      <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countries.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            <span className="inline-flex items-center gap-2">
+                              {c.flag_url && <img src={c.flag_url} alt="" className="h-4 w-6 rounded-sm object-cover" />}
+                              {c.name}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </ModernField>
+
+                  <ModernField label="University" error={err("university")} required icon={<GraduationCap className="h-4 w-4" />}>
+                    <Select value={universityId} onValueChange={setUniversityId} disabled={!countryId || loadingUnis}>
+                      <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
+                        <SelectValue placeholder={!countryId ? "Select a country first" : "Select university"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {universities.map((u) => (
+                          <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </ModernField>
+
+                  <ModernField label="Campus" error={err("campus")} icon={<Layout className="h-4 w-4" />}>
+                    <Select value={campusId} onValueChange={setCampusId} disabled={!universityId || loadingCampuses}>
+                      <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
+                        <SelectValue placeholder="Select campus" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={NONE}>— No specific campus —</SelectItem>
+                        {campuses.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.name}{c.is_main ? " (Main)" : ""}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </ModernField>
+
+                  <ModernField label="Program" error={err("program")} required icon={<FileText className="h-4 w-4" />}>
+                    <Select value={programId} onValueChange={setProgramId} disabled={!universityId || loadingPrograms}>
+                      <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
+                        <SelectValue placeholder="Select program" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {filteredPrograms.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </ModernField>
+
+                  <ModernField label="Degree" error={err("degree")} icon={<GraduationCap className="h-4 w-4" />}>
+                    <Select value={form.degree || NONE} onValueChange={(v) => set("degree", v === NONE ? "" : v)}>
+                      <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
+                        <SelectValue placeholder="Select degree" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={NONE}>— None —</SelectItem>
+                        {["Foundation","Diploma","Bachelor","Master","MBA","PhD","Certificate"].map((d) => (
+                          <SelectItem key={d} value={d}>{d}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </ModernField>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Section 2: Financial & Workflow */}
+            <Card className="rounded-[16px] border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                    <DollarSign className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg font-semibold text-slate-900">Financial & Workflow</CardTitle>
+                    <CardDescription className="text-xs text-slate-500">Configure financial breakdown and track the application status.</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <Separator className="bg-slate-100" />
+              <CardContent className="p-6 space-y-8">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <ModernField label="Intake" error={err("intake")} icon={<FileText className="h-4 w-4" />}>
+                    <Input className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20" value={form.intake ?? ""} onChange={(e) => set("intake", e.target.value)} placeholder="e.g. September 2026" />
+                  </ModernField>
+                  <ModernField label="Scholarship" error={err("scholarship")} icon={<DollarSign className="h-4 w-4" />}>
+                    <Input className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20" value={form.scholarship ?? ""} onChange={(e) => set("scholarship", e.target.value)} placeholder="e.g. 50% Merit Scholarship" />
+                  </ModernField>
+                </div>
+
+                <div className="space-y-4">
+                  <Label className="text-sm font-semibold text-slate-900">Financial Breakdown</Label>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <FeeCard label="App Fee" value={form.application_fee} onChange={(v) => set("application_fee", v)} error={err("application_fee")} />
+                    <FeeCard label="Registration Fee" value={form.registration_fee} onChange={(v) => set("registration_fee", v)} error={err("registration_fee")} />
+                    <FeeCard label="EMGS Fee" value={form.emgs_fee} onChange={(v) => set("emgs_fee", v)} error={err("emgs_fee")} />
+                    <FeeCard label="Others Fee" value={form.others_fee} onChange={(v) => set("others_fee", v)} error={err("others_fee")} />
+                  </div>
+                  
+                  <div className="mt-4 flex items-center justify-between rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
+                    <span className="text-sm font-medium text-slate-700">Total Estimated Fee</span>
+                    <span className="text-lg font-bold text-indigo-700">
+                      {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(totalFee)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <ModernField label="Application Status" icon={<Layout className="h-4 w-4" />}>
+                    <Select value={form.status ?? "draft"} onValueChange={(v) => set("status", v as any)}>
+                      <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {APPLICATION_STATUSES.map((s) => (
+                          <SelectItem key={s} value={s}>{APPLICATION_STATUS_LABELS[s]}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </ModernField>
+                </div>
+                
+                <ModernField label="Internal Notes" error={err("notes")} icon={<FileText className="h-4 w-4" />}>
+                  <Textarea className="min-h-[120px] rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20" value={form.notes ?? ""} onChange={(e) => set("notes", e.target.value)} placeholder="Add any internal remarks or special requirements..." />
+                </ModernField>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3 pt-6 border-t mt-8">
-        <Button variant="outline" size="lg" onClick={() => navigate({ to: "/applications" })} disabled={saving}>Cancel</Button>
-        <Button size="lg" onClick={submit} disabled={!canSubmit} className="min-w-[160px]">
-          {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-          Save application
-        </Button>
+      {/* Sticky Footer */}
+      <div className="fixed bottom-0 left-0 right-0 z-10 border-t border-slate-200 bg-white/80 backdrop-blur-md px-6 py-4">
+        <div className="mx-auto max-w-7xl flex items-center justify-end gap-3">
+          <Button variant="ghost" onClick={() => navigate({ to: "/applications" })} disabled={saving} className="text-slate-600 hover:text-slate-900">
+            Cancel
+          </Button>
+          <Button size="lg" onClick={submit} disabled={!canSubmit} className="min-w-[180px] rounded-xl shadow-lg shadow-indigo-200 transition-all hover:-translate-y-0.5 active:translate-y-0">
+            {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+            Save Application
+          </Button>
+        </div>
       </div>
     </div>
-
   );
 }
 
-function Field({ label, error, children }: { label: string; error?: string | null; children: React.ReactNode }) {
+function ModernField({ label, error, required, icon, children }: { label: string; error?: string | null; required?: boolean; icon?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <Label className="text-xs font-medium">{label}</Label>
+    <div className="space-y-2 group">
+      <div className="flex items-center justify-between">
+        <Label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition-colors group-focus-within:text-indigo-600">
+          {icon && <span className="text-slate-400 group-focus-within:text-indigo-500 transition-colors">{icon}</span>}
+          {label}
+          {required && <span className="text-red-500">*</span>}
+        </Label>
+        {error && <span className="text-[10px] font-medium text-red-500 animate-in fade-in slide-in-from-right-1">{error}</span>}
+      </div>
       {children}
-      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+function FeeCard({ label, value, onChange, error }: { label: string; value: number | undefined | null; onChange: (v: number | null) => void; error?: string | null }) {
+  return (
+    <div className={cn(
+      "relative rounded-xl border border-slate-200 bg-white p-3 transition-all hover:border-indigo-200 hover:shadow-sm focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/10",
+      error && "border-red-200 bg-red-50/30"
+    )}>
+      <Label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</Label>
+      <div className="mt-1 flex items-center gap-1">
+        <span className="text-slate-400 font-medium">$</span>
+        <input 
+          type="number" 
+          className="w-full bg-transparent text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-300"
+          value={value ?? ""} 
+          onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
+          placeholder="0.00"
+        />
+      </div>
+      {error && <div className="mt-1 text-[10px] text-red-500">{error}</div>}
     </div>
   );
 }

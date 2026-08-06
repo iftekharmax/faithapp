@@ -861,70 +861,72 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                 </div>
               </div>
 
-              <div className="md:col-span-2 mt-2">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-px flex-1 bg-border" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Financial Information</span>
-                  <div className="h-px flex-1 bg-border" />
+              <div className="md:col-span-2">
+                <div className="mb-6 flex items-center gap-4">
+                  <span className="text-xs font-black uppercase tracking-[0.2em] text-primary">Financial Information</span>
+                  <div className="h-px flex-1 bg-slate-100" />
                 </div>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Tuition Fee</Label>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Annual Tuition Fee</Label>
                     <div className="relative">
                       <Input 
                         type="number" 
-                        className="h-11 rounded-xl border-muted/60 bg-muted/20 pl-10 shadow-sm"
+                        className="h-12 rounded-xl border-slate-100 bg-white pl-11 font-bold shadow-sm"
                         value={form.tuition_fee ?? ""} 
                         onChange={(e) => setForm({ ...form, tuition_fee: e.target.value as any })} 
                       />
-                      <DollarSign className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <DollarSign className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Currency</Label>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Currency</Label>
                     <Input 
-                      className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
+                      className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                       value={form.currency ?? "USD"} 
                       onChange={(e) => setForm({ ...form, currency: e.target.value })} 
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-primary/80">Application Fee</Label>
-                    <Input 
-                      type="number" 
-                      className="h-11 rounded-xl border-primary/20 bg-primary/5 shadow-sm focus-visible:ring-primary"
-                      value={form.application_fee ?? ""} 
-                      onChange={(e) => setForm({ ...form, application_fee: e.target.value as any })} 
-                    />
+                  <div className="space-y-3">
+                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Application Fee</Label>
+                    <div className="relative">
+                      <Input 
+                        type="number" 
+                        className="h-12 rounded-xl border-emerald-100 bg-emerald-50/30 pl-11 font-bold text-emerald-700 shadow-sm"
+                        value={form.application_fee ?? ""} 
+                        onChange={(e) => setForm({ ...form, application_fee: e.target.value as any })} 
+                      />
+                      <Landmark className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-500" />
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-primary/80">Registration Fee</Label>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Registration Fee</Label>
                     <Input 
                       type="number" 
-                      className="h-11 rounded-xl border-primary/20 bg-primary/5 shadow-sm focus-visible:ring-primary"
+                      className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                       value={form.registration_fee ?? ""} 
                       onChange={(e) => setForm({ ...form, registration_fee: e.target.value as any })} 
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-primary/80">EMGS Fee</Label>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">EMGS Fee</Label>
                     <Input 
                       type="number" 
-                      className="h-11 rounded-xl border-primary/20 bg-primary/5 shadow-sm focus-visible:ring-primary"
+                      className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                       value={form.emgs_fee ?? ""} 
                       onChange={(e) => setForm({ ...form, emgs_fee: e.target.value as any })} 
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-primary/80">Others Fee</Label>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Other Fees</Label>
                     <Input 
                       type="number" 
-                      className="h-11 rounded-xl border-primary/20 bg-primary/5 shadow-sm focus-visible:ring-primary"
+                      className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                       value={form.others_fee ?? ""} 
                       onChange={(e) => setForm({ ...form, others_fee: e.target.value as any })} 
                     />

@@ -819,7 +819,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Card>
+    </div>
+
   );
 }
 

@@ -397,37 +397,56 @@ function UniversityDetail() {
 
             <aside className="space-y-8">
               <div className="sticky top-[100px] flex flex-col gap-6">
-                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                  <h3 className="mb-6 text-sm font-bold uppercase tracking-[0.1em] text-slate-500">At a Glance</h3>
-                  <div className="space-y-6">
-                    <AsideInfoItem icon={GraduationCap} label="University Type" value="Public Research" />
-                    <AsideInfoItem icon={Globe} label="Global Ranking" value="#142 Worldwide" />
-                    <AsideInfoItem icon={Users} label="International Students" value="28%" />
-                    <AsideInfoItem icon={Languages} label="Primary Language" value="English" />
-                    <AsideInfoItem icon={Landmark} label="Accreditation" value="EQUIS, AMBA, AACSB" />
+                <Card className="overflow-hidden rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200">
+                  <div className="bg-slate-50/50 p-6 border-b">
+                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">University Summary</h3>
                   </div>
-                  <div className="mt-8 border-t pt-8">
-                    <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400">Quick Actions</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      <QuickActionButton icon={Download} label="Brochure" />
-                      <QuickActionButton icon={Printer} label="Print" />
-                      <QuickActionButton icon={Share} label="Share" />
-                      <QuickActionButton icon={Heart} label="Favorite" />
+                  <div className="p-6 space-y-6">
+                    <div className="flex flex-col items-center text-center pb-6 border-b border-slate-50">
+                      <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-lg ring-1 ring-slate-100">
+                        {uni.logo_url ? (
+                          <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-3xl object-cover" />
+                        ) : (
+                          <Building2 className="h-10 w-10 text-slate-300" />
+                        )}
+                      </div>
+                      <h4 className="text-lg font-bold text-slate-900 leading-tight">{uni.name}</h4>
+                      <p className="mt-1 text-sm font-medium text-slate-400">{uni.city}, {uni.country?.name}</p>
+                    </div>
+
+                    <div className="space-y-5">
+                      <AsideInfoItem icon={GraduationCap} label="University Type" value={uni.type || "Public Research"} />
+                      <AsideInfoItem icon={Globe} label="Global Ranking" value="#142 Worldwide" />
+                      <AsideInfoItem icon={Users} label="Int'l Students" value="28%" />
+                      <AsideInfoItem icon={Calendar} label="Next Intake" value="September 2026" />
+                    </div>
+
+                    <div className="pt-6 border-t border-slate-50">
+                      <h4 className="mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Quick Actions</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        <QuickActionButton icon={Download} label="Brochure" />
+                        <QuickActionButton icon={Printer} label="Print Page" />
+                        <QuickActionButton icon={Share2} label="Share" />
+                        <QuickActionButton icon={Heart} label="Favorite" />
+                      </div>
                     </div>
                   </div>
                 </Card>
 
-                <Card className="rounded-[24px] border-none bg-gradient-to-br from-primary to-primary/80 p-6 text-white shadow-xl shadow-primary/20">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
-                    <TrendingUp className="h-6 w-6" />
+                <Card className="group relative overflow-hidden rounded-[24px] border-none bg-primary p-6 text-white shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]">
+                  <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+                  <div className="relative z-10">
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
+                      <TrendingUp className="h-6 w-6" />
+                    </div>
+                    <h3 className="text-xl font-bold">Premium Partner</h3>
+                    <p className="mt-2 text-sm text-white/80 leading-relaxed">
+                      This institution is part of our Elite Partnership Program, ensuring prioritized processing.
+                    </p>
+                    <Button variant="secondary" className="mt-6 w-full rounded-xl font-black text-primary hover:bg-white transition-colors">
+                      View Exclusive Benefits
+                    </Button>
                   </div>
-                  <h3 className="text-xl font-bold">Premium Partnership</h3>
-                  <p className="mt-2 text-sm text-white/80 leading-relaxed">
-                    This institution is part of our Elite Partnership Program, ensuring prioritized application processing.
-                  </p>
-                  <Button variant="secondary" className="mt-6 w-full rounded-xl font-bold text-primary hover:scale-[1.02] active:scale-[0.98] transition-all">
-                    View Benefits
-                  </Button>
                 </Card>
               </div>
             </aside>

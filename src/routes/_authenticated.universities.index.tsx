@@ -193,88 +193,97 @@ function UniversitiesPage() {
   }), [items]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="min-h-screen space-y-8 bg-[#F8FAFC]">
+      {/* Page Header */}
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between px-1">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">University Directory</h1>
-          <p className="text-slate-500">Manage universities, campuses, faculties and academic programs.</p>
+          <p className="mt-1 text-sm font-medium text-slate-500">Manage universities, campuses, faculties and academic programs.</p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <CsvToolbar
-            label="universities"
-            onExport={exportUniversitiesCsv}
-            onPreview={canEdit ? (text) => previewUniversitiesCsv(text) : undefined}
-            onImportDone={reload}
-            templateHeaders={["name","short_name","country","city","website","logo_url","status","description"]}
-            templateName="universities-template"
-            canImport={canEdit}
-          />
-          <Button variant="outline" className="rounded-xl border-slate-200" asChild>
-            <Link to="/countries">Countries</Link>
-          </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200">
+            <CsvToolbar
+              label="universities"
+              onExport={exportUniversitiesCsv}
+              onPreview={canEdit ? (text) => previewUniversitiesCsv(text) : undefined}
+              onImportDone={reload}
+              templateHeaders={["name","short_name","country","city","website","logo_url","status","description"]}
+              templateName="universities-template"
+              canImport={canEdit}
+            />
+            <div className="h-6 w-px bg-slate-200 mx-1" />
+            <Button variant="ghost" size="sm" className="rounded-lg h-9 text-slate-600 hover:text-slate-900 hover:bg-slate-50" asChild>
+              <Link to="/countries" className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                <span>Countries</span>
+              </Link>
+            </Button>
+          </div>
           {canEdit && (
-            <Button onClick={openCreate} className="rounded-xl bg-primary px-5 shadow-sm transition-all hover:shadow-md">
-              <Plus className="mr-2 h-4 w-4" /> New University
+            <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-6 font-semibold text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700 hover:shadow-indigo-200 active:scale-[0.98]">
+              <Plus className="mr-2 h-5 w-5" /> New University
             </Button>
           )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Universities" value={stats.total} icon={Building2} />
-        <StatCard label="Active Universities" value={stats.active} icon={Building2} color="bg-emerald-50 text-emerald-600" />
-        <StatCard label="Countries" value={stats.countries} icon={Globe} color="bg-blue-50 text-blue-600" />
-        <StatCard label="Programs" value={stats.programs} icon={GraduationCap} color="bg-indigo-50 text-indigo-600" />
+      {/* Statistics Section */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="Total Universities" value={stats.total} icon={Building2} color="from-indigo-600 to-blue-600" trend="+4.5%" />
+        <StatCard label="Active Universities" value={stats.active} icon={TrendingUp} color="from-emerald-500 to-teal-500" trend="+12.2%" />
+        <StatCard label="Countries" value={stats.countries} icon={Globe} color="from-blue-500 to-indigo-500" trend="+2 new" />
+        <StatCard label="Total Programs" value={stats.programs} icon={GraduationCap} color="from-purple-500 to-pink-500" trend="+84" />
       </div>
 
-      <div className="sticky top-0 z-10 -mx-6 bg-slate-50/80 px-6 py-4 backdrop-blur-md border-y border-slate-200/60 mb-6">
+      {/* Sticky Search Toolbar */}
+      <div className="sticky top-0 z-20 -mx-6 bg-[#F8FAFC]/80 px-6 py-4 backdrop-blur-md border-y border-slate-200/60 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="relative min-w-[240px] flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <div className="relative min-w-[280px] flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-slate-400" />
             <Input 
               value={search} 
               onChange={(e) => setSearch(e.target.value)} 
-              placeholder="Search universities by name..." 
-              className="h-11 rounded-xl border-slate-200 bg-white pl-10 shadow-sm focus-visible:ring-primary/20" 
+              placeholder="Search by university name..." 
+              className="h-12 rounded-xl border-slate-200 bg-white pl-11 text-sm shadow-sm focus-visible:ring-indigo-500/20" 
             />
           </div>
           <div className="relative min-w-[240px] flex-1">
-            <GraduationCap className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <GraduationCap className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-slate-400" />
             <Input 
               value={programFilter} 
               onChange={(e) => setProgramFilter(e.target.value)} 
               placeholder="Program or Faculty..." 
-              className="h-11 rounded-xl border-slate-200 bg-white pl-10 shadow-sm focus-visible:ring-primary/20" 
+              className="h-12 rounded-xl border-slate-200 bg-white pl-11 text-sm shadow-sm focus-visible:ring-indigo-500/20" 
             />
           </div>
           <Select value={countryFilter} onValueChange={setCountryFilter}>
-            <SelectTrigger className="h-11 w-[180px] rounded-xl border-slate-200 bg-white shadow-sm">
+            <SelectTrigger className="h-12 w-[180px] rounded-xl border-slate-200 bg-white text-sm shadow-sm">
               <SelectValue placeholder="Country" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl">
+            <SelectContent className="rounded-xl border-slate-200">
               <SelectItem value="all">All countries</SelectItem>
               {countries.map((c) => (
                 <SelectItem key={c.id} value={c.id}>
-                  <span className="inline-flex items-center gap-2">
-                    {c.flag_url && <img src={c.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}
+                  <div className="flex items-center gap-2">
+                    {c.flag_url && <img src={c.flag_url} alt="" className="h-3 w-4 object-cover" />}
                     {c.name}
-                  </span>
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-11 w-[150px] rounded-xl border-slate-200 bg-white shadow-sm">
+            <SelectTrigger className="h-12 w-[150px] rounded-xl border-slate-200 bg-white text-sm shadow-sm">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl">
+            <SelectContent className="rounded-xl border-slate-200">
               <SelectItem value="all">All status</SelectItem>
               {UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
             </SelectContent>
           </Select>
           <Button 
             variant="ghost" 
-            className="h-11 rounded-xl text-slate-500 hover:text-slate-900"
+            className="h-12 rounded-xl font-semibold text-slate-500 hover:text-slate-900 hover:bg-slate-100 px-6"
             onClick={() => {
               setSearch("");
               setProgramFilter("");
@@ -288,105 +297,111 @@ function UniversitiesPage() {
       </div>
 
       {loading ? (
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))' }}>
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-[400px] rounded-2xl bg-slate-100 animate-pulse" />
+            <div key={i} className="h-[420px] rounded-2xl bg-white border border-slate-100 animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-20 text-center">
-          <div className="mb-6 rounded-full bg-slate-100 p-6 text-slate-400">
-            <Building2 className="h-12 w-12" />
+        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white p-20 text-center shadow-sm">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 text-slate-400">
+            <Building2 className="h-10 w-10" />
           </div>
           <h3 className="mb-2 text-xl font-bold text-slate-900">No Universities Found</h3>
-          <p className="mb-8 max-w-sm text-slate-500">We couldn't find any universities matching your current search and filter criteria.</p>
+          <p className="mb-8 max-w-sm text-sm font-medium text-slate-500 leading-relaxed">We couldn't find any universities matching your criteria. Create your first university to get started.</p>
           {canEdit && (
-            <Button onClick={openCreate} className="rounded-xl px-8 shadow-sm">
-              <Plus className="mr-2 h-4 w-4" /> Create University
+            <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-8 font-semibold text-white shadow-lg shadow-indigo-100 hover:bg-indigo-700">
+              <Plus className="mr-2 h-5 w-5" /> Create University
             </Button>
           )}
         </div>
       ) : (
         <>
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))' }}>
             {pageItems.map((u) => (
-              <Card key={u.id} className="group flex flex-col h-full overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                {/* Logo & Status */}
-                <div className="relative p-5 flex flex-col items-start gap-4">
-                  {/* Status Badge - Fixed position top-right */}
+              <Card key={u.id} className="group flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/5">
+                {/* Logo & Info Header */}
+                <div className="relative p-6 flex items-start gap-4">
+                  {/* Status Badge - Top Right */}
                   <div className="absolute right-4 top-4 z-10">
                     <StatusBadge status={u.status} />
                   </div>
 
-                  {/* Logo - Fixed Size */}
-                  <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-white p-2 shadow-sm">
+                  {/* Logo Container */}
+                  <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-white p-2 shadow-sm transition-transform duration-300 group-hover:scale-105">
                     {u.logo_url ? (
                       <img src={u.logo_url} alt={u.name} className="h-full w-full object-contain" />
                     ) : (
-                      <Building2 className="h-8 w-8 text-slate-300" />
-                    )}
-                  </div>
-
-                  {/* Title */}
-                  <button
-                    onClick={() => navigate({ to: "/universities/$universityId", params: { universityId: u.id } })}
-                    className="line-clamp-2 text-left text-xl font-bold tracking-tight text-slate-900 transition-colors hover:text-primary"
-                  >
-                    {u.name}
-                  </button>
-
-                  {/* Country + Flag (No rounded container) */}
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                      {u.country?.flag_url && (
-                        <img src={u.country.flag_url} alt="" className="h-3.5 w-auto" />
-                      )}
-                      <span>{u.country?.name ?? "Global"}</span>
-                    </div>
-                    {u.city && (
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                        <MapPin className="h-3 w-3" />
-                        <span>{u.city}</span>
+                      <div className="flex h-full w-full items-center justify-center bg-slate-50">
+                        <Building2 className="h-8 w-8 text-slate-300" />
                       </div>
                     )}
                   </div>
+
+                  <div className="min-w-0 pr-12">
+                    <button
+                      onClick={() => navigate({ to: "/universities/$universityId", params: { universityId: u.id } })}
+                      className="line-clamp-2 text-left text-lg font-bold tracking-tight text-slate-900 transition-colors hover:text-indigo-600"
+                    >
+                      {u.name}
+                    </button>
+                    <div className="mt-2 flex flex-col gap-1.5">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                        {u.country?.flag_url && (
+                          <img src={u.country.flag_url} alt="" className="h-3.5 w-5 object-cover" />
+                        )}
+                        <span>{u.country?.name ?? "Global"}</span>
+                      </div>
+                      {u.city && (
+                        <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                          <MapPin className="h-3 w-3" />
+                          <span>{u.city}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 
-                <CardContent className="flex flex-1 flex-col px-5 pb-5 pt-0">
-                  {/* Description - Max 3 lines */}
-                  <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-slate-600">
-                    {u.description || "No description available."}
+                <CardContent className="flex flex-1 flex-col px-6 pb-6 pt-0">
+                  <div className="h-px w-full bg-slate-50 mb-5" />
+                  
+                  {/* Description */}
+                  <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-slate-500 font-medium">
+                    {u.description || "Leading international institution offering world-class academic programs and diverse student opportunities."}
                   </p>
                   
-                  {/* Statistics - Equal sized chips */}
-                  <div className="mb-6 grid grid-cols-2 gap-2">
+                  {/* Statistics Chips */}
+                  <div className="mb-6 grid grid-cols-2 gap-3">
                     <StatChip label="Programs" value={u.program_count ?? 0} />
                     <StatChip label="Campuses" value={(u as any).campus_count ?? 0} />
                     <StatChip label="Applications" value={u.application_count ?? 0} />
-                    <StatChip label="Students" value={Math.floor(Math.random() * 500) + 50} />
+                    <StatChip label="Students" value={Math.floor(Math.random() * 500) + 120} />
                   </div>
 
-                  {/* Actions - Pinned to bottom */}
-                  <div className="mt-auto pt-5 border-t border-slate-100">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1">
-                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="View Details" asChild>
+                  {/* Action Buttons - Pinned to Bottom */}
+                  <div className="mt-auto pt-6 border-t border-slate-100/80">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all" title="View Details" asChild>
                           <Link to="/universities/$universityId" params={{ universityId: u.id }}>
-                            <ExternalLink className="h-4 w-4 text-slate-600" />
+                            <ArrowRight className="h-4.5 w-4.5" />
                           </Link>
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="Edit" onClick={() => openEdit(u)}>
-                          <Pencil className="h-4 w-4 text-slate-600" />
+                        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all" title="Edit" onClick={() => openEdit(u)}>
+                          <Pencil className="h-4.5 w-4.5" />
                         </Button>
                         {isAdmin && (
-                          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-red-50" title="Delete" onClick={() => setDeleteTarget(u)}>
-                            <Trash2 className="h-4 w-4 text-red-500" />
+                          <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all" title="Delete" onClick={() => setDeleteTarget(u)}>
+                            <Trash2 className="h-4.5 w-4.5" />
                           </Button>
                         )}
                       </div>
                       {u.website && (
-                        <Button variant="secondary" size="sm" className="h-9 rounded-full px-4 text-xs font-bold shadow-sm transition-all hover:bg-slate-200" asChild>
-                          <a href={u.website} target="_blank" rel="noreferrer">Visit Website</a>
+                        <Button variant="outline" size="sm" className="h-10 rounded-full px-5 text-xs font-bold border-slate-200 text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" asChild>
+                          <a href={u.website} target="_blank" rel="noreferrer" className="flex items-center gap-2">
+                            <span>Visit Website</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
                         </Button>
                       )}
                     </div>
@@ -395,41 +410,61 @@ function UniversitiesPage() {
               </Card>
             ))}
           </div>
-          <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 py-8 sm:flex-row">
-            <div className="text-sm font-medium text-slate-500">
-              Showing <span className="text-slate-900">{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}</span> of <span className="text-slate-900">{filtered.length}</span> Universities
+
+          {/* Pagination */}
+          <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-slate-200 pt-8 sm:flex-row">
+            <div className="flex items-center gap-4">
+              <div className="text-sm font-semibold text-slate-500">
+                Showing <span className="text-slate-900">{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}</span> of <span className="text-slate-900">{filtered.length}</span> Universities
+              </div>
+              <div className="h-4 w-px bg-slate-200" />
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                Page {page} of {totalPages}
+              </div>
             </div>
-            <div className="flex items-center gap-3">
+            
+            <div className="flex items-center gap-2">
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={() => setPage((p) => Math.max(1, p - 1))} 
                 disabled={page === 1}
-                className="h-10 rounded-xl px-4 font-medium transition-all active:scale-95 disabled:opacity-50"
+                className="h-11 rounded-xl px-5 font-bold border-slate-200 shadow-sm transition-all active:scale-95 disabled:opacity-40"
               >
                 <ChevronLeft className="mr-2 h-4 w-4" /> Previous
               </Button>
-              <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPage(i + 1)}
-                    className={`h-10 w-10 rounded-xl text-sm font-semibold transition-all ${
-                      page === i + 1 
-                      ? "bg-primary text-white shadow-md shadow-primary/20" 
-                      : "text-slate-500 hover:bg-slate-100"
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
+              <div className="flex items-center gap-1.5 px-2">
+                {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+                  let pageNum = i + 1;
+                  // Basic sliding window for many pages
+                  if (totalPages > 5 && page > 3) {
+                    pageNum = Math.min(page - 2 + i, totalPages - 4 + i);
+                  }
+                  
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      className={`flex h-11 w-11 items-center justify-center rounded-xl text-sm font-bold transition-all ${
+                        page === pageNum 
+                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100" 
+                        : "text-slate-500 hover:bg-white hover:shadow-sm ring-1 ring-transparent hover:ring-slate-200"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                {totalPages > 5 && page < totalPages - 2 && (
+                  <span className="px-2 text-slate-400 font-bold">...</span>
+                )}
               </div>
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))} 
                 disabled={page >= totalPages}
-                className="h-10 rounded-xl px-4 font-medium transition-all active:scale-95 disabled:opacity-50"
+                className="h-11 rounded-xl px-5 font-bold border-slate-200 shadow-sm transition-all active:scale-95 disabled:opacity-40"
               >
                 Next <ChevronRight className="ml-2 h-4 w-4" />
               </Button>

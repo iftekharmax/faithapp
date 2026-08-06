@@ -224,7 +224,7 @@ function UniversityDetail() {
       <div className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
           {/* Hero & KPI Section */}
-          <section className="grid gap-8 lg:grid-cols-[1fr,500px]">
+          <section className="grid gap-8 md:grid-cols-[1fr,360px] lg:grid-cols-[1fr,500px]">
             <Card className="relative overflow-hidden rounded-[24px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
               <div className="flex flex-col gap-8">
                 <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
@@ -290,7 +290,7 @@ function UniversityDetail() {
           </section>
 
           {/* Main Layout Grid */}
-          <div className="grid gap-8 lg:grid-cols-[1fr,360px] items-start">
+          <div className="grid gap-8 md:grid-cols-[1fr,320px] lg:grid-cols-[1fr,360px] items-start">
             <div className="space-y-8 min-w-0">
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3">

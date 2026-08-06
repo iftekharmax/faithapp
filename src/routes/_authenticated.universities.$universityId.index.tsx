@@ -775,31 +775,31 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
 
       
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden border-none bg-background sm:rounded-3xl shadow-2xl">
-          <div className="relative overflow-hidden bg-primary px-6 py-8 text-primary-foreground">
-            <div className="absolute right-0 top-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-            <div className="relative">
-              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
-                <Plus className="h-6 w-6 text-white" />
+        <DialogContent className="max-w-4xl p-0 overflow-hidden border-none bg-[#F8FAFC] sm:rounded-[32px] shadow-2xl">
+          <div className="relative overflow-hidden bg-primary px-8 py-10 text-primary-foreground">
+            <div className="absolute right-0 top-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+            <div className="relative flex items-center gap-6">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md shadow-inner">
+                {editing ? <Pencil className="h-8 w-8 text-white" /> : <Plus className="h-8 w-8 text-white" />}
               </div>
               <DialogHeader className="text-left">
-                <DialogTitle className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  {editing ? "Edit Program" : "Add New Program"}
+                <DialogTitle className="text-3xl font-black tracking-tight text-white">
+                  {editing ? "Edit Program" : "Create New Program"}
                 </DialogTitle>
-                <p className="text-primary-foreground/80">
-                  {editing ? "Update details for the existing program" : "Define the details for a new academic program"}
+                <p className="text-lg text-primary-foreground/70">
+                  {editing ? "Update existing program details" : "Add a new academic program to this institution"}
                 </p>
               </DialogHeader>
             </div>
           </div>
 
-          <div className="max-h-[70vh] overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-muted-foreground/20">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="md:col-span-2 space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Program Name *</Label>
+          <div className="max-h-[70vh] overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-slate-200">
+            <div className="grid gap-8 md:grid-cols-2">
+              <div className="md:col-span-2 space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Program Name <span className="text-primary">*</span></Label>
                 <Input 
-                  className="h-12 rounded-xl border-muted/60 bg-muted/20 focus-visible:ring-primary shadow-sm"
-                  placeholder="e.g. B.Sc. in Computer Science"
+                  className="h-14 rounded-xl border-slate-100 bg-white px-5 text-lg font-bold shadow-sm focus-visible:ring-primary"
+                  placeholder="e.g. Bachelor of Computer Science"
                   value={form.name ?? ""} 
                   onChange={(e) => setForm({ ...form, name: e.target.value })} 
                 />

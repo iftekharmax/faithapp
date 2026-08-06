@@ -15,7 +15,9 @@ interface AuthContextValue {
   user: User | null;
   profile: Profile | null;
   roles: AppRole[];
-  loading: boolean;
+  loading: boolean; // session loading
+  rolesLoading: boolean; // profile/roles loading
+  rolesLoadError: string | null;
   sessionTimedOut: boolean;
   emailVerified: boolean;
   sessionExpired: boolean;
@@ -23,6 +25,7 @@ interface AuthContextValue {
   hasAnyRole: (roles: AppRole[]) => boolean;
   refresh: () => Promise<void>;
   retrySession: () => void;
+  reloadUserData: () => Promise<void>;
   signOut: () => Promise<void>;
   dismissSessionExpired: () => void;
 }
@@ -118,15 +121,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    // Safety net: never keep the app in the loading state forever if
-    // getSession() hangs (network glitch, blocked request, etc.).
     setSessionTimedOut(false);
-    const loadingSafety = setTimeout(() => {
-      if (!mounted) return;
-      setLoading(false);
-      if (!hadSessionRef.current) setSessionTimedOut(true);
-    }, 15000);
-
+    
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
       setSession(data.session);
@@ -135,20 +131,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         hadSessionRef.current = true;
         setSessionTimedOut(false);
         void loadUserData(data.session.user.id).finally(() => {
-          clearTimeout(loadingSafety);
           setLoading(false);
         });
       } else {
-        clearTimeout(loadingSafety);
         setSessionTimedOut(false);
         setLoading(false);
       }
     }).catch(() => {
       if (!mounted) return;
-      clearTimeout(loadingSafety);
       setLoading(false);
       setSessionTimedOut(true);
     });
+
 
     return () => {
       mounted = false;
@@ -167,17 +161,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile,
     roles,
     loading,
+    rolesLoading,
+    rolesLoadError,
     sessionTimedOut,
     emailVerified,
     sessionExpired,
     hasRole: (r) => roles.includes(r),
     hasAnyRole: (rs) => rs.some((r) => roles.includes(r)),
     refresh,
+    reloadUserData: async () => {
+      if (session?.user) await loadUserData(session.user.id);
+    },
     retrySession: () => {
       setLoading(true);
       setSessionTimedOut(false);
       setRetryTick((n) => n + 1);
     },
+
     signOut: async () => {
       hadSessionRef.current = false;
       setSessionExpired(false);

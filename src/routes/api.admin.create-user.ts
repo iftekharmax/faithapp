@@ -12,7 +12,7 @@ function json(body: unknown, status = 200) {
 }
 
 async function getAdminContext(request: Request) {
-  const serviceKey = process.env.SB_SERVICE_ROLE_KEY || import.meta.env.SB_SERVICE_ROLE_KEY;
+  const serviceKey = process.env['SB_SERVICE_ROLE_KEY'];
   if (!serviceKey) {
     console.error("[Auth] Critical: SB_SERVICE_ROLE_KEY is missing in environment");
     return { error: json({ error: "Configuration error: Admin service is temporarily unavailable. Please contact support." }, 500) };

@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
-import { Loader2, MailCheck } from "lucide-react";
+import { Loader2, MailCheck, ShieldAlert } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthenticatedLayout() {
-  const { session, loading, sessionTimedOut, emailVerified, signOut } = useAuth();
+  const { session, loading, rolesLoading, rolesLoadError, reloadUserData, sessionTimedOut, emailVerified, signOut } = useAuth();
   const navigate = useNavigate();
   const hadSessionRef = useRef(false);
 
@@ -37,13 +37,41 @@ function AuthenticatedLayout() {
     return <SessionTimeoutFallback />;
   }
 
-  if (loading || (!session && !hadSessionRef.current)) {
+  if (loading || rolesLoading || (!session && !hadSessionRef.current)) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          {rolesLoading && <p className="text-sm text-muted-foreground animate-pulse">Loading permissions...</p>}
+        </div>
       </div>
     );
   }
+
+  if (rolesLoadError && session) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background p-4">
+        <div className="max-w-md w-full rounded-2xl border bg-card p-8 text-center shadow-sm">
+          <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-destructive/10 text-destructive">
+            <ShieldAlert className="h-7 w-7" />
+          </div>
+          <h1 className="mt-5 text-xl font-semibold text-foreground">Failed to load permissions</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {rolesLoadError}. This might be a temporary connection issue.
+          </p>
+          <div className="mt-6 flex flex-col gap-2">
+            <Button onClick={() => reloadUserData()} className="h-11">
+              Retry loading
+            </Button>
+            <Button variant="outline" onClick={() => signOut()} className="h-11">
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
 
   if (!session) {
     // Had a session before, waiting for the debounced confirm above.

@@ -394,29 +394,45 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3 space-y-0">
-        <div className="flex flex-1 flex-wrap gap-2">
-          <Input placeholder="Search programs..." value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-xs" />
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-1 flex-wrap items-center gap-3">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input 
+              placeholder="Search programs..." 
+              value={search} 
+              onChange={(e) => setSearch(e.target.value)} 
+              className="pl-9 h-11 rounded-xl border-none shadow-sm ring-1 ring-border bg-white focus-visible:ring-primary" 
+            />
+          </div>
           <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-            <SelectTrigger className="w-[160px]"><SelectValue placeholder="Degree" /></SelectTrigger>
-            <SelectContent>
+            <SelectTrigger className="w-[160px] h-11 rounded-xl border-none shadow-sm ring-1 ring-border bg-white">
+              <SelectValue placeholder="Degree" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border-none shadow-xl ring-1 ring-border">
               <SelectItem value="all">All degrees</SelectItem>
               {degrees.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2">
           <CsvToolbar label="programs"
             onExport={() => exportProgramsCsv(universityId)}
             onPreview={canEdit ? (text) => previewProgramsCsv(text, universityId) : undefined}
             onImportDone={onChange}
             templateHeaders={["name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"]}
             templateName="programs-template" canImport={canEdit} />
-          {canEdit && <Button onClick={openNew}><Plus className="mr-2 h-4 w-4" />Add program</Button>}
+          {canEdit && (
+            <Button onClick={openNew} className="rounded-xl h-11 px-6 font-bold shadow-sm">
+              <Plus className="mr-2 h-4 w-4" /> Add Program
+            </Button>
+          )}
         </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+
+      <div>
+
         {filtered.length === 0 ? (
           programs.length === 0 ? (
             <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed py-16 text-center">

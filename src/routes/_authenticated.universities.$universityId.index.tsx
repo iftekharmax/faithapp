@@ -625,19 +625,6 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
                         <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 shadow-sm border border-slate-100">
                           <Heart className="h-5 w-5" />
                         </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full border border-slate-100 shadow-sm text-slate-400">
-                              <MoreVertical className="h-5 w-5" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
-                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg font-bold"><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg font-bold text-blue-600"><Plus className="mr-2 h-4 w-4" /> Apply</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg font-bold text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
                       </div>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-50">
@@ -700,9 +687,19 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
                         <Button variant="outline" className="flex-1 rounded-xl border-slate-200 font-bold text-slate-700 hover:bg-slate-50">
                           View Details
                         </Button>
-                        <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl border-slate-200">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl border-slate-200">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
+                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg font-bold"><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg font-bold text-blue-600"><Plus className="mr-2 h-4 w-4" /> Apply</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg font-bold text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
                   </div>

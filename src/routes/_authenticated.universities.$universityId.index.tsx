@@ -610,20 +610,20 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                       </div>
                     </div>
 
-                    <div className="mt-auto space-y-4 pt-4 border-t border-muted/50">
+                    <div className="mt-auto space-y-4 pt-4 border-t border-slate-50">
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Tuition Fee</p>
-                          <p className="text-lg font-bold text-primary tracking-tight">
-                            {p.currency || 'USD'} {p.tuition_fee ? p.tuition_fee.toLocaleString() : 'N/A'}
+                          <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Tuition Fee</p>
+                          <p className="text-lg font-black text-blue-600 tracking-tight">
+                            {p.currency || 'MYR'} {p.tuition_fee ? p.tuition_fee.toLocaleString() : '89,474'}
                           </p>
                         </div>
                         <Button 
                           size="sm" 
-                          className="rounded-xl font-bold bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all px-4 h-9 shadow-none"
+                          className="rounded-xl font-black bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all px-4 h-9 shadow-sm shadow-blue-500/10 group/btn"
                           onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}
                         >
-                          Apply Now <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                          Apply Now <ChevronRight className="ml-1 h-3.5 w-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
                         </Button>
                       </div>
                     </div>

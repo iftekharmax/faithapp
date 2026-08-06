@@ -15,7 +15,9 @@ interface AuthContextValue {
   user: User | null;
   profile: Profile | null;
   roles: AppRole[];
-  loading: boolean;
+  loading: boolean; // session loading
+  rolesLoading: boolean; // profile/roles loading
+  rolesLoadError: string | null;
   sessionTimedOut: boolean;
   emailVerified: boolean;
   sessionExpired: boolean;
@@ -23,6 +25,7 @@ interface AuthContextValue {
   hasAnyRole: (roles: AppRole[]) => boolean;
   refresh: () => Promise<void>;
   retrySession: () => void;
+  reloadUserData: () => Promise<void>;
   signOut: () => Promise<void>;
   dismissSessionExpired: () => void;
 }
@@ -37,22 +40,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [rolesLoading, setRolesLoading] = useState(false);
+  const [rolesLoadError, setRolesLoadError] = useState<string | null>(null);
   const [sessionTimedOut, setSessionTimedOut] = useState(false);
   const [retryTick, setRetryTick] = useState(0);
   const [sessionExpired, setSessionExpired] = useState(false);
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hadSessionRef = useRef(false);
 
+  const retryAsync = async <T,>(
+    fn: () => Promise<T>,
+    maxAttempts = 3,
+    backoff = [500, 1000, 2000]
+  ): Promise<T> => {
+    let lastErr: any;
+    for (let i = 0; i < maxAttempts; i++) {
+      try {
+        return await fn();
+      } catch (err: any) {
+        lastErr = err;
+        const status = err?.status || err?.code;
+        if (status === 401 || status === 403 || status === 404 || (typeof status === 'string' && status.startsWith('4'))) {
+          throw err;
+        }
+        if (i < maxAttempts - 1) {
+          await new Promise((r) => setTimeout(r, backoff[i] || 1000));
+        }
+      }
+    }
+    throw lastErr;
+  };
+
   const loadUserData = async (uid: string) => {
+    setRolesLoading(true);
+    setRolesLoadError(null);
     try {
-      const [{ data: prof }, { data: r }] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
-        supabase.from("user_roles").select("role").eq("user_id", uid),
-      ]);
-      setProfile((prof as Profile) ?? null);
-      setRoles(((r as { role: AppRole }[]) ?? []).map((x) => x.role));
-    } catch (err) {
-      console.error("Error loading user data:", err);
+      await retryAsync(async () => {
+        const [{ data: prof, error: pErr }, { data: r, error: rErr }] = await Promise.all([
+          supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
+          supabase.from("user_roles").select("role").eq("user_id", uid),
+        ]);
+        
+        if (pErr) throw pErr;
+        if (rErr) throw rErr;
+
+        setProfile((prof as Profile) ?? null);
+        setRoles(((r as { role: AppRole }[]) ?? []).map((x) => x.role));
+      });
+    } catch (err: any) {
+      console.error("Error loading user data after retries:", err);
+      setRolesLoadError(err.message || "Failed to load user profile and roles");
+    } finally {
+      setRolesLoading(false);
     }
   };
 
@@ -75,7 +114,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshTimer.current = setTimeout(async () => {
       const { data, error } = await supabase.auth.refreshSession();
       if (error || !data.session) {
-        // Refresh failed — token likely revoked/expired. Show re-login prompt.
         setSessionExpired(true);
         await supabase.auth.signOut().catch(() => {});
       }
@@ -88,8 +126,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       if (!mounted) return;
 
-      // Silent token rotation — keep session/refresh timer in sync but don't
-      // treat as identity change (avoids UI redirects while user is active).
       if (event === "TOKEN_REFRESHED") {
         if (s) {
           setSession(s);
@@ -98,8 +134,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Only react to real identity transitions. Ignore INITIAL_SESSION
-      // (handled by getSession below) and other noisy events.
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") {
         return;
       }
@@ -109,24 +143,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (s?.user) {
         hadSessionRef.current = true;
-        setTimeout(() => {
-          void loadUserData(s.user.id);
-        }, 0);
+        void loadUserData(s.user.id);
       } else {
         setProfile(null);
         setRoles([]);
       }
     });
 
-    // Safety net: never keep the app in the loading state forever if
-    // getSession() hangs (network glitch, blocked request, etc.).
     setSessionTimedOut(false);
-    const loadingSafety = setTimeout(() => {
-      if (!mounted) return;
-      setLoading(false);
-      if (!hadSessionRef.current) setSessionTimedOut(true);
-    }, 15000);
-
+    
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
       setSession(data.session);
@@ -135,29 +160,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         hadSessionRef.current = true;
         setSessionTimedOut(false);
         void loadUserData(data.session.user.id).finally(() => {
-          clearTimeout(loadingSafety);
           setLoading(false);
         });
       } else {
-        clearTimeout(loadingSafety);
         setSessionTimedOut(false);
         setLoading(false);
       }
     }).catch(() => {
       if (!mounted) return;
-      clearTimeout(loadingSafety);
       setLoading(false);
       setSessionTimedOut(true);
     });
 
     return () => {
       mounted = false;
-      clearTimeout(loadingSafety);
       clearRefreshTimer();
       sub.subscription.unsubscribe();
     };
   }, [scheduleProactiveRefresh, retryTick]);
-
 
   const emailVerified = Boolean(session?.user?.email_confirmed_at ?? session?.user?.confirmed_at);
 
@@ -167,12 +187,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile,
     roles,
     loading,
+    rolesLoading,
+    rolesLoadError,
     sessionTimedOut,
     emailVerified,
     sessionExpired,
     hasRole: (r) => roles.includes(r),
     hasAnyRole: (rs) => rs.some((r) => roles.includes(r)),
     refresh,
+    reloadUserData: async () => {
+      if (session?.user) await loadUserData(session.user.id);
+    },
     retrySession: () => {
       setLoading(true);
       setSessionTimedOut(false);

@@ -1,12 +1,20 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { supabase } from '@/lib/supabase';
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { supabase } from '@/lib/supabase'
 
 export const Route = createFileRoute('/api/public/task-digest')({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        // In a real app, verify a secret token for security
-        // const authHeader = request.headers.get('Authorization');
+        // 1. Verify internal secret to prevent public abuse
+        const authHeader = request.headers.get('Authorization')
+        const internalSecret = process.env.INTERNAL_API_SECRET
+        
+        if (!internalSecret || authHeader !== `Bearer ${internalSecret}`) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), { 
+            status: 401,
+            headers: { 'Content-Type': 'application/json' }
+          })
+        }
         
         try {
           // 1. Get all managers/admins who should receive the digest
@@ -19,7 +27,7 @@ export const Route = createFileRoute('/api/public/task-digest')({
           
           // 2. For each manager, fetch overdue and upcoming tasks
           const results = [];
-          for (const manager of managers as any[]) {
+          for (const manager of (managers as any[])) {
             const email = manager.profiles?.email;
             if (!email) continue;
             
@@ -31,7 +39,7 @@ export const Route = createFileRoute('/api/public/task-digest')({
               .from('tasks')
               .select('title, due_date, status')
               .lt('due_date', now)
-              .not('status', 'in', '("completed","done","cancelled")');
+              .not('status', 'in', '("completed","done","cancelled","approved")');
               
             // Get upcoming tasks
             const { data: upcoming } = await supabase
@@ -39,12 +47,11 @@ export const Route = createFileRoute('/api/public/task-digest')({
               .select('title, due_date, status')
               .gte('due_date', now)
               .lte('due_date', nextWeek)
-              .not('status', 'in', '("completed","done","cancelled")');
+              .not('status', 'in', '("completed","done","cancelled","approved")');
               
             if ((overdue?.length ?? 0) > 0 || (upcoming?.length ?? 0) > 0) {
-              // Here you would integrate with your email provider (SendGrid, Postmark, etc.)
-              // For now, we log the intent and return success
-              console.log(`Sending weekly digest to ${email}: ${overdue?.length} overdue, ${upcoming?.length} upcoming tasks.`);
+              // Mock sending email
+              console.log(`[TaskDigest] Weekly digest prepared for ${email}: ${overdue?.length} overdue, ${upcoming?.length} upcoming tasks.`);
               results.push({ email, overdue: overdue?.length, upcoming: upcoming?.length });
             }
           }

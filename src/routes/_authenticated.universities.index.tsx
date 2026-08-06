@@ -546,16 +546,27 @@ function UniversitiesPage() {
   );
 }
 
-function StatCard({ label, value, icon: Icon, color = "bg-primary/5 text-primary" }: { label: string; value: number; icon: any; color?: string }) {
+function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-600", trend = "+12.5%" }: { label: string; value: number; icon: any; color?: string; trend?: string }) {
   return (
-    <Card className="rounded-2xl border-none bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:shadow-md">
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className={`grid h-12 w-12 place-items-center rounded-2xl ${color}`}>
-          <Icon className="h-6 w-6" />
+    <Card className="overflow-hidden rounded-2xl border-none bg-white shadow-sm ring-1 ring-slate-200/60 transition-all duration-300 hover:shadow-md">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${color} text-white shadow-lg shadow-indigo-100`}>
+            <Icon className="h-6 w-6" />
+          </div>
+          {trend && (
+            <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-600">
+              <TrendingUp className="h-3 w-3" />
+              {trend}
+            </div>
+          )}
         </div>
-        <div>
-          <div className="text-sm font-medium text-slate-500">{label}</div>
-          <div className="text-2xl font-bold text-slate-900">{value}</div>
+        <div className="mt-4">
+          <div className="text-3xl font-bold tracking-tight text-slate-900">{value.toLocaleString()}</div>
+          <div className="mt-1 flex items-center justify-between">
+            <span className="text-sm font-medium text-slate-500">{label}</span>
+            <span className="text-[10px] font-semibold text-slate-400">Total count</span>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -565,13 +576,13 @@ function StatCard({ label, value, icon: Icon, color = "bg-primary/5 text-primary
 function StatChip({ label, value }: { label: string; value: number }) {
   const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : GraduationCap;
   return (
-    <div className="flex h-11 items-center gap-2.5 rounded-xl bg-slate-50 px-3 transition-all hover:bg-slate-100 ring-1 ring-slate-100/50">
+    <div className="flex h-11 items-center gap-2.5 rounded-xl bg-slate-50 px-3 transition-all hover:bg-slate-100 ring-1 ring-slate-200/40">
       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-slate-100">
-        <Icon className="h-3.5 w-3.5 text-primary/70" />
+        <Icon className="h-3.5 w-3.5 text-indigo-600/70" />
       </div>
       <div className="flex flex-col min-w-0">
         <span className="text-xs font-bold text-slate-900 leading-none">{value}</span>
-        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">{label}</span>
+        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-0.5 truncate">{label}</span>
       </div>
     </div>
   );
@@ -579,14 +590,14 @@ function StatChip({ label, value }: { label: string; value: number }) {
 
 function StatusBadge({ status }: { status: UniStatus }) {
   const configs = {
-    active: { color: "bg-emerald-50 text-emerald-700 ring-emerald-100", label: "Active" },
+    active: { color: "bg-emerald-50 text-emerald-700 ring-emerald-200", label: "Active" },
     inactive: { color: "bg-slate-100 text-slate-600 ring-slate-200", label: "Inactive" },
-    archived: { color: "bg-amber-50 text-amber-700 ring-amber-100", label: "Archived" },
+    archived: { color: "bg-amber-50 text-amber-700 ring-amber-200", label: "Archived" },
   };
   const config = configs[status] || configs.inactive;
   
   return (
-    <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ring-1 ${config.color}`}>
+    <div className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ring-1 ${config.color}`}>
       <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-current" />
       {config.label}
     </div>

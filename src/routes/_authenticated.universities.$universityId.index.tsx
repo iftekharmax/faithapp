@@ -640,9 +640,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
 
 
       <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="flex flex-1 flex-wrap items-center gap-4">
-            <div className="relative flex-1 max-w-sm">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="relative flex-1 min-w-[300px]">
               <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input 
                 placeholder="Search programs..." 
@@ -651,33 +651,28 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                 className="pl-11 h-12 rounded-xl border-slate-100 bg-slate-50 focus-visible:ring-primary shadow-inner" 
               />
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 text-slate-400 ring-1 ring-slate-100">
-                <GraduationCap className="h-5 w-5" />
-              </div>
-              <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-                <SelectTrigger className="w-[180px] h-12 rounded-xl border-slate-100 bg-slate-50 font-semibold shadow-inner">
-                  <SelectValue placeholder="Degree Level" />
-                </SelectTrigger>
-                <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100">
-                  <SelectItem value="all" className="rounded-xl p-3 font-semibold">All Degree Levels</SelectItem>
-                  {degrees.map((d) => <SelectItem key={d} value={d} className="rounded-xl p-3 font-semibold">{d}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
+            <FilterSelect icon={GraduationCap} placeholder="All Degrees" value={degreeFilter} onValueChange={setDegreeFilter} options={degrees} />
+            <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={MapPin} label="All Campuses" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Clock} label="Study Mode" value="all" onValueChange={() => {}} options={[]} />
           </div>
-          <div className="flex items-center gap-3">
-            <CsvToolbar label="programs"
-              onExport={() => exportProgramsCsv(universityId)}
-              onPreview={canEdit ? (text) => previewProgramsCsv(text, universityId) : undefined}
-              onImportDone={onChange}
-              templateHeaders={["name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"]}
-              templateName="programs-template" canImport={canEdit} />
-            {canEdit && (
-              <Button onClick={openNew} className="rounded-xl h-12 px-8 font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                <Plus className="mr-2 h-5 w-5" /> Add Program
+          
+          <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-50">
+            <FilterSelect icon={Calendar} label="All Intakes" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Award} label="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={ListIcon} label="Sort by: Newest" value="newest" onValueChange={() => {}} options={[]} />
+            <Button variant="ghost" className="h-10 rounded-xl font-bold text-slate-500 hover:text-primary" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
+              <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
+            </Button>
+
+            <div className="ml-auto flex items-center gap-2">
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white">
+                <LayoutGrid className="h-5 w-5" />
               </Button>
-            )}
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl hover:bg-slate-100">
+                <ListIcon className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </Card>

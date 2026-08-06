@@ -7,7 +7,9 @@ import {
   FileText, Briefcase, Plane, BookOpen, Clock, CheckCircle2, 
   ArrowRight, MoreVertical, LayoutGrid, List as ListIcon, 
   TrendingUp, Search, RotateCcw, Filter, ChevronRight,
-  School, Book, UserCheck
+  School, Book, UserCheck, Star, ShieldCheck, Flame, Zap, Trophy,
+  History, PieChart, Activity, Info, Landmark, Languages, GraduationCap as GradIcon,
+  MousePointer2, Share
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";

@@ -575,7 +575,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                             </Badge>
                           )}
                         </div>
-                        <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary leading-tight">
+                        <h3 className="text-[17px] font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors leading-tight min-h-[42px] line-clamp-2">
                           {p.name}
                         </h3>
                         <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-muted-foreground pt-1">

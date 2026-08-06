@@ -223,7 +223,7 @@ function UniversityDetail() {
                     <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-slate-500 lg:gap-6">
                       <div className="flex items-center gap-2"><span>MY</span> <span className="font-black uppercase tracking-widest text-[10px] text-slate-400">Malaysia</span></div>
                       <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-300" /> <span className="font-black uppercase tracking-widest text-[10px] text-slate-400">{uni.city || 'Negeri Sembilan'}</span></div>
-                      {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline"><span>Website</span> <ExternalLink className="h-3.5 w-3.5" /></a>}
+                      {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 font-black uppercase tracking-widest text-[10px] hover:underline"><span>Website</span> <ExternalLink className="h-3.5 w-3.5" /></a>}
                     </div>
                     <p className="max-w-3xl text-sm leading-relaxed text-slate-500 font-medium lg:text-base">
                       {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}

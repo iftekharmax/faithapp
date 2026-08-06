@@ -1087,28 +1087,130 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
 
 
 
-function ProgramInfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function HeroMetaItem({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-400">
-        <Icon className="h-3.5 w-3.5" />
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-slate-400" />
+        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</span>
       </div>
-      <div className="flex flex-col">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 leading-none mb-0.5">{label}</span>
-        <span className="text-xs font-bold text-slate-700 leading-none">{value}</span>
+      <span className="text-sm font-bold text-slate-900">{value}</span>
+    </div>
+  );
+}
+
+function ActionIconButton({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white px-6 font-bold text-slate-600 hover:bg-slate-50 transition-all hover:scale-[1.02]">
+      <Icon className="mr-2 h-4 w-4 text-slate-400" /> {label}
+    </Button>
+  );
+}
+
+function OverviewItem({ icon: Icon, label, value, flag, isLink }: { icon: any; label: string; value: string; flag?: string; isLink?: boolean }) {
+  return (
+    <div className="flex items-center justify-between group cursor-default">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-400 group-hover:bg-primary/5 group-hover:text-primary transition-colors">
+          <Icon className="h-4 w-4" />
+        </div>
+        <span className="text-sm font-bold text-slate-400">{label}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        {flag && <span className="text-sm">{flag}</span>}
+        <span className={cn("text-sm font-black text-slate-900", isLink && "text-primary hover:underline cursor-pointer")}>{value}</span>
+        {isLink && <ExternalLink className="h-3 w-3 text-primary" />}
       </div>
     </div>
   );
 }
 
-function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function OverviewStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start gap-1.5">
-      <Icon className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />
-      <div><div className="text-[10px] uppercase text-muted-foreground">{label}</div><div>{value}</div></div>
+    <div className="flex items-center justify-between">
+      <span className="text-sm font-bold text-slate-400">{label}</span>
+      <span className="text-sm font-black text-slate-900">{value}</span>
     </div>
   );
 }
+
+function IntakeItem({ label, days }: { label: string; days: string }) {
+  return (
+    <div className="flex items-center justify-between group cursor-default">
+      <div className="flex items-center gap-3">
+        <div className="flex h-5 w-5 items-center justify-center text-slate-300">
+          <Calendar className="h-4 w-4" />
+        </div>
+        <span className="text-sm font-bold text-slate-900">{label}</span>
+      </div>
+      <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">In {days}</span>
+    </div>
+  );
+}
+
+function SidebarAction({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <Button variant="ghost" className="w-full justify-start rounded-xl py-6 px-4 font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-all group">
+      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+        <Icon className="h-4 w-4" />
+      </div>
+      {label}
+    </Button>
+  );
+}
+
+function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, options }: { icon: any; placeholder?: string; label?: string; value: string; onValueChange: (v: string) => void; options: string[] }) {
+  return (
+    <div className="flex items-center gap-2">
+      {Icon && (
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 text-slate-400 ring-1 ring-slate-100 shadow-inner">
+          <Icon className="h-5 w-5" />
+        </div>
+      )}
+      <Select value={value} onValueChange={onValueChange}>
+        <SelectTrigger className="min-w-[140px] h-12 rounded-xl border-slate-100 bg-slate-50 font-black shadow-inner">
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100">
+          <SelectItem value="all" className="rounded-xl p-3 font-semibold">{label || "All"}</SelectItem>
+          {options.map((o) => <SelectItem key={o} value={o} className="rounded-xl p-3 font-semibold">{o}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function ProgramMeta({ icon: Icon, value }: { icon: any; value: string }) {
+  return (
+    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+      <Icon className="h-3.5 w-3.5 text-primary/40" />
+      <span>{value}</span>
+    </div>
+  );
+}
+
+function ProgramStat({ label, value, isPrimary, isHighlight }: { label: string; value: string; isPrimary?: boolean; isHighlight?: boolean }) {
+  return (
+    <div className="space-y-1">
+      <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</p>
+      <p className={cn(
+        "text-xs font-black tracking-tight",
+        isPrimary ? "text-primary text-sm" : isHighlight ? "text-emerald-500" : "text-slate-900"
+      )}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function IntakeChip({ label }: { label: string }) {
+  return (
+    <Badge variant="secondary" className="bg-slate-50 text-slate-600 hover:bg-slate-100 border-none rounded-lg px-2 py-1 text-[10px] font-bold">
+      {label}
+    </Badge>
+  );
+}
+
 
 /* ============ CAMPUSES ============ */
 function CampusesTab({ universityId, campuses, canEdit, onChange }: {

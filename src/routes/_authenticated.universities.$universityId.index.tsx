@@ -192,7 +192,7 @@ function UniversityDetail() {
                 <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
                 <Link to="/universities" className="text-muted-foreground hover:text-primary whitespace-nowrap">Universities</Link>
                 <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
-                <span className="truncate text-slate-900">{uni.name}</span>
+                <span className="truncate text-slate-900 font-bold">{uni.name}</span>
               </nav>
             </div>
             <div className="flex items-center gap-2">
@@ -215,17 +215,17 @@ function UniversityDetail() {
                   </div>
                   <div className="flex flex-col gap-3 lg:gap-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-tight lg:text-[34px]">{uni.name}</h1>
+                      <h1 className="text-2xl font-black tracking-tighter text-slate-900 leading-none lg:text-[42px]">{uni.name}</h1>
                       <Badge className={cn("rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest", uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm shadow-emerald-500/20" : "bg-slate-500 hover:bg-slate-600 text-white shadow-sm shadow-slate-500/20")}>
                         {uni.status === "active" ? "• Active" : uni.status}
                       </Badge>
                     </div>
                     <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-slate-500 lg:gap-6">
-                      <div className="flex items-center gap-2"><span>🇲🇾</span> <span>{uni.country?.name || 'Malaysia'}</span></div>
-                      <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-400" /> <span>{uni.city || 'Negeri Sembilan'}</span></div>
-                      {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline"><span>Website</span> <ExternalLink className="h-3.5 w-3.5" /></a>}
+                      <div className="flex items-center gap-2"><span>MY</span> <span className="font-black uppercase tracking-widest text-[10px] text-slate-400">Malaysia</span></div>
+                      <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-300" /> <span className="font-black uppercase tracking-widest text-[10px] text-slate-400">{uni.city || 'Negeri Sembilan'}</span></div>
+                      {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 font-black uppercase tracking-widest text-[10px] hover:underline"><span>Website</span> <ExternalLink className="h-3.5 w-3.5" /></a>}
                     </div>
-                    <p className="max-w-3xl text-sm leading-relaxed text-slate-500 font-medium lg:text-base">
+                    <p className="max-w-4xl text-sm leading-relaxed text-slate-500 font-bold lg:text-[15px]">
                       {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
                     </p>
                   </div>
@@ -251,23 +251,23 @@ function UniversityDetail() {
             </div>
           </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),320px] lg:grid-cols-[minmax(0,1fr),360px] gap-6 items-start">
-            <div className="flex flex-col gap-6 lg:gap-8 min-w-0">
-              <div className="flex flex-wrap items-center gap-3">
-                <Button size="lg" className="h-12 rounded-xl bg-[#2563EB] px-8 font-black text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
-                <Button size="lg" variant="outline" className="h-12 rounded-xl border-blue-200 bg-white px-8 font-black text-[#2563EB] hover:bg-blue-50" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>
-                <ActionIconButton icon={Download} label="Export Programs" />
-                <ActionIconButton icon={Plus} label="Import Programs" />
-                <ActionIconButton icon={FileText} label="Template" />
-                <ActionIconButton icon={Share2} label="Share University" />
-              </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button size="lg" className="h-12 rounded-xl bg-[#2563EB] px-8 font-black text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
+            <Button size="lg" variant="outline" className="h-12 rounded-xl border-blue-200 bg-white px-8 font-black text-[#2563EB] hover:bg-blue-50" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>
+            <ActionIconButton icon={Download} label="Export Programs" />
+            <ActionIconButton icon={Plus} label="Import Programs" />
+            <ActionIconButton icon={FileText} label="Template" />
+            <ActionIconButton icon={Share2} label="Share University" />
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),320px] lg:grid-cols-[minmax(0,1fr),360px] gap-8 items-start">
+            <div className="flex flex-col gap-6 lg:gap-8 min-w-0">
               <Tabs defaultValue="programs" className="w-full">
-                <div className="sticky top-[72px] z-20 px-4 py-2 sm:px-0">
+                <div className="sticky top-[72px] z-20">
                   <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
-                    <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all">Programs <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">155</Badge></TabsTrigger>
-                    <TabsTrigger value="campuses" className="rounded-xl px-8 font-bold data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all">Campuses <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">4</Badge></TabsTrigger>
-                    <TabsTrigger value="applications" className="rounded-xl px-8 font-bold data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all">Applications <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">3,241</Badge></TabsTrigger>
+                    <TabsTrigger value="programs" className="rounded-xl px-8 font-black data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all group">Programs <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white transition-colors">155</Badge></TabsTrigger>
+                    <TabsTrigger value="campuses" className="rounded-xl px-8 font-black data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all group">Campuses <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white transition-colors">4</Badge></TabsTrigger>
+                    <TabsTrigger value="applications" className="rounded-xl px-8 font-black data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all group">Applications <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white transition-colors">3,241</Badge></TabsTrigger>
                   </TabsList>
                 </div>
                 <TabsContent value="programs" className="mt-8 outline-none">
@@ -341,7 +341,7 @@ function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: stri
       <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shadow-sm", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
-      <div className="text-xl font-black tracking-tight text-slate-900">{value}</div>
+      <div className="text-[22px] font-black tracking-tighter text-slate-900">{value}</div>
       <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
       {growth && (
         <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-50 text-[8px] font-black text-emerald-600 hover:bg-emerald-100 flex items-center gap-0.5 shadow-sm">
@@ -560,73 +560,70 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           <div className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p) => (
-                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl border-none bg-white shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10 hover:ring-primary/20">
+                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[24px] bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-blue-500/10">
 
                   <div className="flex flex-1 flex-col p-6">
                     <div className="mb-4 flex items-start justify-between gap-4">
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-                            {p.degree || 'Program'}
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-blue-600">
+                            {p.degree || "Bachelor's Degree"}
                           </span>
-                          {p.status === 'active' && <Badge variant="outline" className="h-4 border-emerald-200 bg-emerald-50 text-emerald-700 text-[9px] font-bold px-1.5 uppercase tracking-tighter">Active</Badge>}
+                          {p.status === 'active' && (
+                            <Badge className="h-4 border-none bg-emerald-500 text-white text-[9px] font-black px-1.5 uppercase tracking-widest rounded-full">
+                              Active
+                            </Badge>
+                          )}
                         </div>
-                        <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary leading-tight">
+                        <h3 className="text-[17px] font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors leading-tight min-h-[42px] line-clamp-2">
                           {p.name}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-muted-foreground pt-1">
-                          {p.duration && (
-                            <div className="flex items-center gap-1.5">
-                              <Clock className="h-3.5 w-3.5 text-muted-foreground/60" />
-                              <span>{p.duration}</span>
-                            </div>
-                          )}
-                          {p.intake && (
-                            <div className="flex items-center gap-1.5">
-                              <Calendar className="h-3.5 w-3.5 text-muted-foreground/60" />
-                              <span>{p.intake}</span>
-                            </div>
-                          )}
+                        <div className="flex flex-col gap-1.5 pt-2">
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+                            <Clock className="h-3.5 w-3.5" />
+                            <span>{p.duration || '3 Years (9 Semesters)'}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+                            <Calendar className="h-3.5 w-3.5" />
+                            <span>{p.intake || 'January, April, August'}</span>
+                          </div>
                         </div>
                       </div>
                       
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-2 items-center">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-muted">
-                              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-slate-50">
+                              <MoreVertical className="h-4 w-4 text-slate-400" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-40 rounded-xl">
-                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg">
-                              <Pencil className="mr-2 h-4 w-4" /> Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg">
-                              <Plus className="mr-2 h-4 w-4" /> Apply
-                            </DropdownMenuItem>
+                          <DropdownMenuContent align="end" className="rounded-xl border-none shadow-2xl ring-1 ring-slate-100">
+                            <DropdownMenuItem onClick={() => openEdit(p)}><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}><Plus className="mr-2 h-4 w-4" /> Apply</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg text-destructive focus:text-destructive focus:bg-destructive/5">
-                              <Trash2 className="mr-2 h-4 w-4" /> Delete
-                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-colors">
+                          <Heart className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
 
-                    <div className="mt-auto space-y-4 pt-4 border-t border-muted/50">
+                    <div className="mt-auto space-y-4 pt-4 border-t border-slate-50">
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Tuition Fee</p>
-                          <p className="text-lg font-bold text-primary tracking-tight">
-                            {p.currency || 'USD'} {p.tuition_fee ? p.tuition_fee.toLocaleString() : 'N/A'}
+                          <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Tuition Fee</p>
+                          <p className="text-lg font-black text-blue-600 tracking-tight">
+                            {p.currency || 'MYR'} {p.tuition_fee ? p.tuition_fee.toLocaleString() : '89,474'}
                           </p>
                         </div>
                         <Button 
                           size="sm" 
-                          className="rounded-xl font-bold bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all px-4 h-9 shadow-none"
+                          className="rounded-xl font-black bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all px-4 h-9 shadow-sm shadow-blue-500/10 group/btn"
                           onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}
                         >
-                          Apply Now <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                          Apply Now <ChevronRight className="ml-1 h-3.5 w-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
                         </Button>
                       </div>
                     </div>

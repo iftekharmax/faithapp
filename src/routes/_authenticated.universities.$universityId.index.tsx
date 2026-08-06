@@ -228,8 +228,9 @@ function UniversityDetail() {
             </div>
 
             <p className="text-sm leading-relaxed text-slate-500 max-w-4xl">
-              {uni.description || "Leading international institution offering world-class academic programs and diverse student opportunities."}
+              amar agir design a rollback koro screenshots dilam
             </p>
+
           </div>
 
           <div className="flex gap-4">

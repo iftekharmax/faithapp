@@ -218,10 +218,13 @@ function UniversityDetail() {
                 <MapPin className="h-4 w-4 text-slate-400" />
                 <span>{uni.city || "Negeri Sembilan"}</span>
               </div>
-              <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline">
-                <span>Website</span>
-                <ExternalLink className="h-3 w-3" />
-              </a>
+              {uni.website && (
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline">
+                  <span>Website</span>
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              )}
+
             </div>
 
             <p className="text-sm leading-relaxed text-slate-500 max-w-4xl">

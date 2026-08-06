@@ -467,5 +467,3 @@ function FeeCard({ label, value, onChange, error }: { label: string; value: numb
     </div>
   );
 }
-
-}

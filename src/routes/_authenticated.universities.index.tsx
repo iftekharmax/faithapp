@@ -1,6 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Building2, Globe, Plus, Search, ExternalLink, Pencil, Trash2, GraduationCap, FileText, ChevronLeft, ChevronRight, Phone, Mail, MapPin } from "lucide-react";
+import { 
+  Building2, Globe, Plus, Search, ExternalLink, Pencil, Trash2, GraduationCap, 
+  FileText, ChevronLeft, ChevronRight, Mail, MapPin, Download, Upload, 
+  TrendingUp, ArrowRight, MoreHorizontal 
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

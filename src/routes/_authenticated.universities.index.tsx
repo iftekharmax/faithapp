@@ -623,7 +623,7 @@ function StatChip({ label, value }: { label: string; value: number }) {
   const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : GraduationCap;
   return (
     <div className="flex h-11 items-center gap-2.5 rounded-xl bg-slate-50 px-3 transition-all hover:bg-slate-100 ring-1 ring-slate-200/40">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-slate-100">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
         <Icon className="h-3.5 w-3.5 text-indigo-600/70" />
       </div>
       <div className="flex flex-col min-w-0">
@@ -633,6 +633,7 @@ function StatChip({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
+
 
 function StatusBadge({ status }: { status: UniStatus }) {
   const configs = {

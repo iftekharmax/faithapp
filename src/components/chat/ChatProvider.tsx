@@ -145,7 +145,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const onUnload = () => { void upsertMyPresence("offline"); };
     window.addEventListener("beforeunload", onUnload);
     const onVisibility = () => {
-      void upsertMyPresence(document.hidden ? "away" : "online");
+      // Don't trigger refreshes on visibility change.
+      // void upsertMyPresence(document.hidden ? "away" : "online");
     };
     document.addEventListener("visibilitychange", onVisibility);
 

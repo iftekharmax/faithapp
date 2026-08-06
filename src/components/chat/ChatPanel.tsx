@@ -239,10 +239,9 @@ export function ChatPanel() {
 
     typingChannelRef.current = ch;
 
-    // Periodic reconciliation (every 20s): heals delivered/read/typing after
+    // Periodic reconciliation (every 60s): heals delivered/read/typing after
     // silent tab throttling, network hiccups, or missed realtime events.
     const reconcile = setInterval(() => {
-      if (document.hidden) return;
       void reload();
       void refreshConversations();
       // Expire stale typing indicators that never received a "stop" event.
@@ -250,7 +249,7 @@ export function ChatPanel() {
       Object.keys(timers).forEach((k) => clearTimeout(timers[k]));
       typingTimersRef.current = {};
       setTypingUsers((prev) => (prev.length ? [] : prev));
-    }, 60_000); // Increased interval to reduce background activity
+    }, 60_000);
 
     return () => {
       cancelled = true;

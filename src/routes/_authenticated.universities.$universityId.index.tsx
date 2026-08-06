@@ -1044,19 +1044,28 @@ function OverviewStat({ label, value, icon: Icon }: { label: string; value: stri
   );
 }
 
-function IntakeItem({ label, days }: { label: string; days: string }) {
+function IntakeItem({ label, days, status = 'primary' }: { label: string; days: string; status?: 'primary' | 'secondary' | 'muted' }) {
+  const statusColors = {
+    primary: "text-blue-600 bg-blue-50 shadow-sm shadow-blue-500/10",
+    secondary: "text-emerald-600 bg-emerald-50 shadow-sm shadow-emerald-500/10",
+    muted: "text-slate-500 bg-slate-100"
+  };
+
   return (
     <div className="flex items-center justify-between group cursor-default">
-      <div className="flex items-center gap-3">
-        <div className="flex h-5 w-5 items-center justify-center text-slate-300">
-          <Calendar className="h-4 w-4" />
+      <div className="flex items-center gap-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-300 transition-colors group-hover:bg-blue-50 group-hover:text-blue-400">
+          <Calendar className="h-5 w-5" />
         </div>
-        <span className="text-sm font-bold text-slate-900">{label}</span>
+        <span className="text-base font-black text-slate-900">{label}</span>
       </div>
-      <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">In {days}</span>
+      <span className={cn("text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl", statusColors[status])}>
+        {days}
+      </span>
     </div>
   );
 }
+
 
 function SidebarAction({ icon: Icon, label }: { icon: any; label: string }) {
   return (

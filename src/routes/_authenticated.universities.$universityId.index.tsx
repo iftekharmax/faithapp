@@ -564,12 +564,16 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
 
                   <div className="flex flex-1 flex-col p-6">
                     <div className="mb-4 flex items-start justify-between gap-4">
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-                            {p.degree || 'Program'}
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-blue-600">
+                            {p.degree || "Bachelor's Degree"}
                           </span>
-                          {p.status === 'active' && <Badge variant="outline" className="h-4 border-emerald-200 bg-emerald-50 text-emerald-700 text-[9px] font-bold px-1.5 uppercase tracking-tighter">Active</Badge>}
+                          {p.status === 'active' && (
+                            <Badge className="h-4 border-none bg-emerald-500 text-white text-[9px] font-black px-1.5 uppercase tracking-widest rounded-full">
+                              Active
+                            </Badge>
+                          )}
                         </div>
                         <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary leading-tight">
                           {p.name}

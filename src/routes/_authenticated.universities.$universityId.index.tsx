@@ -328,31 +328,62 @@ function UniversityDetail() {
             </div>
 
             <aside className="sticky top-[100px] flex flex-col gap-6">
-              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <div className="mb-6 flex items-center justify-between"><h3 className="text-lg font-black text-slate-900">University Overview</h3><DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 rounded-full"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem>Edit Details</DropdownMenuItem><DropdownMenuItem>Settings</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div>
-                <div className="space-y-4">
+              <Card className="rounded-[32px] border-none bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className="text-xl font-black text-slate-900">Institution Info</h3>
+                  <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl hover:bg-slate-50"><MoreVertical className="h-5 w-5 text-slate-400" /></Button>
+                </div>
+                <div className="space-y-5">
                   <OverviewItem icon={Globe} label="Country" value={uni.country?.name || "Malaysia"} flag="🇲🇾" />
-                  <OverviewItem icon={MapPin} label="State" value={uni.city || "Negeri Sembilan"} />
-                  <OverviewItem icon={ExternalLink} label="Website" value="www.newinti.edu.my" isLink />
-                  <div className="pt-4 mt-4 border-t border-slate-50 space-y-4">
-                    <OverviewStat label="Total Programs" value="155" icon={GradIcon} /><OverviewStat label="Total Applications" value="3,241" icon={FileText} /><OverviewStat label="Total Students" value="8,925" icon={Users} />
+                  <OverviewItem icon={MapPin} label="State/Province" value={uni.city || "Negeri Sembilan"} />
+                  <OverviewItem icon={ExternalLink} label="Official Link" value="Visit University Site" isLink />
+                  <div className="pt-6 mt-6 border-t border-slate-50 space-y-5">
+                    <OverviewStat label="Active Programs" value="155" icon={GradIcon} />
+                    <OverviewStat label="Verified Status" value="MQA Certified" icon={ShieldCheck} />
+                    <OverviewStat label="Institution" value="Private Research" icon={Building2} />
                   </div>
                 </div>
               </Card>
-              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <div className="mb-6 flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600"><Calendar className="h-5 w-5" /></div><h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3></div>
-                <div className="space-y-4"><IntakeItem label="January 2025" days="28 days" /><IntakeItem label="April 2025" days="118 days" /><IntakeItem label="August 2025" days="240 days" /></div>
-                <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-blue-600">View All Intakes <ArrowRight className="ml-2 h-4 w-4" /></Button>
+
+              <Card className="rounded-[32px] border-none bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-sm"><Calendar className="h-6 w-6" /></div>
+                  <h3 className="text-xl font-black text-slate-900">Upcoming Intakes</h3>
+                </div>
+                <div className="space-y-4">
+                  <IntakeItem label="January 2025" days="Applications Open" status="primary" />
+                  <IntakeItem label="April 2025" days="Early Bird" status="secondary" />
+                  <IntakeItem label="August 2025" days="Upcoming" status="muted" />
+                </div>
+                <Button variant="ghost" className="mt-8 w-full h-12 rounded-2xl font-black text-slate-500 hover:text-blue-600 hover:bg-blue-50">View Academic Calendar <ArrowRight className="ml-2 h-5 w-5" /></Button>
               </Card>
-              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <h3 className="mb-6 text-lg font-black text-slate-900">Quick Actions</h3>
-                <div className="space-y-2"><SidebarAction icon={Plus} label="Create Program" /><SidebarAction icon={Plus} label="Create Application" /><SidebarAction icon={Download} label="Import Programs" /><SidebarAction icon={Download} label="Export Programs" /><SidebarAction icon={Download} label="Download Brochure" /></div>
+
+              <Card className="rounded-[32px] border-none bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
+                <h3 className="mb-6 text-xl font-black text-slate-900">Student Services</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <SidebarAction icon={Plus} label="New Application" />
+                  <SidebarAction icon={Plus} label="Add Program" />
+                  <SidebarAction icon={Download} label="Export List" />
+                  <SidebarAction icon={Share2} label="Share Profile" />
+                </div>
               </Card>
-              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>
-                <div className="space-y-4"><div className="flex justify-between text-sm font-black"><span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span><span className="text-blue-600">64%</span></div><div className="h-2 w-full overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-blue-600 shadow-sm shadow-blue-500/50" style={{ width: '64%' }} /></div><p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p></div>
+
+              <Card className="group relative overflow-hidden rounded-[32px] border-none bg-blue-600 p-8 text-white shadow-2xl shadow-blue-600/30">
+                <div className="absolute right-0 top-0 -mr-12 -mt-12 h-32 w-32 rounded-full bg-white/10 blur-2xl transition-transform group-hover:scale-150" />
+                <h3 className="mb-6 text-xl font-black tracking-tight">Application Goal</h3>
+                <div className="space-y-5">
+                  <div className="flex justify-between text-sm font-black">
+                    <span>3,241 <span className="text-blue-200 font-bold">of 5,000</span></span>
+                    <span className="text-white">64%</span>
+                  </div>
+                  <div className="h-3 w-full overflow-hidden rounded-full bg-white/20">
+                    <div className="h-full bg-white shadow-lg shadow-white/50 transition-all duration-1000" style={{ width: '64%' }} />
+                  </div>
+                  <p className="text-sm font-bold text-blue-100 leading-relaxed">Reach the 5,000 application milestone to unlock Elite Partner rewards.</p>
+                </div>
               </Card>
             </aside>
+
           </div>
         </div>
       </main>

@@ -595,41 +595,48 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
     <div className="space-y-6">
 
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex flex-1 flex-wrap items-center gap-3">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input 
-              placeholder="Search programs..." 
-              value={search} 
-              onChange={(e) => setSearch(e.target.value)} 
-              className="pl-9 h-11 rounded-xl border-none shadow-sm ring-1 ring-border bg-white focus-visible:ring-primary" 
-            />
+      <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="flex flex-1 flex-wrap items-center gap-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Input 
+                placeholder="Search programs..." 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)} 
+                className="pl-11 h-12 rounded-xl border-slate-100 bg-slate-50 focus-visible:ring-primary shadow-inner" 
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 text-slate-400 ring-1 ring-slate-100">
+                <GraduationCap className="h-5 w-5" />
+              </div>
+              <Select value={degreeFilter} onValueChange={setDegreeFilter}>
+                <SelectTrigger className="w-[180px] h-12 rounded-xl border-slate-100 bg-slate-50 font-semibold shadow-inner">
+                  <SelectValue placeholder="Degree Level" />
+                </SelectTrigger>
+                <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100">
+                  <SelectItem value="all" className="rounded-xl p-3 font-semibold">All Degree Levels</SelectItem>
+                  {degrees.map((d) => <SelectItem key={d} value={d} className="rounded-xl p-3 font-semibold">{d}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-            <SelectTrigger className="w-[160px] h-11 rounded-xl border-none shadow-sm ring-1 ring-border bg-white">
-              <SelectValue placeholder="Degree" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl border-none shadow-xl ring-1 ring-border">
-              <SelectItem value="all">All degrees</SelectItem>
-              {degrees.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-3">
+            <CsvToolbar label="programs"
+              onExport={() => exportProgramsCsv(universityId)}
+              onPreview={canEdit ? (text) => previewProgramsCsv(text, universityId) : undefined}
+              onImportDone={onChange}
+              templateHeaders={["name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"]}
+              templateName="programs-template" canImport={canEdit} />
+            {canEdit && (
+              <Button onClick={openNew} className="rounded-xl h-12 px-8 font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                <Plus className="mr-2 h-5 w-5" /> Add Program
+              </Button>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <CsvToolbar label="programs"
-            onExport={() => exportProgramsCsv(universityId)}
-            onPreview={canEdit ? (text) => previewProgramsCsv(text, universityId) : undefined}
-            onImportDone={onChange}
-            templateHeaders={["name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"]}
-            templateName="programs-template" canImport={canEdit} />
-          {canEdit && (
-            <Button onClick={openNew} className="rounded-xl h-11 px-6 font-bold shadow-sm">
-              <Plus className="mr-2 h-4 w-4" /> Add Program
-            </Button>
-          )}
-        </div>
-      </div>
+      </Card>
 
       <div>
         {filtered.length === 0 ? (

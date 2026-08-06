@@ -594,7 +594,7 @@ function UniversitiesPage() {
 
 function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-600", trend = "+12.5%" }: { label: string; value: number; icon: any; color?: string; trend?: string }) {
   return (
-    <Card className="overflow-hidden rounded-2xl border-none bg-white shadow-sm ring-1 ring-slate-200/60 transition-all duration-300 hover:shadow-md">
+    <Card className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:shadow-md">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${color} text-white shadow-lg shadow-indigo-100`}>
@@ -609,15 +609,15 @@ function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-6
         </div>
         <div className="mt-4">
           <div className="text-3xl font-bold tracking-tight text-slate-900">{value.toLocaleString()}</div>
-          <div className="mt-1 flex items-center justify-between">
+          <div className="mt-1">
             <span className="text-sm font-medium text-slate-500">{label}</span>
-            <span className="text-[10px] font-semibold text-slate-400">Total count</span>
           </div>
         </div>
       </CardContent>
     </Card>
   );
 }
+
 
 function StatChip({ label, value }: { label: string; value: number }) {
   const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : GraduationCap;

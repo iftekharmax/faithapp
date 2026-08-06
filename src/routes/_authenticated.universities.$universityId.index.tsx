@@ -281,19 +281,16 @@ function UniversityDetail() {
                       </TableBody>
                     </Table>
                   )}
-        </div>
-      )}
-    </div>
-
+                </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
         </main>
       </div>
-
     </div>
   );
 }
+
 
 function StatCard({ label, value, icon: Icon, color }: { label: string; value: string | number; icon: any; color: 'blue' | 'emerald' | 'orange' | 'purple' }) {
   const colors = {
@@ -825,6 +822,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
     </div>
   );
 }
+
 
 
 function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {

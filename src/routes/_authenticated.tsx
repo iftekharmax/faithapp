@@ -37,12 +37,11 @@ function AuthenticatedLayout() {
     return <SessionTimeoutFallback />;
   }
 
-  if (loading || rolesLoading || (!session && !hadSessionRef.current)) {
+  if (loading || (!session && !hadSessionRef.current)) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          {rolesLoading && <p className="text-sm text-muted-foreground animate-pulse">Loading permissions...</p>}
         </div>
       </div>
     );

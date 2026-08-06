@@ -269,7 +269,7 @@ function UniversityDetail() {
         </TabsList>
 
         <TabsContent value="programs" className="mt-0 outline-none">
-          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} />
+          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
         </TabsContent>
         
         <TabsContent value="campuses" className="mt-0 outline-none">
@@ -419,9 +419,9 @@ function StatCard({ label, value, icon: Icon, color, growth }: { label: string; 
 
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
+function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni }: {
   universityId: string; programs: UniversityProgram[]; campuses: Campus[];
-  canEdit: boolean; onChange: () => void;
+  canEdit: boolean; onChange: () => void; uni: University | null;
 }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);

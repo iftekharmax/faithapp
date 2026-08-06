@@ -180,20 +180,12 @@ function UniversityDetail() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Sticky Header with Breadcrumb and Actions */}
       <header className="sticky top-0 z-30 w-full border-b bg-white/80 backdrop-blur-md">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-4 overflow-hidden">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-9 w-9 shrink-0 rounded-xl hover:bg-slate-100" 
-                asChild
-              >
-                <Link to="/universities">
-                  <ArrowLeft className="h-4 w-4" />
-                </Link>
+              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 rounded-xl hover:bg-slate-100" asChild>
+                <Link to="/universities"><ArrowLeft className="h-4 w-4" /></Link>
               </Button>
               <nav className="flex items-center gap-2 overflow-hidden text-sm font-medium">
                 <Link to="/" className="text-muted-foreground hover:text-primary whitespace-nowrap">Dashboard</Link>
@@ -204,70 +196,40 @@ function UniversityDetail() {
               </nav>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="hidden rounded-xl font-semibold sm:flex hover:bg-slate-50">
-                <Share2 className="mr-2 h-4 w-4" /> Share
-              </Button>
-              <Button variant="outline" size="sm" className="hidden rounded-xl font-semibold sm:flex hover:bg-slate-50">
-                <Download className="mr-2 h-4 w-4" /> Export
-              </Button>
-              <Button 
-                className="rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
-              >
-                <Plus className="mr-2 h-4 w-4" /> Create Application
-              </Button>
+              <Button variant="outline" size="sm" className="hidden rounded-xl font-semibold sm:flex hover:bg-slate-50"><Share2 className="mr-2 h-4 w-4" /> Share</Button>
+              <Button variant="outline" size="sm" className="hidden rounded-xl font-semibold sm:flex hover:bg-slate-50"><Download className="mr-2 h-4 w-4" /> Export</Button>
+              <Button className="rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-4 w-4" /> Create Application</Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
-          {/* Hero & KPI Section */}
           <section className="grid gap-8 md:grid-cols-[1fr,360px] lg:grid-cols-[1fr,500px]">
             <Card className="relative overflow-hidden rounded-[24px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
               <div className="flex flex-col gap-8">
                 <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
                   <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100">
-                    {uni.logo_url ? (
-                      <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" />
-                    ) : (
-                      <Building2 className="h-14 w-14 text-slate-300" />
-                    )}
+                    {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" /> : <Building2 className="h-14 w-14 text-slate-300" />}
                   </div>
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-wrap items-center gap-3">
                       <h1 className="text-[34px] font-black tracking-tight text-slate-900 leading-tight">{uni.name}</h1>
-                      <Badge className={cn(
-                        "rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest",
-                        uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-slate-500 hover:bg-slate-600"
-                      )}>
+                      <Badge className={cn("rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest", uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-slate-500 hover:bg-slate-600")}>
                         {uni.status === "active" ? "• Active" : uni.status}
                       </Badge>
                     </div>
                     <div className="flex flex-wrap items-center gap-6 text-sm font-bold text-slate-500">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">🇲🇾</span>
-                        <span>{uni.country?.name || 'Malaysia'}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-slate-400" />
-                        <span>{uni.city || 'Negeri Sembilan'}</span>
-                      </div>
-                      {uni.website && (
-                        <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
-                          <span>Website</span>
-                          <ExternalLink className="h-3.5 w-3.5" />
-                        </a>
-                      )}
+                      <div className="flex items-center gap-2"><span>🇲🇾</span> <span>{uni.country?.name || 'Malaysia'}</span></div>
+                      <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-400" /> <span>{uni.city || 'Negeri Sembilan'}</span></div>
+                      {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline"><span>Website</span> <ExternalLink className="h-3.5 w-3.5" /></a>}
                     </div>
                   </div>
                 </div>
-
                 <p className="max-w-3xl text-base leading-relaxed text-slate-500 font-medium">
                   {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
                 </p>
-
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-50">
                   <HeroMetaItem icon={Landmark} label="Partner Since" value="2010" />
                   <HeroMetaItem icon={Building2} label="University Type" value="Private" />
@@ -289,200 +251,78 @@ function UniversityDetail() {
             </div>
           </section>
 
-          {/* Main Layout Grid */}
-          <div className="grid gap-8 md:grid-cols-[1fr,320px] lg:grid-cols-[1fr,360px] items-start">
-            <div className="space-y-8 min-w-0">
-              {/* Action Buttons */}
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),320px] lg:grid-cols-[minmax(0,1fr),360px] gap-6 items-start">
+            <div className="flex flex-col gap-8 min-w-0">
               <div className="flex flex-wrap items-center gap-3">
-                <Button 
-                  size="lg"
-                  className="h-12 rounded-xl bg-primary px-8 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                  onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
-                >
-                  <Plus className="mr-2 h-5 w-5" /> Create Application
-                </Button>
-                <Button 
-                  size="lg" variant="outline" 
-                  className="h-12 rounded-xl border-primary/20 bg-primary/5 px-8 font-black text-primary hover:bg-primary/10"
-                  onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
-                >
-                  <Plus className="mr-2 h-5 w-5" /> Add Program
-                </Button>
+                <Button size="lg" className="h-12 rounded-xl bg-primary px-8 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
+                <Button size="lg" variant="outline" className="h-12 rounded-xl border-primary/20 bg-primary/5 px-8 font-black text-primary hover:bg-primary/10" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>
                 <ActionIconButton icon={Download} label="Export Programs" />
                 <ActionIconButton icon={Plus} label="Import Programs" />
                 <ActionIconButton icon={FileText} label="Template" />
                 <ActionIconButton icon={Share2} label="Share University" />
               </div>
 
-              <main className="min-w-0 space-y-8">
-                <Tabs defaultValue="programs" className="w-full">
-                  <div className="sticky top-[72px] z-20 -mx-4 px-4 py-2 sm:mx-0 sm:px-0">
-                    <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
-                      <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
-                        Programs
-                      </TabsTrigger>
-                      <TabsTrigger value="campuses" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
-                        Campuses
-                      </TabsTrigger>
-                      <TabsTrigger value="applications" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
-                        Applications
-                      </TabsTrigger>
-                    </TabsList>
-                  </div>
-
-                  <TabsContent value="programs" className="mt-8 outline-none">
-                    <ProgramsTab
-                      universityId={universityId} programs={programs}
-                      campuses={campuses} canEdit={canEdit} onChange={reload}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="campuses" className="mt-8 outline-none">
-                    <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
-                  </TabsContent>
-
-                  <TabsContent value="applications" className="mt-8 outline-none">
-                    <Card className="rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
-                      <CardHeader className="border-b bg-slate-50/50 p-6">
-                        <CardTitle className="text-xl font-bold">Linked Applications</CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-0">
-                        {applications.length === 0 ? (
-                          <div className="flex flex-col items-center py-20 text-center">
-                            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 mb-6">
-                              <FileText className="h-10 w-10 text-slate-300" />
-                            </div>
-                            <h3 className="text-lg font-bold text-slate-900">No applications found</h3>
-                            <p className="mt-2 text-slate-500">No students have applied to this university yet.</p>
-                            <Button className="mt-8 rounded-xl font-bold" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>
-                              Start First Application
-                            </Button>
-                          </div>
-                        ) : (
-                          <div className="overflow-x-auto">
-                            <Table>
-                              <TableHeader>
-                                <TableRow className="border-slate-100 bg-slate-50/50 hover:bg-slate-50/50">
-                                  <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Application Code</TableHead>
-                                  <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Student Name</TableHead>
-                                  <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Program</TableHead>
-                                  <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Status</TableHead>
-                                  <TableHead className="py-4"></TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {applications.map((a) => (
-                                  <TableRow key={a.id} className="group border-slate-50 transition-colors hover:bg-slate-50/80">
-                                    <TableCell className="py-4 font-mono text-sm font-bold text-primary">{a.application_code}</TableCell>
-                                    <TableCell className="py-4">
-                                      <div className="flex flex-col">
-                                        <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
-                                        <span className="text-xs text-slate-400">{a.student?.student_code}</span>
-                                      </div>
-                                    </TableCell>
-                                    <TableCell className="py-4 font-medium text-slate-600">{a.program}</TableCell>
-                                    <TableCell className="py-4">
-                                      <Badge variant="outline" className="rounded-full border-slate-200 bg-white px-3 py-1 font-bold text-slate-600 capitalize">
-                                        {String(a.status).replace(/_/g, " ")}
-                                      </Badge>
-                                    </TableCell>
-                                    <TableCell className="py-4 text-right">
-                                      <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-primary hover:text-white" asChild>
-                                        <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
-                                          View <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Link>
-                                      </Button>
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                </Tabs>
-              </main>
+              <Tabs defaultValue="programs" className="w-full">
+                <div className="sticky top-[72px] z-20 px-4 py-2 sm:px-0">
+                  <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
+                    <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">Programs</TabsTrigger>
+                    <TabsTrigger value="campuses" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">Campuses</TabsTrigger>
+                    <TabsTrigger value="applications" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">Applications</TabsTrigger>
+                  </TabsList>
+                </div>
+                <TabsContent value="programs" className="mt-8 outline-none">
+                  <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} />
+                </TabsContent>
+                <TabsContent value="campuses" className="mt-8 outline-none">
+                  <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+                </TabsContent>
+                <TabsContent value="applications" className="mt-8 outline-none">
+                  <Card className="rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
+                    <CardHeader className="border-b bg-slate-50/50 p-6"><CardTitle className="text-xl font-bold">Linked Applications</CardTitle></CardHeader>
+                    <CardContent className="p-0">
+                      {applications.length === 0 ? (
+                        <div className="flex flex-col items-center py-20 text-center"><div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 mb-6"><FileText className="h-10 w-10 text-slate-300" /></div><h3 className="text-lg font-bold text-slate-900">No applications found</h3><p className="mt-2 text-slate-500">No students have applied to this university yet.</p><Button className="mt-8 rounded-xl font-bold" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>Start First Application</Button></div>
+                      ) : (
+                        <div className="overflow-x-auto"><Table><TableHeader><TableRow className="border-slate-100 bg-slate-50/50 hover:bg-slate-50/50"><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Application Code</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Student Name</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Program</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Status</TableHead><TableHead className="py-4"></TableHead></TableRow></TableHeader><TableBody>{applications.map((a) => <TableRow key={a.id} className="group border-slate-50 transition-colors hover:bg-slate-50/80"><TableCell className="py-4 font-mono text-sm font-bold text-primary">{a.application_code}</TableCell><TableCell className="py-4"><div className="flex flex-col"><span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span><span className="text-xs text-slate-400">{a.student?.student_code}</span></div></TableCell><TableCell className="py-4 font-medium text-slate-600">{a.program}</TableCell><TableCell className="py-4"><Badge variant="outline" className="rounded-full border-slate-200 bg-white px-3 py-1 font-bold text-slate-600 capitalize">{String(a.status).replace(/_/g, " ")}</Badge></TableCell><TableCell className="py-4 text-right"><Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-primary hover:text-white" asChild><Link to="/applications/$applicationId" params={{ applicationId: a.id }}>View <ArrowRight className="ml-2 h-4 w-4" /></Link></Button></TableCell></TableRow>)}</TableBody></Table></div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
             </div>
 
-            <aside className="space-y-6">
-              <div className="sticky top-[100px] flex flex-col gap-6">
-                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                  <div className="mb-6 flex items-center justify-between">
-                    <h3 className="text-lg font-black text-slate-900">University Overview</h3>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Edit Details</DropdownMenuItem>
-                        <DropdownMenuItem>Settings</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+            <aside className="sticky top-[100px] flex flex-col gap-6">
+              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <div className="mb-6 flex items-center justify-between"><h3 className="text-lg font-black text-slate-900">University Overview</h3><DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 rounded-full"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem>Edit Details</DropdownMenuItem><DropdownMenuItem>Settings</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div>
+                <div className="space-y-4">
+                  <OverviewItem icon={Globe} label="Country" value={uni.country?.name || "Malaysia"} flag="🇲🇾" />
+                  <OverviewItem icon={MapPin} label="State" value={uni.city || "Negeri Sembilan"} />
+                  <OverviewItem icon={ExternalLink} label="Website" value="www.newinti.edu.my" isLink />
+                  <div className="pt-4 mt-4 border-t border-slate-50 space-y-4">
+                    <OverviewStat label="Total Programs" value="155" /><OverviewStat label="Total Applications" value="3,241" /><OverviewStat label="Total Students" value="8,925" />
                   </div>
-                  <div className="space-y-4">
-                    <OverviewItem icon={Globe} label="Country" value={uni.country?.name || "Malaysia"} flag="🇲🇾" />
-                    <OverviewItem icon={MapPin} label="State" value={uni.city || "Negeri Sembilan"} />
-                    <OverviewItem icon={ExternalLink} label="Website" value="www.newinti.edu.my" isLink />
-                    <div className="pt-4 mt-4 border-t border-slate-50 space-y-4">
-                      <OverviewStat label="Total Programs" value="155" />
-                      <OverviewStat label="Total Applications" value="3,241" />
-                      <OverviewStat label="Total Students" value="8,925" />
-                    </div>
-                  </div>
-                </Card>
-
-                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                  <div className="mb-6 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Calendar className="h-5 w-5" />
-                    </div>
-                    <h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3>
-                  </div>
-                  <div className="space-y-4">
-                    <IntakeItem label="January 2025" days="28 days" />
-                    <IntakeItem label="April 2025" days="118 days" />
-                    <IntakeItem label="August 2025" days="240 days" />
-                  </div>
-                  <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-primary">
-                    View All Intakes <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Card>
-
-                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                  <h3 className="mb-6 text-lg font-black text-slate-900">Quick Actions</h3>
-                  <div className="space-y-2">
-                    <SidebarAction icon={Plus} label="Create Program" />
-                    <SidebarAction icon={Plus} label="Create Application" />
-                    <SidebarAction icon={Download} label="Import Programs" />
-                    <SidebarAction icon={Download} label="Export Programs" />
-                    <SidebarAction icon={FileText} label="Download Brochure" />
-                  </div>
-                </Card>
-
-                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                  <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between text-sm font-black">
-                      <span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span>
-                      <span className="text-primary">64%</span>
-                    </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                      <div className="h-full bg-primary" style={{ width: '64%' }} />
-                    </div>
-                    <p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p>
-                  </div>
-                </Card>
-              </div>
+                </div>
+              </Card>
+              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <div className="mb-6 flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Calendar className="h-5 w-5" /></div><h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3></div>
+                <div className="space-y-4"><IntakeItem label="January 2025" days="28 days" /><IntakeItem label="April 2025" days="118 days" /><IntakeItem label="August 2025" days="240 days" /></div>
+                <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-primary">View All Intakes <ArrowRight className="ml-2 h-4 w-4" /></Button>
+              </Card>
+              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <h3 className="mb-6 text-lg font-black text-slate-900">Quick Actions</h3>
+                <div className="space-y-2"><SidebarAction icon={Plus} label="Create Program" /><SidebarAction icon={Plus} label="Create Application" /><SidebarAction icon={Download} label="Import Programs" /><SidebarAction icon={Download} label="Export Programs" /><SidebarAction icon={FileText} label="Download Brochure" /></div>
+              </Card>
+              <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>
+                <div className="space-y-4"><div className="flex justify-between text-sm font-black"><span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span><span className="text-primary">64%</span></div><div className="h-2 w-full overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-primary" style={{ width: '64%' }} /></div><p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p></div>
+              </Card>
             </aside>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
+
 }
 
 

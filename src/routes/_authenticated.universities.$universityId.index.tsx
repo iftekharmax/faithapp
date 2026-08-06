@@ -577,8 +577,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           <div className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p) => {
-                const university = uni;
+                const universityName = uni?.name || "University";
                 return (
+
 
                 <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md">
                   <div className="flex flex-1 flex-col p-6">
@@ -602,7 +603,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                             <h3 className="text-lg font-bold leading-tight text-slate-900 line-clamp-2">
                               {p.name}
                             </h3>
-                            <p className="text-sm font-medium text-slate-500 mt-0.5">{university.name}</p>
+                            <p className="text-sm font-medium text-slate-500 mt-0.5">{universityName}</p>
                           </div>
                         </div>
                         <div className="space-y-1.5 pt-2">

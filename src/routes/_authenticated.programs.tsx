@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Search, X, GraduationCap, MapPin, Calendar, Coins,
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/_authenticated/programs")({
 type ApplyIntent = "apply" | "enroll";
 const APPLY_BUSY_MS = 2400;
 
-function notifyApply(r: { id: string; name: string }, intent: ApplyIntent, navigate: ReturnType<typeof useNavigate>) {
+function notifyApply(r: { id: string; name: string }, intent: ApplyIntent) {
   const verb = intent === "enroll" ? "Enrollment" : "Application";
   toast.success(`${verb} started for “${r.name}”`, {
     description:
@@ -54,7 +54,7 @@ function notifyApply(r: { id: string; name: string }, intent: ApplyIntent, navig
     action: {
       label: "View application status",
       onClick: () => {
-        navigate({ to: "/applications" });
+        if (typeof window !== "undefined") window.location.href = "/applications";
       },
     },
   });
@@ -69,13 +69,12 @@ function ApplyButton({
   className?: string;
   label?: string;
 }) {
-  const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const text = label ?? (intent === "enroll" ? "Apply / Enroll" : "Apply");
   const onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (busy) { e.preventDefault(); e.stopPropagation(); return; }
     setBusy(true);
-    notifyApply(program, intent, navigate);
+    notifyApply(program, intent);
     window.setTimeout(() => setBusy(false), APPLY_BUSY_MS);
   };
   return (

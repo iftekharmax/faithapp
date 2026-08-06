@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   MessageSquare, X, Search, Plus, Send, Paperclip, Smile, Reply, Edit3, Trash2, Copy,
@@ -239,9 +238,10 @@ export function ChatPanel() {
 
     typingChannelRef.current = ch;
 
-    // Periodic reconciliation (every 60s): heals delivered/read/typing after
+    // Periodic reconciliation (every 20s): heals delivered/read/typing after
     // silent tab throttling, network hiccups, or missed realtime events.
     const reconcile = setInterval(() => {
+      if (document.hidden) return;
       void reload();
       void refreshConversations();
       // Expire stale typing indicators that never received a "stop" event.
@@ -249,11 +249,16 @@ export function ChatPanel() {
       Object.keys(timers).forEach((k) => clearTimeout(timers[k]));
       typingTimersRef.current = {};
       setTypingUsers((prev) => (prev.length ? [] : prev));
-    }, 60_000);
+    }, 20_000);
+
+    // On tab becoming visible again, refetch immediately.
+    const onVis = () => { if (!document.hidden) void reload(); };
+    document.addEventListener("visibilitychange", onVis);
 
     return () => {
       cancelled = true;
       clearInterval(reconcile);
+      document.removeEventListener("visibilitychange", onVis);
       // Save the current scroll position before switching away.
       if (vp && activeId) threadScrollRef.current[activeId] = vp.scrollTop;
       vp?.removeEventListener("scroll", onScroll);
@@ -1406,7 +1411,7 @@ export function ChatPanel() {
               {active.type === "application" && active.application_id && (
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase mb-2">Application</p>
-                  <Link to="/applications/$applicationId" params={{ applicationId: active.application_id }} className="text-xs text-primary hover:underline">View application →</Link>
+                  <a href={`/applications/${active.application_id}`} className="text-xs text-primary hover:underline">View application →</a>
                 </div>
               )}
             </ScrollArea>

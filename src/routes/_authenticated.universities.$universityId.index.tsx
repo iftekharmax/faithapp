@@ -155,79 +155,111 @@ function UniversityDetail() {
         <Button variant="ghost" size="sm" asChild><Link to="/universities"><ArrowLeft className="mr-1 h-4 w-4" />Back</Link></Button>
       </div>
 
-      <Card>
-        <CardContent className="flex flex-wrap items-start gap-4 p-6">
-          <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-muted ring-1 ring-border">
-            {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-cover" /> : <Building2 className="h-10 w-10 text-muted-foreground" />}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-semibold">{uni.name}</h1>
-              <Badge variant={uni.status === "active" ? "default" : "secondary"} className="capitalize">{uni.status}</Badge>
+      <div className="grid gap-6 lg:grid-cols-[320px,1fr]">
+        <aside className="space-y-6">
+          <Card className="rounded-3xl border-none shadow-sm ring-1 ring-border bg-white p-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-3xl bg-muted ring-1 ring-border shadow-inner">
+                {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-cover" /> : <Building2 className="h-12 w-12 text-muted-foreground" />}
+              </div>
+              <h1 className="mt-4 text-xl font-bold tracking-tight leading-tight">{uni.name}</h1>
+              <Badge variant={uni.status === "active" ? "default" : "secondary"} className="mt-2 capitalize">{uni.status}</Badge>
+              
+              <div className="mt-6 flex flex-col gap-3 w-full">
+                <Button className="rounded-xl w-full font-bold shadow-sm" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>Create Application</Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1 rounded-xl text-xs font-semibold" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}>Add Program</Button>
+                  {canEdit && <Button variant="outline" className="flex-1 rounded-xl text-xs font-semibold" asChild><Link to="/universities/$universityId/edit" params={{ universityId }}>Edit Profile</Link></Button>}
+                </div>
+              </div>
             </div>
-            <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              {uni.country && <span className="inline-flex items-center gap-1.5">{uni.country.flag_url && <img src={uni.country.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}{uni.country.name}</span>}
-              {uni.city && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{uni.city}</span>}
-              {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">Website <ExternalLink className="h-3 w-3" /></a>}
-            </div>
-            {uni.description && <p className="mt-3 text-sm text-muted-foreground">{uni.description}</p>}
-          </div>
-          <div className="grid grid-cols-2 gap-3 text-center">
-            <MiniStat label="Campuses" value={campuses.length} />
-            <MiniStat label="Programs" value={programs.length} />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Tabs defaultValue="programs">
-        <TabsList>
-          <TabsTrigger value="programs">Programs ({programs.length})</TabsTrigger>
-          <TabsTrigger value="campuses">Campuses ({campuses.length})</TabsTrigger>
-          <TabsTrigger value="applications">Applications ({applications.length})</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="programs" className="mt-4">
-          <ProgramsTab
-            universityId={universityId} programs={programs}
-            campuses={campuses} canEdit={canEdit} onChange={reload}
-          />
-        </TabsContent>
-
-        <TabsContent value="campuses" className="mt-4">
-          <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
-        </TabsContent>
-
-
-        <TabsContent value="applications" className="mt-4">
-          <Card><CardHeader><CardTitle>Applications</CardTitle></CardHeader>
-            <CardContent>
-              {applications.length === 0 ? (
-                <p className="py-6 text-center text-sm text-muted-foreground">No applications linked to this university yet.</p>
-              ) : (
-                <Table>
-                  <TableHeader><TableRow>
-                    <TableHead>Code</TableHead><TableHead>Student</TableHead>
-                    <TableHead>Program</TableHead><TableHead>Status</TableHead><TableHead></TableHead>
-                  </TableRow></TableHeader>
-                  <TableBody>
-                    {applications.map((a) => (
-                      <TableRow key={a.id}>
-                        <TableCell className="font-mono text-xs">{a.application_code}</TableCell>
-                        <TableCell>{a.student?.full_name ?? "—"}</TableCell>
-                        <TableCell>{a.program}</TableCell>
-                        <TableCell><Badge variant="outline" className="capitalize">{String(a.status).replace(/_/g, " ")}</Badge></TableCell>
-                        <TableCell><Button size="sm" variant="ghost" asChild>
-                          <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>Open</Link>
-                        </Button></TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+            <div className="mt-8 space-y-4 border-t pt-8">
+              <div className="flex items-center gap-3 text-sm">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 text-primary">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <span className="text-muted-foreground font-medium">{uni.country?.name || 'N/A'} • {uni.city || 'N/A'}</span>
+              </div>
+              {uni.website && (
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-primary hover:underline transition-all group">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 text-primary group-hover:bg-primary/10">
+                    <Globe className="h-4 w-4" />
+                  </div>
+                  <span className="font-medium">Visit Official Website</span>
+                </a>
               )}
-            </CardContent>
+            </div>
           </Card>
-        </TabsContent>
-      </Tabs>
+
+          <Card className="rounded-3xl border-none shadow-sm ring-1 ring-border bg-white p-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">University Summary</h3>
+            <p className="text-sm leading-relaxed text-muted-foreground/80">{uni.description || 'No description available for this university.'}</p>
+          </Card>
+        </aside>
+
+        <main className="space-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCard label="Programs" value={programs.length} icon={GraduationCap} color="blue" />
+            <StatCard label="Campuses" value={campuses.length} icon={School} color="emerald" />
+            <StatCard label="Applications" value={applications.length} icon={FileText} color="orange" />
+            <StatCard label="Students" value="0" icon={Users} color="purple" />
+          </div>
+
+          <Tabs defaultValue="programs" className="w-full">
+            <TabsList className="bg-muted/50 p-1 rounded-2xl h-12 inline-flex">
+              <TabsTrigger value="programs" className="rounded-xl px-8 h-10 data-[state=active]:bg-white data-[state=active]:shadow-sm">Programs</TabsTrigger>
+              <TabsTrigger value="campuses" className="rounded-xl px-8 h-10 data-[state=active]:bg-white data-[state=active]:shadow-sm">Campuses</TabsTrigger>
+              <TabsTrigger value="applications" className="rounded-xl px-8 h-10 data-[state=active]:bg-white data-[state=active]:shadow-sm">Applications</TabsTrigger>
+            </TabsList>
+            <TabsContent value="programs" className="mt-6 border-none p-0 focus-visible:ring-0">
+              <ProgramsTab
+                universityId={universityId} programs={programs}
+                campuses={campuses} canEdit={canEdit} onChange={reload}
+              />
+            </TabsContent>
+
+            <TabsContent value="campuses" className="mt-6 border-none p-0 focus-visible:ring-0">
+              <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+            </TabsContent>
+
+            <TabsContent value="applications" className="mt-6 border-none p-0 focus-visible:ring-0">
+              <Card className="rounded-3xl border-none shadow-sm ring-1 ring-border"><CardHeader><CardTitle className="text-xl">Linked Applications</CardTitle></CardHeader>
+                <CardContent>
+                  {applications.length === 0 ? (
+                    <div className="flex flex-col items-center py-12 text-center">
+                      <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                        <FileText className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                      <p className="text-muted-foreground font-medium">No applications linked to this university yet.</p>
+                    </div>
+                  ) : (
+                    <Table>
+                      <TableHeader><TableRow className="hover:bg-transparent border-muted/50">
+                        <TableHead className="text-[11px] font-bold uppercase tracking-wider">Code</TableHead><TableHead className="text-[11px] font-bold uppercase tracking-wider">Student</TableHead>
+                        <TableHead className="text-[11px] font-bold uppercase tracking-wider">Program</TableHead><TableHead className="text-[11px] font-bold uppercase tracking-wider">Status</TableHead><TableHead></TableHead>
+                      </TableRow></TableHeader>
+                      <TableBody>
+                        {applications.map((a) => (
+                          <TableRow key={a.id} className="group border-muted/50 hover:bg-muted/30 transition-colors">
+                            <TableCell className="font-mono text-xs font-medium text-primary">{a.application_code}</TableCell>
+                            <TableCell className="font-medium">{a.student?.full_name ?? "—"}</TableCell>
+                            <TableCell className="text-muted-foreground">{a.program}</TableCell>
+                            <TableCell><Badge variant="outline" className="capitalize bg-white text-[10px] font-bold tracking-wide">{String(a.status).replace(/_/g, " ")}</Badge></TableCell>
+                            <TableCell className="text-right"><Button size="sm" variant="ghost" className="rounded-lg hover:bg-primary hover:text-primary-foreground group-hover:translate-x-1 transition-all" asChild>
+                              <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>Details <ChevronRight className="ml-1 h-3.5 w-3.5" /></Link>
+                            </Button></TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </main>
+      </div>
+
     </div>
   );
 }

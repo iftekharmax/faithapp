@@ -1412,7 +1412,7 @@ export function ChatPanel() {
               {active.type === "application" && active.application_id && (
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase mb-2">Application</p>
-                  <a href={`/applications/${active.application_id}`} className="text-xs text-primary hover:underline">View application →</a>
+                  <Link to={`/applications/${active.application_id}`} className="text-xs text-primary hover:underline">View application →</Link>
                 </div>
               )}
             </ScrollArea>

@@ -192,7 +192,7 @@ function UniversityDetail() {
                 <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
                 <Link to="/universities" className="text-muted-foreground hover:text-primary whitespace-nowrap">Universities</Link>
                 <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
-                <span className="truncate text-slate-900">{uni.name}</span>
+                <span className="truncate text-slate-900 font-bold">{uni.name}</span>
               </nav>
             </div>
             <div className="flex items-center gap-2">

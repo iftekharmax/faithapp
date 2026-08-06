@@ -586,9 +586,11 @@ function UniversitiesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 }
+
 
 function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-600", trend = "+12.5%" }: { label: string; value: number; icon: any; color?: string; trend?: string }) {
   return (

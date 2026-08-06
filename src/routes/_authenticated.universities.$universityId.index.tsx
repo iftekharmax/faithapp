@@ -299,7 +299,7 @@ function UniversityDetail() {
                   <OverviewItem icon={MapPin} label="State" value={uni.city || "Negeri Sembilan"} />
                   <OverviewItem icon={ExternalLink} label="Website" value="www.newinti.edu.my" isLink />
                   <div className="pt-4 mt-4 border-t border-slate-50 space-y-4">
-                    <OverviewStat label="Total Programs" value="155" /><OverviewStat label="Total Applications" value="3,241" /><OverviewStat label="Total Students" value="8,925" />
+                    <OverviewStat label="Total Programs" value="155" icon={GradIcon} /><OverviewStat label="Total Applications" value="3,241" icon={FileText} /><OverviewStat label="Total Students" value="8,925" icon={Users} />
                   </div>
                 </div>
               </Card>

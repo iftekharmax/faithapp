@@ -498,17 +498,18 @@ function StatCard({ label, value, icon: Icon, color }: { label: string; value: s
   };
 
   return (
-    <Card className="rounded-2xl border-none shadow-sm ring-1 ring-border p-4 bg-white transition-all hover:shadow-md hover:ring-primary/20 group">
-      <div className="flex items-center gap-3">
-        <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 transition-all group-hover:scale-110", colors[color])}>
-          <Icon className="h-5 w-5" />
-        </div>
-        <div className="min-w-0">
-          <div className="text-xl font-bold tracking-tight">{value}</div>
-          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 truncate">{label}</div>
-        </div>
+    <div className="group flex flex-col items-center justify-center gap-1 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-all hover:shadow-lg hover:shadow-slate-200/50 hover:ring-1 hover:ring-slate-300">
+      <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", colors[color])}>
+        <Icon className="h-5 w-5" />
       </div>
-    </Card>
+      <div className="text-xl font-black tracking-tight text-slate-900">{value}</div>
+      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
+      {growth && (
+        <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-100 text-[8px] font-bold text-emerald-700 hover:bg-emerald-100">
+          {growth}
+        </Badge>
+      )}
+    </div>
   );
 }
 

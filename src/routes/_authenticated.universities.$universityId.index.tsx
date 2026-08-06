@@ -706,22 +706,22 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
               ))}
             </div>
 
+            {hasMore && (
+              <div className="mt-12 flex justify-center">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setPage((p) => p + 1)}
+                  className="rounded-2xl border-2 px-12 font-bold transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-xl hover:shadow-primary/20"
+                >
+                  Load More Programs
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
-          {hasMore && (
-            <div className="mt-12 flex justify-center">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => setPage(p => p + 1)}
-                className="rounded-2xl border-2 px-12 font-bold transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-xl hover:shadow-primary/20"
-              >
-                Load More Programs
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
 
 
 

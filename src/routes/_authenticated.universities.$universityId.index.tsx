@@ -968,10 +968,13 @@ function OverviewItem({ icon: Icon, label, value, flag, isLink }: { icon: any; l
   );
 }
 
-function OverviewStat({ label, value }: { label: string; value: string }) {
+function OverviewStat({ label, value, icon: Icon }: { label: string; value: string; icon?: any }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-sm font-bold text-slate-400">{label}</span>
+    <div className="flex items-center justify-between group">
+      <div className="flex items-center gap-3">
+        {Icon && <Icon className="h-4 w-4 text-slate-300 group-hover:text-primary transition-colors" />}
+        <span className="text-sm font-bold text-slate-400">{label}</span>
+      </div>
       <span className="text-sm font-black text-slate-900">{value}</span>
     </div>
   );

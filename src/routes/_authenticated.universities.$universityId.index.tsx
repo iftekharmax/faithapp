@@ -703,10 +703,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                     </div>
                   </div>
                 </div>
-              ))
+              ))}
+            </div>
 
-
-          </div>
 
           {hasMore && (
             <div className="mt-12 flex justify-center">

@@ -325,7 +325,7 @@ function UniversitiesPage() {
             {pageItems.map((u) => (
               <Card key={u.id} className="group flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/5">
                 {/* Logo & Info Header */}
-                <div className="relative p-6 flex items-start gap-4">
+                <div className="relative p-6 flex items-center gap-4">
                   {/* Status Badge - Top Right */}
                   <div className="absolute right-4 top-4 z-10">
                     <StatusBadge status={u.status} />
@@ -345,7 +345,7 @@ function UniversitiesPage() {
                   <div className="min-w-0 pr-12">
                     <button
                       onClick={() => navigate({ to: "/universities/$universityId", params: { universityId: u.id } })}
-                      className="line-clamp-2 text-left text-lg font-bold tracking-tight text-slate-900 transition-colors hover:text-indigo-600"
+                      className="line-clamp-2 text-left text-lg font-medium tracking-tight text-slate-900 leading-tight transition-colors hover:text-indigo-600"
                     >
                       {u.name}
                     </button>
@@ -355,13 +355,13 @@ function UniversitiesPage() {
                           <img src={u.country.flag_url} alt="" className="h-3.5 w-5 object-cover" />
                         )}
                         <span>{u.country?.name ?? "Global"}</span>
+                        {u.city && (
+                          <>
+                            <span className="text-slate-300">•</span>
+                            <span className="font-medium text-slate-500 truncate">{u.city}</span>
+                          </>
+                        )}
                       </div>
-                      {u.city && (
-                        <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
-                          <MapPin className="h-3 w-3" />
-                          <span>{u.city}</span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -370,7 +370,7 @@ function UniversitiesPage() {
                   <div className="h-px w-full bg-slate-50 mb-5" />
                   
                   {/* Description */}
-                  <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-slate-500 font-medium">
+                  <p className="mb-6 line-clamp-3 text-sm leading-[1.6] text-[#475569] font-normal">
                     {u.description || "Leading international institution offering world-class academic programs and diverse student opportunities."}
                   </p>
                   
@@ -386,22 +386,22 @@ function UniversitiesPage() {
                   <div className="mt-auto pt-6 border-t border-slate-100">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-1.5">
-                        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all" title="View Details" asChild>
+                        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center" title="View Details" asChild>
                           <Link to="/universities/$universityId" params={{ universityId: u.id }}>
                             <ArrowRight className="h-4.5 w-4.5" />
                           </Link>
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all" title="Edit" onClick={() => openEdit(u)}>
+                        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center" title="Edit" onClick={() => openEdit(u)}>
                           <Pencil className="h-4.5 w-4.5" />
                         </Button>
                         {isAdmin && (
-                          <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all" title="Delete" onClick={() => setDeleteTarget(u)}>
+                          <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all flex items-center justify-center" title="Delete" onClick={() => setDeleteTarget(u)}>
                             <Trash2 className="h-4.5 w-4.5" />
                           </Button>
                         )}
                       </div>
                       {u.website && (
-                        <Button variant="outline" size="sm" className="h-10 rounded-full px-5 text-xs font-bold border-slate-200 text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" asChild>
+                        <Button variant="outline" size="sm" className="h-10 rounded-full px-5 text-xs font-bold border-slate-200 text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 ml-auto" asChild>
                           <a href={u.website} target="_blank" rel="noreferrer" className="flex items-center gap-2">
                             <span>Visit Website</span>
                             <ExternalLink className="h-3 w-3" />
@@ -618,15 +618,23 @@ function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-6
 
 
 function StatChip({ label, value }: { label: string; value: number }) {
-  const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : GraduationCap;
+  const config = {
+    "Programs": { icon: GraduationCap, color: "text-blue-600", accent: "text-blue-600/70", bg: "bg-blue-50/50", border: "ring-blue-100/50" },
+    "Campuses": { icon: Building2, color: "text-emerald-600", accent: "text-emerald-600/70", bg: "bg-emerald-50/50", border: "ring-emerald-100/50" },
+    "Applications": { icon: FileText, color: "text-orange-600", accent: "text-orange-600/70", bg: "bg-orange-50/50", border: "ring-orange-100/50" },
+    "Students": { icon: GraduationCap, color: "text-purple-600", accent: "text-purple-600/70", bg: "bg-purple-50/50", border: "ring-purple-100/50" },
+  };
+  
+  const { icon: Icon, color, accent, bg, border } = config[label as keyof typeof config] || config["Programs"];
+
   return (
-    <div className="flex h-11 items-center gap-2.5 rounded-xl bg-slate-50 px-3 transition-all hover:bg-slate-100 ring-1 ring-slate-200/40">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
-        <Icon className="h-3.5 w-3.5 text-indigo-600/70" />
+    <div className="flex h-11 items-center gap-2.5 rounded-xl bg-slate-50/50 px-3 transition-all hover:bg-slate-100/80 ring-1 ring-slate-200/40">
+      <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${bg} shadow-sm ring-1 ${border}`}>
+        <Icon className={`h-3.5 w-3.5 ${color}`} />
       </div>
       <div className="flex flex-col min-w-0">
         <span className="text-xs font-bold text-slate-900 leading-none">{value}</span>
-        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-0.5 truncate">{label}</span>
+        <span className={`text-[9px] font-bold uppercase tracking-wider ${accent} mt-0.5 truncate`}>{label}</span>
       </div>
     </div>
   );

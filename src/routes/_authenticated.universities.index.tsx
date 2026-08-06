@@ -386,9 +386,9 @@ function UniversitiesPage() {
                   <div className="mt-auto pt-6 border-t border-slate-100">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-1.5">
-                        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center" title="View Details" asChild>
+                        <Button variant="outline" size="sm" className="h-10 rounded-full px-5 text-xs font-bold border-slate-200 text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" asChild>
                           <Link to="/universities/$universityId" params={{ universityId: u.id }}>
-                            <ArrowRight className="h-4.5 w-4.5" />
+                            Details
                           </Link>
                         </Button>
                         <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center" title="Edit" onClick={() => openEdit(u)}>

@@ -395,73 +395,79 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           <div className="space-y-8">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {displayed.map((p) => (
-              <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
-                <div className="flex flex-1 flex-col p-5">
-                  <div className="mb-4 flex items-start justify-between gap-4">
-                    <div className="space-y-1.5">
-                      <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
-                        {p.name}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground">
-                        {p.degree && (
-                          <span className="inline-flex items-center gap-1.5">
-                            <GraduationCap className="h-4 w-4 text-primary/70" />
-                            {p.degree}
+                <Card key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl border-none bg-white shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10 hover:ring-primary/20">
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="mb-4 flex items-start justify-between gap-4">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                            {p.degree || 'Program'}
                           </span>
-                        )}
-                        {p.duration && (
-                          <>
-                            <span className="text-muted-foreground/30">•</span>
-                            <span>{p.duration}</span>
-                          </>
-                        )}
+                          {p.status === 'active' && <Badge variant="outline" className="h-4 border-emerald-200 bg-emerald-50 text-emerald-700 text-[9px] font-bold px-1.5 uppercase tracking-tighter">Active</Badge>}
+                        </div>
+                        <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary leading-tight">
+                          {p.name}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-muted-foreground pt-1">
+                          {p.duration && (
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-3.5 w-3.5 text-muted-foreground/60" />
+                              <span>{p.duration}</span>
+                            </div>
+                          )}
+                          {p.intake && (
+                            <div className="flex items-center gap-1.5">
+                              <Calendar className="h-3.5 w-3.5 text-muted-foreground/60" />
+                              <span>{p.intake}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-col gap-1">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-muted">
+                              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-40 rounded-xl">
+                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg">
+                              <Pencil className="mr-2 h-4 w-4" /> Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg">
+                              <Plus className="mr-2 h-4 w-4" /> Apply
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg text-destructive focus:text-destructive focus:bg-destructive/5">
+                              <Trash2 className="mr-2 h-4 w-4" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
-                    {canEdit && (
-                      <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary" onClick={() => openEdit(p)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(p.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
 
-                  <div className="grid grid-cols-1 gap-3 border-t pt-4">
-                    {p.campus?.name && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4 shrink-0 text-primary/60" />
-                        <span className="truncate">{p.campus.name}</span>
-                      </div>
-                    )}
-                    <div className="grid grid-cols-2 gap-4">
-                      {p.tuition_fee != null && (
+                    <div className="mt-auto space-y-4 pt-4 border-t border-muted/50">
+                      <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Tuition Fee</p>
-                          <p className="font-bold text-primary">
-                            {p.currency ?? ""} {p.tuition_fee.toLocaleString()}
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Tuition Fee</p>
+                          <p className="text-lg font-bold text-primary tracking-tight">
+                            {p.currency || 'USD'} {p.tuition_fee ? p.tuition_fee.toLocaleString() : 'N/A'}
                           </p>
                         </div>
-                      )}
-                      {p.intake && (
-                        <div className="space-y-0.5 text-right">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Next Intake</p>
-                          <p className="font-semibold text-foreground/90">{p.intake}</p>
-                        </div>
-                      )}
+                        <Button 
+                          size="sm" 
+                          className="rounded-xl font-bold bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all px-4 h-9 shadow-none"
+                          onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}
+                        >
+                          Apply Now <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Card>
+              ))}
 
-                <div className="bg-muted/30 p-4 pt-0">
-                  <Button className="w-full rounded-xl font-bold shadow-sm transition-all hover:shadow-md" onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}>
-                    Create Application
-                  </Button>
-                </div>
-              </div>
-            ))}
           </div>
 
           {hasMore && (

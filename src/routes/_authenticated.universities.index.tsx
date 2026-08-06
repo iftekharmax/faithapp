@@ -193,51 +193,53 @@ function UniversitiesPage() {
   }), [items]);
 
   return (
-    <div className="min-h-screen space-y-8 bg-[#F8FAFC]">
-      {/* Page Header */}
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between px-1">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">University Directory</h1>
-          <p className="mt-1 text-sm font-medium text-slate-500">Manage universities, campuses, faculties and academic programs.</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200">
-            <CsvToolbar
-              label="universities"
-              onExport={exportUniversitiesCsv}
-              onPreview={canEdit ? (text) => previewUniversitiesCsv(text) : undefined}
-              onImportDone={reload}
-              templateHeaders={["name","short_name","country","city","website","logo_url","status","description"]}
-              templateName="universities-template"
-              canImport={canEdit}
-            />
-            <div className="h-6 w-px bg-slate-200 mx-1" />
-            <Button variant="ghost" size="sm" className="rounded-lg h-9 text-slate-600 hover:text-slate-900 hover:bg-slate-50" asChild>
-              <Link to="/countries" className="flex items-center gap-2">
-                <Globe className="h-4 w-4" />
-                <span>Countries</span>
-              </Link>
-            </Button>
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <div className="mx-auto max-w-[1600px] px-6 py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">University Directory</h1>
+            <p className="mt-1 text-sm font-medium text-slate-500">Manage universities, campuses, faculties and academic programs.</p>
           </div>
-          {canEdit && (
-            <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-6 font-semibold text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700 hover:shadow-indigo-200 active:scale-[0.98]">
-              <Plus className="mr-2 h-5 w-5" /> New University
-            </Button>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200">
+              <CsvToolbar
+                label="universities"
+                onExport={exportUniversitiesCsv}
+                onPreview={canEdit ? (text) => previewUniversitiesCsv(text) : undefined}
+                onImportDone={reload}
+                templateHeaders={["name","short_name","country","city","website","logo_url","status","description"]}
+                templateName="universities-template"
+                canImport={canEdit}
+              />
+              <div className="h-6 w-px bg-slate-200 mx-1" />
+              <Button variant="ghost" size="sm" className="rounded-lg h-9 text-slate-600 hover:text-slate-900 hover:bg-slate-50" asChild>
+                <Link to="/countries" className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  <span>Countries</span>
+                </Link>
+              </Button>
+            </div>
+            {canEdit && (
+              <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-6 font-semibold text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700 hover:shadow-indigo-200 active:scale-[0.98]">
+                <Plus className="mr-2 h-5 w-5" /> New University
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Statistics Section */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total Universities" value={stats.total} icon={Building2} color="from-indigo-600 to-blue-600" trend="+4.5%" />
-        <StatCard label="Active Universities" value={stats.active} icon={TrendingUp} color="from-emerald-500 to-teal-500" trend="+12.2%" />
-        <StatCard label="Countries" value={stats.countries} icon={Globe} color="from-blue-500 to-indigo-500" trend="+2 new" />
-        <StatCard label="Total Programs" value={stats.programs} icon={GraduationCap} color="from-purple-500 to-pink-500" trend="+84" />
-      </div>
+        {/* Statistics Section */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard label="Total Universities" value={stats.total} icon={Building2} color="from-indigo-600 to-blue-600" trend="+4.5%" />
+          <StatCard label="Active Universities" value={stats.active} icon={TrendingUp} color="from-emerald-500 to-teal-500" trend="+12.2%" />
+          <StatCard label="Countries" value={stats.countries} icon={Globe} color="from-blue-500 to-indigo-500" trend="+2 new" />
+          <StatCard label="Total Programs" value={stats.programs} icon={GraduationCap} color="from-purple-500 to-pink-500" trend="+84" />
+        </div>
 
-      {/* Sticky Search Toolbar */}
-      <div className="sticky top-0 z-20 -mx-6 bg-[#F8FAFC]/80 px-6 py-4 backdrop-blur-md border-y border-slate-200/60 shadow-sm">
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Filter Toolbar */}
+        <div className="rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm">
+          <div className="flex flex-wrap items-center gap-3">
+
           <div className="relative min-w-[280px] flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-slate-400" />
             <Input 

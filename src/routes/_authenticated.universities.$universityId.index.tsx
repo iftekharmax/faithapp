@@ -510,10 +510,10 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
             </Button>
 
             <div className="ml-auto flex items-center gap-2">
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white">
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-blue-600 text-white hover:bg-blue-700">
                 <LayoutGrid className="h-5 w-5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl hover:bg-slate-100">
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-100 shadow-inner">
                 <ListIcon className="h-5 w-5" />
               </Button>
             </div>

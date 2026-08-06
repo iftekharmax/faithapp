@@ -350,7 +350,7 @@ function UniversitiesPage() {
                       {u.name}
                     </button>
                     <div className="mt-2 flex flex-col gap-1.5">
-                      <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                      <div className="flex items-center gap-2 text-sm text-slate-600">
                         {u.country?.flag_url && (
                           <img src={u.country.flag_url} alt="" className="h-3.5 w-5 object-cover" />
                         )}
@@ -358,7 +358,8 @@ function UniversitiesPage() {
                         {u.city && (
                           <>
                             <span className="text-slate-300">•</span>
-                            <span className="font-medium text-slate-500 truncate">{u.city}</span>
+                            <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                            <span className="text-slate-500 whitespace-nowrap">{u.city}</span>
                           </>
                         )}
                       </div>

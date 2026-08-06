@@ -314,6 +314,23 @@ export async function getProgram(id: string): Promise<UniversityProgram> {
   return data as UniversityProgram;
 }
 
+// Real table columns — strips joined relations (campus, university) and any
+// derived fields so PostgREST never sees an unknown column.
+const PROGRAM_COLUMNS = [
+  "university_id", "campus_id", "name", "degree", "duration", "intake",
+  "application_deadline", "tuition_fee", "application_fee", "registration_fee",
+  "emgs_fee", "others_fee", "currency", "scholarship", "requirements",
+  "description", "status",
+] as const;
+
+function pickProgramColumns(input: Record<string, any>) {
+  const out: Record<string, any> = {};
+  for (const key of PROGRAM_COLUMNS) {
+    if (key in input) out[key] = input[key];
+  }
+  return out;
+}
+
 export async function createProgram(input: Partial<UniversityProgram>) {
   if (input.name && input.university_id) {
     const scope: Record<string, string | null> = {
@@ -323,7 +340,8 @@ export async function createProgram(input: Partial<UniversityProgram>) {
     const dup = await findDuplicateId("university_programs", input.name, scope);
     if (dup) throw new DuplicateError("program", input.name, dup);
   }
-  const { data, error } = await supabase.from("university_programs").insert(input).select().single();
+  const payload = pickProgramColumns(input as Record<string, any>);
+  const { data, error } = await supabase.from("university_programs").insert(payload).select().single();
   if (error) {
     if (isUniqueViolation(error) && input.name && input.university_id) {
       const dup = await findDuplicateId("university_programs", input.name, {
@@ -336,7 +354,9 @@ export async function createProgram(input: Partial<UniversityProgram>) {
   return data as UniversityProgram;
 }
 export async function updateProgram(id: string, input: Partial<UniversityProgram>) {
-  const { data, error } = await supabase.from("university_programs").update(input).eq("id", id).select().single();
+  const payload = pickProgramColumns(input as Record<string, any>);
+  const { data, error } = await supabase
+    .from("university_programs").update(payload).eq("id", id).select().single();
   if (error) throw error;
   return data as UniversityProgram;
 }

@@ -386,7 +386,7 @@ function UniversitiesPage() {
                   </div>
 
                   {/* Action Buttons - Pinned to Bottom */}
-                  <div className="mt-auto pt-6 border-t border-slate-100/80">
+                  <div className="mt-auto pt-6 border-t border-slate-100">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-1.5">
                         <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all" title="View Details" asChild>
@@ -420,6 +420,7 @@ function UniversitiesPage() {
 
           {/* Pagination */}
           <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-slate-200 pt-8 sm:flex-row">
+
             <div className="flex items-center gap-4">
               <div className="text-sm font-semibold text-slate-500">
                 Showing <span className="text-slate-900">{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}</span> of <span className="text-slate-900">{filtered.length}</span> Universities

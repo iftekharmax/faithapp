@@ -478,8 +478,9 @@ function UniversitiesPage() {
               </Button>
             </div>
           </div>
-        </>
+        </div>
       )}
+
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl">

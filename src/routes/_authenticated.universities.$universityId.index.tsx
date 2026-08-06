@@ -44,6 +44,7 @@ import {
 import { cn } from "@/lib/utils";
 
 
+
 export const Route = createFileRoute("/_authenticated/universities/$universityId/")({
   component: () => (
     <div className="bg-[#F8FAFC] min-h-screen">

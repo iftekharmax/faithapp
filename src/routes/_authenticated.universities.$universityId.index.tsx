@@ -805,58 +805,60 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Degree Level</Label>
+              <div className="space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Degree Level</Label>
                 <Input 
-                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
-                  placeholder="e.g. Bachelor, Master, PhD" 
+                  className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
+                  placeholder="e.g. Bachelor" 
                   value={form.degree ?? ""} 
                   onChange={(e) => setForm({ ...form, degree: e.target.value })} 
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Duration</Label>
+              <div className="space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Duration</Label>
                 <Input 
-                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
-                  placeholder="e.g. 4 years" 
+                  className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
+                  placeholder="e.g. 4 Years" 
                   value={form.duration ?? ""} 
                   onChange={(e) => setForm({ ...form, duration: e.target.value })} 
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Campus</Label>
+              <div className="space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Campus</Label>
                 <Select value={form.campus_id ?? "none"} onValueChange={(v) => setForm({ ...form, campus_id: v === "none" ? null : v })}>
-                  <SelectTrigger className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm">
+                  <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm">
                     <SelectValue placeholder="Select campus" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {campuses.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                  <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100">
+                    <SelectItem value="none" className="rounded-xl p-3 font-semibold">None / Online</SelectItem>
+                    {campuses.map((c) => <SelectItem key={c.id} value={c.id} className="rounded-xl p-3 font-semibold">{c.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
 
-
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Intake</Label>
+              <div className="space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Intake Periods</Label>
                 <Input 
-                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
-                  placeholder="e.g. Sep 2026, Jan 2027" 
+                  className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
+                  placeholder="e.g. September, January" 
                   value={form.intake ?? ""} 
                   onChange={(e) => setForm({ ...form, intake: e.target.value })} 
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Application Deadline</Label>
-                <Input 
-                  type="date" 
-                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
-                  value={form.application_deadline ?? ""} 
-                  onChange={(e) => setForm({ ...form, application_deadline: e.target.value })} 
-                />
+              <div className="space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Application Deadline</Label>
+                <div className="relative">
+                  <Input 
+                    type="date" 
+                    className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
+                    value={form.application_deadline ?? ""} 
+                    onChange={(e) => setForm({ ...form, application_deadline: e.target.value })} 
+                  />
+                  <Calendar className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                </div>
               </div>
 
               <div className="md:col-span-2 mt-2">

@@ -602,7 +602,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                             <h3 className="text-lg font-bold leading-tight text-slate-900 line-clamp-2">
                               {p.name}
                             </h3>
-                            <p className="text-sm font-medium text-slate-500 mt-0.5">{uni.name}</p>
+                            <p className="text-sm font-medium text-slate-500 mt-0.5">{university.name}</p>
                           </div>
                         </div>
                         <div className="space-y-1.5 pt-2">

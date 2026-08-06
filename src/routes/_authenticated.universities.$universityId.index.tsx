@@ -206,40 +206,40 @@ function UniversityDetail() {
 
       <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
-          <section className="grid gap-8 md:grid-cols-[1fr,360px] lg:grid-cols-[1fr,500px]">
-            <Card className="relative overflow-hidden rounded-[24px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
-                  <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100">
-                    {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" /> : <Building2 className="h-14 w-14 text-slate-300" />}
+          <section className="grid gap-6 md:grid-cols-[1fr,500px] lg:grid-cols-[1fr,600px] xl:grid-cols-[1fr,720px]">
+            <Card className="relative overflow-hidden rounded-[24px] bg-white p-6 shadow-sm ring-1 ring-slate-200 lg:p-8">
+              <div className="flex flex-col gap-6 lg:gap-8">
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-start lg:gap-8">
+                  <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 lg:h-[140px] lg:w-[140px]">
+                    {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" /> : <Building2 className="h-16 w-16 text-slate-300" />}
                   </div>
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-3 lg:gap-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-[34px] font-black tracking-tight text-slate-900 leading-tight">{uni.name}</h1>
-                      <Badge className={cn("rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest", uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-slate-500 hover:bg-slate-600")}>
+                      <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-tight lg:text-[34px]">{uni.name}</h1>
+                      <Badge className={cn("rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest", uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm shadow-emerald-500/20" : "bg-slate-500 hover:bg-slate-600 text-white shadow-sm shadow-slate-500/20")}>
                         {uni.status === "active" ? "• Active" : uni.status}
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap items-center gap-6 text-sm font-bold text-slate-500">
+                    <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-slate-500 lg:gap-6">
                       <div className="flex items-center gap-2"><span>🇲🇾</span> <span>{uni.country?.name || 'Malaysia'}</span></div>
                       <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-400" /> <span>{uni.city || 'Negeri Sembilan'}</span></div>
                       {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline"><span>Website</span> <ExternalLink className="h-3.5 w-3.5" /></a>}
                     </div>
+                    <p className="max-w-3xl text-sm leading-relaxed text-slate-500 font-medium lg:text-base">
+                      {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
+                    </p>
                   </div>
                 </div>
-                <p className="max-w-3xl text-base leading-relaxed text-slate-500 font-medium">
-                  {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-50">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-50">
                   <HeroMetaItem icon={Landmark} label="Partner Since" value="2010" />
                   <HeroMetaItem icon={Building2} label="University Type" value="Private" />
-                  <HeroMetaItem icon={Globe} label="Public / Private" value="Private" />
+                  <HeroMetaItem icon={Users} label="Public / Private" value="Private" />
                   <HeroMetaItem icon={ShieldCheck} label="Accreditation" value="MQA, MOHE" />
                 </div>
               </div>
             </Card>
 
-            <div className="grid grid-cols-2 grid-rows-4 gap-4">
+            <div className="grid grid-cols-2 grid-rows-4 gap-3 lg:grid-cols-4 lg:grid-rows-2 lg:gap-4">
               <HeroStatCard label="Programs" value="155" icon={GradIcon} color="blue" growth="12%" />
               <HeroStatCard label="Campuses" value="4" icon={School} color="emerald" growth="0%" />
               <HeroStatCard label="Applications" value="3,241" icon={FileText} color="orange" growth="18%" />
@@ -252,10 +252,10 @@ function UniversityDetail() {
           </section>
 
           <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),320px] lg:grid-cols-[minmax(0,1fr),360px] gap-6 items-start">
-            <div className="flex flex-col gap-8 min-w-0">
+            <div className="flex flex-col gap-6 lg:gap-8 min-w-0">
               <div className="flex flex-wrap items-center gap-3">
-                <Button size="lg" className="h-12 rounded-xl bg-primary px-8 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
-                <Button size="lg" variant="outline" className="h-12 rounded-xl border-primary/20 bg-primary/5 px-8 font-black text-primary hover:bg-primary/10" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>
+                <Button size="lg" className="h-12 rounded-xl bg-[#2563EB] px-8 font-black text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
+                <Button size="lg" variant="outline" className="h-12 rounded-xl border-blue-200 bg-white px-8 font-black text-[#2563EB] hover:bg-blue-50" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>
                 <ActionIconButton icon={Download} label="Export Programs" />
                 <ActionIconButton icon={Plus} label="Import Programs" />
                 <ActionIconButton icon={FileText} label="Template" />
@@ -265,9 +265,9 @@ function UniversityDetail() {
               <Tabs defaultValue="programs" className="w-full">
                 <div className="sticky top-[72px] z-20 px-4 py-2 sm:px-0">
                   <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
-                    <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">Programs</TabsTrigger>
-                    <TabsTrigger value="campuses" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">Campuses</TabsTrigger>
-                    <TabsTrigger value="applications" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">Applications</TabsTrigger>
+                    <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all">Programs <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">155</Badge></TabsTrigger>
+                    <TabsTrigger value="campuses" className="rounded-xl px-8 font-bold data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all">Campuses <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">4</Badge></TabsTrigger>
+                    <TabsTrigger value="applications" className="rounded-xl px-8 font-bold data-[state=active]:bg-[#2563EB] data-[state=active]:text-white transition-all">Applications <Badge variant="secondary" className="ml-2 bg-slate-100 text-[10px] font-black group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">3,241</Badge></TabsTrigger>
                   </TabsList>
                 </div>
                 <TabsContent value="programs" className="mt-8 outline-none">
@@ -283,7 +283,7 @@ function UniversityDetail() {
                       {applications.length === 0 ? (
                         <div className="flex flex-col items-center py-20 text-center"><div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 mb-6"><FileText className="h-10 w-10 text-slate-300" /></div><h3 className="text-lg font-bold text-slate-900">No applications found</h3><p className="mt-2 text-slate-500">No students have applied to this university yet.</p><Button className="mt-8 rounded-xl font-bold" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>Start First Application</Button></div>
                       ) : (
-                        <div className="overflow-x-auto"><Table><TableHeader><TableRow className="border-slate-100 bg-slate-50/50 hover:bg-slate-50/50"><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Application Code</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Student Name</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Program</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Status</TableHead><TableHead className="py-4"></TableHead></TableRow></TableHeader><TableBody>{applications.map((a) => <TableRow key={a.id} className="group border-slate-50 transition-colors hover:bg-slate-50/80"><TableCell className="py-4 font-mono text-sm font-bold text-primary">{a.application_code}</TableCell><TableCell className="py-4"><div className="flex flex-col"><span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span><span className="text-xs text-slate-400">{a.student?.student_code}</span></div></TableCell><TableCell className="py-4 font-medium text-slate-600">{a.program}</TableCell><TableCell className="py-4"><Badge variant="outline" className="rounded-full border-slate-200 bg-white px-3 py-1 font-bold text-slate-600 capitalize">{String(a.status).replace(/_/g, " ")}</Badge></TableCell><TableCell className="py-4 text-right"><Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-primary hover:text-white" asChild><Link to="/applications/$applicationId" params={{ applicationId: a.id }}>View <ArrowRight className="ml-2 h-4 w-4" /></Link></Button></TableCell></TableRow>)}</TableBody></Table></div>
+                        <div className="overflow-x-auto"><Table><TableHeader><TableRow className="border-slate-100 bg-slate-50/50 hover:bg-slate-50/50"><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Application Code</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Student Name</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Program</TableHead><TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Status</TableHead><TableHead className="py-4"></TableHead></TableRow></TableHeader><TableBody>{applications.map((a) => <TableRow key={a.id} className="group border-slate-50 transition-colors hover:bg-slate-50/80"><TableCell className="py-4 font-mono text-sm font-bold text-blue-600">{a.application_code}</TableCell><TableCell className="py-4"><div className="flex flex-col"><span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span><span className="text-xs text-slate-400">{a.student?.student_code}</span></div></TableCell><TableCell className="py-4 font-medium text-slate-600">{a.program}</TableCell><TableCell className="py-4"><Badge variant="outline" className="rounded-full border-slate-200 bg-white px-3 py-1 font-bold text-slate-600 capitalize">{String(a.status).replace(/_/g, " ")}</Badge></TableCell><TableCell className="py-4 text-right"><Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-blue-600 hover:text-white" asChild><Link to="/applications/$applicationId" params={{ applicationId: a.id }}>View <ArrowRight className="ml-2 h-4 w-4" /></Link></Button></TableCell></TableRow>)}</TableBody></Table></div>
                       )}
                     </CardContent>
                   </Card>
@@ -299,22 +299,22 @@ function UniversityDetail() {
                   <OverviewItem icon={MapPin} label="State" value={uni.city || "Negeri Sembilan"} />
                   <OverviewItem icon={ExternalLink} label="Website" value="www.newinti.edu.my" isLink />
                   <div className="pt-4 mt-4 border-t border-slate-50 space-y-4">
-                    <OverviewStat label="Total Programs" value="155" /><OverviewStat label="Total Applications" value="3,241" /><OverviewStat label="Total Students" value="8,925" />
+                    <OverviewStat label="Total Programs" value="155" icon={GradIcon} /><OverviewStat label="Total Applications" value="3,241" icon={FileText} /><OverviewStat label="Total Students" value="8,925" icon={Users} />
                   </div>
                 </div>
               </Card>
               <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <div className="mb-6 flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Calendar className="h-5 w-5" /></div><h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3></div>
+                <div className="mb-6 flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600"><Calendar className="h-5 w-5" /></div><h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3></div>
                 <div className="space-y-4"><IntakeItem label="January 2025" days="28 days" /><IntakeItem label="April 2025" days="118 days" /><IntakeItem label="August 2025" days="240 days" /></div>
-                <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-primary">View All Intakes <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-blue-600">View All Intakes <ArrowRight className="ml-2 h-4 w-4" /></Button>
               </Card>
               <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
                 <h3 className="mb-6 text-lg font-black text-slate-900">Quick Actions</h3>
-                <div className="space-y-2"><SidebarAction icon={Plus} label="Create Program" /><SidebarAction icon={Plus} label="Create Application" /><SidebarAction icon={Download} label="Import Programs" /><SidebarAction icon={Download} label="Export Programs" /><SidebarAction icon={FileText} label="Download Brochure" /></div>
+                <div className="space-y-2"><SidebarAction icon={Plus} label="Create Program" /><SidebarAction icon={Plus} label="Create Application" /><SidebarAction icon={Download} label="Import Programs" /><SidebarAction icon={Download} label="Export Programs" /><SidebarAction icon={Download} label="Download Brochure" /></div>
               </Card>
               <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
                 <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>
-                <div className="space-y-4"><div className="flex justify-between text-sm font-black"><span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span><span className="text-primary">64%</span></div><div className="h-2 w-full overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-primary" style={{ width: '64%' }} /></div><p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p></div>
+                <div className="space-y-4"><div className="flex justify-between text-sm font-black"><span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span><span className="text-blue-600">64%</span></div><div className="h-2 w-full overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-blue-600 shadow-sm shadow-blue-500/50" style={{ width: '64%' }} /></div><p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p></div>
               </Card>
             </aside>
           </div>
@@ -337,15 +337,15 @@ function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: stri
   };
 
   return (
-    <div className="group relative flex flex-col items-center justify-center gap-1 rounded-2xl bg-slate-50 p-4 transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-200/50 hover:ring-1 hover:ring-slate-100">
-      <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", colors[color])}>
+    <div className="group relative flex flex-col items-center justify-center gap-1 rounded-2xl bg-[#F8FAFC] p-4 transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-200/50 hover:ring-1 hover:ring-slate-100">
+      <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shadow-sm", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
       <div className="text-xl font-black tracking-tight text-slate-900">{value}</div>
       <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
       {growth && (
-        <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-100 text-[8px] font-bold text-emerald-700 hover:bg-emerald-100">
-          {growth}
+        <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-50 text-[8px] font-black text-emerald-600 hover:bg-emerald-100 flex items-center gap-0.5 shadow-sm">
+          <TrendingUp className="h-2 w-2" /> {growth}
         </Badge>
       )}
     </div>
@@ -497,23 +497,23 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
             </div>
             <FilterSelect icon={GraduationCap} placeholder="All Degrees" value={degreeFilter} onValueChange={setDegreeFilter} options={degrees} />
             <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={MapPin} label="All Campuses" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Clock} label="Study Mode" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={MapPin} label="All Campuses" placeholder="All Campuses" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Clock} label="Study Mode" placeholder="Study Mode" value="all" onValueChange={() => {}} options={[]} />
           </div>
           
           <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-50">
-            <FilterSelect icon={Calendar} label="All Intakes" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Award} label="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={ListIcon} label="Sort by: Newest" value="newest" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Calendar} label="All Intakes" placeholder="All Intakes" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Award} label="All Scholarships" placeholder="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={ListIcon} label="Sort by: Newest" placeholder="Sort by: Newest" value="newest" onValueChange={() => {}} options={[]} />
             <Button variant="ghost" className="h-10 rounded-xl font-bold text-slate-500 hover:text-primary" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
               <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
             </Button>
 
             <div className="ml-auto flex items-center gap-2">
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white">
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-blue-600 text-white hover:bg-blue-700">
                 <LayoutGrid className="h-5 w-5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl hover:bg-slate-100">
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-100 shadow-inner">
                 <ListIcon className="h-5 w-5" />
               </Button>
             </div>
@@ -968,10 +968,13 @@ function OverviewItem({ icon: Icon, label, value, flag, isLink }: { icon: any; l
   );
 }
 
-function OverviewStat({ label, value }: { label: string; value: string }) {
+function OverviewStat({ label, value, icon: Icon }: { label: string; value: string; icon?: any }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-sm font-bold text-slate-400">{label}</span>
+    <div className="flex items-center justify-between group">
+      <div className="flex items-center gap-3">
+        {Icon && <Icon className="h-4 w-4 text-slate-300 group-hover:text-primary transition-colors" />}
+        <span className="text-sm font-bold text-slate-400">{label}</span>
+      </div>
       <span className="text-sm font-black text-slate-900">{value}</span>
     </div>
   );
@@ -993,8 +996,8 @@ function IntakeItem({ label, days }: { label: string; days: string }) {
 
 function SidebarAction({ icon: Icon, label }: { icon: any; label: string }) {
   return (
-    <Button variant="ghost" className="w-full justify-start rounded-xl py-6 px-4 font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-all group">
-      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+    <Button variant="ghost" className="w-full justify-start rounded-xl py-6 px-4 font-bold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-all group">
+      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors shadow-sm">
         <Icon className="h-4 w-4" />
       </div>
       {label}

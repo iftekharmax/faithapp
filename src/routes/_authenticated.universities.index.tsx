@@ -386,11 +386,13 @@ function UniversitiesPage() {
                   <div className="mt-auto pt-6 border-t border-slate-100">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-1.5">
-                        <Button variant="outline" size="sm" className="h-10 rounded-full px-5 text-xs font-bold border-slate-200 text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" asChild>
-                          <Link to="/universities/$universityId" params={{ universityId: u.id }}>
-                            Details
-                          </Link>
-                        </Button>
+                        {u.website && (
+                          <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center" title="Visit Website" asChild>
+                            <a href={u.website} target="_blank" rel="noreferrer">
+                              <ExternalLink className="h-4.5 w-4.5" />
+                            </a>
+                          </Button>
+                        )}
                         <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center" title="Edit" onClick={() => openEdit(u)}>
                           <Pencil className="h-4.5 w-4.5" />
                         </Button>
@@ -400,13 +402,11 @@ function UniversitiesPage() {
                           </Button>
                         )}
                       </div>
-                      {u.website && (
-                        <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center ml-auto" title="Visit Website" asChild>
-                          <a href={u.website} target="_blank" rel="noreferrer">
-                            <ExternalLink className="h-4.5 w-4.5" />
-                          </a>
-                        </Button>
-                      )}
+                      <Button variant="outline" size="sm" className="h-10 rounded-full px-5 text-xs font-bold border-slate-200 text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 ml-auto" asChild>
+                        <Link to="/universities/$universityId" params={{ universityId: u.id }}>
+                          Details
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 </CardContent>

@@ -223,7 +223,7 @@ function UniversityDetail() {
 
       <div className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
-          {/* Hero Section */}
+          {/* Hero & KPI Section */}
           <section className="grid gap-8 lg:grid-cols-[1fr,500px]">
             <Card className="relative overflow-hidden rounded-[24px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
               <div className="flex flex-col gap-8">
@@ -277,7 +277,7 @@ function UniversityDetail() {
               </div>
             </Card>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 grid-rows-4 gap-4">
               <HeroStatCard label="Programs" value="155" icon={GradIcon} color="blue" growth="12%" />
               <HeroStatCard label="Campuses" value="4" icon={School} color="emerald" growth="0%" />
               <HeroStatCard label="Applications" value="3,241" icon={FileText} color="orange" growth="18%" />
@@ -289,29 +289,31 @@ function UniversityDetail() {
             </div>
           </section>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3">
-            <Button 
-              size="lg"
-              className="h-12 rounded-xl bg-primary px-8 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-              onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
-            >
-              <Plus className="mr-2 h-5 w-5" /> Create Application
-            </Button>
-            <Button 
-              size="lg" variant="outline" 
-              className="h-12 rounded-xl border-primary/20 bg-primary/5 px-8 font-black text-primary hover:bg-primary/10"
-              onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
-            >
-              <Plus className="mr-2 h-5 w-5" /> Add Program
-            </Button>
-            <ActionIconButton icon={Download} label="Export Programs" />
-            <ActionIconButton icon={Plus} label="Import Programs" />
-            <ActionIconButton icon={FileText} label="Template" />
-            <ActionIconButton icon={Share2} label="Share University" />
-          </div>
+          {/* Main Layout Grid */}
+          <div className="grid gap-8 lg:grid-cols-[1fr,360px] items-start">
+            <div className="space-y-8 min-w-0">
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3">
+                <Button 
+                  size="lg"
+                  className="h-12 rounded-xl bg-primary px-8 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
+                >
+                  <Plus className="mr-2 h-5 w-5" /> Create Application
+                </Button>
+                <Button 
+                  size="lg" variant="outline" 
+                  className="h-12 rounded-xl border-primary/20 bg-primary/5 px-8 font-black text-primary hover:bg-primary/10"
+                  onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
+                >
+                  <Plus className="mr-2 h-5 w-5" /> Add Program
+                </Button>
+                <ActionIconButton icon={Download} label="Export Programs" />
+                <ActionIconButton icon={Plus} label="Import Programs" />
+                <ActionIconButton icon={FileText} label="Template" />
+                <ActionIconButton icon={Share2} label="Share University" />
+              </div>
 
-          <div className="grid gap-8 lg:grid-cols-[1fr,360px]">
             <main className="min-w-0 space-y-8">
               <Tabs defaultValue="programs" className="w-full">
                 <div className="sticky top-[72px] z-20 -mx-4 px-4 py-2 sm:mx-0 sm:px-0">

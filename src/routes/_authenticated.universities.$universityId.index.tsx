@@ -934,45 +934,45 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                 </div>
               </div>
 
-              <div className="md:col-span-2 space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Scholarship</Label>
+              <div className="md:col-span-2 space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Scholarship Information</Label>
                 <Input 
-                  className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm"
-                  placeholder="e.g. Up to 50% merit-based scholarship"
+                  className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
+                  placeholder="e.g. 20% Merit Scholarship available"
                   value={form.scholarship ?? ""} 
                   onChange={(e) => setForm({ ...form, scholarship: e.target.value })} 
                 />
               </div>
 
-              <div className="md:col-span-2 space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Entry Requirements</Label>
+              <div className="md:col-span-2 space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Entry Requirements</Label>
                 <Textarea 
-                  className="min-h-[100px] rounded-2xl border-muted/60 bg-muted/20 shadow-sm focus-visible:ring-primary"
-                  placeholder="List academic and language requirements..."
+                  className="min-h-[120px] rounded-2xl border-slate-100 bg-white p-4 font-medium shadow-sm focus-visible:ring-primary"
+                  placeholder="Describe academic and language requirements..."
                   value={form.requirements ?? ""} 
                   onChange={(e) => setForm({ ...form, requirements: e.target.value })} 
                 />
               </div>
 
-              <div className="md:col-span-2 space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Description</Label>
+              <div className="md:col-span-2 space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Program Description</Label>
                 <Textarea 
-                  className="min-h-[100px] rounded-2xl border-muted/60 bg-muted/20 shadow-sm focus-visible:ring-primary"
-                  placeholder="Program overview and key highlights..."
+                  className="min-h-[160px] rounded-2xl border-slate-100 bg-white p-4 font-medium shadow-sm focus-visible:ring-primary"
+                  placeholder="Detailed overview of the program curriculum and outcomes..."
                   value={form.description ?? ""} 
                   onChange={(e) => setForm({ ...form, description: e.target.value })} 
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Status</Label>
+              <div className="space-y-3">
+                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Program Status</Label>
                 <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
-                  <SelectTrigger className="h-11 rounded-xl border-muted/60 bg-muted/20 shadow-sm">
+                  <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100">
                     {UNI_STATUSES.map((s) => (
-                      <SelectItem key={s} value={s} className="capitalize">
+                      <SelectItem key={s} value={s} className="rounded-xl p-3 font-semibold capitalize">
                         {s}
                       </SelectItem>
                     ))}
@@ -982,18 +982,18 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t bg-muted/20 px-6 py-4">
+          <div className="flex items-center justify-end gap-3 border-t bg-slate-50/50 p-6">
             <Button 
               variant="ghost" 
-              className="rounded-xl font-semibold text-muted-foreground hover:bg-muted"
               onClick={() => setOpen(false)}
+              className="rounded-xl px-6 font-bold text-slate-500 hover:bg-slate-100"
             >
               Cancel
             </Button>
             <Button 
-              className="min-w-[140px] rounded-xl font-bold shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
               onClick={save} 
               disabled={saving}
+              className="rounded-xl px-10 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               {saving ? (
                 <>
@@ -1001,7 +1001,10 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                   Saving...
                 </>
               ) : (
-                editing ? "Update Program" : "Create Program"
+                <>
+                  <Check className="mr-2 h-5 w-5" />
+                  {editing ? "Update Program" : "Create Program"}
+                </>
               )}
             </Button>
           </div>

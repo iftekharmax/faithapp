@@ -126,22 +126,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange(async (event, s) => {
       if (!mounted) return;
 
-      // Only respond to events that indicate a real session state change.
-      // We also check if the user ID has changed to avoid reloading roles 
-      // when just returning to the tab with a valid session.
-      const isRealChange = 
-        event === "SIGNED_IN" || 
-        event === "SIGNED_OUT" || 
-        event === "USER_UPDATED" || 
-        (event === "TOKEN_REFRESHED" && s?.user?.id !== session?.user?.id);
+      // Filter events to only respond to genuine state transitions.
+      // We skip events that might be triggered by simple focus/visibility changes
+      // if the session and user identity are unchanged.
+      const isSignEvent = event === "SIGNED_IN" || event === "SIGNED_OUT";
+      const isUserUpdate = event === "USER_UPDATED";
+      const isSignificantRefresh = event === "TOKEN_REFRESHED" && s?.user?.id !== session?.user?.id;
 
-      if (isRealChange) {
+      if (isSignEvent || isUserUpdate || isSignificantRefresh) {
         setSession(s);
         scheduleProactiveRefresh(s);
 
         if (s?.user) {
           hadSessionRef.current = true;
-          // Only load roles if they aren't already present for this user
+          // Only load roles if we don't have them or the user changed.
           if (roles.length === 0 || s.user.id !== session?.user?.id) {
             void loadUserData(s.user.id);
           }

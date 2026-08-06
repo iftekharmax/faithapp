@@ -199,6 +199,7 @@ function UniversityDetail() {
             )}
           </div>
 
+
           
           <div className="flex-1 space-y-4">
             <div className="flex flex-wrap items-center gap-3">

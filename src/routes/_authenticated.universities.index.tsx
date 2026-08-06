@@ -618,15 +618,23 @@ function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-6
 
 
 function StatChip({ label, value }: { label: string; value: number }) {
-  const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : GraduationCap;
+  const config = {
+    "Programs": { icon: GraduationCap, color: "text-blue-600", bg: "bg-blue-50/50", border: "ring-blue-100/50" },
+    "Campuses": { icon: Building2, color: "text-emerald-600", bg: "bg-emerald-50/50", border: "ring-emerald-100/50" },
+    "Applications": { icon: FileText, color: "text-orange-600", bg: "bg-orange-50/50", border: "ring-orange-100/50" },
+    "Students": { icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50/50", border: "ring-purple-100/50" },
+  };
+  
+  const { icon: Icon, color, bg, border } = config[label as keyof typeof config] || config["Programs"];
+
   return (
-    <div className="flex h-11 items-center gap-2.5 rounded-xl bg-slate-50 px-3 transition-all hover:bg-slate-100 ring-1 ring-slate-200/40">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
-        <Icon className="h-3.5 w-3.5 text-indigo-600/70" />
+    <div className={`flex h-11 items-center gap-2.5 rounded-xl bg-slate-50/50 px-3 transition-all hover:bg-slate-100/80 ring-1 ring-slate-200/40`}>
+      <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${bg} shadow-sm ring-1 ${border}`}>
+        <Icon className={`h-3.5 w-3.5 ${color}`} />
       </div>
       <div className="flex flex-col min-w-0">
         <span className="text-xs font-bold text-slate-900 leading-none">{value}</span>
-        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-0.5 truncate">{label}</span>
+        <span className={`text-[9px] font-bold uppercase tracking-wider ${color.replace('text-', 'text-opacity-70 text-')} mt-0.5 truncate`}>{label}</span>
       </div>
     </div>
   );

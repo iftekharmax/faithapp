@@ -206,31 +206,31 @@ function UniversityDetail() {
 
       <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
-          <section className="grid gap-8 md:grid-cols-[1fr,360px] lg:grid-cols-[1fr,500px]">
-            <Card className="relative overflow-hidden rounded-[24px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
-                  <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100">
-                    {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" /> : <Building2 className="h-14 w-14 text-slate-300" />}
+          <section className="grid gap-6 md:grid-cols-[1fr,500px] lg:grid-cols-[1fr,600px] xl:grid-cols-[1fr,720px]">
+            <Card className="relative overflow-hidden rounded-[24px] bg-white p-6 shadow-sm ring-1 ring-slate-200 lg:p-8">
+              <div className="flex flex-col gap-6 lg:gap-8">
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-start lg:gap-8">
+                  <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 lg:h-[140px] lg:w-[140px]">
+                    {uni.logo_url ? <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" /> : <Building2 className="h-16 w-16 text-slate-300" />}
                   </div>
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-3 lg:gap-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-[34px] font-black tracking-tight text-slate-900 leading-tight">{uni.name}</h1>
+                      <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-tight lg:text-[34px]">{uni.name}</h1>
                       <Badge className={cn("rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest", uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-slate-500 hover:bg-slate-600")}>
                         {uni.status === "active" ? "• Active" : uni.status}
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap items-center gap-6 text-sm font-bold text-slate-500">
+                    <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-slate-500 lg:gap-6">
                       <div className="flex items-center gap-2"><span>🇲🇾</span> <span>{uni.country?.name || 'Malaysia'}</span></div>
                       <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-slate-400" /> <span>{uni.city || 'Negeri Sembilan'}</span></div>
                       {uni.website && <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline"><span>Website</span> <ExternalLink className="h-3.5 w-3.5" /></a>}
                     </div>
+                    <p className="max-w-3xl text-sm leading-relaxed text-slate-500 font-medium lg:text-base">
+                      {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
+                    </p>
                   </div>
                 </div>
-                <p className="max-w-3xl text-base leading-relaxed text-slate-500 font-medium">
-                  {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-50">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-50">
                   <HeroMetaItem icon={Landmark} label="Partner Since" value="2010" />
                   <HeroMetaItem icon={Building2} label="University Type" value="Private" />
                   <HeroMetaItem icon={Globe} label="Public / Private" value="Private" />
@@ -239,7 +239,7 @@ function UniversityDetail() {
               </div>
             </Card>
 
-            <div className="grid grid-cols-2 grid-rows-4 gap-4">
+            <div className="grid grid-cols-2 grid-rows-4 gap-3 lg:grid-cols-4 lg:grid-rows-2 lg:gap-4">
               <HeroStatCard label="Programs" value="155" icon={GradIcon} color="blue" growth="12%" />
               <HeroStatCard label="Campuses" value="4" icon={School} color="emerald" growth="0%" />
               <HeroStatCard label="Applications" value="3,241" icon={FileText} color="orange" growth="18%" />

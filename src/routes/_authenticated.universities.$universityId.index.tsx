@@ -290,7 +290,7 @@ function UniversityDetail() {
           </section>
 
           {/* Main Layout Grid */}
-          <div className="grid gap-8 lg:grid-cols-[1fr,360px] items-start">
+          <div className="grid gap-8 md:grid-cols-[1fr,320px] lg:grid-cols-[1fr,360px] items-start">
             <div className="space-y-8 min-w-0">
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3">

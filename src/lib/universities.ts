@@ -191,15 +191,22 @@ export async function listUniversities(opts: { search?: string; countryId?: stri
   // enrich with counts
   const ids = rows.map((r) => r.id);
   if (ids.length) {
-    const [{ data: progs }, { data: apps }] = await Promise.all([
+    const [{ data: progs }, { data: apps }, { data: camps }] = await Promise.all([
       supabase.from("university_programs").select("university_id").in("university_id", ids),
       supabase.from("applications").select("university_id").in("university_id", ids),
+      supabase.from("campuses").select("university_id").in("university_id", ids),
     ]);
     const pCount: Record<string, number> = {};
     const aCount: Record<string, number> = {};
+    const cCount: Record<string, number> = {};
     (progs ?? []).forEach((p: any) => { pCount[p.university_id] = (pCount[p.university_id] ?? 0) + 1; });
     (apps ?? []).forEach((a: any) => { if (a.university_id) aCount[a.university_id] = (aCount[a.university_id] ?? 0) + 1; });
-    rows.forEach((r) => { r.program_count = pCount[r.id] ?? 0; r.application_count = aCount[r.id] ?? 0; });
+    (camps ?? []).forEach((c: any) => { cCount[c.university_id] = (cCount[c.university_id] ?? 0) + 1; });
+    rows.forEach((r) => {
+      r.program_count = pCount[r.id] ?? 0;
+      r.application_count = aCount[r.id] ?? 0;
+      (r as any).campus_count = cCount[r.id] ?? 0;
+    });
   }
   return rows;
 }

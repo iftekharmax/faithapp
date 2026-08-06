@@ -252,7 +252,7 @@ function UniversityDetail() {
           </section>
 
           <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),320px] lg:grid-cols-[minmax(0,1fr),360px] gap-6 items-start">
-            <div className="flex flex-col gap-8 min-w-0">
+            <div className="flex flex-col gap-6 lg:gap-8 min-w-0">
               <div className="flex flex-wrap items-center gap-3">
                 <Button size="lg" className="h-12 rounded-xl bg-[#2563EB] px-8 font-black text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Create Application</Button>
                 <Button size="lg" variant="outline" className="h-12 rounded-xl border-blue-200 bg-white px-8 font-black text-[#2563EB] hover:bg-blue-50" onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}><Plus className="mr-2 h-5 w-5" /> Add Program</Button>

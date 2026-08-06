@@ -269,7 +269,7 @@ function UniversityDetail() {
         </TabsList>
 
         <TabsContent value="programs" className="mt-0 outline-none">
-          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} />
+          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
         </TabsContent>
         
         <TabsContent value="campuses" className="mt-0 outline-none">
@@ -419,9 +419,9 @@ function StatCard({ label, value, icon: Icon, color, growth }: { label: string; 
 
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
+function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni }: {
   universityId: string; programs: UniversityProgram[]; campuses: Campus[];
-  canEdit: boolean; onChange: () => void;
+  canEdit: boolean; onChange: () => void; uni: University | null;
 }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -576,7 +576,11 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
         ) : (
           <div className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {displayed.map((p) => (
+              {displayed.map((p) => {
+                const universityName = uni?.name || "University";
+                return (
+
+
                 <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md">
                   <div className="flex flex-1 flex-col p-6">
                     <div className="mb-4 flex items-start justify-between gap-4">
@@ -599,7 +603,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                             <h3 className="text-lg font-bold leading-tight text-slate-900 line-clamp-2">
                               {p.name}
                             </h3>
-                            <p className="text-sm font-medium text-slate-500 mt-0.5">{uni?.name || "University"}</p>
+                            <p className="text-sm font-medium text-slate-500 mt-0.5">{universityName}</p>
                           </div>
                         </div>
                         <div className="space-y-1.5 pt-2">
@@ -703,26 +707,26 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                     </div>
                   </div>
                 </div>
-              ))
-
-
-          </div>
-
-          {hasMore && (
-            <div className="mt-12 flex justify-center">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => setPage(p => p + 1)}
-                className="rounded-2xl border-2 px-12 font-bold transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-xl hover:shadow-primary/20"
-              >
-                Load More Programs
-              </Button>
+                );
+              })}
             </div>
-          )}
-        </div>
-      )}
-    </div>
+
+            {hasMore && (
+              <div className="mt-12 flex justify-center">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setPage((p) => p + 1)}
+                  className="rounded-2xl border-2 px-12 font-bold transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-xl hover:shadow-primary/20"
+                >
+                  Load More Programs
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
 
 
 

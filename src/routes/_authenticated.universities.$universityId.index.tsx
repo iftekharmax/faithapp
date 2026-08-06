@@ -432,10 +432,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
       </div>
 
       <div>
-
         {filtered.length === 0 ? (
           programs.length === 0 ? (
-            <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed py-16 text-center">
+            <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed py-16 text-center bg-white">
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
                 <GraduationCap className="h-10 w-10 text-primary" />
               </div>
@@ -452,7 +451,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
               )}
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed py-16 text-center">
+            <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed py-16 text-center bg-white">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
                 <SearchX className="h-8 w-8 text-muted-foreground" />
               </div>
@@ -471,7 +470,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
           <div className="space-y-8">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {displayed.map((p) => (
-                <Card key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl border-none bg-white shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10 hover:ring-primary/20">
+                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl border-none bg-white shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10 hover:ring-primary/20">
+
                   <div className="flex flex-1 flex-col p-6">
                     <div className="mb-4 flex items-start justify-between gap-4">
                       <div className="space-y-1.5">

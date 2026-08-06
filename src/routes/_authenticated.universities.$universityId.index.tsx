@@ -314,7 +314,7 @@ function UniversityDetail() {
               </Card>
               <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
                 <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>
-                <div className="space-y-4"><div className="flex justify-between text-sm font-black"><span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span><span className="text-primary">64%</span></div><div className="h-2 w-full overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-primary" style={{ width: '64%' }} /></div><p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p></div>
+                <div className="space-y-4"><div className="flex justify-between text-sm font-black"><span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span><span className="text-blue-600">64%</span></div><div className="h-2 w-full overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-blue-600 shadow-sm shadow-blue-500/50" style={{ width: '64%' }} /></div><p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p></div>
               </Card>
             </aside>
           </div>

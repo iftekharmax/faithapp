@@ -793,133 +793,116 @@ function CampusesTab({ universityId, campuses, canEdit, onChange }: {
   universityId: string; campuses: Campus[]; canEdit: boolean; onChange: () => void;
 }) {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<Campus | null>(null);
-  const [form, setForm] = useState<Partial<Campus>>({ status: "active", is_main: false });
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
-  const [saving, setSaving] = useState(false);
 
   function openNew() { navigate({ to: "/universities/$universityId/campuses/new", params: { universityId } }); }
   function openEdit(c: Campus) { navigate({ to: "/universities/$universityId/campuses/$campusId/edit", params: { universityId, campusId: c.id } }); }
 
-  async function save() {
-    if (!form.name?.trim()) { toast.error("Name required"); return; }
-    setSaving(true);
-    try {
-      const payload = { ...form, university_id: universityId };
-      if (editing) await updateCampus(editing.id, payload);
-      else await createCampus(payload);
-      toast.success("Saved"); setOpen(false); onChange();
-    } catch (e: any) {
-      if (e instanceof DuplicateError) setDup({ id: e.existingId, name: e.entityName, payload: { ...form, university_id: universityId } });
-      else toast.error(e.message);
-    }
-    finally { setSaving(false); }
-  }
-  async function mergeDuplicate() {
-    if (!dup) return;
-    setSaving(true);
-    try { await updateCampus(dup.id, dup.payload); toast.success("Existing campus updated"); setDup(null); setOpen(false); onChange(); }
-    catch (e: any) { toast.error(e.message); }
-    finally { setSaving(false); }
-  }
   async function confirmDelete() {
     if (!deleteId) return;
-    try { await deleteCampus(deleteId); toast.success("Deleted"); setDeleteId(null); onChange(); }
-    catch (e: any) { toast.error(e.message); }
+    try {
+      await deleteCampus(deleteId);
+      toast.success("Campus deleted");
+      setDeleteId(null);
+      onChange();
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to delete campus");
+    }
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
-        <CardTitle>Campuses</CardTitle>
-        <div className="flex flex-wrap items-center gap-2">
+    <Card className="rounded-3xl border-none shadow-sm ring-1 ring-border overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between border-b bg-muted/20 px-6 py-4">
+        <div>
+          <CardTitle className="text-xl">University Campuses</CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">Manage physical locations for this institution.</p>
+        </div>
+        <div className="flex gap-2">
           <CsvToolbar label="campuses"
             onExport={() => exportCampusesCsv(universityId)}
-            onPreview={canEdit ? (text) => previewCampusesCsv(text, universityId) : undefined}
             onImportDone={onChange}
-            templateHeaders={["name","city","address","is_main","status"]}
+            templateHeaders={["name", "city", "address", "is_main", "status"]}
             templateName="campuses-template" canImport={canEdit} />
-          {canEdit && <Button onClick={openNew}><Plus className="mr-2 h-4 w-4" />Add campus</Button>}
+          {canEdit && <Button onClick={openNew} className="rounded-xl shadow-sm"><Plus className="mr-2 h-4 w-4" /> Add Campus</Button>}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         {campuses.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-12 text-center">
-            <div className="rounded-full bg-primary/10 p-3"><MapPin className="h-6 w-6 text-primary" /></div>
-            <div>
-              <p className="font-semibold">No campuses yet</p>
-              <p className="mt-1 text-sm text-muted-foreground">Add a campus so programs can be linked to a location.</p>
+          <div className="flex flex-col items-center py-16 text-center">
+            <div className="h-20 w-20 rounded-full bg-primary/5 flex items-center justify-center mb-4">
+              <School className="h-10 w-10 text-primary/40" />
             </div>
-            {canEdit && <Button onClick={openNew} className="rounded-xl"><Plus className="mr-2 h-4 w-4" />Add campus</Button>}
+            <p className="text-xl font-bold">No campuses yet</p>
+            <p className="text-muted-foreground max-w-xs mt-2 mb-6">Start by adding the main campus or regional locations for this university.</p>
+            {canEdit && <Button onClick={openNew} className="rounded-xl"><Plus className="mr-2 h-4 w-4" /> Create First Campus</Button>}
           </div>
         ) : (
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
             {campuses.map((c) => (
-              <div key={c.id} className="rounded-xl border p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 font-semibold">{c.name} {c.is_main && <Badge variant="outline">Main</Badge>}</div>
-                    {c.city && <div className="text-xs text-muted-foreground"><MapPin className="mr-1 inline h-3 w-3" />{c.city}</div>}
-                    {c.address && <div className="mt-1 text-xs text-muted-foreground">{c.address}</div>}
+              <div key={c.id} className="bg-white p-6 group transition-colors hover:bg-muted/30">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                    <Building2 className="h-6 w-6" />
                   </div>
-                  <Badge variant={c.status === "active" ? "default" : "secondary"} className="capitalize">{c.status}</Badge>
+                  <div className="flex gap-1">
+                    {c.is_main && <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-none rounded-full text-[10px] font-bold uppercase tracking-wider">Main</Badge>}
+                    <Badge variant="outline" className="capitalize text-[10px] font-bold tracking-wider">{c.status}</Badge>
+                  </div>
                 </div>
-                {canEdit && (
-                  <div className="mt-3 flex gap-1">
-                    <Button size="sm" variant="ghost" onClick={() => openEdit(c)}><Pencil className="mr-1 h-3 w-3" />Edit</Button>
-                    <Button size="sm" variant="ghost" onClick={() => setDeleteId(c.id)}><Trash2 className="mr-1 h-3 w-3 text-destructive" />Delete</Button>
+                
+                <h3 className="text-lg font-bold tracking-tight mb-2 group-hover:text-primary transition-colors">{c.name}</h3>
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <MapPin className="h-4 w-4 shrink-0" />
+                    <span>{c.city || 'N/A'}</span>
                   </div>
-                )}
+                  {c.address && (
+                    <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <FileText className="h-4 w-4 shrink-0 mt-0.5" />
+                      <span className="line-clamp-2">{c.address}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-muted/50">
+                  <div className="flex gap-2">
+                    {canEdit && (
+                      <>
+                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-xl hover:bg-primary/10 hover:text-primary" onClick={() => openEdit(c)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-xl hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(c.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                  <Button variant="ghost" size="sm" className="rounded-xl font-bold group-hover:bg-primary group-hover:text-white">
+                    View Programs <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </CardContent>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>{editing ? "Edit campus" : "New campus"}</DialogTitle></DialogHeader>
-          <div className="grid gap-3">
-            <div><Label>Name *</Label><Input value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-            <div><Label>City</Label><Input value={form.city ?? ""} onChange={(e) => setForm({ ...form, city: e.target.value })} /></div>
-            <div><Label>Address</Label><Textarea rows={2} value={form.address ?? ""} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
-            <div className="flex items-center gap-2"><Switch checked={form.is_main ?? false} onCheckedChange={(v) => setForm({ ...form, is_main: v })} /><Label>Main campus</Label></div>
-            <div><Label>Status</Label>
-              <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button><Button onClick={save}>Save</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Delete campus?</AlertDialogTitle><AlertDialogDescription>Programs referencing it will lose the link.</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={!!dup} onOpenChange={(o) => !o && setDup(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-3xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Campus already exists</AlertDialogTitle>
+            <AlertDialogTitle>Delete this campus?</AlertDialogTitle>
             <AlertDialogDescription>
-              A campus named <span className="font-medium">"{dup?.name}"</span> already exists at this university.
-              Update the existing campus with your changes instead?
+              This action cannot be undone. All programs associated with this campus may need to be updated.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={mergeDuplicate} disabled={saving}>Update existing</AlertDialogAction>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-white hover:bg-destructive/90 rounded-xl">Delete Campus</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </Card>
   );
 }
+
 

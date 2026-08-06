@@ -344,8 +344,8 @@ function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: stri
       <div className="text-xl font-black tracking-tight text-slate-900">{value}</div>
       <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
       {growth && (
-        <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-100 text-[8px] font-bold text-emerald-700 hover:bg-emerald-100">
-          {growth}
+        <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-50 text-[8px] font-black text-emerald-600 hover:bg-emerald-100 flex items-center gap-0.5">
+          <TrendingUp className="h-2 w-2" /> {growth}
         </Badge>
       )}
     </div>

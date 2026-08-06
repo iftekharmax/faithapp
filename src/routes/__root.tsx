@@ -114,7 +114,7 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="antialiased font-sans text-foreground bg-background">
         {children}
         <Scripts />
       </body>

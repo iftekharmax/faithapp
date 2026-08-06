@@ -6,13 +6,14 @@ export const getRouter = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        // Avoid refetch storms: reuse cached data for a minute and skip
-        // window-focus refetches, which were re-hitting Supabase constantly.
-        staleTime: 60_000,
-        gcTime: 5 * 60_000,
+        // Disable automatic re-fetching to persist UI state across tab switches
+        // and avoid triggering loading states or reloads unexpectedly.
+        staleTime: Infinity,
+        gcTime: Infinity,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
-        retry: 1,
+        refetchInterval: false,
+        retry: false,
       },
     },
   });

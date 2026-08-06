@@ -281,7 +281,10 @@ function UniversityDetail() {
                       </TableBody>
                     </Table>
                   )}
-                </CardContent>
+        </div>
+      )}
+    </div>
+
               </Card>
             </TabsContent>
           </Tabs>
@@ -946,7 +949,8 @@ function CampusesTab({ universityId, campuses, canEdit, onChange }: {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Card>
+    </div>
+
   );
 }
 

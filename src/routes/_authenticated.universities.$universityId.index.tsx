@@ -403,57 +403,74 @@ function UniversityDetail() {
               </Tabs>
             </main>
 
-            <aside className="space-y-8">
+            <aside className="space-y-6">
               <div className="sticky top-[100px] flex flex-col gap-6">
-                <Card className="overflow-hidden rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200">
-                  <div className="bg-slate-50/50 p-6 border-b">
-                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">University Summary</h3>
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <div className="mb-6 flex items-center justify-between">
+                    <h3 className="text-lg font-black text-slate-900">University Overview</h3>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>Edit Details</DropdownMenuItem>
+                        <DropdownMenuItem>Settings</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                  <div className="p-6 space-y-6">
-                    <div className="flex flex-col items-center text-center pb-6 border-b border-slate-50">
-                      <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-lg ring-1 ring-slate-100">
-                        {uni.logo_url ? (
-                          <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-3xl object-cover" />
-                        ) : (
-                          <Building2 className="h-10 w-10 text-slate-300" />
-                        )}
-                      </div>
-                      <h4 className="text-lg font-bold text-slate-900 leading-tight">{uni.name}</h4>
-                      <p className="mt-1 text-sm font-medium text-slate-400">{uni.city}, {uni.country?.name}</p>
-                    </div>
-
-                    <div className="space-y-5">
-                      <AsideInfoItem icon={GraduationCap} label="University Type" value="Public Research" />
-                      <AsideInfoItem icon={Globe} label="Global Ranking" value="#142 Worldwide" />
-                      <AsideInfoItem icon={Users} label="Int'l Students" value="28%" />
-                      <AsideInfoItem icon={Calendar} label="Next Intake" value="September 2026" />
-                    </div>
-
-                    <div className="pt-6 border-t border-slate-50">
-                      <h4 className="mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Quick Actions</h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        <QuickActionButton icon={Download} label="Brochure" />
-                        <QuickActionButton icon={Printer} label="Print Page" />
-                        <QuickActionButton icon={Share2} label="Share" />
-                        <QuickActionButton icon={Heart} label="Favorite" />
-                      </div>
+                  <div className="space-y-4">
+                    <OverviewItem icon={Globe} label="Country" value={uni.country?.name || "Malaysia"} flag="🇲🇾" />
+                    <OverviewItem icon={MapPin} label="State" value={uni.city || "Negeri Sembilan"} />
+                    <OverviewItem icon={ExternalLink} label="Website" value="www.newinti.edu.my" isLink />
+                    <div className="pt-4 mt-4 border-t border-slate-50 space-y-4">
+                      <OverviewStat label="Total Programs" value="155" />
+                      <OverviewStat label="Total Applications" value="3,241" />
+                      <OverviewStat label="Total Students" value="8,925" />
                     </div>
                   </div>
                 </Card>
 
-                <Card className="group relative overflow-hidden rounded-[24px] border-none bg-primary p-6 text-white shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]">
-                  <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-                  <div className="relative z-10">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
-                      <TrendingUp className="h-6 w-6" />
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <Calendar className="h-5 w-5" />
                     </div>
-                    <h3 className="text-xl font-bold">Premium Partner</h3>
-                    <p className="mt-2 text-sm text-white/80 leading-relaxed">
-                      This institution is part of our Elite Partnership Program, ensuring prioritized processing.
-                    </p>
-                    <Button variant="secondary" className="mt-6 w-full rounded-xl font-black text-primary hover:bg-white transition-colors">
-                      View Exclusive Benefits
-                    </Button>
+                    <h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3>
+                  </div>
+                  <div className="space-y-4">
+                    <IntakeItem label="January 2025" days="28 days" />
+                    <IntakeItem label="April 2025" days="118 days" />
+                    <IntakeItem label="August 2025" days="240 days" />
+                  </div>
+                  <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-primary">
+                    View All Intakes <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Card>
+
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <h3 className="mb-6 text-lg font-black text-slate-900">Quick Actions</h3>
+                  <div className="space-y-2">
+                    <SidebarAction icon={Plus} label="Create Program" />
+                    <SidebarAction icon={Plus} label="Create Application" />
+                    <SidebarAction icon={Download} label="Import Programs" />
+                    <SidebarAction icon={Download} label="Export Programs" />
+                    <SidebarAction icon={FileText} label="Download Brochure" />
+                  </div>
+                </Card>
+
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between text-sm font-black">
+                      <span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span>
+                      <span className="text-primary">64%</span>
+                    </div>
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-full bg-primary" style={{ width: '64%' }} />
+                    </div>
+                    <p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p>
                   </div>
                 </Card>
               </div>

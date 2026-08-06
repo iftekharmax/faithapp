@@ -550,7 +550,7 @@ function StatCard({ label, value, icon: Icon, color = "bg-primary/5 text-primary
 }
 
 function StatChip({ label, value }: { label: string; value: number }) {
-  const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : FileText;
+  const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : Globe;
   return (
     <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-slate-600 ring-1 ring-slate-100 transition-all hover:bg-slate-100">
       <Icon className="h-3.5 w-3.5 opacity-70" />

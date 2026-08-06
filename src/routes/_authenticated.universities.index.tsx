@@ -284,7 +284,7 @@ function UniversitiesPage() {
       </div>
 
       {loading ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="h-[400px] rounded-2xl bg-slate-100 animate-pulse" />
           ))}
@@ -304,79 +304,88 @@ function UniversitiesPage() {
         </div>
       ) : (
         <>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {pageItems.map((u) => (
-              <Card key={u.id} className="group overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <div className="relative flex items-start gap-4 p-5">
-                  <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-100">
-                    {u.logo_url ? <img src={u.logo_url} alt={u.name} className="h-full w-full object-cover" /> : <Building2 className="h-8 w-8 text-slate-300" />}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <button
-                      onClick={() => navigate({ to: "/universities/$universityId", params: { universityId: u.id } })}
-                      className="line-clamp-2 text-left text-lg font-bold text-slate-900 hover:text-primary"
-                    >{u.name}</button>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                      <div className="flex items-center gap-1.5 font-medium text-slate-700">
-                        {u.country?.flag_url && <img src={u.country.flag_url} alt="" className="h-4 w-6 rounded-sm object-cover shadow-sm" />}
-                        {u.country?.name ?? "Global"}
-                      </div>
-                      {u.city && <span>• {u.city}</span>}
-                    </div>
-                  </div>
-                  <div className="absolute right-4 top-4">
+              <Card key={u.id} className="group flex flex-col h-full overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                {/* Logo & Status */}
+                <div className="relative p-5 flex flex-col items-start gap-4">
+                  {/* Status Badge - Fixed position top-right */}
+                  <div className="absolute right-4 top-4 z-10">
                     <StatusBadge status={u.status} />
+                  </div>
+
+                  {/* Logo - Fixed Size */}
+                  <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-white p-2 shadow-sm">
+                    {u.logo_url ? (
+                      <img src={u.logo_url} alt={u.name} className="h-full w-full object-contain" />
+                    ) : (
+                      <Building2 className="h-8 w-8 text-slate-300" />
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <button
+                    onClick={() => navigate({ to: "/universities/$universityId", params: { universityId: u.id } })}
+                    className="line-clamp-2 text-left text-xl font-bold tracking-tight text-slate-900 transition-colors hover:text-primary"
+                  >
+                    {u.name}
+                  </button>
+
+                  {/* Country + Flag (No rounded container) */}
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                      {u.country?.flag_url && (
+                        <img src={u.country.flag_url} alt="" className="h-3.5 w-auto" />
+                      )}
+                      <span>{u.country?.name ?? "Global"}</span>
+                    </div>
+                    {u.city && (
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <MapPin className="h-3 w-3" />
+                        <span>{u.city}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 
-                <CardContent className="flex flex-col flex-1 px-5 pb-5 pt-0">
-                  <p className="mb-4 line-clamp-3 text-sm text-slate-600 leading-relaxed h-[60px]">{u.description || "No description available."}</p>
+                <CardContent className="flex flex-1 flex-col px-5 pb-5 pt-0">
+                  {/* Description - Max 3 lines */}
+                  <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-slate-600">
+                    {u.description || "No description available."}
+                  </p>
                   
-                  <div className="mb-4 grid grid-cols-2 gap-2">
+                  {/* Statistics - Equal sized chips */}
+                  <div className="mb-6 grid grid-cols-2 gap-2">
                     <StatChip label="Programs" value={u.program_count ?? 0} />
                     <StatChip label="Campuses" value={(u as any).campus_count ?? 0} />
                     <StatChip label="Applications" value={u.application_count ?? 0} />
                     <StatChip label="Students" value={Math.floor(Math.random() * 500) + 50} />
                   </div>
 
-                  <div className="mb-4 space-y-2 text-xs text-slate-500 border-t pt-4">
-                    {u.website && (
-                      <div className="flex items-center gap-2">
-                        <Globe className="h-3.5 w-3.5 opacity-70" />
-                        <a href={u.website} target="_blank" rel="noreferrer" className="truncate hover:text-primary transition-colors">{u.website.replace(/^https?:\/\//, '')}</a>
+                  {/* Actions - Pinned to bottom */}
+                  <div className="mt-auto pt-5 border-t border-slate-100">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1">
+                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="View Details" asChild>
+                          <Link to="/universities/$universityId" params={{ universityId: u.id }}>
+                            <ExternalLink className="h-4 w-4 text-slate-600" />
+                          </Link>
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="Edit" onClick={() => openEdit(u)}>
+                          <Pencil className="h-4 w-4 text-slate-600" />
+                        </Button>
+                        {isAdmin && (
+                          <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-red-50" title="Delete" onClick={() => setDeleteTarget(u)}>
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        )}
                       </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-3.5 w-3.5 opacity-70" />
-                      <span className="truncate">admissions@{u.name.toLowerCase().replace(/\s+/g, '')}.edu</span>
-                    </div>
-                    {u.city && (
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-3.5 w-3.5 opacity-70" />
-                        <span className="truncate">{u.city}, {u.country?.name}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-auto flex items-center justify-between gap-2 border-t pt-4">
-                    <div className="flex gap-1.5">
-                      <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="View Details" asChild>
-                        <Link to="/universities/$universityId" params={{ universityId: u.id }}><ExternalLink className="h-4 w-4 text-slate-600" /></Link>
-                      </Button>
-                      <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="Edit" onClick={() => openEdit(u)}>
-                        <Pencil className="h-4 w-4 text-slate-600" />
-                      </Button>
-                      {isAdmin && (
-                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-red-50" title="Delete" onClick={() => setDeleteTarget(u)}>
-                          <Trash2 className="h-4 w-4 text-red-500" />
+                      {u.website && (
+                        <Button variant="secondary" size="sm" className="h-9 rounded-full px-4 text-xs font-bold shadow-sm transition-all hover:bg-slate-200" asChild>
+                          <a href={u.website} target="_blank" rel="noreferrer">Visit Website</a>
                         </Button>
                       )}
                     </div>
-                    {u.website && (
-                      <Button variant="secondary" size="sm" className="rounded-full px-4 text-xs font-semibold shadow-sm transition-all hover:bg-slate-200" asChild>
-                        <a href={u.website} target="_blank" rel="noreferrer">Visit Website</a>
-                      </Button>
-                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -550,12 +559,16 @@ function StatCard({ label, value, icon: Icon, color = "bg-primary/5 text-primary
 }
 
 function StatChip({ label, value }: { label: string; value: number }) {
-  const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : Globe;
+  const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : GraduationCap;
   return (
-    <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-slate-600 ring-1 ring-slate-100 transition-all hover:bg-slate-100">
-      <Icon className="h-3.5 w-3.5 opacity-70" />
-      <span className="text-xs font-bold">{value}</span>
-      <span className="text-[10px] uppercase tracking-wider opacity-60 font-semibold">{label}</span>
+    <div className="flex h-11 items-center gap-2.5 rounded-xl bg-slate-50 px-3 transition-all hover:bg-slate-100 ring-1 ring-slate-100/50">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-slate-100">
+        <Icon className="h-3.5 w-3.5 text-primary/70" />
+      </div>
+      <div className="flex flex-col min-w-0">
+        <span className="text-xs font-bold text-slate-900 leading-none">{value}</span>
+        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">{label}</span>
+      </div>
     </div>
   );
 }

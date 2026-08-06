@@ -11,7 +11,6 @@ import {
   History, PieChart, Activity, Info, Landmark, Languages, GraduationCap as GradIcon,
   MousePointer2, Share, Check
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

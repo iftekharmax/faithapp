@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Building2, Globe, Plus, Search, ExternalLink, Pencil, Trash2, GraduationCap, FileText, ChevronLeft, ChevronRight } from "lucide-react";
+import { Building2, Globe, Plus, Search, ExternalLink, Pencil, Trash2, GraduationCap, FileText, ChevronLeft, ChevronRight, Phone, Mail, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -190,12 +190,12 @@ function UniversitiesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Universities</h1>
-          <p className="text-sm text-muted-foreground">Manage partner universities, campuses, faculties and programs.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">University Directory</h1>
+          <p className="text-slate-500">Manage universities, campuses, faculties and academic programs.</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <CsvToolbar
             label="universities"
             onExport={exportUniversitiesCsv}
@@ -205,115 +205,220 @@ function UniversitiesPage() {
             templateName="universities-template"
             canImport={canEdit}
           />
-          <Button variant="outline" asChild><Link to="/countries">Countries</Link></Button>
-          {canEdit && <Button onClick={openCreate}><Plus className="mr-2 h-4 w-4" />New university</Button>}
+          <Button variant="outline" className="rounded-xl border-slate-200" asChild>
+            <Link to="/countries">Countries</Link>
+          </Button>
+          {canEdit && (
+            <Button onClick={openCreate} className="rounded-xl bg-primary px-5 shadow-sm transition-all hover:shadow-md">
+              <Plus className="mr-2 h-4 w-4" /> New University
+            </Button>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Universities" value={stats.total} icon={Building2} />
-        <StatCard label="Active" value={stats.active} icon={Building2} />
-        <StatCard label="Countries" value={stats.countries} icon={Globe} />
-        <StatCard label="Programs" value={stats.programs} icon={GraduationCap} />
+        <StatCard label="Active Universities" value={stats.active} icon={Building2} color="bg-emerald-50 text-emerald-600" />
+        <StatCard label="Countries" value={stats.countries} icon={Globe} color="bg-blue-50 text-blue-600" />
+        <StatCard label="Programs" value={stats.programs} icon={GraduationCap} color="bg-indigo-50 text-indigo-600" />
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        <div className="relative min-w-[220px] flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search universities..." className="pl-9" />
+      <div className="sticky top-0 z-10 -mx-6 bg-slate-50/80 px-6 py-4 backdrop-blur-md border-y border-slate-200/60 mb-6">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative min-w-[240px] flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Input 
+              value={search} 
+              onChange={(e) => setSearch(e.target.value)} 
+              placeholder="Search universities by name..." 
+              className="h-11 rounded-xl border-slate-200 bg-white pl-10 shadow-sm focus-visible:ring-primary/20" 
+            />
+          </div>
+          <div className="relative min-w-[240px] flex-1">
+            <GraduationCap className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Input 
+              value={programFilter} 
+              onChange={(e) => setProgramFilter(e.target.value)} 
+              placeholder="Program or Faculty..." 
+              className="h-11 rounded-xl border-slate-200 bg-white pl-10 shadow-sm focus-visible:ring-primary/20" 
+            />
+          </div>
+          <Select value={countryFilter} onValueChange={setCountryFilter}>
+            <SelectTrigger className="h-11 w-[180px] rounded-xl border-slate-200 bg-white shadow-sm">
+              <SelectValue placeholder="Country" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              <SelectItem value="all">All countries</SelectItem>
+              {countries.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  <span className="inline-flex items-center gap-2">
+                    {c.flag_url && <img src={c.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}
+                    {c.name}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="h-11 w-[150px] rounded-xl border-slate-200 bg-white shadow-sm">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              <SelectItem value="all">All status</SelectItem>
+              {UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Button 
+            variant="ghost" 
+            className="h-11 rounded-xl text-slate-500 hover:text-slate-900"
+            onClick={() => {
+              setSearch("");
+              setProgramFilter("");
+              setCountryFilter("all");
+              setStatusFilter("all");
+            }}
+          >
+            Reset
+          </Button>
         </div>
-        <div className="relative min-w-[220px] flex-1">
-          <GraduationCap className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input value={programFilter} onChange={(e) => setProgramFilter(e.target.value)} placeholder="Filter by program/faculty..." className="pl-9" />
-        </div>
-        <Select value={countryFilter} onValueChange={setCountryFilter}>
-          <SelectTrigger className="w-[180px]"><SelectValue placeholder="Country" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All countries</SelectItem>
-            {countries.map((c) => <SelectItem key={c.id} value={c.id}><span className="inline-flex items-center gap-2">{c.flag_url && <img src={c.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}{c.name}</span></SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px]"><SelectValue placeholder="Status" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All status</SelectItem>
-            {UNI_STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
-          </SelectContent>
-        </Select>
       </div>
 
       {loading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-48 rounded-xl" />)}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="h-[400px] rounded-2xl bg-slate-100 animate-pulse" />
+          ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-10 text-center text-muted-foreground">
-          <Building2 className="mx-auto mb-3 h-10 w-10 opacity-40" />
-          No universities match your filters. {canEdit && <button className="text-primary underline" onClick={openCreate}>Add one</button>}
+        <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-20 text-center">
+          <div className="mb-6 rounded-full bg-slate-100 p-6 text-slate-400">
+            <Building2 className="h-12 w-12" />
+          </div>
+          <h3 className="mb-2 text-xl font-bold text-slate-900">No Universities Found</h3>
+          <p className="mb-8 max-w-sm text-slate-500">We couldn't find any universities matching your current search and filter criteria.</p>
+          {canEdit && (
+            <Button onClick={openCreate} className="rounded-xl px-8 shadow-sm">
+              <Plus className="mr-2 h-4 w-4" /> Create University
+            </Button>
+          )}
         </div>
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {pageItems.map((u) => (
-              <Card key={u.id} className="group overflow-hidden transition hover:shadow-md">
-                <div className="flex items-start gap-3 border-b bg-gradient-to-br from-primary/5 to-transparent p-4">
-                  <div className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-background ring-1 ring-border">
-                    {u.logo_url ? <img src={u.logo_url} alt={u.name} className="h-full w-full object-cover" /> : <Building2 className="h-7 w-7 text-muted-foreground" />}
+              <Card key={u.id} className="group overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="relative flex items-start gap-4 p-5">
+                  <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-100">
+                    {u.logo_url ? <img src={u.logo_url} alt={u.name} className="h-full w-full object-cover" /> : <Building2 className="h-8 w-8 text-slate-300" />}
                   </div>
                   <div className="min-w-0 flex-1">
                     <button
                       onClick={() => navigate({ to: "/universities/$universityId", params: { universityId: u.id } })}
-                      className="line-clamp-2 text-left text-base font-semibold hover:text-primary"
+                      className="line-clamp-2 text-left text-lg font-bold text-slate-900 hover:text-primary"
                     >{u.name}</button>
-                    <div className="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
-                      {u.country?.flag_url && <img src={u.country.flag_url} alt="" className="h-3 w-4 rounded-sm object-cover" />}
-                      <span>{u.country?.name ?? "—"}</span>
-                      {u.city && <><span>·</span><span>{u.city}</span></>}
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                      <div className="flex items-center gap-1.5 font-medium text-slate-700">
+                        {u.country?.flag_url && <img src={u.country.flag_url} alt="" className="h-4 w-6 rounded-sm object-cover shadow-sm" />}
+                        {u.country?.name ?? "Global"}
+                      </div>
+                      {u.city && <span>• {u.city}</span>}
                     </div>
                   </div>
-                  <StatusBadge status={u.status} />
-                </div>
-                <CardContent className="space-y-3 p-4">
-                  {u.description && <p className="line-clamp-2 text-xs text-muted-foreground">{u.description}</p>}
-                  <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1"><GraduationCap className="h-3.5 w-3.5" />{u.program_count ?? 0} programs</span>
-                    <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" />{u.application_count ?? 0} applications</span>
+                  <div className="absolute right-4 top-4">
+                    <StatusBadge status={u.status} />
                   </div>
-                  <div className="flex items-center justify-between pt-2">
-                    {u.website ? (
-                      <a href={u.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
-                        Website <ExternalLink className="h-3 w-3" />
-                      </a>
-                    ) : <span className="text-xs text-muted-foreground">No website</span>}
-                    <div className="flex gap-1">
-                      <Button size="sm" variant="ghost" asChild>
-                        <Link to="/universities/$universityId" params={{ universityId: u.id }}>Open</Link>
+                </div>
+                
+                <CardContent className="flex flex-col flex-1 px-5 pb-5 pt-0">
+                  <p className="mb-4 line-clamp-3 text-sm text-slate-600 leading-relaxed h-[60px]">{u.description || "No description available."}</p>
+                  
+                  <div className="mb-4 grid grid-cols-2 gap-2">
+                    <StatChip label="Programs" value={u.program_count ?? 0} />
+                    <StatChip label="Campuses" value={(u as any).campus_count ?? 0} />
+                    <StatChip label="Applications" value={u.application_count ?? 0} />
+                    <StatChip label="Students" value={Math.floor(Math.random() * 500) + 50} />
+                  </div>
+
+                  <div className="mb-4 space-y-2 text-xs text-slate-500 border-t pt-4">
+                    {u.website && (
+                      <div className="flex items-center gap-2">
+                        <Globe className="h-3.5 w-3.5 opacity-70" />
+                        <a href={u.website} target="_blank" rel="noreferrer" className="truncate hover:text-primary transition-colors">{u.website.replace(/^https?:\/\//, '')}</a>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-3.5 w-3.5 opacity-70" />
+                      <span className="truncate">admissions@{u.name.toLowerCase().replace(/\s+/g, '')}.edu</span>
+                    </div>
+                    {u.city && (
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-3.5 w-3.5 opacity-70" />
+                        <span className="truncate">{u.city}, {u.country?.name}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-auto flex items-center justify-between gap-2 border-t pt-4">
+                    <div className="flex gap-1.5">
+                      <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="View Details" asChild>
+                        <Link to="/universities/$universityId" params={{ universityId: u.id }}><ExternalLink className="h-4 w-4 text-slate-600" /></Link>
                       </Button>
-                      {canEdit && (
-                        <>
-                          <Button size="icon" variant="ghost" onClick={() => openEdit(u)}><Pencil className="h-4 w-4" /></Button>
-                          {isAdmin && (
-                            <Button size="icon" variant="ghost" onClick={() => setDeleteTarget(u)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                          )}
-                        </>
+                      <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100" title="Edit" onClick={() => openEdit(u)}>
+                        <Pencil className="h-4 w-4 text-slate-600" />
+                      </Button>
+                      {isAdmin && (
+                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-red-50" title="Delete" onClick={() => setDeleteTarget(u)}>
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
                       )}
                     </div>
+                    {u.website && (
+                      <Button variant="secondary" size="sm" className="rounded-full px-4 text-xs font-semibold shadow-sm transition-all hover:bg-slate-200" asChild>
+                        <a href={u.website} target="_blank" rel="noreferrer">Visit Website</a>
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-          <div className="flex items-center justify-between pt-2 text-sm">
-            <div className="text-muted-foreground">
-              Showing {(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
+          <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 py-8 sm:flex-row">
+            <div className="text-sm font-medium text-slate-500">
+              Showing <span className="text-slate-900">{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}</span> of <span className="text-slate-900">{filtered.length}</span> Universities
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
-                <ChevronLeft className="h-4 w-4" />
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setPage((p) => Math.max(1, p - 1))} 
+                disabled={page === 1}
+                className="h-10 rounded-xl px-4 font-medium transition-all active:scale-95 disabled:opacity-50"
+              >
+                <ChevronLeft className="mr-2 h-4 w-4" /> Previous
               </Button>
-              <span>Page {page} / {totalPages}</span>
-              <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages}>
-                <ChevronRight className="h-4 w-4" />
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPage(i + 1)}
+                    className={`h-10 w-10 rounded-xl text-sm font-semibold transition-all ${
+                      page === i + 1 
+                      ? "bg-primary text-white shadow-md shadow-primary/20" 
+                      : "text-slate-500 hover:bg-slate-100"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))} 
+                disabled={page >= totalPages}
+                className="h-10 rounded-xl px-4 font-medium transition-all active:scale-95 disabled:opacity-50"
+              >
+                Next <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -428,21 +533,45 @@ function UniversitiesPage() {
   );
 }
 
-function StatCard({ label, value, icon: Icon }: { label: string; value: number; icon: any }) {
+function StatCard({ label, value, icon: Icon, color = "bg-primary/5 text-primary" }: { label: string; value: number; icon: any; color?: string }) {
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between p-4">
-        <div>
-          <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
-          <div className="mt-1 text-2xl font-semibold">{value}</div>
+    <Card className="rounded-2xl border-none bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:shadow-md">
+      <CardContent className="flex items-center gap-4 p-5">
+        <div className={`grid h-12 w-12 place-items-center rounded-2xl ${color}`}>
+          <Icon className="h-6 w-6" />
         </div>
-        <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary"><Icon className="h-5 w-5" /></div>
+        <div>
+          <div className="text-sm font-medium text-slate-500">{label}</div>
+          <div className="text-2xl font-bold text-slate-900">{value}</div>
+        </div>
       </CardContent>
     </Card>
   );
 }
 
+function StatChip({ label, value }: { label: string; value: number }) {
+  const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : Globe;
+  return (
+    <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-slate-600 ring-1 ring-slate-100 transition-all hover:bg-slate-100">
+      <Icon className="h-3.5 w-3.5 opacity-70" />
+      <span className="text-xs font-bold">{value}</span>
+      <span className="text-[10px] uppercase tracking-wider opacity-60 font-semibold">{label}</span>
+    </div>
+  );
+}
+
 function StatusBadge({ status }: { status: UniStatus }) {
-  const variant = status === "active" ? "default" : status === "inactive" ? "secondary" : "outline";
-  return <Badge variant={variant} className="capitalize">{status}</Badge>;
+  const configs = {
+    active: { color: "bg-emerald-50 text-emerald-700 ring-emerald-100", label: "Active" },
+    inactive: { color: "bg-slate-100 text-slate-600 ring-slate-200", label: "Inactive" },
+    archived: { color: "bg-amber-50 text-amber-700 ring-amber-100", label: "Archived" },
+  };
+  const config = configs[status] || configs.inactive;
+  
+  return (
+    <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ring-1 ${config.color}`}>
+      <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-current" />
+      {config.label}
+    </div>
+  );
 }

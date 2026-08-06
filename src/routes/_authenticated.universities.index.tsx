@@ -357,9 +357,9 @@ function UniversitiesPage() {
                         <span>{u.country?.name ?? "Global"}</span>
                         {u.city && (
                           <>
-                            <span className="text-slate-300">•</span>
-                            <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                            <span className="text-slate-500 whitespace-nowrap">{u.city}</span>
+                            <span className="text-slate-300 mx-1">•</span>
+                            <MapPin className="h-4 w-4 text-slate-400 inline-block align-text-bottom" />
+                            <span className="text-slate-500 whitespace-nowrap ml-1">{u.city}</span>
                           </>
                         )}
                       </div>

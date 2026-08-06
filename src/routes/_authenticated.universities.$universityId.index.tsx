@@ -489,7 +489,7 @@ function QuickActionButton({ icon: Icon, label }: { icon: any; label: string }) 
 
 
 
-function StatCard({ label, value, icon: Icon, color }: { label: string; value: string | number; icon: any; color: 'blue' | 'emerald' | 'orange' | 'purple' }) {
+function StatCard({ label, value, icon: Icon, color, growth }: { label: string; value: string | number; icon: any; color: 'blue' | 'emerald' | 'orange' | 'purple'; growth?: string }) {
   const colors = {
     blue: 'bg-blue-50 text-blue-600 ring-blue-100',
     emerald: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
@@ -498,7 +498,7 @@ function StatCard({ label, value, icon: Icon, color }: { label: string; value: s
   };
 
   return (
-    <div className="group flex flex-col items-center justify-center gap-1 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-all hover:shadow-lg hover:shadow-slate-200/50 hover:ring-1 hover:ring-slate-300">
+    <div className="group relative flex flex-col items-center justify-center gap-1 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-all hover:shadow-lg hover:shadow-slate-200/50 hover:ring-1 hover:ring-slate-300">
       <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>

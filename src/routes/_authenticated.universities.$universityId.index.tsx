@@ -663,10 +663,11 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                             <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-bold py-2.5 text-destructive focus:text-destructive"><Trash2 className="mr-3 h-4 w-4" /> Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl text-slate-200 hover:text-rose-500 hover:bg-rose-50 transition-all hover:scale-110">
-                          <Heart className="h-5 w-5" fill="currentColor" className="opacity-0 group-hover:opacity-10" />
-                          <Heart className="absolute h-5 w-5" />
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl text-slate-200 hover:text-rose-500 hover:bg-rose-50 transition-all hover:scale-110 group/heart">
+                          <Heart className="h-5 w-5 absolute opacity-0 group-hover/heart:opacity-10" fill="currentColor" />
+                          <Heart className="h-5 w-5" />
                         </Button>
+
                       </div>
                     </div>
 

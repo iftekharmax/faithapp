@@ -823,9 +823,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
         </AlertDialogContent>
       </AlertDialog>
     </div>
-
   );
 }
+
 
 function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (

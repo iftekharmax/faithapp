@@ -224,84 +224,92 @@ function UniversityDetail() {
       <div className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
           {/* Hero Section */}
-          <section className="relative overflow-hidden rounded-[32px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
-            <div className="absolute right-0 top-0 -mr-12 -mt-12 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
-            <div className="relative grid gap-8 lg:grid-cols-[1fr,400px]">
-              <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-                  <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100">
+          <section className="grid gap-8 lg:grid-cols-[1fr,500px]">
+            <Card className="relative overflow-hidden rounded-[24px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
+                  <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100">
                     {uni.logo_url ? (
-                      <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-cover" />
+                      <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" />
                     ) : (
-                      <Building2 className="h-12 w-12 text-slate-300" />
+                      <Building2 className="h-14 w-14 text-slate-300" />
                     )}
                   </div>
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{uni.name}</h1>
+                      <h1 className="text-[34px] font-black tracking-tight text-slate-900 leading-tight">{uni.name}</h1>
                       <Badge className={cn(
-                        "rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest",
+                        "rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest",
                         uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-slate-500 hover:bg-slate-600"
                       )}>
-                        {uni.status}
-                      </Badge>
-                      <Badge variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-[10px] font-bold uppercase tracking-widest text-slate-600">
-                        {uni.country?.name || 'N/A'}
+                        {uni.status === "active" ? "• Active" : uni.status}
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        <span>{uni.city || 'N/A'}, {uni.country?.name || 'N/A'}</span>
+                    <div className="flex flex-wrap items-center gap-6 text-sm font-bold text-slate-500">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🇲🇾</span>
+                        <span>{uni.country?.name || 'Malaysia'}</span>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4 text-primary" />
-                        <span>Partner Since 2024</span>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-slate-400" />
+                        <span>{uni.city || 'Negeri Sembilan'}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 text-emerald-600">
-                        <ShieldCheck className="h-4 w-4" />
-                        <span>Verified Institution</span>
-                      </div>
+                      {uni.website && (
+                        <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
+                          <span>Website</span>
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <p className="max-w-2xl text-lg leading-relaxed text-slate-600">
-                  {uni.description || 'A leading educational institution committed to academic excellence and global student success.'}
+                <p className="max-w-3xl text-base leading-relaxed text-slate-500 font-medium">
+                  {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  {uni.website && (
-                    <Button asChild variant="outline" className="rounded-xl border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">
-                      <a href={uni.website} target="_blank" rel="noreferrer">
-                        <Globe className="mr-2 h-4 w-4 text-primary" /> Visit Website <ExternalLink className="ml-2 h-3.5 w-3.5" />
-                      </a>
-                    </Button>
-                  )}
-                  <Button variant="outline" className="rounded-xl border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">
-                    <Download className="mr-2 h-4 w-4 text-primary" /> Brochure
-                  </Button>
-                  {canEdit && (
-                    <Button asChild variant="ghost" className="rounded-xl font-bold hover:bg-slate-100">
-                      <Link to="/universities/$universityId/edit" params={{ universityId }}>
-                        <Pencil className="mr-2 h-4 w-4" /> Edit Profile
-                      </Link>
-                    </Button>
-                  )}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-50">
+                  <HeroMetaItem icon={Landmark} label="Partner Since" value="2010" />
+                  <HeroMetaItem icon={Building2} label="University Type" value="Private" />
+                  <HeroMetaItem icon={Globe} label="Public / Private" value="Private" />
+                  <HeroMetaItem icon={ShieldCheck} label="Accreditation" value="MQA, MOHE" />
                 </div>
               </div>
+            </Card>
 
-              {/* KPI Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <HeroStatCard label="Programs" value={programs.length} icon={GradIcon} color="blue" growth="+12%" />
-                <HeroStatCard label="Campuses" value={campuses.length} icon={School} color="emerald" growth="0%" />
-                <HeroStatCard label="Applications" value={applications.length} icon={FileText} color="orange" growth="+8%" />
-                <HeroStatCard label="Students" value="1.2k" icon={Users} color="purple" growth="+15%" />
-                <HeroStatCard label="Offer Letters" value="450" icon={Award} color="pink" growth="+5%" />
-                <HeroStatCard label="Visa Success" value="98%" icon={Plane} color="cyan" growth="+2%" />
-              </div>
+            <div className="grid grid-cols-2 gap-4">
+              <HeroStatCard label="Programs" value="155" icon={GradIcon} color="blue" growth="12%" />
+              <HeroStatCard label="Campuses" value="4" icon={School} color="emerald" growth="0%" />
+              <HeroStatCard label="Applications" value="3,241" icon={FileText} color="orange" growth="18%" />
+              <HeroStatCard label="Students" value="8,925" icon={Users} color="purple" growth="14%" />
+              <HeroStatCard label="Faculties" value="12" icon={BookOpen} color="cyan" growth="8%" />
+              <HeroStatCard label="Counselors" value="24" icon={Briefcase} color="pink" growth="9%" />
+              <HeroStatCard label="Offer Letters" value="1,245" icon={Award} color="blue" growth="16%" />
+              <HeroStatCard label="Visa Files" value="832" icon={Plane} color="emerald" growth="11%" />
             </div>
           </section>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button 
+              size="lg"
+              className="h-12 rounded-xl bg-primary px-8 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
+            >
+              <Plus className="mr-2 h-5 w-5" /> Create Application
+            </Button>
+            <Button 
+              size="lg" variant="outline" 
+              className="h-12 rounded-xl border-primary/20 bg-primary/5 px-8 font-black text-primary hover:bg-primary/10"
+              onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
+            >
+              <Plus className="mr-2 h-5 w-5" /> Add Program
+            </Button>
+            <ActionIconButton icon={Download} label="Export Programs" />
+            <ActionIconButton icon={Plus} label="Import Programs" />
+            <ActionIconButton icon={FileText} label="Template" />
+            <ActionIconButton icon={Share2} label="Share University" />
+          </div>
 
           <div className="grid gap-8 lg:grid-cols-[1fr,360px]">
             <main className="min-w-0 space-y-8">

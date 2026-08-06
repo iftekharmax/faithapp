@@ -306,7 +306,7 @@ function UniversityDetail() {
           <div className="grid gap-8 lg:grid-cols-[1fr,360px]">
             <main className="min-w-0 space-y-8">
               <Tabs defaultValue="programs" className="w-full">
-                <div className="sticky top-[65px] z-20 -mx-4 bg-[#F8FAFC]/80 px-4 py-2 backdrop-blur-md sm:mx-0 sm:px-0">
+                <div className="sticky top-[72px] z-20 -mx-4 px-4 py-2 sm:mx-0 sm:px-0">
                   <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
                     <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
                       Programs

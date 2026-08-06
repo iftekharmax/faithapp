@@ -232,14 +232,29 @@ function UniversityDetail() {
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: number }) {
+function StatCard({ label, value, icon: Icon, color }: { label: string; value: string | number; icon: any; color: 'blue' | 'emerald' | 'orange' | 'purple' }) {
+  const colors = {
+    blue: 'bg-blue-50 text-blue-600 ring-blue-100',
+    emerald: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+    orange: 'bg-orange-50 text-orange-600 ring-orange-100',
+    purple: 'bg-purple-50 text-purple-600 ring-purple-100',
+  };
+
   return (
-    <div className="rounded-lg border bg-muted/30 px-4 py-2">
-      <div className="text-xl font-semibold">{value}</div>
-      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
-    </div>
+    <Card className="rounded-2xl border-none shadow-sm ring-1 ring-border p-4 bg-white transition-all hover:shadow-md hover:ring-primary/20 group">
+      <div className="flex items-center gap-3">
+        <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 transition-all group-hover:scale-110", colors[color])}>
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="min-w-0">
+          <div className="text-xl font-bold tracking-tight">{value}</div>
+          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 truncate">{label}</div>
+        </div>
+      </div>
+    </Card>
   );
 }
+
 
 /* ============ PROGRAMS ============ */
 function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {

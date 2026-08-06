@@ -193,51 +193,53 @@ function UniversitiesPage() {
   }), [items]);
 
   return (
-    <div className="min-h-screen space-y-8 bg-[#F8FAFC]">
-      {/* Page Header */}
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between px-1">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">University Directory</h1>
-          <p className="mt-1 text-sm font-medium text-slate-500">Manage universities, campuses, faculties and academic programs.</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200">
-            <CsvToolbar
-              label="universities"
-              onExport={exportUniversitiesCsv}
-              onPreview={canEdit ? (text) => previewUniversitiesCsv(text) : undefined}
-              onImportDone={reload}
-              templateHeaders={["name","short_name","country","city","website","logo_url","status","description"]}
-              templateName="universities-template"
-              canImport={canEdit}
-            />
-            <div className="h-6 w-px bg-slate-200 mx-1" />
-            <Button variant="ghost" size="sm" className="rounded-lg h-9 text-slate-600 hover:text-slate-900 hover:bg-slate-50" asChild>
-              <Link to="/countries" className="flex items-center gap-2">
-                <Globe className="h-4 w-4" />
-                <span>Countries</span>
-              </Link>
-            </Button>
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <div className="mx-auto max-w-[1600px] px-6 py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">University Directory</h1>
+            <p className="mt-1 text-sm font-medium text-slate-500">Manage universities, campuses, faculties and academic programs.</p>
           </div>
-          {canEdit && (
-            <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-6 font-semibold text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700 hover:shadow-indigo-200 active:scale-[0.98]">
-              <Plus className="mr-2 h-5 w-5" /> New University
-            </Button>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200">
+              <CsvToolbar
+                label="universities"
+                onExport={exportUniversitiesCsv}
+                onPreview={canEdit ? (text) => previewUniversitiesCsv(text) : undefined}
+                onImportDone={reload}
+                templateHeaders={["name","short_name","country","city","website","logo_url","status","description"]}
+                templateName="universities-template"
+                canImport={canEdit}
+              />
+              <div className="h-6 w-px bg-slate-200 mx-1" />
+              <Button variant="ghost" size="sm" className="rounded-lg h-9 text-slate-600 hover:text-slate-900 hover:bg-slate-50" asChild>
+                <Link to="/countries" className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  <span>Countries</span>
+                </Link>
+              </Button>
+            </div>
+            {canEdit && (
+              <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-6 font-semibold text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700 hover:shadow-indigo-200 active:scale-[0.98]">
+                <Plus className="mr-2 h-5 w-5" /> New University
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Statistics Section */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total Universities" value={stats.total} icon={Building2} color="from-indigo-600 to-blue-600" trend="+4.5%" />
-        <StatCard label="Active Universities" value={stats.active} icon={TrendingUp} color="from-emerald-500 to-teal-500" trend="+12.2%" />
-        <StatCard label="Countries" value={stats.countries} icon={Globe} color="from-blue-500 to-indigo-500" trend="+2 new" />
-        <StatCard label="Total Programs" value={stats.programs} icon={GraduationCap} color="from-purple-500 to-pink-500" trend="+84" />
-      </div>
+        {/* Statistics Section */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard label="Total Universities" value={stats.total} icon={Building2} color="from-indigo-600 to-blue-600" trend="+4.5%" />
+          <StatCard label="Active Universities" value={stats.active} icon={TrendingUp} color="from-emerald-500 to-teal-500" trend="+12.2%" />
+          <StatCard label="Countries" value={stats.countries} icon={Globe} color="from-blue-500 to-indigo-500" trend="+2 new" />
+          <StatCard label="Total Programs" value={stats.programs} icon={GraduationCap} color="from-purple-500 to-pink-500" trend="+84" />
+        </div>
 
-      {/* Sticky Search Toolbar */}
-      <div className="sticky top-0 z-20 -mx-6 bg-[#F8FAFC]/80 px-6 py-4 backdrop-blur-md border-y border-slate-200/60 shadow-sm">
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Filter Toolbar */}
+        <div className="rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm">
+          <div className="flex flex-wrap items-center gap-3">
+
           <div className="relative min-w-[280px] flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-slate-400" />
             <Input 
@@ -303,7 +305,7 @@ function UniversitiesPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white p-20 text-center shadow-sm">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white p-20 text-center shadow-sm">
           <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 text-slate-400">
             <Building2 className="h-10 w-10" />
           </div>
@@ -316,8 +318,10 @@ function UniversitiesPage() {
           )}
         </div>
       ) : (
-        <>
+        <div className="space-y-8">
           <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))' }}>
+
+
             {pageItems.map((u) => (
               <Card key={u.id} className="group flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/5">
                 {/* Logo & Info Header */}
@@ -379,7 +383,7 @@ function UniversitiesPage() {
                   </div>
 
                   {/* Action Buttons - Pinned to Bottom */}
-                  <div className="mt-auto pt-6 border-t border-slate-100/80">
+                  <div className="mt-auto pt-6 border-t border-slate-100">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-1.5">
                         <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all" title="View Details" asChild>
@@ -412,7 +416,9 @@ function UniversitiesPage() {
           </div>
 
           {/* Pagination */}
-          <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-slate-200 pt-8 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-6 pt-8 sm:flex-row">
+
+
             <div className="flex items-center gap-4">
               <div className="text-sm font-semibold text-slate-500">
                 Showing <span className="text-slate-900">{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}</span> of <span className="text-slate-900">{filtered.length}</span> Universities
@@ -470,8 +476,9 @@ function UniversitiesPage() {
               </Button>
             </div>
           </div>
-        </>
+        </div>
       )}
+
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl">
@@ -577,13 +584,15 @@ function UniversitiesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 }
 
+
 function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-600", trend = "+12.5%" }: { label: string; value: number; icon: any; color?: string; trend?: string }) {
   return (
-    <Card className="overflow-hidden rounded-2xl border-none bg-white shadow-sm ring-1 ring-slate-200/60 transition-all duration-300 hover:shadow-md">
+    <Card className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:shadow-md">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${color} text-white shadow-lg shadow-indigo-100`}>
@@ -598,9 +607,8 @@ function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-6
         </div>
         <div className="mt-4">
           <div className="text-3xl font-bold tracking-tight text-slate-900">{value.toLocaleString()}</div>
-          <div className="mt-1 flex items-center justify-between">
+          <div className="mt-1">
             <span className="text-sm font-medium text-slate-500">{label}</span>
-            <span className="text-[10px] font-semibold text-slate-400">Total count</span>
           </div>
         </div>
       </CardContent>
@@ -608,11 +616,12 @@ function StatCard({ label, value, icon: Icon, color = "from-indigo-600 to-blue-6
   );
 }
 
+
 function StatChip({ label, value }: { label: string; value: number }) {
   const Icon = label === "Programs" ? GraduationCap : label === "Campuses" ? Building2 : label === "Applications" ? FileText : GraduationCap;
   return (
     <div className="flex h-11 items-center gap-2.5 rounded-xl bg-slate-50 px-3 transition-all hover:bg-slate-100 ring-1 ring-slate-200/40">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-slate-100">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
         <Icon className="h-3.5 w-3.5 text-indigo-600/70" />
       </div>
       <div className="flex flex-col min-w-0">
@@ -622,6 +631,7 @@ function StatChip({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
+
 
 function StatusBadge({ status }: { status: UniStatus }) {
   const configs = {

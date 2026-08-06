@@ -1,6 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, SearchX } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import { 
+  ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, 
+  GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, 
+  SearchX, Share2, Download, Printer, Copy, Heart, Globe, Users, 
+  FileText, Briefcase, Plane, BookOpen, Clock, CheckCircle2, 
+  ArrowRight, MoreVertical, LayoutGrid, List as ListIcon, 
+  TrendingUp, Search, RotateCcw, Filter, ChevronRight,
+  School, Book, UserCheck
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +23,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { 
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator 
+} from "@/components/ui/dropdown-menu";
 import {
   getUniversity, listCampuses, createCampus, updateCampus, deleteCampus,
   listPrograms, createProgram, updateProgram, deleteProgram,
@@ -28,6 +39,7 @@ import {
   exportCampusesCsv, previewCampusesCsv,
   exportProgramsCsv, previewProgramsCsv,
 } from "@/lib/university-csv";
+import { cn } from "@/lib/utils";
 
 
 export const Route = createFileRoute("/_authenticated/universities/$universityId/")({

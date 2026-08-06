@@ -224,89 +224,97 @@ function UniversityDetail() {
       <div className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8">
           {/* Hero Section */}
-          <section className="relative overflow-hidden rounded-[32px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
-            <div className="absolute right-0 top-0 -mr-12 -mt-12 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
-            <div className="relative grid gap-8 lg:grid-cols-[1fr,400px]">
-              <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-                  <div className="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100">
+          <section className="grid gap-8 lg:grid-cols-[1fr,500px]">
+            <Card className="relative overflow-hidden rounded-[24px] bg-white p-8 shadow-sm ring-1 ring-slate-200">
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
+                  <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-xl ring-1 ring-slate-100">
                     {uni.logo_url ? (
-                      <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-cover" />
+                      <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-2xl object-contain p-2" />
                     ) : (
-                      <Building2 className="h-12 w-12 text-slate-300" />
+                      <Building2 className="h-14 w-14 text-slate-300" />
                     )}
                   </div>
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{uni.name}</h1>
+                      <h1 className="text-[34px] font-black tracking-tight text-slate-900 leading-tight">{uni.name}</h1>
                       <Badge className={cn(
-                        "rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest",
+                        "rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest",
                         uni.status === "active" ? "bg-emerald-500 hover:bg-emerald-600" : "bg-slate-500 hover:bg-slate-600"
                       )}>
-                        {uni.status}
-                      </Badge>
-                      <Badge variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-[10px] font-bold uppercase tracking-widest text-slate-600">
-                        {uni.country?.name || 'N/A'}
+                        {uni.status === "active" ? "• Active" : uni.status}
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        <span>{uni.city || 'N/A'}, {uni.country?.name || 'N/A'}</span>
+                    <div className="flex flex-wrap items-center gap-6 text-sm font-bold text-slate-500">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🇲🇾</span>
+                        <span>{uni.country?.name || 'Malaysia'}</span>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4 text-primary" />
-                        <span>Partner Since 2024</span>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-slate-400" />
+                        <span>{uni.city || 'Negeri Sembilan'}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 text-emerald-600">
-                        <ShieldCheck className="h-4 w-4" />
-                        <span>Verified Institution</span>
-                      </div>
+                      {uni.website && (
+                        <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
+                          <span>Website</span>
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <p className="max-w-2xl text-lg leading-relaxed text-slate-600">
-                  {uni.description || 'A leading educational institution committed to academic excellence and global student success.'}
+                <p className="max-w-3xl text-base leading-relaxed text-slate-500 font-medium">
+                  {uni.description || 'INTI International University is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.'}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  {uni.website && (
-                    <Button asChild variant="outline" className="rounded-xl border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">
-                      <a href={uni.website} target="_blank" rel="noreferrer">
-                        <Globe className="mr-2 h-4 w-4 text-primary" /> Visit Website <ExternalLink className="ml-2 h-3.5 w-3.5" />
-                      </a>
-                    </Button>
-                  )}
-                  <Button variant="outline" className="rounded-xl border-slate-200 bg-slate-50 font-bold hover:bg-slate-100">
-                    <Download className="mr-2 h-4 w-4 text-primary" /> Brochure
-                  </Button>
-                  {canEdit && (
-                    <Button asChild variant="ghost" className="rounded-xl font-bold hover:bg-slate-100">
-                      <Link to="/universities/$universityId/edit" params={{ universityId }}>
-                        <Pencil className="mr-2 h-4 w-4" /> Edit Profile
-                      </Link>
-                    </Button>
-                  )}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-50">
+                  <HeroMetaItem icon={Landmark} label="Partner Since" value="2010" />
+                  <HeroMetaItem icon={Building2} label="University Type" value="Private" />
+                  <HeroMetaItem icon={Globe} label="Public / Private" value="Private" />
+                  <HeroMetaItem icon={ShieldCheck} label="Accreditation" value="MQA, MOHE" />
                 </div>
               </div>
+            </Card>
 
-              {/* KPI Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <HeroStatCard label="Programs" value={programs.length} icon={GradIcon} color="blue" growth="+12%" />
-                <HeroStatCard label="Campuses" value={campuses.length} icon={School} color="emerald" growth="0%" />
-                <HeroStatCard label="Applications" value={applications.length} icon={FileText} color="orange" growth="+8%" />
-                <HeroStatCard label="Students" value="1.2k" icon={Users} color="purple" growth="+15%" />
-                <HeroStatCard label="Offer Letters" value="450" icon={Award} color="pink" growth="+5%" />
-                <HeroStatCard label="Visa Success" value="98%" icon={Plane} color="cyan" growth="+2%" />
-              </div>
+            <div className="grid grid-cols-2 gap-4">
+              <HeroStatCard label="Programs" value="155" icon={GradIcon} color="blue" growth="12%" />
+              <HeroStatCard label="Campuses" value="4" icon={School} color="emerald" growth="0%" />
+              <HeroStatCard label="Applications" value="3,241" icon={FileText} color="orange" growth="18%" />
+              <HeroStatCard label="Students" value="8,925" icon={Users} color="purple" growth="14%" />
+              <HeroStatCard label="Faculties" value="12" icon={BookOpen} color="cyan" growth="8%" />
+              <HeroStatCard label="Counselors" value="24" icon={Briefcase} color="pink" growth="9%" />
+              <HeroStatCard label="Offer Letters" value="1,245" icon={Award} color="blue" growth="16%" />
+              <HeroStatCard label="Visa Files" value="832" icon={Plane} color="emerald" growth="11%" />
             </div>
           </section>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button 
+              size="lg"
+              className="h-12 rounded-xl bg-primary px-8 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
+            >
+              <Plus className="mr-2 h-5 w-5" /> Create Application
+            </Button>
+            <Button 
+              size="lg" variant="outline" 
+              className="h-12 rounded-xl border-primary/20 bg-primary/5 px-8 font-black text-primary hover:bg-primary/10"
+              onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
+            >
+              <Plus className="mr-2 h-5 w-5" /> Add Program
+            </Button>
+            <ActionIconButton icon={Download} label="Export Programs" />
+            <ActionIconButton icon={Plus} label="Import Programs" />
+            <ActionIconButton icon={FileText} label="Template" />
+            <ActionIconButton icon={Share2} label="Share University" />
+          </div>
 
           <div className="grid gap-8 lg:grid-cols-[1fr,360px]">
             <main className="min-w-0 space-y-8">
               <Tabs defaultValue="programs" className="w-full">
-                <div className="sticky top-[65px] z-20 -mx-4 bg-[#F8FAFC]/80 px-4 py-2 backdrop-blur-md sm:mx-0 sm:px-0">
+                <div className="sticky top-[72px] z-20 -mx-4 px-4 py-2 sm:mx-0 sm:px-0">
                   <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
                     <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
                       Programs
@@ -395,57 +403,74 @@ function UniversityDetail() {
               </Tabs>
             </main>
 
-            <aside className="space-y-8">
+            <aside className="space-y-6">
               <div className="sticky top-[100px] flex flex-col gap-6">
-                <Card className="overflow-hidden rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200">
-                  <div className="bg-slate-50/50 p-6 border-b">
-                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">University Summary</h3>
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <div className="mb-6 flex items-center justify-between">
+                    <h3 className="text-lg font-black text-slate-900">University Overview</h3>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>Edit Details</DropdownMenuItem>
+                        <DropdownMenuItem>Settings</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                  <div className="p-6 space-y-6">
-                    <div className="flex flex-col items-center text-center pb-6 border-b border-slate-50">
-                      <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-lg ring-1 ring-slate-100">
-                        {uni.logo_url ? (
-                          <img src={uni.logo_url} alt={uni.name} className="h-full w-full rounded-3xl object-cover" />
-                        ) : (
-                          <Building2 className="h-10 w-10 text-slate-300" />
-                        )}
-                      </div>
-                      <h4 className="text-lg font-bold text-slate-900 leading-tight">{uni.name}</h4>
-                      <p className="mt-1 text-sm font-medium text-slate-400">{uni.city}, {uni.country?.name}</p>
-                    </div>
-
-                    <div className="space-y-5">
-                      <AsideInfoItem icon={GraduationCap} label="University Type" value="Public Research" />
-                      <AsideInfoItem icon={Globe} label="Global Ranking" value="#142 Worldwide" />
-                      <AsideInfoItem icon={Users} label="Int'l Students" value="28%" />
-                      <AsideInfoItem icon={Calendar} label="Next Intake" value="September 2026" />
-                    </div>
-
-                    <div className="pt-6 border-t border-slate-50">
-                      <h4 className="mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Quick Actions</h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        <QuickActionButton icon={Download} label="Brochure" />
-                        <QuickActionButton icon={Printer} label="Print Page" />
-                        <QuickActionButton icon={Share2} label="Share" />
-                        <QuickActionButton icon={Heart} label="Favorite" />
-                      </div>
+                  <div className="space-y-4">
+                    <OverviewItem icon={Globe} label="Country" value={uni.country?.name || "Malaysia"} flag="🇲🇾" />
+                    <OverviewItem icon={MapPin} label="State" value={uni.city || "Negeri Sembilan"} />
+                    <OverviewItem icon={ExternalLink} label="Website" value="www.newinti.edu.my" isLink />
+                    <div className="pt-4 mt-4 border-t border-slate-50 space-y-4">
+                      <OverviewStat label="Total Programs" value="155" />
+                      <OverviewStat label="Total Applications" value="3,241" />
+                      <OverviewStat label="Total Students" value="8,925" />
                     </div>
                   </div>
                 </Card>
 
-                <Card className="group relative overflow-hidden rounded-[24px] border-none bg-primary p-6 text-white shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]">
-                  <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-                  <div className="relative z-10">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
-                      <TrendingUp className="h-6 w-6" />
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <Calendar className="h-5 w-5" />
                     </div>
-                    <h3 className="text-xl font-bold">Premium Partner</h3>
-                    <p className="mt-2 text-sm text-white/80 leading-relaxed">
-                      This institution is part of our Elite Partnership Program, ensuring prioritized processing.
-                    </p>
-                    <Button variant="secondary" className="mt-6 w-full rounded-xl font-black text-primary hover:bg-white transition-colors">
-                      View Exclusive Benefits
-                    </Button>
+                    <h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3>
+                  </div>
+                  <div className="space-y-4">
+                    <IntakeItem label="January 2025" days="28 days" />
+                    <IntakeItem label="April 2025" days="118 days" />
+                    <IntakeItem label="August 2025" days="240 days" />
+                  </div>
+                  <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-primary">
+                    View All Intakes <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Card>
+
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <h3 className="mb-6 text-lg font-black text-slate-900">Quick Actions</h3>
+                  <div className="space-y-2">
+                    <SidebarAction icon={Plus} label="Create Program" />
+                    <SidebarAction icon={Plus} label="Create Application" />
+                    <SidebarAction icon={Download} label="Import Programs" />
+                    <SidebarAction icon={Download} label="Export Programs" />
+                    <SidebarAction icon={FileText} label="Download Brochure" />
+                  </div>
+                </Card>
+
+                <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                  <h3 className="mb-6 text-lg font-black text-slate-900">Application Progress</h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between text-sm font-black">
+                      <span className="text-slate-900">3,241 <span className="text-slate-400 font-bold">of 5,000</span></span>
+                      <span className="text-primary">64%</span>
+                    </div>
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-full bg-primary" style={{ width: '64%' }} />
+                    </div>
+                    <p className="text-xs font-bold text-slate-400">Goal: 5,000 applications</p>
                   </div>
                 </Card>
               </div>
@@ -615,9 +640,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
 
 
       <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="flex flex-1 flex-wrap items-center gap-4">
-            <div className="relative flex-1 max-w-sm">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="relative flex-1 min-w-[300px]">
               <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input 
                 placeholder="Search programs..." 
@@ -626,33 +651,28 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                 className="pl-11 h-12 rounded-xl border-slate-100 bg-slate-50 focus-visible:ring-primary shadow-inner" 
               />
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 text-slate-400 ring-1 ring-slate-100">
-                <GraduationCap className="h-5 w-5" />
-              </div>
-              <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-                <SelectTrigger className="w-[180px] h-12 rounded-xl border-slate-100 bg-slate-50 font-semibold shadow-inner">
-                  <SelectValue placeholder="Degree Level" />
-                </SelectTrigger>
-                <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100">
-                  <SelectItem value="all" className="rounded-xl p-3 font-semibold">All Degree Levels</SelectItem>
-                  {degrees.map((d) => <SelectItem key={d} value={d} className="rounded-xl p-3 font-semibold">{d}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
+            <FilterSelect icon={GraduationCap} placeholder="All Degrees" value={degreeFilter} onValueChange={setDegreeFilter} options={degrees} />
+            <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={MapPin} label="All Campuses" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Clock} label="Study Mode" value="all" onValueChange={() => {}} options={[]} />
           </div>
-          <div className="flex items-center gap-3">
-            <CsvToolbar label="programs"
-              onExport={() => exportProgramsCsv(universityId)}
-              onPreview={canEdit ? (text) => previewProgramsCsv(text, universityId) : undefined}
-              onImportDone={onChange}
-              templateHeaders={["name","degree","duration","campus","intake","application_deadline","tuition_fee","currency","scholarship","requirements","description","status"]}
-              templateName="programs-template" canImport={canEdit} />
-            {canEdit && (
-              <Button onClick={openNew} className="rounded-xl h-12 px-8 font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                <Plus className="mr-2 h-5 w-5" /> Add Program
+          
+          <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-50">
+            <FilterSelect icon={Calendar} label="All Intakes" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Award} label="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={ListIcon} label="Sort by: Newest" value="newest" onValueChange={() => {}} options={[]} />
+            <Button variant="ghost" className="h-10 rounded-xl font-bold text-slate-500 hover:text-primary" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
+              <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
+            </Button>
+
+            <div className="ml-auto flex items-center gap-2">
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white">
+                <LayoutGrid className="h-5 w-5" />
               </Button>
-            )}
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl hover:bg-slate-100">
+                <ListIcon className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </Card>
@@ -1066,28 +1086,130 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
 
 
 
-function ProgramInfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function HeroMetaItem({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-400">
-        <Icon className="h-3.5 w-3.5" />
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-slate-400" />
+        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</span>
       </div>
-      <div className="flex flex-col">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 leading-none mb-0.5">{label}</span>
-        <span className="text-xs font-bold text-slate-700 leading-none">{value}</span>
+      <span className="text-sm font-bold text-slate-900">{value}</span>
+    </div>
+  );
+}
+
+function ActionIconButton({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white px-6 font-bold text-slate-600 hover:bg-slate-50 transition-all hover:scale-[1.02]">
+      <Icon className="mr-2 h-4 w-4 text-slate-400" /> {label}
+    </Button>
+  );
+}
+
+function OverviewItem({ icon: Icon, label, value, flag, isLink }: { icon: any; label: string; value: string; flag?: string; isLink?: boolean }) {
+  return (
+    <div className="flex items-center justify-between group cursor-default">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-400 group-hover:bg-primary/5 group-hover:text-primary transition-colors">
+          <Icon className="h-4 w-4" />
+        </div>
+        <span className="text-sm font-bold text-slate-400">{label}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        {flag && <span className="text-sm">{flag}</span>}
+        <span className={cn("text-sm font-black text-slate-900", isLink && "text-primary hover:underline cursor-pointer")}>{value}</span>
+        {isLink && <ExternalLink className="h-3 w-3 text-primary" />}
       </div>
     </div>
   );
 }
 
-function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function OverviewStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start gap-1.5">
-      <Icon className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />
-      <div><div className="text-[10px] uppercase text-muted-foreground">{label}</div><div>{value}</div></div>
+    <div className="flex items-center justify-between">
+      <span className="text-sm font-bold text-slate-400">{label}</span>
+      <span className="text-sm font-black text-slate-900">{value}</span>
     </div>
   );
 }
+
+function IntakeItem({ label, days }: { label: string; days: string }) {
+  return (
+    <div className="flex items-center justify-between group cursor-default">
+      <div className="flex items-center gap-3">
+        <div className="flex h-5 w-5 items-center justify-center text-slate-300">
+          <Calendar className="h-4 w-4" />
+        </div>
+        <span className="text-sm font-bold text-slate-900">{label}</span>
+      </div>
+      <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">In {days}</span>
+    </div>
+  );
+}
+
+function SidebarAction({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <Button variant="ghost" className="w-full justify-start rounded-xl py-6 px-4 font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-all group">
+      <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+        <Icon className="h-4 w-4" />
+      </div>
+      {label}
+    </Button>
+  );
+}
+
+function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, options }: { icon: any; placeholder?: string; label?: string; value: string; onValueChange: (v: string) => void; options: string[] }) {
+  return (
+    <div className="flex items-center gap-2">
+      {Icon && (
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 text-slate-400 ring-1 ring-slate-100 shadow-inner">
+          <Icon className="h-5 w-5" />
+        </div>
+      )}
+      <Select value={value} onValueChange={onValueChange}>
+        <SelectTrigger className="min-w-[140px] h-12 rounded-xl border-slate-100 bg-slate-50 font-black shadow-inner">
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100">
+          <SelectItem value="all" className="rounded-xl p-3 font-semibold">{label || "All"}</SelectItem>
+          {options.map((o) => <SelectItem key={o} value={o} className="rounded-xl p-3 font-semibold">{o}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function ProgramMeta({ icon: Icon, value }: { icon: any; value: string }) {
+  return (
+    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+      <Icon className="h-3.5 w-3.5 text-primary/40" />
+      <span>{value}</span>
+    </div>
+  );
+}
+
+function ProgramStat({ label, value, isPrimary, isHighlight }: { label: string; value: string; isPrimary?: boolean; isHighlight?: boolean }) {
+  return (
+    <div className="space-y-1">
+      <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</p>
+      <p className={cn(
+        "text-xs font-black tracking-tight",
+        isPrimary ? "text-primary text-sm" : isHighlight ? "text-emerald-500" : "text-slate-900"
+      )}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function IntakeChip({ label }: { label: string }) {
+  return (
+    <Badge variant="secondary" className="bg-slate-50 text-slate-600 hover:bg-slate-100 border-none rounded-lg px-2 py-1 text-[10px] font-bold">
+      {label}
+    </Badge>
+  );
+}
+
 
 /* ============ CAMPUSES ============ */
 function CampusesTab({ universityId, campuses, canEdit, onChange }: {

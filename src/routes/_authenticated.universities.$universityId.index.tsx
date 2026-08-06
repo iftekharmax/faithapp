@@ -314,96 +314,97 @@ function UniversityDetail() {
                 <ActionIconButton icon={Share2} label="Share University" />
               </div>
 
-            <main className="min-w-0 space-y-8">
-              <Tabs defaultValue="programs" className="w-full">
-                <div className="sticky top-[72px] z-20 -mx-4 px-4 py-2 sm:mx-0 sm:px-0">
-                  <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
-                    <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
-                      Programs
-                    </TabsTrigger>
-                    <TabsTrigger value="campuses" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
-                      Campuses
-                    </TabsTrigger>
-                    <TabsTrigger value="applications" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
-                      Applications
-                    </TabsTrigger>
-                  </TabsList>
-                </div>
+              <main className="min-w-0 space-y-8">
+                <Tabs defaultValue="programs" className="w-full">
+                  <div className="sticky top-[72px] z-20 -mx-4 px-4 py-2 sm:mx-0 sm:px-0">
+                    <TabsList className="h-14 w-full justify-start gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 sm:w-auto">
+                      <TabsTrigger value="programs" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
+                        Programs
+                      </TabsTrigger>
+                      <TabsTrigger value="campuses" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
+                        Campuses
+                      </TabsTrigger>
+                      <TabsTrigger value="applications" className="rounded-xl px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white">
+                        Applications
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
 
-                <TabsContent value="programs" className="mt-8 outline-none">
-                  <ProgramsTab
-                    universityId={universityId} programs={programs}
-                    campuses={campuses} canEdit={canEdit} onChange={reload}
-                  />
-                </TabsContent>
+                  <TabsContent value="programs" className="mt-8 outline-none">
+                    <ProgramsTab
+                      universityId={universityId} programs={programs}
+                      campuses={campuses} canEdit={canEdit} onChange={reload}
+                    />
+                  </TabsContent>
 
-                <TabsContent value="campuses" className="mt-8 outline-none">
-                  <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
-                </TabsContent>
+                  <TabsContent value="campuses" className="mt-8 outline-none">
+                    <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+                  </TabsContent>
 
-                <TabsContent value="applications" className="mt-8 outline-none">
-                  <Card className="rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
-                    <CardHeader className="border-b bg-slate-50/50 p-6">
-                      <CardTitle className="text-xl font-bold">Linked Applications</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                      {applications.length === 0 ? (
-                        <div className="flex flex-col items-center py-20 text-center">
-                          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 mb-6">
-                            <FileText className="h-10 w-10 text-slate-300" />
+                  <TabsContent value="applications" className="mt-8 outline-none">
+                    <Card className="rounded-[24px] border-none bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
+                      <CardHeader className="border-b bg-slate-50/50 p-6">
+                        <CardTitle className="text-xl font-bold">Linked Applications</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0">
+                        {applications.length === 0 ? (
+                          <div className="flex flex-col items-center py-20 text-center">
+                            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 mb-6">
+                              <FileText className="h-10 w-10 text-slate-300" />
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900">No applications found</h3>
+                            <p className="mt-2 text-slate-500">No students have applied to this university yet.</p>
+                            <Button className="mt-8 rounded-xl font-bold" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>
+                              Start First Application
+                            </Button>
                           </div>
-                          <h3 className="text-lg font-bold text-slate-900">No applications found</h3>
-                          <p className="mt-2 text-slate-500">No students have applied to this university yet.</p>
-                          <Button className="mt-8 rounded-xl font-bold" onClick={() => navigate({ to: "/applications/new", search: { universityId } })}>
-                            Start First Application
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="overflow-x-auto">
-                          <Table>
-                            <TableHeader>
-                              <TableRow className="border-slate-100 bg-slate-50/50 hover:bg-slate-50/50">
-                                <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Application Code</TableHead>
-                                <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Student Name</TableHead>
-                                <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Program</TableHead>
-                                <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Status</TableHead>
-                                <TableHead className="py-4"></TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {applications.map((a) => (
-                                <TableRow key={a.id} className="group border-slate-50 transition-colors hover:bg-slate-50/80">
-                                  <TableCell className="py-4 font-mono text-sm font-bold text-primary">{a.application_code}</TableCell>
-                                  <TableCell className="py-4">
-                                    <div className="flex flex-col">
-                                      <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
-                                      <span className="text-xs text-slate-400">{a.student?.student_code}</span>
-                                    </div>
-                                  </TableCell>
-                                  <TableCell className="py-4 font-medium text-slate-600">{a.program}</TableCell>
-                                  <TableCell className="py-4">
-                                    <Badge variant="outline" className="rounded-full border-slate-200 bg-white px-3 py-1 font-bold text-slate-600 capitalize">
-                                      {String(a.status).replace(/_/g, " ")}
-                                    </Badge>
-                                  </TableCell>
-                                  <TableCell className="py-4 text-right">
-                                    <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-primary hover:text-white" asChild>
-                                      <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
-                                        View <ArrowRight className="ml-2 h-4 w-4" />
-                                      </Link>
-                                    </Button>
-                                  </TableCell>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <Table>
+                              <TableHeader>
+                                <TableRow className="border-slate-100 bg-slate-50/50 hover:bg-slate-50/50">
+                                  <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Application Code</TableHead>
+                                  <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Student Name</TableHead>
+                                  <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Program</TableHead>
+                                  <TableHead className="py-4 font-bold uppercase tracking-wider text-slate-500">Status</TableHead>
+                                  <TableHead className="py-4"></TableHead>
                                 </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </main>
+                              </TableHeader>
+                              <TableBody>
+                                {applications.map((a) => (
+                                  <TableRow key={a.id} className="group border-slate-50 transition-colors hover:bg-slate-50/80">
+                                    <TableCell className="py-4 font-mono text-sm font-bold text-primary">{a.application_code}</TableCell>
+                                    <TableCell className="py-4">
+                                      <div className="flex flex-col">
+                                        <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
+                                        <span className="text-xs text-slate-400">{a.student?.student_code}</span>
+                                      </div>
+                                    </TableCell>
+                                    <TableCell className="py-4 font-medium text-slate-600">{a.program}</TableCell>
+                                    <TableCell className="py-4">
+                                      <Badge variant="outline" className="rounded-full border-slate-200 bg-white px-3 py-1 font-bold text-slate-600 capitalize">
+                                        {String(a.status).replace(/_/g, " ")}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell className="py-4 text-right">
+                                      <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-primary hover:text-white" asChild>
+                                        <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
+                                          View <ArrowRight className="ml-2 h-4 w-4" />
+                                        </Link>
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </main>
+            </div>
 
             <aside className="space-y-6">
               <div className="sticky top-[100px] flex flex-col gap-6">
@@ -483,6 +484,7 @@ function UniversityDetail() {
     </div>
   );
 }
+
 
 function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: string; value: string | number; icon: any; color: string; growth?: string }) {
   const colors: Record<string, string> = {

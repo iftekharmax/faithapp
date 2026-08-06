@@ -304,7 +304,7 @@ function UniversityDetail() {
                 </div>
               </Card>
               <Card className="rounded-[24px] border-none bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <div className="mb-6 flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Calendar className="h-5 w-5" /></div><h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3></div>
+                <div className="mb-6 flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600"><Calendar className="h-5 w-5" /></div><h3 className="text-lg font-black text-slate-900">Upcoming Intakes</h3></div>
                 <div className="space-y-4"><IntakeItem label="January 2025" days="28 days" /><IntakeItem label="April 2025" days="118 days" /><IntakeItem label="August 2025" days="240 days" /></div>
                 <Button variant="ghost" className="mt-6 w-full rounded-xl font-bold text-slate-500 hover:text-primary">View All Intakes <ArrowRight className="ml-2 h-4 w-4" /></Button>
               </Card>

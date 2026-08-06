@@ -1033,6 +1033,20 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
 
 
 
+function ProgramInfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-400">
+        <Icon className="h-3.5 w-3.5" />
+      </div>
+      <div className="flex flex-col">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 leading-none mb-0.5">{label}</span>
+        <span className="text-xs font-bold text-slate-700 leading-none">{value}</span>
+      </div>
+    </div>
+  );
+}
+
 function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
     <div className="flex items-start gap-1.5">

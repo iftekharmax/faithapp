@@ -590,26 +590,23 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                         </div>
                       </div>
                       
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-2 items-center">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-muted">
-                              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full hover:bg-slate-50">
+                              <MoreVertical className="h-4 w-4 text-slate-400" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-40 rounded-xl">
-                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg">
-                              <Pencil className="mr-2 h-4 w-4" /> Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg">
-                              <Plus className="mr-2 h-4 w-4" /> Apply
-                            </DropdownMenuItem>
+                          <DropdownMenuContent align="end" className="rounded-xl border-none shadow-2xl ring-1 ring-slate-100">
+                            <DropdownMenuItem onClick={() => openEdit(p)}><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}><Plus className="mr-2 h-4 w-4" /> Apply</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg text-destructive focus:text-destructive focus:bg-destructive/5">
-                              <Trash2 className="mr-2 h-4 w-4" /> Delete
-                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-colors">
+                          <Heart className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
 

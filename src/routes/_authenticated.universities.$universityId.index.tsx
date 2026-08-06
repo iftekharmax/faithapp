@@ -706,7 +706,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange }: {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {hasMore && (

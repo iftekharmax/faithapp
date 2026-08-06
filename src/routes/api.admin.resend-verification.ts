@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/admin/resend-verification")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const serviceKey = process.env['SB_SERVICE_ROLE_KEY'];
+        const serviceKey = process.env.SB_SERVICE_ROLE_KEY || import.meta.env.SB_SERVICE_ROLE_KEY;
         if (!serviceKey) {
           console.error("[Auth] Critical: SB_SERVICE_ROLE_KEY is missing in environment");
           return json({ error: "Configuration error: Admin service is temporarily unavailable." }, 500);

@@ -301,11 +301,7 @@ function DetailRow({
       <div className="min-w-0 flex-1">
         <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</div>
         {href ? (
-          href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:') ? (
-            <a href={href} className="block truncate text-sm font-medium hover:text-primary">{value}</a>
-          ) : (
-            <Link to={href} className="block truncate text-sm font-medium hover:text-primary">{value}</Link>
-          )
+          <a href={href} className="block truncate text-sm font-medium hover:text-primary">{value}</a>
         ) : (
           content
         )}

@@ -260,41 +260,37 @@ function UniversityDetail() {
         </div>
       </Card>
 
-      <Tabs defaultValue="programs" className="space-y-6">
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-none h-auto p-0 gap-10 px-10">
-            <TabsTrigger 
-              value="programs" 
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
-            >
-              Programs ({programs.length})
-            </TabsTrigger>
-            <TabsTrigger 
-              value="campuses" 
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
-            >
-              Campuses ({campuses.length})
-            </TabsTrigger>
-            <TabsTrigger 
-              value="applications" 
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
-            >
-              Applications ({totalApplicationsCount.toLocaleString()})
-            </TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="programs" className="space-y-10">
+        <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-2xl border border-slate-200 shadow-sm h-auto p-0 gap-10 px-10 overflow-hidden">
+          <TabsTrigger 
+            value="programs" 
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+          >
+            Programs ({programs.length})
+          </TabsTrigger>
+          <TabsTrigger 
+            value="campuses" 
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+          >
+            Campuses ({campuses.length})
+          </TabsTrigger>
+          <TabsTrigger 
+            value="applications" 
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+          >
+            Applications ({totalApplicationsCount.toLocaleString()})
+          </TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="programs" className="mt-0 outline-none">
-            <div className="bg-white">
-              <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
-            </div>
-          </TabsContent>
-        </div>
-          
-          <TabsContent value="campuses" className="mt-0 outline-none">
-            <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
-          </TabsContent>
+        <TabsContent value="programs" className="mt-0 outline-none">
+          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
+        </TabsContent>
+        
+        <TabsContent value="campuses" className="mt-0 outline-none">
+          <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+        </TabsContent>
 
-          <TabsContent value="applications" className="mt-0 outline-none">
+        <TabsContent value="applications" className="mt-0 outline-none">
           <Card className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <CardHeader className="border-b border-slate-50 p-6">
               <CardTitle className="text-lg font-black text-slate-900">Recent Applications</CardTitle>
@@ -352,7 +348,6 @@ function UniversityDetail() {
             </CardContent>
           </Card>
         </TabsContent>
-        </div>
       </Tabs>
     </div>
   );

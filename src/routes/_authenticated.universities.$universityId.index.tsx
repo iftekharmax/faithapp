@@ -580,7 +580,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
       </div>
     </div>
 
-    <div className="mt-8 px-10 pb-10">
+    <div className="mt-8 pb-10">
       {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (

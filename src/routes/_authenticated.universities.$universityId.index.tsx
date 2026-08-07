@@ -249,7 +249,7 @@ function UniversityDetail() {
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-0">
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden mb-8">
           <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-none h-auto p-0 gap-10 px-10">
             <TabsTrigger 
               value="programs" 
@@ -272,7 +272,9 @@ function UniversityDetail() {
           </TabsList>
 
           <TabsContent value="programs" className="mt-0 outline-none">
-            <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
+            <div className="bg-white">
+              <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
+            </div>
           </TabsContent>
           
           <TabsContent value="campuses" className="mt-0 outline-none">
@@ -501,6 +503,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   }
 
   return (
+    <>
     <div className="relative flex flex-col p-10 pt-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-4 flex-1">
@@ -566,11 +569,11 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl text-slate-400 hover:bg-slate-50">
             <ListIcon className="h-5 w-5" />
           </Button>
-        </div>
       </div>
+    </div>
 
-      <div className="mt-8">
-        {loading ? (
+    <div className="mt-8 px-10 pb-10">
+      {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card key={i} className="h-[400px] rounded-3xl border-none shadow-sm ring-1 ring-slate-100 p-6 bg-white animate-pulse">
@@ -1068,6 +1071,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         </AlertDialogContent>
       </AlertDialog>
     </div>
+    </>
   );
 }
 

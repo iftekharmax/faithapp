@@ -274,13 +274,12 @@ function UniversityDetail() {
           <TabsContent value="programs" className="mt-0 outline-none">
             <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
           </TabsContent>
-        </div>
-        
-        <TabsContent value="campuses" className="mt-0 outline-none">
-          <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
-        </TabsContent>
+          
+          <TabsContent value="campuses" className="mt-0 outline-none">
+            <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+          </TabsContent>
 
-        <TabsContent value="applications" className="mt-0 outline-none">
+          <TabsContent value="applications" className="mt-0 outline-none">
           <Card className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <CardHeader className="border-b border-slate-50 p-6">
               <CardTitle className="text-lg font-black text-slate-900">Recent Applications</CardTitle>

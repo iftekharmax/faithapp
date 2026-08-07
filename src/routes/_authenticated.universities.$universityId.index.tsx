@@ -684,22 +684,22 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </div>
                         </div>
                         <div className="space-y-1.5 pt-2">
-                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                          <div className="flex items-center gap-2 text-sm font-medium text-black">
                             <GraduationCap className="h-4 w-4" />
                             <span>{p.degree || "Bachelor's Degree"}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                          <div className="flex items-center gap-2 text-sm font-medium text-black">
                             <Clock className="h-4 w-4" />
                             <span>{p.duration || "3 Years (9 Semesters)"}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                          <div className="flex items-center gap-2 text-sm font-medium text-black">
                             <MapPin className="h-4 w-4" />
                             <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Main Campus"}</span>
                           </div>
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 shadow-sm border border-slate-100">
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-black hover:text-rose-500 hover:bg-rose-50 shadow-sm border border-slate-100">
                           <Heart className="h-5 w-5" />
                         </Button>
                       </div>
@@ -707,22 +707,22 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                     <div className="mt-4 pt-4 border-t border-slate-50">
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tuition Fee</p>
+                          <p className="text-[9px] font-medium uppercase tracking-wider text-black">Tuition Fee</p>
                           <p className="text-sm font-bold text-blue-600">
                             {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                           </p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Scholarship</p>
+                          <p className="text-[9px] font-medium uppercase tracking-wider text-black">Scholarship</p>
                           <p className="text-sm font-bold text-emerald-600">Up to 30%</p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">App. Fee</p>
-                          <p className="text-sm font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
+                          <p className="text-[9px] font-medium uppercase tracking-wider text-black">App. Fee</p>
+                          <p className="text-sm font-bold text-black">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                         </div>
                       </div>
                       <div className="mt-4 space-y-1">
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Next Intake</p>
+                        <p className="text-[9px] font-medium uppercase tracking-wider text-black">Next Intake</p>
                         <div className="flex flex-wrap gap-2">
                           {(p.intake || "January, April, August").split(",").map((intake, i) => (
                             <span key={i} className="rounded-lg bg-blue-50 px-3 py-1 text-[11px] font-bold text-blue-600">
@@ -733,35 +733,35 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                       </div>
                       <div className="mt-6 grid grid-cols-3 gap-4 border-t border-slate-50 pt-4">
                         <div className="text-center">
-                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                          <div className="flex items-center justify-center gap-1.5 text-black mb-0.5">
                             <FileText className="h-3 w-3" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider">Applications</span>
+                            <span className="text-[9px] font-medium uppercase tracking-wider">Applications</span>
                           </div>
-                          <p className="text-sm font-black text-slate-700">312</p>
+                          <p className="text-sm font-black text-black">312</p>
                         </div>
                         <div className="text-center border-x border-slate-50">
-                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                          <div className="flex items-center justify-center gap-1.5 text-black mb-0.5">
                             <UserCheck className="h-3 w-3" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider">Acceptance</span>
+                            <span className="text-[9px] font-medium uppercase tracking-wider">Acceptance</span>
                           </div>
-                          <p className="text-sm font-black text-slate-700">62%</p>
+                          <p className="text-sm font-black text-black">62%</p>
                         </div>
                         <div className="text-center">
-                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                          <div className="flex items-center justify-center gap-1.5 text-black mb-0.5">
                             <ShieldCheck className="h-3 w-3" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider">Visa Success</span>
+                            <span className="text-[9px] font-medium uppercase tracking-wider">Visa Success</span>
                           </div>
-                          <p className="text-sm font-black text-slate-700">91%</p>
+                          <p className="text-sm font-black text-black">91%</p>
                         </div>
                       </div>
                       <div className="mt-6 flex gap-3">
                         <Button 
-                          className="flex-1 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20"
+                          className="flex-1 rounded-xl bg-blue-600 font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20"
                           onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}
                         >
                           Create Application
                         </Button>
-                        <Button variant="outline" className="flex-1 rounded-xl border-slate-200 font-bold text-slate-700 hover:bg-slate-50">
+                        <Button variant="outline" className="flex-1 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50">
                           View Details
                         </Button>
                         <DropdownMenu>

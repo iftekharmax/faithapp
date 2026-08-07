@@ -1127,7 +1127,19 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
   );
 }
 
+function FilterDropdown({ placeholder }: { placeholder: string }) {
+  return (
+    <Select disabled>
+      <SelectTrigger className="w-fit min-w-[130px] h-10 rounded-xl border-slate-200 bg-white font-medium text-slate-600 text-xs">
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent />
+    </Select>
+  );
+}
+
 function ProgramMeta({ icon: Icon, value }: { icon: any; value: string }) {
+
   return (
     <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
       <Icon className="h-3.5 w-3.5 text-primary/40" />

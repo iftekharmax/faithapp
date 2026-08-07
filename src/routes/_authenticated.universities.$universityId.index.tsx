@@ -519,30 +519,31 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
       <div className="flex flex-col gap-6">
         <div className="flex flex-wrap items-center gap-3">
           <Button 
-            className="h-12 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 px-6"
+            className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-6"
             onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
           >
-            <Plus className="mr-2 h-5 w-5" /> Create Application
+            <Plus className="mr-2 h-4 w-4" /> Create Application
           </Button>
           <Button 
             variant="outline"
-            className="h-12 rounded-xl border-slate-200 bg-white font-bold text-blue-600 hover:bg-slate-50 px-6"
+            className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-blue-600 hover:bg-slate-50 px-6"
             onClick={openNew}
           >
-            <Plus className="mr-2 h-5 w-5" /> Add Program
+            <Plus className="mr-2 h-4 w-4" /> Add Program
           </Button>
-          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
             <Download className="mr-2 h-4 w-4" /> Export Programs
           </Button>
-          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
             <Plus className="mr-2 h-4 w-4" /> Import Programs
           </Button>
-          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
             <FileText className="mr-2 h-4 w-4" /> Template
           </Button>
-          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
             <Share2 className="mr-2 h-4 w-4" /> Share University
           </Button>
+
         </div>
 
         <div className="rounded-[24px] bg-white border border-slate-200 p-6 shadow-sm space-y-6">

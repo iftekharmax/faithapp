@@ -244,23 +244,23 @@ function UniversityDetail() {
         </div>
       </Card>
 
-      <Tabs defaultValue="programs" className="space-y-6">
-        <TabsList className="bg-white border border-slate-200 w-full justify-start rounded-t-3xl h-auto p-0 gap-8 px-8">
+      <Tabs defaultValue="programs" className="space-y-0">
+        <TabsList className="bg-white border border-slate-200 w-full justify-start rounded-t-2xl h-auto p-0 gap-10 px-10">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-6 pb-4 text-sm font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
           >
             Programs ({programs.length})
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-6 pb-4 text-sm font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
           >
             Campuses ({campuses.length})
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-6 pb-4 text-sm font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
           >
             Applications (3,241)
           </TabsTrigger>

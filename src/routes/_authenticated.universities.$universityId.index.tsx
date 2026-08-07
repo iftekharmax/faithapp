@@ -497,38 +497,60 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
     <div className="space-y-6">
 
 
-      <div className="relative overflow-hidden rounded-[32px] bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
-        <div className="absolute right-0 top-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-blue-50/30 blur-3xl" />
-        <div className="relative flex flex-col gap-8">
+      <div className="relative overflow-hidden rounded-b-3xl bg-white p-8 shadow-sm border-x border-b border-slate-200">
+        <div className="relative flex flex-col gap-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="relative flex-1 min-w-[320px]">
-              <Search className="absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-              <Input 
-                placeholder="Search programs by name, degree or keyword..." 
-                value={search} 
-                onChange={(e) => setSearch(e.target.value)} 
-                className="pl-14 h-14 rounded-2xl border-none bg-slate-50 text-base font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/20 shadow-inner" 
-              />
+            <div className="flex flex-wrap items-center gap-4 flex-1">
+              <div className="relative min-w-[300px] flex-1">
+                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Input 
+                  placeholder="Search programs..." 
+                  value={search} 
+                  onChange={(e) => setSearch(e.target.value)} 
+                  className="pl-10 h-11 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600/20" 
+                />
+              </div>
+              <Select value={degreeFilter} onValueChange={setDegreeFilter}>
+                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-600">
+                  <SelectValue placeholder="All degrees" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-slate-100 shadow-xl">
+                  <SelectItem value="all">All degrees</SelectItem>
+                  {degrees.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
-            <div className="flex items-center gap-3">
-              <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20">
-                <LayoutGrid className="h-6 w-6" />
+            
+            <div className="flex items-center gap-2">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4">
+                <Download className="mr-2 h-4 w-4" /> Export programs
               </Button>
-              <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-100 shadow-inner">
-                <ListIcon className="h-6 w-6" />
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4">
+                <Share2 className="mr-2 h-4 w-4" /> Import programs
+              </Button>
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4">
+                <FileText className="mr-2 h-4 w-4" /> Template
+              </Button>
+              <Button onClick={openNew} className="h-11 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 px-6">
+                <Plus className="mr-2 h-4 w-4" /> Add program
               </Button>
             </div>
           </div>
           
-          <div className="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-50">
-            <FilterSelect icon={GraduationCap} placeholder="All Degrees" value={degreeFilter} onValueChange={setDegreeFilter} options={degrees} />
-            <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={MapPin} label="All Campuses" placeholder="All Campuses" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Calendar} label="All Intakes" placeholder="All Intakes" value="all" onValueChange={() => {}} options={[]} />
+          <div className="flex flex-wrap items-center gap-3">
+            <FilterDropdown placeholder="All Faculties" />
+            <FilterDropdown placeholder="All Campuses" />
+            <FilterDropdown placeholder="Study Mode" />
+            <FilterDropdown placeholder="All Intakes" />
+            <FilterDropdown placeholder="All Scholarships" />
+            <FilterDropdown placeholder="Sort by: Newest" />
             
-            <div className="ml-auto flex items-center gap-4">
-              <Button variant="ghost" className="h-12 rounded-2xl font-black text-slate-500 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
-                <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
+            <div className="ml-auto flex items-center gap-2">
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-sm">
+                <LayoutGrid className="h-5 w-5" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl text-slate-400 hover:bg-slate-50">
+                <ListIcon className="h-5 w-5" />
               </Button>
             </div>
           </div>

@@ -249,30 +249,32 @@ function UniversityDetail() {
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-0">
-        <TabsList className="bg-white border-x border-t border-slate-200 w-full justify-start rounded-t-2xl h-auto p-0 gap-10 px-10">
-          <TabsTrigger 
-            value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
-          >
-            Programs ({programs.length})
-          </TabsTrigger>
-          <TabsTrigger 
-            value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
-          >
-            Campuses ({campuses.length})
-          </TabsTrigger>
-          <TabsTrigger 
-            value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
-          >
-            Applications ({totalApplicationsCount.toLocaleString()})
-          </TabsTrigger>
-        </TabsList>
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-none h-auto p-0 gap-10 px-10">
+            <TabsTrigger 
+              value="programs" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+            >
+              Programs ({programs.length})
+            </TabsTrigger>
+            <TabsTrigger 
+              value="campuses" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+            >
+              Campuses ({campuses.length})
+            </TabsTrigger>
+            <TabsTrigger 
+              value="applications" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+            >
+              Applications ({totalApplicationsCount.toLocaleString()})
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="programs" className="mt-0 outline-none">
-          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
-        </TabsContent>
+          <TabsContent value="programs" className="mt-0 outline-none">
+            <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
+          </TabsContent>
+        </div>
         
         <TabsContent value="campuses" className="mt-0 outline-none">
           <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />

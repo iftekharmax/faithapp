@@ -216,6 +216,7 @@ function UniversityDetail() {
 }
 
 function ProgramsTab({ universityId, programs, uni, openNew, openEdit, setDeleteId, campuses }: any) {
+    const navigate = useNavigate();
     return (
         <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-4">
@@ -246,3 +247,4 @@ function ProgramsTab({ universityId, programs, uni, openNew, openEdit, setDelete
         </div>
     )
 }
+

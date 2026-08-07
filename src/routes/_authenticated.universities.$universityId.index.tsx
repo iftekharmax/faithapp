@@ -250,23 +250,24 @@ function UniversityDetail() {
         <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-10">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
           >
-            Programs ({programs.length})
+            Programs <span className="ml-1.5 text-slate-400">({programs.length})</span>
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
           >
-            Campuses ({campuses.length})
+            Campuses <span className="ml-1.5 text-slate-400">({campuses.length})</span>
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
           >
-            Applications ({applications.length.toLocaleString()})
+            Applications <span className="ml-1.5 text-slate-400">({applications.length.toLocaleString()})</span>
           </TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="programs" className="mt-0 outline-none">
           <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />

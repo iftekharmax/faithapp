@@ -63,7 +63,9 @@ function UniversityDetail() {
   const [campuses, setCampuses] = useState<Campus[]>([]);
   const [programs, setPrograms] = useState<UniversityProgram[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
+  const [totalApplicationsCount, setTotalApplicationsCount] = useState<number>(3241);
   const [loading, setLoading] = useState(true);
+  const [programsLoading, setProgramsLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   async function reload() {

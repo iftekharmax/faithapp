@@ -512,8 +512,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
 
   return (
     <>
-    <div className="relative flex flex-col p-10 pt-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="relative flex flex-col pt-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 px-10">
         <div className="flex flex-wrap items-center gap-4 flex-1">
           <div className="relative min-w-[300px] flex-1 max-w-sm">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />

@@ -503,6 +503,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   }
 
   return (
+    <>
     <div className="relative flex flex-col p-10 pt-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-4 flex-1">

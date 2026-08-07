@@ -1191,9 +1191,9 @@ function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { p
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-        <SelectItem value="all" className="font-medium text-slate-900">{placeholder}</SelectItem>
+        <SelectItem value="all" className="font-medium text-slate-900 focus:bg-slate-50">{placeholder}</SelectItem>
         {options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value} className="font-medium text-slate-900">{opt.label}</SelectItem>
+          <SelectItem key={opt.value} value={opt.value} className="font-medium text-slate-900 focus:bg-slate-50">{opt.label}</SelectItem>
         ))}
       </SelectContent>
     </Select>

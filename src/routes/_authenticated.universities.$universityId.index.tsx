@@ -359,8 +359,8 @@ function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: stri
       <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shadow-sm", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
-      <div className="text-[22px] font-black tracking-tighter text-slate-900">{value}</div>
-      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
+      <div className="text-[22px] font-black tracking-tighter text-black">{value}</div>
+      <div className="text-[10px] font-medium uppercase tracking-widest text-black">{label}</div>
       {growth && (
         <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-50 text-[8px] font-black text-emerald-600 hover:bg-emerald-100 flex items-center gap-0.5 shadow-sm">
           <TrendingUp className="h-2 w-2" /> {growth}
@@ -377,8 +377,8 @@ function AsideInfoItem({ icon: Icon, label, value }: { icon: any; label: string;
         <Icon className="h-5 w-5" />
       </div>
       <div className="flex flex-col">
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{label}</span>
-        <span className="font-bold text-slate-700">{value}</span>
+        <span className="text-xs font-medium text-black uppercase tracking-widest">{label}</span>
+        <span className="font-medium text-black">{value}</span>
       </div>
     </div>
   );
@@ -388,7 +388,7 @@ function QuickActionButton({ icon: Icon, label }: { icon: any; label: string }) 
   return (
     <button className="flex flex-col items-center justify-center gap-2 rounded-xl bg-slate-50 p-3 transition-all hover:bg-primary/5 hover:text-primary">
       <Icon className="h-4 w-4" />
-      <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-[10px] font-medium uppercase tracking-widest">{label}</span>
     </button>
   );
 }
@@ -408,8 +408,8 @@ function StatCard({ label, value, icon: Icon, color, growth }: { label: string; 
       <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
-      <div className="text-xl font-black tracking-tight text-slate-900">{value}</div>
-      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
+      <div className="text-xl font-black tracking-tight text-black">{value}</div>
+      <div className="text-[10px] font-medium uppercase tracking-widest text-black">{label}</div>
       {growth && (
         <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-100 text-[8px] font-bold text-emerald-700 hover:bg-emerald-100">
           {growth}
@@ -510,31 +510,31 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   placeholder="Search programs..." 
                   value={search} 
                   onChange={(e) => setSearch(e.target.value)} 
-                  className="pl-10 h-11 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600/20 text-slate-900" 
+                  className="pl-10 h-11 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600/20 text-black" 
                 />
               </div>
               <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20">
+                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-black focus:ring-1 focus:ring-blue-600/20">
                   <SelectValue placeholder="All degrees" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-                  <SelectItem value="all" className="font-medium text-slate-900">All degrees</SelectItem>
-                  {degrees.map(d => <SelectItem key={d} value={d} className="font-medium text-slate-900">{d}</SelectItem>)}
+                  <SelectItem value="all" className="font-medium text-black">All degrees</SelectItem>
+                  {degrees.map(d => <SelectItem key={d} value={d} className="font-medium text-black">{d}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
                 <Download className="mr-2 h-4 w-4" /> Export programs
               </Button>
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
                 <Share2 className="mr-2 h-4 w-4" /> Import programs
               </Button>
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
                 <FileText className="mr-2 h-4 w-4" /> Template
               </Button>
-              <Button onClick={openNew} className="h-11 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 px-8 ml-2">
+              <Button onClick={openNew} className="h-11 rounded-xl bg-blue-600 font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 px-8 ml-2">
                 <Plus className="mr-2 h-4 w-4" /> Add program
               </Button>
             </div>

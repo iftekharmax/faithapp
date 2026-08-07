@@ -500,7 +500,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
 
   return (
     <div className="space-y-6">
-      <div className="relative overflow-hidden rounded-b-2xl bg-white p-10 shadow-sm border-x border-b border-slate-200">
+      <div className="relative overflow-hidden rounded-b-2xl bg-white p-10 shadow-sm border-x border-b border-slate-200" style={{ color: "black" }}>
         <div className="relative flex flex-col gap-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-4 flex-1">
@@ -514,7 +514,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 />
               </div>
               <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900">
+                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20">
                   <SelectValue placeholder="All degrees" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-slate-100 shadow-xl">
@@ -1187,13 +1187,13 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
 function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20">
+      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20 shadow-sm transition-all hover:border-slate-300">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-        <SelectItem value="all" className="font-medium text-slate-900">{placeholder}</SelectItem>
+        <SelectItem value="all" className="font-medium text-slate-900 focus:bg-slate-50">{placeholder}</SelectItem>
         {options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value} className="font-medium text-slate-900">{opt.label}</SelectItem>
+          <SelectItem key={opt.value} value={opt.value} className="font-medium text-slate-900 focus:bg-slate-50">{opt.label}</SelectItem>
         ))}
       </SelectContent>
     </Select>

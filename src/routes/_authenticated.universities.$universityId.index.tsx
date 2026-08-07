@@ -1187,13 +1187,13 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
 function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20 shadow-sm transition-all hover:border-slate-300">
+      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-black focus:ring-1 focus:ring-blue-600/20 shadow-sm transition-all hover:border-slate-300">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-        <SelectItem value="all" className="font-medium text-slate-900 focus:bg-slate-50">{placeholder}</SelectItem>
+        <SelectItem value="all" className="font-medium text-black focus:bg-slate-50">{placeholder}</SelectItem>
         {options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value} className="font-medium text-slate-900 focus:bg-slate-50">{opt.label}</SelectItem>
+          <SelectItem key={opt.value} value={opt.value} className="font-medium text-black focus:bg-slate-50">{opt.label}</SelectItem>
         ))}
       </SelectContent>
     </Select>
@@ -1203,7 +1203,7 @@ function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { p
 function ProgramMeta({ icon: Icon, value }: { icon: any; value: string }) {
 
   return (
-    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+    <div className="flex items-center gap-2 text-[10px] font-medium text-black">
       <Icon className="h-3.5 w-3.5 text-primary/40" />
       <span>{value}</span>
     </div>
@@ -1213,10 +1213,10 @@ function ProgramMeta({ icon: Icon, value }: { icon: any; value: string }) {
 function ProgramStat({ label, value, isPrimary, isHighlight }: { label: string; value: string; isPrimary?: boolean; isHighlight?: boolean }) {
   return (
     <div className="space-y-1">
-      <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</p>
+      <p className="text-[9px] font-black uppercase tracking-widest text-black">{label}</p>
       <p className={cn(
         "text-xs font-black tracking-tight",
-        isPrimary ? "text-primary text-sm" : isHighlight ? "text-emerald-500" : "text-slate-900"
+        isPrimary ? "text-primary text-sm" : isHighlight ? "text-emerald-500" : "text-black"
       )}>
         {value}
       </p>
@@ -1226,7 +1226,7 @@ function ProgramStat({ label, value, isPrimary, isHighlight }: { label: string; 
 
 function IntakeChip({ label }: { label: string }) {
   return (
-    <Badge variant="secondary" className="bg-slate-50 text-slate-600 hover:bg-slate-100 border-none rounded-lg px-2 py-1 text-[10px] font-bold">
+    <Badge variant="secondary" className="bg-slate-50 text-black hover:bg-slate-100 border-none rounded-lg px-2 py-1 text-[10px] font-medium">
       {label}
     </Badge>
   );

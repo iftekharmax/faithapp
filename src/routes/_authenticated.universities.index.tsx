@@ -28,6 +28,15 @@ import { CsvToolbar } from "@/components/universities/CsvToolbar";
 import { exportUniversitiesCsv, previewUniversitiesCsv, validUrl } from "@/lib/university-csv";
 
 export const Route = createFileRoute("/_authenticated/universities/")({
+  head: () => ({
+    meta: [
+      { title: "University Directory - Faith AMS" },
+      { name: "description", content: "Explore our global directory of partner universities and academic programs." },
+      { property: "og:title", content: "University Directory - Faith AMS" },
+      { property: "og:description", content: "Explore our global directory of partner universities and academic programs." },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: UniversitiesPage,
 });
 

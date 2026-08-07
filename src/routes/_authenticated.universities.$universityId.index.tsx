@@ -63,21 +63,25 @@ function UniversityDetail() {
   const [campuses, setCampuses] = useState<Campus[]>([]);
   const [programs, setPrograms] = useState<UniversityProgram[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
+  const [totalApplicationsCount, setTotalApplicationsCount] = useState<number>(3241);
   const [loading, setLoading] = useState(true);
+  const [programsLoading, setProgramsLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   async function reload() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [u, c, p, a] = await Promise.all([
+      const [u, c, p, a, countRes] = await Promise.all([
         getUniversity(universityId),
         listCampuses(universityId),
         listPrograms({ universityId }),
         supabase.from("applications").select("id, application_code, status, program, student:students(full_name, student_code)").eq("university_id", universityId).order("created_at", { ascending: false }),
+        supabase.from("applications").select("*", { count: 'exact', head: true }).eq("university_id", universityId),
       ]);
       setUni(u); setCampuses(c); setPrograms(p);
       setApplications((a.data as any[]) ?? []);
+      if (countRes.count !== null) setTotalApplicationsCount(countRes.count);
     } catch (e: any) {
       const msg = e?.message ?? "Something went wrong while loading this university.";
       setLoadError(msg);
@@ -262,12 +266,12 @@ function UniversityDetail() {
             value="applications" 
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
           >
-            Applications (3,241)
+            Applications ({totalApplicationsCount.toLocaleString()})
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="programs" className="mt-0 outline-none">
-          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
+          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
         </TabsContent>
         
         <TabsContent value="campuses" className="mt-0 outline-none">
@@ -417,9 +421,10 @@ function StatCard({ label, value, icon: Icon, color, growth }: { label: string; 
 
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni }: {
+function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni, loading }: {
   universityId: string; programs: UniversityProgram[]; campuses: Campus[];
   canEdit: boolean; onChange: () => void; uni: University | null;
+  loading?: boolean;
 }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -495,8 +500,6 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
 
   return (
     <div className="space-y-6">
-
-
       <div className="relative overflow-hidden rounded-b-2xl bg-white p-10 shadow-sm border-x border-b border-slate-200">
         <div className="relative flex flex-col gap-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -507,16 +510,16 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
                   placeholder="Search programs..." 
                   value={search} 
                   onChange={(e) => setSearch(e.target.value)} 
-                  className="pl-10 h-11 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600/20" 
+                  className="pl-10 h-11 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600/20 text-slate-900" 
                 />
               </div>
               <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-600">
+                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900">
                   <SelectValue placeholder="All degrees" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-                  <SelectItem value="all">All degrees</SelectItem>
-                  {degrees.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                  <SelectItem value="all" className="font-medium text-slate-900">All degrees</SelectItem>
+                  {degrees.map(d => <SelectItem key={d} value={d} className="font-medium text-slate-900">{d}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -539,8 +542,18 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
           
           <div className="flex flex-wrap items-center gap-3">
             <FilterDropdown placeholder="All Faculties" />
-            <FilterDropdown placeholder="All Campuses" />
-            <FilterDropdown placeholder="Study Mode" />
+            <FilterDropdown 
+              placeholder="All Campuses" 
+              options={campuses.map(c => ({ label: c.name, value: c.id }))}
+            />
+            <FilterDropdown 
+              placeholder="Study Mode" 
+              options={[
+                { label: "Full-time", value: "full_time" },
+                { label: "Part-time", value: "part_time" },
+                { label: "Online", value: "online" }
+              ]}
+            />
             <FilterDropdown placeholder="All Intakes" />
             <FilterDropdown placeholder="All Scholarships" />
             <FilterDropdown placeholder="Sort by: Newest" />
@@ -559,38 +572,82 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
 
 
       <div>
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Card key={i} className="h-[400px] rounded-3xl border-none shadow-sm ring-1 ring-slate-100 p-6 bg-white animate-pulse">
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <div className="flex gap-2">
+                      <Skeleton className="h-5 w-16 rounded-lg" />
+                      <Skeleton className="h-5 w-16 rounded-lg" />
+                    </div>
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                  </div>
+                  <div className="flex gap-4">
+                    <Skeleton className="h-16 w-16 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-6 w-full" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                  <div className="pt-4 border-t border-slate-50">
+                    <div className="grid grid-cols-3 gap-2">
+                      <Skeleton className="h-10 w-full rounded-xl" />
+                      <Skeleton className="h-10 w-full rounded-xl" />
+                      <Skeleton className="h-10 w-full rounded-xl" />
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <Skeleton className="h-11 flex-1 rounded-xl" />
+                    <Skeleton className="h-11 w-11 rounded-xl" />
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           programs.length === 0 ? (
-            <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed py-16 text-center bg-white">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                <GraduationCap className="h-10 w-10 text-primary" />
+            <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed py-24 text-center bg-white border-slate-200">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-blue-50">
+                <GraduationCap className="h-12 w-12 text-blue-600/40" />
               </div>
-              <div className="max-w-xs space-y-2">
-                <p className="text-xl font-bold">No programs yet</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+              <div className="max-w-md space-y-2">
+                <h3 className="text-2xl font-black text-slate-900">No programs yet</h3>
+                <p className="text-slate-500 font-medium">
                   Start tracking academic programs for this university by creating your first one.
                 </p>
               </div>
               {canEdit && (
-                <Button onClick={openNew} className="rounded-xl shadow-lg shadow-primary/25 h-11 px-6 font-bold transition-all hover:scale-[1.02] active:scale-[0.98]">
-                  <Plus className="mr-2 h-5 w-5" /> Create Program
+                <Button onClick={openNew} className="mt-4 rounded-xl shadow-lg shadow-blue-600/20 h-12 px-8 font-black bg-blue-600 hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                  <Plus className="mr-2 h-5 w-5" /> Add Program Now
                 </Button>
               )}
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed py-16 text-center bg-white">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                <SearchX className="h-8 w-8 text-muted-foreground" />
+            <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed py-24 text-center bg-white border-slate-200">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-slate-50">
+                <SearchX className="h-12 w-12 text-slate-300" />
               </div>
-              <div className="max-w-xs space-y-2">
-                <p className="text-lg font-bold">No matching programs</p>
-                <p className="text-sm text-muted-foreground">
-                  We couldn't find any programs matching your search or filters.
+              <div className="max-w-md space-y-2">
+                <h3 className="text-2xl font-black text-slate-900">No matching programs</h3>
+                <p className="text-slate-500 font-medium">
+                  We couldn't find any programs matching your search or filters. Try adjusting your criteria.
                 </p>
               </div>
-              <Button variant="outline" className="rounded-xl px-6 h-10 font-semibold" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
-                Clear all filters
-              </Button>
+              <div className="flex gap-3 mt-4">
+                <Button variant="outline" className="rounded-xl px-8 h-12 font-bold border-slate-200 text-slate-600 hover:bg-slate-50" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
+                  Clear all filters
+                </Button>
+                <Button onClick={openNew} className="rounded-xl shadow-lg shadow-blue-600/20 h-12 px-8 font-black bg-blue-600 hover:bg-blue-700">
+                  <Plus className="mr-2 h-5 w-5" /> Add New Program
+                </Button>
+              </div>
             </div>
           )
         ) : (
@@ -1127,13 +1184,18 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
   );
 }
 
-function FilterDropdown({ placeholder }: { placeholder: string }) {
+function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
   return (
-    <Select disabled>
-      <SelectTrigger className="w-fit min-w-[130px] h-10 rounded-xl border-slate-200 bg-white font-medium text-slate-600 text-xs">
+    <Select value={value} onValueChange={onValueChange}>
+      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent />
+      <SelectContent className="rounded-xl border-slate-100 shadow-xl">
+        <SelectItem value="all" className="font-medium text-slate-900">{placeholder}</SelectItem>
+        {options.map(opt => (
+          <SelectItem key={opt.value} value={opt.value} className="font-medium text-slate-900">{opt.label}</SelectItem>
+        ))}
+      </SelectContent>
     </Select>
   );
 }

@@ -72,14 +72,16 @@ function UniversityDetail() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [u, c, p, a] = await Promise.all([
+      const [u, c, p, a, countRes] = await Promise.all([
         getUniversity(universityId),
         listCampuses(universityId),
         listPrograms({ universityId }),
         supabase.from("applications").select("id, application_code, status, program, student:students(full_name, student_code)").eq("university_id", universityId).order("created_at", { ascending: false }),
+        supabase.from("applications").select("*", { count: 'exact', head: true }).eq("university_id", universityId),
       ]);
       setUni(u); setCampuses(c); setPrograms(p);
       setApplications((a.data as any[]) ?? []);
+      if (countRes.count !== null) setTotalApplicationsCount(countRes.count);
     } catch (e: any) {
       const msg = e?.message ?? "Something went wrong while loading this university.";
       setLoadError(msg);

@@ -268,17 +268,48 @@ function UniversityDetail() {
           </TabsTrigger>
         </TabsList>
 
+        <div className="flex flex-col gap-6 pt-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <Button 
+              className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-6"
+              onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Create Application
+            </Button>
+            <Button 
+              variant="outline"
+              className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-blue-600 hover:bg-slate-50 px-6"
+              onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Add Program
+            </Button>
+            <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
+              <Download className="mr-2 h-4 w-4" /> Export Programs
+            </Button>
+            <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
+              <Plus className="mr-2 h-4 w-4" /> Import Programs
+            </Button>
+            <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
+              <FileText className="mr-2 h-4 w-4" /> Template
+            </Button>
+            <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
+              <Share2 className="mr-2 h-4 w-4" /> Share University
+            </Button>
+          </div>
+        </div>
 
         <TabsContent value="programs" className="mt-0 outline-none">
-          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
-        </TabsContent>
-        
-        <TabsContent value="campuses" className="mt-0 outline-none">
-          <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
-        </TabsContent>
 
-        <TabsContent value="applications" className="mt-0 outline-none">
-          <Card className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
+          </TabsContent>
+          
+          <TabsContent value="campuses" className="mt-0 outline-none">
+            <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+          </TabsContent>
+
+          <TabsContent value="applications" className="mt-0 outline-none">
+            <Card className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+
             <CardHeader className="border-b border-slate-50 p-6">
               <CardTitle className="text-lg font-black text-slate-900">Recent Applications</CardTitle>
             </CardHeader>
@@ -338,6 +369,7 @@ function UniversityDetail() {
       </Tabs>
     </div>
   );
+
 
 
 }
@@ -519,34 +551,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
 
 
       <div className="flex flex-col gap-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <Button 
-            className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-6"
-            onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Create Application
-          </Button>
-          <Button 
-            variant="outline"
-            className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-blue-600 hover:bg-slate-50 px-6"
-            onClick={openNew}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add Program
-          </Button>
-          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-            <Download className="mr-2 h-4 w-4" /> Export Programs
-          </Button>
-          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-            <Plus className="mr-2 h-4 w-4" /> Import Programs
-          </Button>
-          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-            <FileText className="mr-2 h-4 w-4" /> Template
-          </Button>
-          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-            <Share2 className="mr-2 h-4 w-4" /> Share University
-          </Button>
 
-        </div>
+
 
         <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-4">

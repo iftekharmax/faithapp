@@ -5,6 +5,17 @@ import { Loader2 } from "lucide-react";
 import { SessionTimeoutFallback } from "@/components/auth/SessionTimeoutFallback";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Faith Education - Global Admissions & CRM" },
+      { name: "description", content: "Empowering education consultants with an all-in-one admissions management system." },
+      { property: "og:title", content: "Faith Education - Global Admissions & CRM" },
+      { property: "og:description", content: "Empowering education consultants with an all-in-one admissions management system." },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Faith Education - Global Admissions & CRM" },
+      { name: "twitter:description", content: "Empowering education consultants with an all-in-one admissions management system." },
+    ],
+  }),
   component: Index,
 });
 

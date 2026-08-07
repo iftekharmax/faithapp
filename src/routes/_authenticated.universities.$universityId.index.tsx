@@ -46,6 +46,18 @@ import { cn } from "@/lib/utils";
 
 
 export const Route = createFileRoute("/_authenticated/universities/$universityId/")({
+  head: ({ loaderData }) => {
+    const uniName = (loaderData as any)?.uni?.name || "University Details";
+    return {
+      meta: [
+        { title: `${uniName} - Faith Education` },
+        { name: "description", content: `View programs, campuses, and admission details for ${uniName}.` },
+        { property: "og:title", content: `${uniName} - Faith Education` },
+        { property: "og:description", content: `Explore academic opportunities at ${uniName}.` },
+        { name: "twitter:card", content: "summary" },
+      ],
+    };
+  },
   component: () => (
     <div className="bg-[#F8FAFC] min-h-screen">
       <UniversityDetail />
@@ -249,7 +261,7 @@ function UniversityDetail() {
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-0">
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden mb-8">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden mb-6">
           <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-none h-auto p-0 gap-10 px-10">
             <TabsTrigger 
               value="programs" 
@@ -572,7 +584,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
       </div>
     </div>
 
-    <div className="mt-6 px-10 pb-10">
+    <div className="mt-10 px-10 pb-10">
       {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (

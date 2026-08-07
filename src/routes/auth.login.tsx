@@ -11,6 +11,15 @@ import { supabase, type AppRole } from "@/lib/supabase";
 import { getRoleHome } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/auth/login")({
+  head: () => ({
+    meta: [
+      { title: "Login - Faith Education Global Admissions" },
+      { name: "description", content: "Sign in to Faith Education to manage your student applications and consultancy workflow." },
+      { property: "og:title", content: "Login - Faith Education" },
+      { property: "og:description", content: "Access your global admissions dashboard." },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: LoginPage,
 });
 

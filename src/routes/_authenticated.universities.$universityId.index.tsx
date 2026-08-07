@@ -249,7 +249,7 @@ function UniversityDetail() {
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-0">
-        <TabsList className="bg-white border border-slate-200 w-full justify-start rounded-t-2xl h-auto p-0 gap-10 px-10">
+        <TabsList className="bg-white border-x border-t border-slate-200 w-full justify-start rounded-t-2xl h-auto p-0 gap-10 px-10">
           <TabsTrigger 
             value="programs" 
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"

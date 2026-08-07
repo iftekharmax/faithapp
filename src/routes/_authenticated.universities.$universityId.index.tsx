@@ -5,7 +5,7 @@ import {
   GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, 
   SearchX, Share2, Download, Printer, Copy, Heart, Globe, Users, 
   FileText, Briefcase, Plane, BookOpen, Clock, CheckCircle2, 
-  ArrowRight, MoreVertical, LayoutGrid, List as ListIcon, 
+  ArrowRight, MoreVertical, MoreHorizontal, LayoutGrid, List as ListIcon, 
   TrendingUp, Search, RotateCcw, Filter, ChevronRight,
   School, Book, UserCheck, Star, ShieldCheck, Flame, Zap, Trophy,
   History, PieChart, Activity, Info, Landmark, Languages, GraduationCap as GradIcon,

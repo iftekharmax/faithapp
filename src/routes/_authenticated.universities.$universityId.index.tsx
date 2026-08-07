@@ -249,7 +249,7 @@ function UniversityDetail() {
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-0">
-        <TabsList className="bg-white border border-slate-200 w-full justify-start rounded-t-2xl h-auto p-0 gap-10 px-10">
+        <TabsList className="bg-white border-x border-t border-slate-200 w-full justify-start rounded-t-2xl h-auto p-0 gap-10 px-10">
           <TabsTrigger 
             value="programs" 
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
@@ -499,7 +499,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   }
 
   return (
-    <div className="space-y-6">
+    <div className="-mt-px">
       <div className="relative overflow-hidden rounded-b-2xl bg-white shadow-sm border-x border-b border-slate-200" style={{ color: "black" }}>
         <div className="relative flex flex-col">
           <div className="flex flex-wrap items-center justify-between gap-4 p-10">
@@ -572,7 +572,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
       </div>
 
 
-      <div>
+      <div className="mt-8">
         {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (

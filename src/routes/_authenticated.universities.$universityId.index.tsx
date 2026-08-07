@@ -260,8 +260,8 @@ function UniversityDetail() {
         </div>
       </Card>
 
-      <Tabs defaultValue="programs" className="space-y-0">
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden mb-6">
+      <Tabs defaultValue="programs" className="space-y-6">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
           <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-none h-auto p-0 gap-10 px-10">
             <TabsTrigger 
               value="programs" 
@@ -288,6 +288,7 @@ function UniversityDetail() {
               <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
             </div>
           </TabsContent>
+        </div>
           
           <TabsContent value="campuses" className="mt-0 outline-none">
             <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />

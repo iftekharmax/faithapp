@@ -539,8 +539,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </Button>
             </div>
           </div>
+          <hr className="border-slate-100" />
           
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 p-10 pt-6">
             <FilterDropdown placeholder="All Faculties" />
             <FilterDropdown 
               placeholder="All Campuses" 

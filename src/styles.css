@@ -195,6 +195,9 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+  .text-slate-400 {
+    color: #4b535d;
+  }
 }
 
 /* Hide the Lovable badge on published deployments */

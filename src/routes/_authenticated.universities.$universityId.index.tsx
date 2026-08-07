@@ -296,8 +296,10 @@ function UniversityDetail() {
               <Share2 className="mr-2 h-4 w-4" /> Share University
             </Button>
           </div>
+        </div>
 
-          <TabsContent value="programs" className="mt-0 outline-none">
+        <TabsContent value="programs" className="mt-0 outline-none">
+
             <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
           </TabsContent>
           

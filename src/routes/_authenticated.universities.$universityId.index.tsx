@@ -568,11 +568,11 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl text-slate-400 hover:bg-slate-50">
             <ListIcon className="h-5 w-5" />
           </Button>
-        </div>
       </div>
+    </div>
 
-      <div className="mt-8">
-        {loading ? (
+    <div className="mt-8 px-10 pb-10">
+      {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card key={i} className="h-[400px] rounded-3xl border-none shadow-sm ring-1 ring-slate-100 p-6 bg-white animate-pulse">

@@ -46,6 +46,18 @@ import { cn } from "@/lib/utils";
 
 
 export const Route = createFileRoute("/_authenticated/universities/$universityId/")({
+  head: ({ loaderData }) => {
+    const uniName = (loaderData as any)?.uni?.name || "University Details";
+    return {
+      meta: [
+        { title: `${uniName} - Faith Education` },
+        { name: "description", content: `View programs, campuses, and admission details for ${uniName}.` },
+        { property: "og:title", content: `${uniName} - Faith Education` },
+        { property: "og:description", content: `Explore academic opportunities at ${uniName}.` },
+        { name: "twitter:card", content: "summary" },
+      ],
+    };
+  },
   component: () => (
     <div className="bg-[#F8FAFC] min-h-screen">
       <UniversityDetail />

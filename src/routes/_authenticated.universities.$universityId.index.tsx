@@ -297,6 +297,8 @@ function UniversityDetail() {
             Applications <span className="ml-1.5 text-slate-400">({applications.length.toLocaleString()})</span>
           </TabsTrigger>
         </TabsList>
+        </div>
+
 
 
         <TabsContent value="programs" className="mt-0 outline-none">

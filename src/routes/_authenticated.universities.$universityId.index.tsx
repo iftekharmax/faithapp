@@ -421,7 +421,7 @@ function StatCard({ label, value, icon: Icon, color, growth }: { label: string; 
 
 
 /* ============ PROGRAMS ============ */
-function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni }: {
+function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni, loading }: {
   universityId: string; programs: UniversityProgram[]; campuses: Campus[];
   canEdit: boolean; onChange: () => void; uni: University | null;
   loading?: boolean;

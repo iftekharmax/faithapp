@@ -629,17 +629,17 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div className="space-y-1">
                           <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tuition Fee</p>
-                          <p className="text-sm font-black text-blue-600">
+                          <p className="text-sm font-bold text-blue-600">
                             {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                           </p>
                         </div>
                         <div className="space-y-1">
                           <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Scholarship</p>
-                          <p className="text-sm font-black text-emerald-600">Up to 30%</p>
+                          <p className="text-sm font-bold text-emerald-600">Up to 30%</p>
                         </div>
                         <div className="space-y-1">
                           <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">App. Fee</p>
-                          <p className="text-sm font-black text-slate-900">{p.currency || "MYR"} {p.application_fee || "200"}</p>
+                          <p className="text-sm font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                         </div>
                       </div>
                       <div className="mt-4 space-y-1">

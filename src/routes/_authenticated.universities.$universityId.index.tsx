@@ -247,6 +247,34 @@ function UniversityDetail() {
       </Card>
 
       <div className="flex flex-col gap-6">
+        <div className="flex flex-wrap items-center gap-3">
+          <Button 
+            className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-6"
+            onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
+          >
+            <Plus className="mr-2 h-4 w-4" /> Create Application
+          </Button>
+          <Button 
+            variant="outline"
+            className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-blue-600 hover:bg-slate-50 px-6"
+            onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
+          >
+            <Plus className="mr-2 h-4 w-4" /> Add Program
+          </Button>
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
+            <Download className="mr-2 h-4 w-4" /> Export Programs
+          </Button>
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
+            <Plus className="mr-2 h-4 w-4" /> Import Programs
+          </Button>
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
+            <FileText className="mr-2 h-4 w-4" /> Template
+          </Button>
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
+            <Share2 className="mr-2 h-4 w-4" /> Share University
+          </Button>
+        </div>
+
         <Tabs defaultValue="programs" className="space-y-6">
           <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-10">
             <TabsTrigger 
@@ -271,37 +299,10 @@ function UniversityDetail() {
 
           <hr className="border-slate-200" />
 
-          <div className="flex flex-wrap items-center gap-3">
-            <Button 
-              className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-6"
-              onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
-            >
-              <Plus className="mr-2 h-4 w-4" /> Create Application
-            </Button>
-            <Button 
-              variant="outline"
-              className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-blue-600 hover:bg-slate-50 px-6"
-              onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
-            >
-              <Plus className="mr-2 h-4 w-4" /> Add Program
-            </Button>
-            <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-              <Download className="mr-2 h-4 w-4" /> Export Programs
-            </Button>
-            <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-              <Plus className="mr-2 h-4 w-4" /> Import Programs
-            </Button>
-            <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-              <FileText className="mr-2 h-4 w-4" /> Template
-            </Button>
-            <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-              <Share2 className="mr-2 h-4 w-4" /> Share University
-            </Button>
-          </div>
-
           <TabsContent value="programs" className="mt-0 outline-none">
             <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
           </TabsContent>
+
           
           <TabsContent value="campuses" className="mt-0 outline-none">
             <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />

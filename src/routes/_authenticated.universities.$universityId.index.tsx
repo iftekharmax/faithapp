@@ -500,7 +500,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
 
   return (
     <div className="space-y-6">
-      <div className="relative overflow-hidden rounded-b-2xl bg-white p-10 shadow-sm border-x border-b border-slate-200">
+      <div className="relative overflow-hidden rounded-b-2xl bg-white p-10 shadow-sm border-x border-b border-slate-200" style={{ color: "black" }}>
         <div className="relative flex flex-col gap-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-4 flex-1">

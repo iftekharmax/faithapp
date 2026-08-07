@@ -541,35 +541,34 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
       </div>
       <hr className="my-6 border-slate-100" />
           
-          <div className="flex flex-wrap items-center gap-3 p-10 pt-6">
-            <FilterDropdown placeholder="All Faculties" />
-            <FilterDropdown 
-              placeholder="All Campuses" 
-              options={campuses.map(c => ({ label: c.name, value: c.id }))}
-            />
-            <FilterDropdown 
-              placeholder="Study Mode" 
-              options={[
-                { label: "Full-time", value: "full_time" },
-                { label: "Part-time", value: "part_time" },
-                { label: "Online", value: "online" }
-              ]}
-            />
-            <FilterDropdown placeholder="All Intakes" />
-            <FilterDropdown placeholder="All Scholarships" />
-            <FilterDropdown placeholder="Sort by: Newest" />
-            
-            <div className="ml-auto flex items-center gap-2">
-              <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-sm">
-                <LayoutGrid className="h-5 w-5" />
-              </Button>
-              <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl text-slate-400 hover:bg-slate-50">
-                <ListIcon className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <FilterDropdown placeholder="All Faculties" />
+        <FilterDropdown 
+          placeholder="All Campuses" 
+          options={campuses.map(c => ({ label: c.name, value: c.id }))}
+        />
+        <FilterDropdown 
+          placeholder="Study Mode" 
+          options={[
+            { label: "Full-time", value: "full_time" },
+            { label: "Part-time", value: "part_time" },
+            { label: "Online", value: "online" }
+          ]}
+        />
+        <FilterDropdown placeholder="All Intakes" />
+        <FilterDropdown placeholder="All Scholarships" />
+        <FilterDropdown placeholder="Sort by: Newest" />
+        
+        <div className="ml-auto flex items-center gap-2">
+          <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-sm">
+            <LayoutGrid className="h-5 w-5" />
+          </Button>
+          <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl text-slate-400 hover:bg-slate-50">
+            <ListIcon className="h-5 w-5" />
+          </Button>
         </div>
       </div>
+    </div>
 
 
       <div className="mt-8">

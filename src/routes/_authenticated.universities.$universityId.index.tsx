@@ -568,8 +568,6 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           </Button>
         </div>
       </div>
-    </div>
-
 
       <div className="mt-8">
         {loading ? (

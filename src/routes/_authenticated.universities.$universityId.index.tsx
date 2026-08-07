@@ -689,15 +689,15 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
                         </Button>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl border-slate-200">
-                              <MoreVertical className="h-4 w-4" />
+                            <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl border-slate-200 relative z-10">
+                              <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
-                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg font-bold"><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg font-bold text-blue-600"><Plus className="mr-2 h-4 w-4" /> Apply</DropdownMenuItem>
+                          <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl z-[100]">
+                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openEdit(p); }} className="rounded-lg font-bold"><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate({ to: "/applications/new", search: { universityId, programId: p.id } }); }} className="rounded-lg font-bold text-blue-600"><Plus className="mr-2 h-4 w-4" /> Apply</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg font-bold text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
+                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setDeleteId(p.id); }} className="rounded-lg font-bold text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>

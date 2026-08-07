@@ -247,34 +247,6 @@ function UniversityDetail() {
       </Card>
 
       <div className="flex flex-col gap-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <Button 
-            className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-6"
-            onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Create Application
-          </Button>
-          <Button 
-            variant="outline"
-            className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-blue-600 hover:bg-slate-50 px-6"
-            onClick={() => navigate({ to: "/universities/$universityId/programs/new", params: { universityId } })}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add Program
-          </Button>
-          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-            <Download className="mr-2 h-4 w-4" /> Export Programs
-          </Button>
-          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-            <Plus className="mr-2 h-4 w-4" /> Import Programs
-          </Button>
-          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-            <FileText className="mr-2 h-4 w-4" /> Template
-          </Button>
-          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
-            <Share2 className="mr-2 h-4 w-4" /> Share University
-          </Button>
-        </div>
-
         <Tabs defaultValue="programs" className="space-y-6">
           <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-10">
             <TabsTrigger 
@@ -326,10 +298,8 @@ function UniversityDetail() {
               <Share2 className="mr-2 h-4 w-4" /> Share University
             </Button>
           </div>
-        </div>
 
-        <TabsContent value="programs" className="mt-0 outline-none">
-
+          <TabsContent value="programs" className="mt-0 outline-none">
             <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
           </TabsContent>
           
@@ -339,66 +309,66 @@ function UniversityDetail() {
 
           <TabsContent value="applications" className="mt-0 outline-none">
             <Card className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-
-            <CardHeader className="border-b border-slate-50 p-6">
-              <CardTitle className="text-lg font-black text-slate-900">Recent Applications</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {applications.length === 0 ? (
-                <div className="flex flex-col items-center py-20 text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 mb-4">
-                    <FileText className="h-8 w-8 text-slate-300" />
+              <CardHeader className="border-b border-slate-50 p-6">
+                <CardTitle className="text-lg font-black text-slate-900">Recent Applications</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {applications.length === 0 ? (
+                  <div className="flex flex-col items-center py-20 text-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 mb-4">
+                      <FileText className="h-8 w-8 text-slate-300" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900">No applications found</h3>
+                    <p className="text-sm text-slate-500 mt-1">No students have applied to this university yet.</p>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900">No applications found</h3>
-                  <p className="text-sm text-slate-500 mt-1">No students have applied to this university yet.</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="hover:bg-transparent border-slate-100">
-                        <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Application Code</TableHead>
-                        <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Student Name</TableHead>
-                        <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Program</TableHead>
-                        <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Status</TableHead>
-                        <TableHead className="py-4 text-right"></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {applications.map((a) => (
-                        <TableRow key={a.id} className="border-slate-50">
-                          <TableCell className="py-4 font-mono text-xs font-bold text-blue-600">{a.application_code}</TableCell>
-                          <TableCell className="py-4">
-                            <div className="flex flex-col">
-                              <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
-                              <span className="text-[10px] text-slate-400">{a.student?.student_code}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="py-4 font-medium text-slate-600 text-sm">{a.program}</TableCell>
-                          <TableCell className="py-4">
-                            <Badge variant="outline" className="rounded-full border-slate-200 px-3 py-1 font-bold text-[10px] uppercase text-slate-600">
-                              {String(a.status).replace(/_/g, " ")}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="py-4 text-right">
-                            <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-blue-50 text-blue-600" asChild>
-                              <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
-                                View Details
-                              </Link>
-                            </Button>
-                          </TableCell>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="hover:bg-transparent border-slate-100">
+                          <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Application Code</TableHead>
+                          <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Student Name</TableHead>
+                          <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Program</TableHead>
+                          <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Status</TableHead>
+                          <TableHead className="py-4 text-right"></TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
+                      </TableHeader>
+                      <TableBody>
+                        {applications.map((a) => (
+                          <TableRow key={a.id} className="border-slate-50">
+                            <TableCell className="py-4 font-mono text-xs font-bold text-blue-600">{a.application_code}</TableCell>
+                            <TableCell className="py-4">
+                              <div className="flex flex-col">
+                                <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
+                                <span className="text-[10px] text-slate-400">{a.student?.student_code}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-4 font-medium text-slate-600 text-sm">{a.program}</TableCell>
+                            <TableCell className="py-4">
+                              <Badge variant="outline" className="rounded-full border-slate-200 px-3 py-1 font-bold text-[10px] uppercase text-slate-600">
+                                {String(a.status).replace(/_/g, " ")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="py-4 text-right">
+                              <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-blue-50 text-blue-600" asChild>
+                                <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
+                                  View Details
+                                </Link>
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    );
+
 
 
 

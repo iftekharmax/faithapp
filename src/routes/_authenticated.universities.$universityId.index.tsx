@@ -497,11 +497,11 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
     <div className="space-y-6">
 
 
-      <div className="relative overflow-hidden rounded-b-3xl bg-white p-8 shadow-sm border-x border-b border-slate-200">
+      <div className="relative overflow-hidden rounded-b-2xl bg-white p-10 shadow-sm border-x border-b border-slate-200">
         <div className="relative flex flex-col gap-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-4 flex-1">
-              <div className="relative min-w-[300px] flex-1">
+              <div className="relative min-w-[300px] flex-1 max-w-sm">
                 <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <Input 
                   placeholder="Search programs..." 
@@ -522,16 +522,16 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
                 <Download className="mr-2 h-4 w-4" /> Export programs
               </Button>
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
                 <Share2 className="mr-2 h-4 w-4" /> Import programs
               </Button>
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
                 <FileText className="mr-2 h-4 w-4" /> Template
               </Button>
-              <Button onClick={openNew} className="h-11 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 px-6">
+              <Button onClick={openNew} className="h-11 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 px-8 ml-2">
                 <Plus className="mr-2 h-4 w-4" /> Add program
               </Button>
             </div>
@@ -546,10 +546,10 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
             <FilterDropdown placeholder="Sort by: Newest" />
             
             <div className="ml-auto flex items-center gap-2">
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-sm">
+              <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-sm">
                 <LayoutGrid className="h-5 w-5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl text-slate-400 hover:bg-slate-50">
+              <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl text-slate-400 hover:bg-slate-50">
                 <ListIcon className="h-5 w-5" />
               </Button>
             </div>

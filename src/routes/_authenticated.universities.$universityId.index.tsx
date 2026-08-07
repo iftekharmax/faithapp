@@ -187,7 +187,7 @@ function UniversityDetail() {
     <div className="mx-auto max-w-[1600px] space-y-8 animate-in fade-in duration-500 px-4 py-8">
       {/* Back button and title */}
       <div className="flex items-center gap-2 mb-4">
-        <Button variant="ghost" size="sm" className="rounded-xl font-bold text-slate-500" onClick={() => navigate({ to: "/universities" })}>
+        <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black" onClick={() => navigate({ to: "/universities" })}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
       </div>
@@ -213,7 +213,7 @@ function UniversityDetail() {
               </Badge>
             </div>
             
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-bold text-slate-500">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-black">
               <div className="flex items-center gap-2">
                 <span className="text-lg">🇲🇾</span>
                 <span>Malaysia</span>
@@ -231,7 +231,7 @@ function UniversityDetail() {
 
             </div>
 
-            <p className="text-sm leading-relaxed text-slate-500 max-w-4xl">{uni.description}</p>
+            <p className="text-sm leading-relaxed text-black max-w-4xl">{uni.description}</p>
 
           </div>
 
@@ -252,19 +252,19 @@ function UniversityDetail() {
         <TabsList className="bg-white border border-slate-200 w-full justify-start rounded-t-2xl h-auto p-0 gap-10 px-10">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
           >
             Programs ({programs.length})
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
           >
             Campuses ({campuses.length})
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
           >
             Applications ({totalApplicationsCount.toLocaleString()})
           </TabsTrigger>
@@ -359,8 +359,8 @@ function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: stri
       <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shadow-sm", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
-      <div className="text-[22px] font-black tracking-tighter text-slate-900">{value}</div>
-      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
+      <div className="text-[22px] font-black tracking-tighter text-black">{value}</div>
+      <div className="text-[10px] font-medium uppercase tracking-widest text-black">{label}</div>
       {growth && (
         <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-50 text-[8px] font-black text-emerald-600 hover:bg-emerald-100 flex items-center gap-0.5 shadow-sm">
           <TrendingUp className="h-2 w-2" /> {growth}
@@ -377,8 +377,8 @@ function AsideInfoItem({ icon: Icon, label, value }: { icon: any; label: string;
         <Icon className="h-5 w-5" />
       </div>
       <div className="flex flex-col">
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{label}</span>
-        <span className="font-bold text-slate-700">{value}</span>
+        <span className="text-xs font-medium text-black uppercase tracking-widest">{label}</span>
+        <span className="font-medium text-black">{value}</span>
       </div>
     </div>
   );
@@ -388,7 +388,7 @@ function QuickActionButton({ icon: Icon, label }: { icon: any; label: string }) 
   return (
     <button className="flex flex-col items-center justify-center gap-2 rounded-xl bg-slate-50 p-3 transition-all hover:bg-primary/5 hover:text-primary">
       <Icon className="h-4 w-4" />
-      <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-[10px] font-medium uppercase tracking-widest">{label}</span>
     </button>
   );
 }
@@ -408,8 +408,8 @@ function StatCard({ label, value, icon: Icon, color, growth }: { label: string; 
       <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
-      <div className="text-xl font-black tracking-tight text-slate-900">{value}</div>
-      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
+      <div className="text-xl font-black tracking-tight text-black">{value}</div>
+      <div className="text-[10px] font-medium uppercase tracking-widest text-black">{label}</div>
       {growth && (
         <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-100 text-[8px] font-bold text-emerald-700 hover:bg-emerald-100">
           {growth}
@@ -510,31 +510,31 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   placeholder="Search programs..." 
                   value={search} 
                   onChange={(e) => setSearch(e.target.value)} 
-                  className="pl-10 h-11 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600/20 text-slate-900" 
+                  className="pl-10 h-11 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600/20 text-black" 
                 />
               </div>
               <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20">
+                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-black focus:ring-1 focus:ring-blue-600/20">
                   <SelectValue placeholder="All degrees" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-                  <SelectItem value="all" className="font-medium text-slate-900">All degrees</SelectItem>
-                  {degrees.map(d => <SelectItem key={d} value={d} className="font-medium text-slate-900">{d}</SelectItem>)}
+                  <SelectItem value="all" className="font-medium text-black">All degrees</SelectItem>
+                  {degrees.map(d => <SelectItem key={d} value={d} className="font-medium text-black">{d}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
                 <Download className="mr-2 h-4 w-4" /> Export programs
               </Button>
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
                 <Share2 className="mr-2 h-4 w-4" /> Import programs
               </Button>
-              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-5 text-sm">
+              <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
                 <FileText className="mr-2 h-4 w-4" /> Template
               </Button>
-              <Button onClick={openNew} className="h-11 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 px-8 ml-2">
+              <Button onClick={openNew} className="h-11 rounded-xl bg-blue-600 font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 px-8 ml-2">
                 <Plus className="mr-2 h-4 w-4" /> Add program
               </Button>
             </div>
@@ -684,22 +684,22 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </div>
                         </div>
                         <div className="space-y-1.5 pt-2">
-                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                          <div className="flex items-center gap-2 text-sm font-medium text-black">
                             <GraduationCap className="h-4 w-4" />
                             <span>{p.degree || "Bachelor's Degree"}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                          <div className="flex items-center gap-2 text-sm font-medium text-black">
                             <Clock className="h-4 w-4" />
                             <span>{p.duration || "3 Years (9 Semesters)"}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                          <div className="flex items-center gap-2 text-sm font-medium text-black">
                             <MapPin className="h-4 w-4" />
                             <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Main Campus"}</span>
                           </div>
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 shadow-sm border border-slate-100">
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-black hover:text-rose-500 hover:bg-rose-50 shadow-sm border border-slate-100">
                           <Heart className="h-5 w-5" />
                         </Button>
                       </div>
@@ -707,22 +707,22 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                     <div className="mt-4 pt-4 border-t border-slate-50">
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tuition Fee</p>
+                          <p className="text-[9px] font-medium uppercase tracking-wider text-black">Tuition Fee</p>
                           <p className="text-sm font-bold text-blue-600">
                             {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                           </p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Scholarship</p>
+                          <p className="text-[9px] font-medium uppercase tracking-wider text-black">Scholarship</p>
                           <p className="text-sm font-bold text-emerald-600">Up to 30%</p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">App. Fee</p>
-                          <p className="text-sm font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
+                          <p className="text-[9px] font-medium uppercase tracking-wider text-black">App. Fee</p>
+                          <p className="text-sm font-bold text-black">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                         </div>
                       </div>
                       <div className="mt-4 space-y-1">
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Next Intake</p>
+                        <p className="text-[9px] font-medium uppercase tracking-wider text-black">Next Intake</p>
                         <div className="flex flex-wrap gap-2">
                           {(p.intake || "January, April, August").split(",").map((intake, i) => (
                             <span key={i} className="rounded-lg bg-blue-50 px-3 py-1 text-[11px] font-bold text-blue-600">
@@ -733,35 +733,35 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                       </div>
                       <div className="mt-6 grid grid-cols-3 gap-4 border-t border-slate-50 pt-4">
                         <div className="text-center">
-                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                          <div className="flex items-center justify-center gap-1.5 text-black mb-0.5">
                             <FileText className="h-3 w-3" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider">Applications</span>
+                            <span className="text-[9px] font-medium uppercase tracking-wider">Applications</span>
                           </div>
-                          <p className="text-sm font-black text-slate-700">312</p>
+                          <p className="text-sm font-black text-black">312</p>
                         </div>
                         <div className="text-center border-x border-slate-50">
-                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                          <div className="flex items-center justify-center gap-1.5 text-black mb-0.5">
                             <UserCheck className="h-3 w-3" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider">Acceptance</span>
+                            <span className="text-[9px] font-medium uppercase tracking-wider">Acceptance</span>
                           </div>
-                          <p className="text-sm font-black text-slate-700">62%</p>
+                          <p className="text-sm font-black text-black">62%</p>
                         </div>
                         <div className="text-center">
-                          <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-0.5">
+                          <div className="flex items-center justify-center gap-1.5 text-black mb-0.5">
                             <ShieldCheck className="h-3 w-3" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider">Visa Success</span>
+                            <span className="text-[9px] font-medium uppercase tracking-wider">Visa Success</span>
                           </div>
-                          <p className="text-sm font-black text-slate-700">91%</p>
+                          <p className="text-sm font-black text-black">91%</p>
                         </div>
                       </div>
                       <div className="mt-6 flex gap-3">
                         <Button 
-                          className="flex-1 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/20"
+                          className="flex-1 rounded-xl bg-blue-600 font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20"
                           onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })}
                         >
                           Create Application
                         </Button>
-                        <Button variant="outline" className="flex-1 rounded-xl border-slate-200 font-bold text-slate-700 hover:bg-slate-50">
+                        <Button variant="outline" className="flex-1 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50">
                           View Details
                         </Button>
                         <DropdownMenu>
@@ -1187,13 +1187,13 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
 function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20 shadow-sm transition-all hover:border-slate-300">
+      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-black focus:ring-1 focus:ring-blue-600/20 shadow-sm transition-all hover:border-slate-300">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-        <SelectItem value="all" className="font-medium text-slate-900 focus:bg-slate-50">{placeholder}</SelectItem>
+        <SelectItem value="all" className="font-medium text-black focus:bg-slate-50">{placeholder}</SelectItem>
         {options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value} className="font-medium text-slate-900 focus:bg-slate-50">{opt.label}</SelectItem>
+          <SelectItem key={opt.value} value={opt.value} className="font-medium text-black focus:bg-slate-50">{opt.label}</SelectItem>
         ))}
       </SelectContent>
     </Select>
@@ -1203,7 +1203,7 @@ function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { p
 function ProgramMeta({ icon: Icon, value }: { icon: any; value: string }) {
 
   return (
-    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+    <div className="flex items-center gap-2 text-[10px] font-medium text-black">
       <Icon className="h-3.5 w-3.5 text-primary/40" />
       <span>{value}</span>
     </div>
@@ -1213,10 +1213,10 @@ function ProgramMeta({ icon: Icon, value }: { icon: any; value: string }) {
 function ProgramStat({ label, value, isPrimary, isHighlight }: { label: string; value: string; isPrimary?: boolean; isHighlight?: boolean }) {
   return (
     <div className="space-y-1">
-      <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</p>
+      <p className="text-[9px] font-black uppercase tracking-widest text-black">{label}</p>
       <p className={cn(
         "text-xs font-black tracking-tight",
-        isPrimary ? "text-primary text-sm" : isHighlight ? "text-emerald-500" : "text-slate-900"
+        isPrimary ? "text-primary text-sm" : isHighlight ? "text-emerald-500" : "text-black"
       )}>
         {value}
       </p>
@@ -1226,7 +1226,7 @@ function ProgramStat({ label, value, isPrimary, isHighlight }: { label: string; 
 
 function IntakeChip({ label }: { label: string }) {
   return (
-    <Badge variant="secondary" className="bg-slate-50 text-slate-600 hover:bg-slate-100 border-none rounded-lg px-2 py-1 text-[10px] font-bold">
+    <Badge variant="secondary" className="bg-slate-50 text-black hover:bg-slate-100 border-none rounded-lg px-2 py-1 text-[10px] font-medium">
       {label}
     </Badge>
   );

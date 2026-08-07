@@ -671,7 +671,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 return (
 
 
-                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md">
+                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-3xl bg-[#F9FAFB] border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md hover:bg-white">
                   <div className="flex flex-1 flex-col p-6">
                     <div className="mb-4 flex items-start justify-between gap-4">
                       <div className="space-y-2">

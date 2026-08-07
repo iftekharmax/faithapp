@@ -688,7 +688,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl border-slate-200">
-                              <MoreVertical className="h-4 w-4" />
+                              <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">

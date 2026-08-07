@@ -423,6 +423,23 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
   universityId: string; programs: UniversityProgram[]; campuses: Campus[];
   canEdit: boolean; onChange: () => void; uni: University | null;
 }) {
+  const FilterSelect = ({ icon: Icon, placeholder, value, onValueChange, options }: any) => (
+    <Select value={value} onValueChange={onValueChange}>
+      <SelectTrigger className="h-10 w-fit min-w-[140px] rounded-xl border-slate-200 bg-white font-bold text-slate-700 text-xs px-3">
+        <div className="flex items-center gap-2">
+          <Icon className="h-3.5 w-3.5 text-slate-400" />
+          <SelectValue placeholder={placeholder} />
+        </div>
+      </SelectTrigger>
+      <SelectContent className="rounded-xl border-slate-100">
+        <SelectItem value="all" className="font-bold text-xs">{placeholder}</SelectItem>
+        {options.map((opt: string) => (
+          <SelectItem key={opt} value={opt} className="font-bold text-xs">{opt}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<UniversityProgram | null>(null);

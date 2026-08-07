@@ -514,7 +514,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 />
               </div>
               <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900">
+                <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20">
                   <SelectValue placeholder="All degrees" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-slate-100 shadow-xl">

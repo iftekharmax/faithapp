@@ -1187,7 +1187,7 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
 function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20">
+      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-slate-900 focus:ring-1 focus:ring-blue-600/20">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="rounded-xl border-slate-100 shadow-xl">

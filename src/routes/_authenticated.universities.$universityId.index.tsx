@@ -227,7 +227,9 @@ function UniversityDetail() {
 
             </div>
 
-            <p className="text-sm leading-relaxed text-slate-500 max-w-4xl">{uni.description}</p>
+            <p className="text-sm leading-relaxed text-slate-500 max-w-4xl">
+              amar agir design a rollback koro screenshots dilam
+            </p>
 
           </div>
 

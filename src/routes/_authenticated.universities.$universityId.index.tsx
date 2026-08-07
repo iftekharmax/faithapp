@@ -187,7 +187,7 @@ function UniversityDetail() {
     <div className="mx-auto max-w-[1600px] space-y-8 animate-in fade-in duration-500 px-4 py-8">
       {/* Back button and title */}
       <div className="flex items-center gap-2 mb-4">
-        <Button variant="ghost" size="sm" className="rounded-xl font-bold text-slate-500" onClick={() => navigate({ to: "/universities" })}>
+        <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black" onClick={() => navigate({ to: "/universities" })}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
       </div>
@@ -213,7 +213,7 @@ function UniversityDetail() {
               </Badge>
             </div>
             
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-bold text-slate-500">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-black">
               <div className="flex items-center gap-2">
                 <span className="text-lg">🇲🇾</span>
                 <span>Malaysia</span>
@@ -231,7 +231,7 @@ function UniversityDetail() {
 
             </div>
 
-            <p className="text-sm leading-relaxed text-slate-500 max-w-4xl">{uni.description}</p>
+            <p className="text-sm leading-relaxed text-black max-w-4xl">{uni.description}</p>
 
           </div>
 
@@ -252,19 +252,19 @@ function UniversityDetail() {
         <TabsList className="bg-white border border-slate-200 w-full justify-start rounded-t-2xl h-auto p-0 gap-10 px-10">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
           >
             Programs ({programs.length})
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
           >
             Campuses ({campuses.length})
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
           >
             Applications ({totalApplicationsCount.toLocaleString()})
           </TabsTrigger>

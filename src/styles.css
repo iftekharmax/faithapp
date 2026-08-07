@@ -198,6 +198,14 @@
   .text-slate-400 {
     color: #4b535d;
   }
+
+  .text-slate-600 {
+    color: black;
+  }
+
+  .data-\[placeholder\]\:text-muted-foreground[data-placeholder] {
+    color: oklch(0.5 0 0);
+  }
 }
 
 /* Hide the Lovable badge on published deployments */

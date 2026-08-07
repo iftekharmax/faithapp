@@ -247,7 +247,28 @@ function UniversityDetail() {
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-6">
-        <div className="flex flex-col gap-6">
+        <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-10">
+          <TabsTrigger 
+            value="programs" 
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
+          >
+            Programs <span className="ml-1.5 text-slate-400">({programs.length})</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="campuses" 
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
+          >
+            Campuses <span className="ml-1.5 text-slate-400">({campuses.length})</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="applications" 
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
+          >
+            Applications <span className="ml-1.5 text-slate-400">({applications.length.toLocaleString()})</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <div className="flex flex-col gap-6 pt-6">
           <div className="flex flex-wrap items-center gap-3">
             <Button 
               className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-6"
@@ -275,29 +296,8 @@ function UniversityDetail() {
               <Share2 className="mr-2 h-4 w-4" /> Share University
             </Button>
           </div>
-
-          <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-10">
-
-          <TabsTrigger 
-            value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
-          >
-            Programs <span className="ml-1.5 text-slate-400">({programs.length})</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
-          >
-            Campuses <span className="ml-1.5 text-slate-400">({campuses.length})</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
-          >
-            Applications <span className="ml-1.5 text-slate-400">({applications.length.toLocaleString()})</span>
-          </TabsTrigger>
-        </TabsList>
         </div>
+
 
 
 

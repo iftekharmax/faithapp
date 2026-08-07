@@ -266,7 +266,7 @@ function UniversityDetail() {
             value="applications" 
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-bold text-slate-500 transition-all"
           >
-            Applications (3,241)
+            Applications ({totalApplicationsCount.toLocaleString()})
           </TabsTrigger>
         </TabsList>
 

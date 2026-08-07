@@ -271,7 +271,7 @@ function UniversityDetail() {
         </TabsList>
 
         <TabsContent value="programs" className="mt-0 outline-none">
-          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
+          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
         </TabsContent>
         
         <TabsContent value="campuses" className="mt-0 outline-none">

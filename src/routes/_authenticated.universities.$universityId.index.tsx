@@ -250,23 +250,24 @@ function UniversityDetail() {
         <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-10">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
           >
-            Programs ({programs.length})
+            Programs <span className="ml-1.5 text-slate-400">({programs.length})</span>
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
           >
-            Campuses ({campuses.length})
+            Campuses <span className="ml-1.5 text-slate-400">({campuses.length})</span>
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-semibold text-slate-500 transition-all hover:text-slate-700"
           >
-            Applications ({applications.length.toLocaleString()})
+            Applications <span className="ml-1.5 text-slate-400">({applications.length.toLocaleString()})</span>
           </TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="programs" className="mt-0 outline-none">
           <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} />
@@ -425,20 +426,21 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
 }) {
   const FilterSelect = ({ icon: Icon, placeholder, value, onValueChange, options }: any) => (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="h-10 w-fit min-w-[140px] rounded-xl border-slate-200 bg-white font-bold text-slate-700 text-xs px-3">
+      <SelectTrigger className="h-10 w-fit min-w-[140px] rounded-lg border-slate-200 bg-white font-semibold text-slate-700 text-xs px-3">
         <div className="flex items-center gap-2">
           <Icon className="h-3.5 w-3.5 text-slate-400" />
           <SelectValue placeholder={placeholder} />
         </div>
       </SelectTrigger>
-      <SelectContent className="rounded-xl border-slate-100">
-        <SelectItem value="all" className="font-bold text-xs">{placeholder}</SelectItem>
+      <SelectContent className="rounded-lg border-slate-100">
+        <SelectItem value="all" className="font-semibold text-xs">{placeholder}</SelectItem>
         {options.map((opt: string) => (
-          <SelectItem key={opt} value={opt} className="font-bold text-xs">{opt}</SelectItem>
+          <SelectItem key={opt} value={opt} className="font-semibold text-xs">{opt}</SelectItem>
         ))}
       </SelectContent>
     </Select>
   );
+
 
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -519,67 +521,68 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
       <div className="flex flex-col gap-6">
         <div className="flex flex-wrap items-center gap-3">
           <Button 
-            className="h-12 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 px-6"
+            className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-6"
             onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
           >
-            <Plus className="mr-2 h-5 w-5" /> Create Application
+            <Plus className="mr-2 h-4 w-4" /> Create Application
           </Button>
           <Button 
             variant="outline"
-            className="h-12 rounded-xl border-slate-200 bg-white font-bold text-blue-600 hover:bg-slate-50 px-6"
+            className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-blue-600 hover:bg-slate-50 px-6"
             onClick={openNew}
           >
-            <Plus className="mr-2 h-5 w-5" /> Add Program
+            <Plus className="mr-2 h-4 w-4" /> Add Program
           </Button>
-          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
             <Download className="mr-2 h-4 w-4" /> Export Programs
           </Button>
-          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
             <Plus className="mr-2 h-4 w-4" /> Import Programs
           </Button>
-          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
             <FileText className="mr-2 h-4 w-4" /> Template
           </Button>
-          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+          <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-5">
             <Share2 className="mr-2 h-4 w-4" /> Share University
           </Button>
+
         </div>
 
-        <div className="rounded-[24px] bg-white border border-slate-200 p-6 shadow-sm space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-6">
+        <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-1 flex-wrap items-center gap-4">
-              <div className="relative flex-1 min-w-[280px]">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+              <div className="relative flex-1 min-w-[320px]">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <Input 
                   placeholder="Search programs..." 
                   value={search} 
                   onChange={(e) => setSearch(e.target.value)} 
-                  className="pl-12 h-12 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-blue-600/20" 
+                  className="pl-9 h-10 rounded-lg border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-blue-600/20" 
                 />
               </div>
               <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-                <SelectTrigger className="h-12 w-[180px] rounded-xl border-slate-200 bg-white font-bold text-slate-700">
+                <SelectTrigger className="h-10 w-[200px] rounded-lg border-slate-200 bg-white font-semibold text-slate-700">
                   <SelectValue placeholder="All degrees" />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-100">
-                  <SelectItem value="all" className="font-bold">All degrees</SelectItem>
-                  {degrees.map(d => <SelectItem key={d} value={d} className="font-bold">{d}</SelectItem>)}
+                <SelectContent className="rounded-lg border-slate-100">
+                  <SelectItem value="all" className="font-semibold">All degrees</SelectItem>
+                  {degrees.map(d => <SelectItem key={d} value={d} className="font-semibold">{d}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Button variant="outline" className="h-10 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50">
+            <div className="flex items-center gap-2">
+              <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-4">
                 <Download className="mr-2 h-4 w-4" /> Export programs
               </Button>
-              <Button variant="outline" className="h-10 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50">
+              <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-4">
                 <Plus className="mr-2 h-4 w-4" /> Import programs
               </Button>
-              <Button variant="outline" className="h-10 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50">
+              <Button variant="outline" className="h-10 rounded-lg border-slate-200 bg-white font-semibold text-slate-600 hover:bg-slate-50 px-4">
                 <FileText className="mr-2 h-4 w-4" /> Template
               </Button>
               <Button 
-                className="h-10 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/10 px-6"
+                className="h-10 rounded-lg bg-[#2563EB] font-semibold text-white hover:bg-blue-700 shadow-sm px-5"
                 onClick={openNew}
               >
                 <Plus className="mr-2 h-4 w-4" /> Add program
@@ -587,7 +590,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
             <FilterSelect icon={MapPin} placeholder="All Campuses" value="all" onValueChange={() => {}} options={[]} />
             <FilterSelect icon={BookOpen} placeholder="Study Mode" value="all" onValueChange={() => {}} options={[]} />
@@ -595,24 +598,25 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
             <FilterSelect icon={Award} placeholder="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
             
             <Select value="newest" onValueChange={() => {}}>
-              <SelectTrigger className="h-10 w-[160px] rounded-xl border-slate-200 bg-white font-bold text-slate-700 text-xs">
+              <SelectTrigger className="h-10 w-[150px] rounded-lg border-slate-200 bg-white font-semibold text-slate-700 text-xs px-3">
                 <SelectValue placeholder="Sort by: Newest" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-100">
-                <SelectItem value="newest" className="font-bold text-xs">Sort by: Newest</SelectItem>
+              <SelectContent className="rounded-lg border-slate-100">
+                <SelectItem value="newest" className="font-semibold text-xs">Sort by: Newest</SelectItem>
               </SelectContent>
             </Select>
 
-            <div className="ml-auto flex items-center gap-2">
-              <Button size="icon" variant="outline" className="h-10 w-10 rounded-xl border-slate-200 bg-blue-50 text-blue-600 hover:bg-blue-100 ring-1 ring-blue-100 shadow-sm">
-                <LayoutGrid className="h-5 w-5" />
+            <div className="ml-auto flex items-center gap-1.5">
+              <Button size="icon" variant="outline" className="h-10 w-10 rounded-lg border-slate-200 bg-blue-50 text-blue-600 hover:bg-blue-100 ring-1 ring-blue-100 shadow-sm">
+                <LayoutGrid className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="outline" className="h-10 w-10 rounded-xl border-slate-200 bg-white text-slate-400 hover:bg-slate-50 shadow-sm">
-                <ListIcon className="h-5 w-5" />
+              <Button size="icon" variant="outline" className="h-10 w-10 rounded-lg border-slate-200 bg-white text-slate-400 hover:bg-slate-50 shadow-sm">
+                <ListIcon className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
+
       </div>
 
 

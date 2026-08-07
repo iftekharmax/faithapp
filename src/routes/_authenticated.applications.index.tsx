@@ -32,6 +32,15 @@ import {
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/applications/")({
+  head: () => ({
+    meta: [
+      { title: "Applications - Faith AMS" },
+      { name: "description", content: "Manage and track student applications across the entire admission lifecycle." },
+      { property: "og:title", content: "Applications - Faith AMS" },
+      { property: "og:description", content: "Manage and track student applications across the entire admission lifecycle." },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: () => (
     <RoleGuard roles={["admin", "counselor", "application_team", "student"]}>
       <ApplicationsPage />

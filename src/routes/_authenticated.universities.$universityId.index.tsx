@@ -247,24 +247,24 @@ function UniversityDetail() {
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-6">
-        <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-8">
+        <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-10">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
           >
             Programs ({programs.length})
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
           >
             Campuses ({campuses.length})
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-sm font-bold text-slate-500 transition-all"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pb-4 text-base font-bold text-slate-500 transition-all"
           >
-            Applications ({applications.length})
+            Applications ({applications.length.toLocaleString()})
           </TabsTrigger>
         </TabsList>
 
@@ -423,6 +423,23 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
   universityId: string; programs: UniversityProgram[]; campuses: Campus[];
   canEdit: boolean; onChange: () => void; uni: University | null;
 }) {
+  const FilterSelect = ({ icon: Icon, placeholder, value, onValueChange, options }: any) => (
+    <Select value={value} onValueChange={onValueChange}>
+      <SelectTrigger className="h-10 w-fit min-w-[140px] rounded-xl border-slate-200 bg-white font-bold text-slate-700 text-xs px-3">
+        <div className="flex items-center gap-2">
+          <Icon className="h-3.5 w-3.5 text-slate-400" />
+          <SelectValue placeholder={placeholder} />
+        </div>
+      </SelectTrigger>
+      <SelectContent className="rounded-xl border-slate-100">
+        <SelectItem value="all" className="font-bold text-xs">{placeholder}</SelectItem>
+        {options.map((opt: string) => (
+          <SelectItem key={opt} value={opt} className="font-bold text-xs">{opt}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<UniversityProgram | null>(null);
@@ -499,38 +516,99 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni 
     <div className="space-y-6">
 
 
-      <div className="relative overflow-hidden rounded-[32px] bg-white p-8 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100">
-        <div className="absolute right-0 top-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-blue-50/30 blur-3xl" />
-        <div className="relative flex flex-col gap-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="relative flex-1 min-w-[320px]">
-              <Search className="absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-              <Input 
-                placeholder="Search programs by name, degree or keyword..." 
-                value={search} 
-                onChange={(e) => setSearch(e.target.value)} 
-                className="pl-14 h-14 rounded-2xl border-none bg-slate-50 text-base font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/20 shadow-inner" 
-              />
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-wrap items-center gap-3">
+          <Button 
+            className="h-12 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 px-6"
+            onClick={() => navigate({ to: "/applications/new", search: { universityId } })}
+          >
+            <Plus className="mr-2 h-5 w-5" /> Create Application
+          </Button>
+          <Button 
+            variant="outline"
+            className="h-12 rounded-xl border-slate-200 bg-white font-bold text-blue-600 hover:bg-slate-50 px-6"
+            onClick={openNew}
+          >
+            <Plus className="mr-2 h-5 w-5" /> Add Program
+          </Button>
+          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+            <Download className="mr-2 h-4 w-4" /> Export Programs
+          </Button>
+          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+            <Plus className="mr-2 h-4 w-4" /> Import Programs
+          </Button>
+          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+            <FileText className="mr-2 h-4 w-4" /> Template
+          </Button>
+          <Button variant="outline" className="h-12 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 px-6">
+            <Share2 className="mr-2 h-4 w-4" /> Share University
+          </Button>
+        </div>
+
+        <div className="rounded-[24px] bg-white border border-slate-200 p-6 shadow-sm space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div className="flex flex-1 flex-wrap items-center gap-4">
+              <div className="relative flex-1 min-w-[280px]">
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input 
+                  placeholder="Search programs..." 
+                  value={search} 
+                  onChange={(e) => setSearch(e.target.value)} 
+                  className="pl-12 h-12 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-blue-600/20" 
+                />
+              </div>
+              <Select value={degreeFilter} onValueChange={setDegreeFilter}>
+                <SelectTrigger className="h-12 w-[180px] rounded-xl border-slate-200 bg-white font-bold text-slate-700">
+                  <SelectValue placeholder="All degrees" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-slate-100">
+                  <SelectItem value="all" className="font-bold">All degrees</SelectItem>
+                  {degrees.map(d => <SelectItem key={d} value={d} className="font-bold">{d}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
+
             <div className="flex items-center gap-3">
-              <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20">
-                <LayoutGrid className="h-6 w-6" />
+              <Button variant="outline" className="h-10 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50">
+                <Download className="mr-2 h-4 w-4" /> Export programs
               </Button>
-              <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-100 shadow-inner">
-                <ListIcon className="h-6 w-6" />
+              <Button variant="outline" className="h-10 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50">
+                <Plus className="mr-2 h-4 w-4" /> Import programs
+              </Button>
+              <Button variant="outline" className="h-10 rounded-xl border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50">
+                <FileText className="mr-2 h-4 w-4" /> Template
+              </Button>
+              <Button 
+                className="h-10 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 shadow-md shadow-blue-600/10 px-6"
+                onClick={openNew}
+              >
+                <Plus className="mr-2 h-4 w-4" /> Add program
               </Button>
             </div>
           </div>
-          
-          <div className="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-50">
-            <FilterSelect icon={GraduationCap} placeholder="All Degrees" value={degreeFilter} onValueChange={setDegreeFilter} options={degrees} />
+
+          <div className="flex flex-wrap items-center gap-3">
             <FilterSelect icon={Building2} placeholder="All Faculties" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={MapPin} label="All Campuses" placeholder="All Campuses" value="all" onValueChange={() => {}} options={[]} />
-            <FilterSelect icon={Calendar} label="All Intakes" placeholder="All Intakes" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={MapPin} placeholder="All Campuses" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={BookOpen} placeholder="Study Mode" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Calendar} placeholder="All Intakes" value="all" onValueChange={() => {}} options={[]} />
+            <FilterSelect icon={Award} placeholder="All Scholarships" value="all" onValueChange={() => {}} options={[]} />
             
-            <div className="ml-auto flex items-center gap-4">
-              <Button variant="ghost" className="h-12 rounded-2xl font-black text-slate-500 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
-                <RotateCcw className="mr-2 h-4 w-4" /> Reset Filters
+            <Select value="newest" onValueChange={() => {}}>
+              <SelectTrigger className="h-10 w-[160px] rounded-xl border-slate-200 bg-white font-bold text-slate-700 text-xs">
+                <SelectValue placeholder="Sort by: Newest" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-slate-100">
+                <SelectItem value="newest" className="font-bold text-xs">Sort by: Newest</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="ml-auto flex items-center gap-2">
+              <Button size="icon" variant="outline" className="h-10 w-10 rounded-xl border-slate-200 bg-blue-50 text-blue-600 hover:bg-blue-100 ring-1 ring-blue-100 shadow-sm">
+                <LayoutGrid className="h-5 w-5" />
+              </Button>
+              <Button size="icon" variant="outline" className="h-10 w-10 rounded-xl border-slate-200 bg-white text-slate-400 hover:bg-slate-50 shadow-sm">
+                <ListIcon className="h-5 w-5" />
               </Button>
             </div>
           </div>

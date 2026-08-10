@@ -124,7 +124,18 @@ export function ProgramDetailsDialog({ program, open, onOpenChange }: ProgramDet
                       ))}
                     </div>
                   )}
+
+                  {(program as any).additional_others_fee && (
+                    <div className="space-y-2 pt-2">
+                      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Additional Others Fee</p>
+                      <div
+                        className="prose prose-sm max-w-none text-muted-foreground"
+                        dangerouslySetInnerHTML={{ __html: sanitizeHtml((program as any).additional_others_fee) || "" }}
+                      />
+                    </div>
+                  )}
                 </div>
+
               </div>
 
               <div className="rounded-3xl bg-muted/30 p-6">

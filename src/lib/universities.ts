@@ -91,6 +91,7 @@ export type UniversityProgram = {
   registration_fee: number | null;
   emgs_fee: number | null;
   others_fee: number | null;
+  additional_others_fee: string | null;
   scholarship: string | null;
   requirements: string | null;
   description: string | null;

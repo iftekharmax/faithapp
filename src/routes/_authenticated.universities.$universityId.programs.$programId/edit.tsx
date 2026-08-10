@@ -204,6 +204,9 @@ function EditProgramPage() {
         requirements: form.requirements ? DOMPurify.sanitize(form.requirements) : form.requirements,
         scholarship: form.scholarship ? DOMPurify.sanitize(form.scholarship) : form.scholarship,
         description: form.description ? DOMPurify.sanitize(form.description) : form.description,
+        additional_others_fee: (form as any).additional_others_fee
+          ? DOMPurify.sanitize((form as any).additional_others_fee)
+          : (form as any).additional_others_fee ?? null,
       };
       
       await updateProgram(programId, { ...sanitizedForm, ...parsed.data } as any);
@@ -525,6 +528,15 @@ function EditProgramPage() {
                     <FieldError msg={errors[key]} />
                   </div>
                 ))}
+              </div>
+
+              <div className="grid gap-2">
+                <Label className={labelCls}>Additional others fee</Label>
+                <RichTextEditor
+                  value={(form as any).additional_others_fee ?? ""}
+                  onChange={(html) => set("additional_others_fee" as any, html)}
+                  placeholder="Describe any additional or other fees..."
+                />
               </div>
 
               <div className="mt-4 rounded-xl bg-primary/5 p-4 ring-1 ring-primary/10">

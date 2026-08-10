@@ -91,6 +91,7 @@ export type UniversityProgram = {
   registration_fee: number | null;
   emgs_fee: number | null;
   others_fee: number | null;
+  additional_others_fee: string | null;
   scholarship: string | null;
   requirements: string | null;
   description: string | null;
@@ -326,7 +327,7 @@ export async function getProgram(id: string): Promise<UniversityProgram> {
 const PROGRAM_COLUMNS = [
   "university_id", "campus_id", "name", "degree", "duration", "intake",
   "application_deadline", "tuition_fee", "application_fee", "registration_fee",
-  "emgs_fee", "others_fee", "currency", "scholarship", "requirements",
+  "emgs_fee", "others_fee", "additional_others_fee", "currency", "scholarship", "requirements",
   "description", "status",
 ] as const;
 

@@ -1232,7 +1232,7 @@ function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { p
         className={cn(
           "w-fit min-w-[130px] h-[46px] rounded-[14px] px-5 font-medium transition-all shadow-none outline-none group",
           isSelected 
-            ? "bg-blue-600 border-blue-600 text-white hover:bg-blue-700" 
+            ? "border-blue-600 text-blue-600 hover:bg-blue-50" 
             : "border-slate-100 bg-slate-50/50 text-slate-600 hover:bg-blue-50 hover:text-blue-600"
         )}
       >

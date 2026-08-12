@@ -205,76 +205,76 @@ function UniversityDetail() {
       </div>
 
       {/* Hero Section - Matched to Screenshot */}
-      <Card className="rounded-[32px] border border-slate-100 bg-white p-10 shadow-sm overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-10 items-start md:items-center">
-          <div className="flex h-32 w-56 shrink-0 items-center justify-center rounded-3xl border border-slate-50 p-4 bg-white">
+      <Card className="rounded-[40px] border border-slate-100 bg-white p-12 shadow-sm overflow-hidden">
+        <div className="flex flex-col md:flex-row gap-12 items-start md:items-center">
+          <div className="flex h-36 w-64 shrink-0 items-center justify-center rounded-[32px] border border-slate-50 p-6 bg-white shadow-sm">
             {uni.logo_url ? (
               <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
             ) : (
-              <Building2 className="h-16 w-16 text-slate-100" />
+              <Building2 className="h-20 w-20 text-slate-100" />
             )}
           </div>
           
-          <div className="flex-1 space-y-5">
-            <div className="flex flex-wrap items-center gap-4">
-              <h1 className="text-[34px] font-black text-slate-900 tracking-tight leading-none">{uni.name}</h1>
-              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-3.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border-none">
+          <div className="flex-1 space-y-6">
+            <div className="flex flex-wrap items-center gap-5">
+              <h1 className="text-[42px] font-black text-slate-900 tracking-tighter leading-none">{uni.name}</h1>
+              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest border-none shadow-sm">
                 {uni.status === "active" ? "Active" : uni.status}
               </Badge>
             </div>
             
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600">
-              <div className="flex items-center gap-2.5">
-                <span className="text-xl">🇲🇾</span>
-                <span className="font-bold text-slate-900">MY Malaysia</span>
+            <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-base font-bold text-slate-600">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🇲🇾</span>
+                <span className="font-black text-slate-900">MY Malaysia</span>
               </div>
-              <div className="flex items-center gap-2.5">
-                <MapPin className="h-4 w-4 text-slate-400" />
-                <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
+              <div className="flex items-center gap-3">
+                <MapPin className="h-5 w-5 text-slate-400" />
+                <span className="font-black text-slate-900">{uni.city || "Negeri Sembilan"}</span>
               </div>
               {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 text-blue-600 hover:underline font-bold">
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-blue-600 hover:text-blue-700 font-black decoration-2 underline-offset-4 hover:underline">
                   <span>Website</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
+                  <ExternalLink className="h-4 w-4" />
                 </a>
               )}
             </div>
 
-            <p className="text-sm leading-relaxed text-slate-500 max-w-3xl font-medium">
+            <p className="text-[16px] leading-relaxed text-slate-500 max-w-4xl font-black">
               {uni.description || `${uni.name} is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.`}
             </p>
           </div>
 
-          <div className="flex gap-4">
-            <div className="flex flex-col items-center justify-center px-8 py-6 rounded-3xl bg-slate-50 border border-slate-50 min-w-[130px]">
-              <span className="text-[32px] font-black text-slate-900 leading-none">4</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-2">Campuses</span>
+          <div className="flex gap-6">
+            <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
+              <span className="text-[40px] font-black text-slate-900 leading-none tracking-tighter">4</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 mt-3">Campuses</span>
             </div>
-            <div className="flex flex-col items-center justify-center px-8 py-6 rounded-3xl bg-slate-50 border border-slate-50 min-w-[130px]">
-              <span className="text-[32px] font-black text-slate-900 leading-none">155</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-2">Programs</span>
+            <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
+              <span className="text-[40px] font-black text-slate-900 leading-none tracking-tighter">155</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 mt-3">Programs</span>
             </div>
           </div>
         </div>
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-12">
-        <TabsList className="bg-white border border-slate-200 shadow-sm w-full justify-start rounded-3xl h-auto p-0 gap-14 px-12 overflow-hidden">
+        <TabsList className="bg-white border border-slate-200 shadow-sm w-full justify-start rounded-[32px] h-auto p-0 gap-16 px-14 overflow-hidden">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-8 pb-6 text-[17px] font-bold text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-black text-slate-500 transition-all hover:text-slate-900"
           >
             Programs ({programs.length})
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-8 pb-6 text-[17px] font-bold text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-black text-slate-500 transition-all hover:text-slate-900"
           >
             Campuses ({campuses.length})
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-8 pb-6 text-[17px] font-bold text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-black text-slate-500 transition-all hover:text-slate-900"
           >
             Applications ({totalApplicationsCount.toLocaleString()})
           </TabsTrigger>
@@ -660,48 +660,48 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 px-12">
+            <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-3 px-12">
               {displayed.map((p) => {
                 const universityName = uni?.name || "University";
                 return (
-                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[32px] bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-blue-100/50 hover:-translate-y-1">
-                    <div className="flex flex-1 flex-col p-10">
-                      <div className="mb-6 flex items-start justify-between gap-4">
-                        <div className="space-y-4 w-full">
-                          <div className="flex flex-wrap items-center gap-2.5">
-                            <span className="inline-flex items-center rounded-lg bg-orange-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-orange-600 border border-orange-100/50">
-                              <Star className="mr-1.5 h-3.5 w-3.5 fill-orange-600" /> Featured
+                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[40px] bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-blue-100/50 hover:-translate-y-2">
+                    <div className="flex flex-1 flex-col p-12">
+                      <div className="mb-8 flex items-start justify-between gap-6">
+                        <div className="space-y-5 w-full">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <span className="inline-flex items-center rounded-xl bg-orange-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-orange-600 border border-orange-100/50 shadow-sm">
+                              <Star className="mr-2 h-4 w-4 fill-orange-600" /> Featured
                             </span>
                             {p.status === "active" && (
-                              <span className="inline-flex items-center rounded-lg bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-600 border border-emerald-100/50">
-                                <Zap className="mr-1.5 h-3.5 w-3.5 fill-emerald-600" /> Active
+                              <span className="inline-flex items-center rounded-xl bg-emerald-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-emerald-600 border border-emerald-100/50 shadow-sm">
+                                <Zap className="mr-2 h-4 w-4 fill-emerald-600" /> Active
                               </span>
                             )}
                           </div>
                           
-                          <div className="flex items-start gap-5">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-blue-50/50 p-3 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                              <Activity className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
+                          <div className="flex items-start gap-6">
+                            <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-blue-50/50 p-4 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                              <Activity className="h-10 w-10 text-blue-600 group-hover:text-white transition-colors" />
                             </div>
-                            <div className="flex-1 pr-6 pt-1">
-                              <h3 className="text-[19px] font-black leading-tight text-slate-900 line-clamp-2 min-h-[48px] tracking-tight">
+                            <div className="flex-1 pr-8 pt-2">
+                              <h3 className="text-[24px] font-black leading-[1.15] text-slate-900 line-clamp-2 min-h-[56px] tracking-tight">
                                 {p.name}
                               </h3>
-                              <p className="text-xs font-bold text-slate-400 mt-2 tracking-wide uppercase">{universityName}</p>
+                              <p className="text-sm font-black text-slate-400 mt-2 tracking-widest uppercase">{universityName}</p>
                             </div>
                           </div>
 
                           <div className="grid grid-cols-1 gap-2.5 pt-3">
-                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
-                              <GraduationCap className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                              <GraduationCap className="h-5 w-5 text-blue-600" />
                               <span>{p.degree || "Bachelor's Degree"}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
-                              <Clock className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                              <Clock className="h-5 w-5 text-blue-600" />
                               <span>{p.duration || "3 Years (9 Semesters)"}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
-                              <MapPin className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                              <MapPin className="h-5 w-5 text-blue-600" />
                               <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
                             </div>
                           </div>
@@ -712,56 +712,56 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                         </Button>
                       </div>
 
-                      <div className="mt-8 pt-8 border-t border-slate-100/60">
-                        <div className="grid grid-cols-3 gap-4 text-center">
-                          <div className="space-y-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Tuition Fee</p>
-                            <p className="text-base font-extrabold text-blue-600">
+                      <div className="mt-10 pt-10 border-t border-slate-100/80">
+                        <div className="grid grid-cols-3 gap-6 text-center">
+                          <div className="space-y-3">
+                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Tuition Fee</p>
+                            <p className="text-xl font-black text-blue-600 tracking-tighter">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
-                          <div className="space-y-2 border-x border-slate-100/60 px-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Scholarship</p>
-                            <p className="text-base font-extrabold text-emerald-600 whitespace-nowrap">Up to 30%</p>
+                          <div className="space-y-3 border-x border-slate-100/80 px-3">
+                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Scholarship</p>
+                            <p className="text-xl font-black text-emerald-600 whitespace-nowrap tracking-tighter">Up to 30%</p>
                           </div>
-                          <div className="space-y-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">App. Fee</p>
-                            <p className="text-base font-extrabold text-slate-900">{p.currency || "MYR"} {p.application_fee || "200"}</p>
+                          <div className="space-y-3">
+                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">App. Fee</p>
+                            <p className="text-xl font-black text-slate-900 tracking-tighter">{p.currency || "MYR"} {p.application_fee || "200"}</p>
                           </div>
                         </div>
 
-                        <div className="mt-8 space-y-3">
-                          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Next Intake</p>
-                          <div className="flex flex-wrap gap-2.5">
+                        <div className="mt-10 space-y-4">
+                          <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">Next Intake</p>
+                          <div className="flex flex-wrap gap-3">
                             {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                              <span key={i} className="rounded-xl bg-blue-50/50 border border-blue-100/50 px-5 py-2 text-[11px] font-black text-blue-600 transition-colors hover:bg-blue-600 hover:text-white cursor-default">
+                              <span key={i} className="rounded-2xl bg-blue-50/50 border border-blue-100/50 px-6 py-3 text-[13px] font-black text-blue-600 transition-all hover:bg-blue-600 hover:text-white cursor-default shadow-sm">
                                 {intake.trim()}
                               </span>
                             ))}
                           </div>
                         </div>
 
-                        <div className="mt-10 grid grid-cols-3 gap-2 border-t border-slate-100/60 pt-8 pb-2">
+                        <div className="mt-12 grid grid-cols-3 gap-4 border-t border-slate-100/80 pt-10 pb-2">
                           <div className="text-center">
-                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
-                              <Users className="h-3.5 w-3.5" />
-                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Applications</span>
+                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
+                              <Users className="h-4 w-4" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Applications</span>
                             </div>
-                            <p className="text-sm font-black text-slate-900">312</p>
+                            <p className="text-lg font-black text-slate-900 tracking-tighter">312</p>
                           </div>
-                          <div className="text-center border-x border-slate-100/60">
-                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
-                              <PieChart className="h-3.5 w-3.5" />
-                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Acceptance</span>
+                          <div className="text-center border-x border-slate-100/80">
+                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
+                              <PieChart className="h-4 w-4" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Acceptance</span>
                             </div>
-                            <p className="text-sm font-black text-slate-900">62%</p>
+                            <p className="text-lg font-black text-slate-900 tracking-tighter">62%</p>
                           </div>
                           <div className="text-center">
-                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
-                              <ShieldCheck className="h-3.5 w-3.5" />
-                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Visa Success</span>
+                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
+                              <ShieldCheck className="h-4 w-4" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Visa Success</span>
                             </div>
-                            <p className="text-sm font-black text-slate-900">91%</p>
+                            <p className="text-lg font-black text-slate-900 tracking-tighter">91%</p>
                           </div>
                         </div>
 

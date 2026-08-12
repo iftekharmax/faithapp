@@ -664,27 +664,27 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               {displayed.map((p) => {
                 const universityName = uni?.name || "University";
                 return (
-                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[32px] bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-blue-100/50 hover:-translate-y-1">
-                    <div className="flex flex-1 flex-col p-10">
-                      <div className="mb-6 flex items-start justify-between gap-4">
-                        <div className="space-y-4 w-full">
-                          <div className="flex flex-wrap items-center gap-2.5">
-                            <span className="inline-flex items-center rounded-lg bg-orange-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-orange-600 border border-orange-100/50">
-                              <Star className="mr-1.5 h-3.5 w-3.5 fill-orange-600" /> Featured
+                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[40px] bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-blue-100/50 hover:-translate-y-2">
+                    <div className="flex flex-1 flex-col p-12">
+                      <div className="mb-8 flex items-start justify-between gap-6">
+                        <div className="space-y-5 w-full">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <span className="inline-flex items-center rounded-xl bg-orange-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-orange-600 border border-orange-100/50 shadow-sm">
+                              <Star className="mr-2 h-4 w-4 fill-orange-600" /> Featured
                             </span>
                             {p.status === "active" && (
-                              <span className="inline-flex items-center rounded-lg bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-600 border border-emerald-100/50">
-                                <Zap className="mr-1.5 h-3.5 w-3.5 fill-emerald-600" /> Active
+                              <span className="inline-flex items-center rounded-xl bg-emerald-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-emerald-600 border border-emerald-100/50 shadow-sm">
+                                <Zap className="mr-2 h-4 w-4 fill-emerald-600" /> Active
                               </span>
                             )}
                           </div>
                           
-                          <div className="flex items-start gap-5">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-blue-50/50 p-3 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                              <Activity className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
+                          <div className="flex items-start gap-6">
+                            <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-blue-50/50 p-4 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                              <Activity className="h-10 w-10 text-blue-600 group-hover:text-white transition-colors" />
                             </div>
-                            <div className="flex-1 pr-6 pt-1">
-                              <h3 className="text-[19px] font-black leading-tight text-slate-900 line-clamp-2 min-h-[48px] tracking-tight">
+                            <div className="flex-1 pr-8 pt-2">
+                              <h3 className="text-[24px] font-black leading-[1.15] text-slate-900 line-clamp-2 min-h-[56px] tracking-tight">
                                 {p.name}
                               </h3>
                               <p className="text-xs font-bold text-slate-400 mt-2 tracking-wide uppercase">{universityName}</p>

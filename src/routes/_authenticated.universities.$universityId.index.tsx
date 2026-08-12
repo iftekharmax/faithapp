@@ -248,11 +248,11 @@ function UniversityDetail() {
 
           <div className="flex gap-6">
             <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">4</span>
+              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">{campuses.length}</span>
               <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Campuses</span>
             </div>
             <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">155</span>
+              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">{programs.length}</span>
               <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Programs</span>
             </div>
           </div>

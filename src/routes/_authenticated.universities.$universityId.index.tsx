@@ -519,7 +519,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
     <>
     <div className="relative flex flex-col pt-8">
       {/* Filter Container */}
-      <div className="bg-white rounded-[18px] p-5 shadow-[0_2px_10px_rgba(15,23,42,0.05)] mx-12">
+      <div className="bg-white rounded-[18px] p-5 shadow-[0_2px_10px_rgba(15,23,42,0.05)]">
         <div className="flex flex-wrap items-center justify-between gap-5">
           <div className="flex flex-wrap items-center gap-4 flex-1">
             {/* Search Box */}
@@ -686,7 +686,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 px-12">
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p, idx) => {
                 const universityName = uni?.name || "University";
                 // Varied gradients for the premium grid look

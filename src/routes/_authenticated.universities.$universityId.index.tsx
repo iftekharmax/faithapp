@@ -660,161 +660,158 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 px-12">
               {displayed.map((p) => {
                 const universityName = uni?.name || "University";
                 return (
-
-
-                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-2xl bg-[#F9FAFB] border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-lg hover:bg-white hover:border-blue-100">
-                  <div className="flex flex-1 flex-col p-6">
-                    <div className="mb-4 flex items-start justify-between gap-4">
-                      <div className="space-y-3 w-full">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center rounded-md bg-orange-50 px-2 py-0.5 text-[9px] font-bold text-orange-600">
-                            <Star className="mr-1 h-3 w-3 fill-orange-600" /> Featured
-                          </span>
-                          {p.status === "active" && (
-                            <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-600">
-                              <Zap className="mr-1 h-3 w-3 fill-emerald-600" /> Active
+                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[32px] bg-[#F9FAFB] border border-slate-50 shadow-sm transition-all duration-500 hover:shadow-2xl hover:bg-white hover:border-blue-100/50 hover:-translate-y-1">
+                    <div className="flex flex-1 flex-col p-10">
+                      <div className="mb-6 flex items-start justify-between gap-4">
+                        <div className="space-y-4 w-full">
+                          <div className="flex flex-wrap items-center gap-2.5">
+                            <span className="inline-flex items-center rounded-lg bg-orange-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-orange-600 border border-orange-100/50">
+                              <Star className="mr-1.5 h-3.5 w-3.5 fill-orange-600" /> Featured
                             </span>
-                          )}
-                        </div>
-                        
-                        <div className="flex items-start gap-4">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 p-2 shrink-0">
-                            <Activity className="h-6 w-6 text-blue-600" />
+                            {p.status === "active" && (
+                              <span className="inline-flex items-center rounded-lg bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-600 border border-emerald-100/50">
+                                <Zap className="mr-1.5 h-3.5 w-3.5 fill-emerald-600" /> Active
+                              </span>
+                            )}
                           </div>
-                          <div className="flex-1 pr-8">
-                            <h3 className="text-base font-bold leading-snug text-slate-900 line-clamp-2 min-h-[40px]">
-                              {p.name}
-                            </h3>
-                            <p className="text-[11px] font-medium text-slate-500 mt-1">{universityName}</p>
+                          
+                          <div className="flex items-start gap-5">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-blue-50/50 p-3 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                              <Activity className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
+                            </div>
+                            <div className="flex-1 pr-6 pt-1">
+                              <h3 className="text-[19px] font-black leading-tight text-slate-900 line-clamp-2 min-h-[48px] tracking-tight">
+                                {p.name}
+                              </h3>
+                              <p className="text-xs font-bold text-slate-400 mt-2 tracking-wide uppercase">{universityName}</p>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-2.5 pt-3">
+                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
+                              <GraduationCap className="h-4 w-4 text-blue-600" />
+                              <span>{p.degree || "Bachelor's Degree"}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
+                              <Clock className="h-4 w-4 text-blue-600" />
+                              <span>{p.duration || "3 Years (9 Semesters)"}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
+                              <MapPin className="h-4 w-4 text-blue-600" />
+                              <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-1.5 pt-1">
-                          <div className="flex items-center gap-2 text-[12px] font-medium text-slate-600">
-                            <GraduationCap className="h-3.5 w-3.5 text-blue-600" />
-                            <span>{p.degree || "Bachelor's Degree"}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-[12px] font-medium text-slate-600">
-                            <Clock className="h-3.5 w-3.5 text-blue-600" />
-                            <span>{p.duration || "3 Years (9 Semesters)"}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-[12px] font-medium text-slate-600">
-                            <MapPin className="h-3.5 w-3.5 text-blue-600" />
-                            <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 absolute right-6 top-6">
-                        <Heart className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-slate-100">
-                      <div className="grid grid-cols-3 gap-2 text-center">
-                        <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tuition Fee</p>
-                          <p className="text-[13px] font-bold text-blue-600">
-                            {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
-                          </p>
-                        </div>
-                        <div className="space-y-1 border-x border-slate-100">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Scholarship</p>
-                          <p className="text-[13px] font-bold text-emerald-600">Up to 30%</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">App. Fee</p>
-                          <p className="text-[13px] font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "200"}</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 space-y-1.5">
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Next Intake</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                            <span key={i} className="rounded-lg bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-600">
-                              {intake.trim()}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="mt-5 grid grid-cols-3 gap-2 border-t border-slate-100 pt-4">
-                        <div className="text-center">
-                          <div className="flex items-center justify-center gap-1 text-slate-400 mb-0.5">
-                            <Users className="h-3 w-3" />
-                            <span className="text-[8px] font-bold uppercase tracking-wider">Applications</span>
-                          </div>
-                          <p className="text-xs font-black text-slate-900">312</p>
-                        </div>
-                        <div className="text-center border-x border-slate-100">
-                          <div className="flex items-center justify-center gap-1 text-slate-400 mb-0.5">
-                            <PieChart className="h-3 w-3" />
-                            <span className="text-[8px] font-bold uppercase tracking-wider">Acceptance</span>
-                          </div>
-                          <p className="text-xs font-black text-slate-900">62%</p>
-                        </div>
-                        <div className="text-center">
-                          <div className="flex items-center justify-center gap-1 text-slate-400 mb-0.5">
-                            <ShieldCheck className="h-3 w-3" />
-                            <span className="text-[8px] font-bold uppercase tracking-wider">Visa Success</span>
-                          </div>
-                          <p className="text-xs font-black text-slate-900">91%</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 flex gap-2">
-                        <Button 
-                          className="flex-1 h-10 rounded-xl bg-blue-600 text-[12px] font-bold text-white hover:bg-blue-700 shadow-sm shadow-blue-600/20"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
-                          }}
-                        >
-                          Create Application
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all absolute right-8 top-8 bg-white/50 backdrop-blur-sm shadow-sm ring-1 ring-slate-100/50">
+                          <Heart className="h-5 w-5" />
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          className="flex-1 h-10 rounded-xl border-slate-200 text-[12px] font-bold text-slate-600 hover:bg-slate-50"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Logic for view details
-                          }}
-                        >
-                          View Details
-                        </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-400">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
-                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg font-bold"><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg font-bold text-blue-600"><Plus className="mr-2 h-4 w-4" /> Apply Now</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg font-bold text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                      </div>
+
+                      <div className="mt-8 pt-8 border-t border-slate-100/60">
+                        <div className="grid grid-cols-3 gap-4 text-center">
+                          <div className="space-y-2">
+                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Tuition Fee</p>
+                            <p className="text-base font-black text-blue-600">
+                              {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
+                            </p>
+                          </div>
+                          <div className="space-y-2 border-x border-slate-100/60 px-2">
+                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Scholarship</p>
+                            <p className="text-base font-black text-emerald-600 whitespace-nowrap">Up to 30%</p>
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">App. Fee</p>
+                            <p className="text-base font-black text-slate-900">{p.currency || "MYR"} {p.application_fee || "200"}</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-8 space-y-3">
+                          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Next Intake</p>
+                          <div className="flex flex-wrap gap-2.5">
+                            {(p.intake || "January, April, August").split(",").map((intake, i) => (
+                              <span key={i} className="rounded-xl bg-blue-50/50 border border-blue-100/50 px-5 py-2 text-[11px] font-black text-blue-600 transition-colors hover:bg-blue-600 hover:text-white cursor-default">
+                                {intake.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mt-10 grid grid-cols-3 gap-2 border-t border-slate-100/60 pt-8 pb-2">
+                          <div className="text-center">
+                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
+                              <Users className="h-3.5 w-3.5" />
+                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Applications</span>
+                            </div>
+                            <p className="text-sm font-black text-slate-900">312</p>
+                          </div>
+                          <div className="text-center border-x border-slate-100/60">
+                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
+                              <PieChart className="h-3.5 w-3.5" />
+                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Acceptance</span>
+                            </div>
+                            <p className="text-sm font-black text-slate-900">62%</p>
+                          </div>
+                          <div className="text-center">
+                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
+                              <ShieldCheck className="h-3.5 w-3.5" />
+                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Visa Success</span>
+                            </div>
+                            <p className="text-sm font-black text-slate-900">91%</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-8 flex gap-3">
+                          <Button 
+                            className="flex-1 h-14 rounded-2xl bg-[#2563EB] text-sm font-black text-white hover:bg-blue-700 shadow-lg shadow-blue-600/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
+                            }}
+                          >
+                            Create Application
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            className="flex-1 h-14 rounded-2xl border-slate-200 text-sm font-black text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            View Details
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" size="icon" className="h-14 w-14 shrink-0 rounded-2xl border-slate-200 text-slate-400 hover:bg-slate-50 hover:border-slate-300 transition-all">
+                                <MoreHorizontal className="h-6 w-6" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[180px]">
+                              <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-xl font-bold py-3"><Pencil className="mr-3 h-4 w-4" /> Edit Program</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-xl font-bold py-3 text-blue-600 bg-blue-50/50"><Plus className="mr-3 h-4 w-4" /> Apply Now</DropdownMenuItem>
+                              <DropdownMenuSeparator className="my-2 bg-slate-100" />
+                              <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-bold py-3 text-rose-600 hover:bg-rose-50"><Trash2 className="mr-3 h-4 w-4" /> Delete Program</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
                 );
               })}
             </div>
 
             {hasMore && (
-              <div className="mt-12 flex justify-center">
+              <div className="mt-20 flex justify-center pb-12">
                 <Button
                   variant="outline"
                   size="lg"
                   onClick={() => setPage((p) => p + 1)}
-                  className="rounded-2xl border-2 px-12 font-bold transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-xl hover:shadow-primary/20"
+                  className="rounded-3xl border-2 border-slate-200 px-16 h-16 text-base font-black text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
                 >
                   Load More Programs
                 </Button>

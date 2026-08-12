@@ -533,15 +533,6 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               />
             </div>
             
-            <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-              <SelectTrigger className="w-[180px] h-[46px] rounded-[14px] border-slate-100 bg-slate-50/50 font-medium text-slate-900 focus:ring-2 focus:ring-blue-600/10 shadow-none px-5 transition-all hover:bg-slate-100/80 group">
-                <SelectValue placeholder="All degrees" />
-              </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 animate-in fade-in zoom-in-95 duration-200">
-                <SelectItem value="all" className="rounded-xl font-medium py-2.5">All degrees</SelectItem>
-                {degrees.map(d => <SelectItem key={d} value={d} className="rounded-xl font-medium py-2.5">{d}</SelectItem>)}
-              </SelectContent>
-            </Select>
           </div>
           
           <div className="flex items-center gap-3">

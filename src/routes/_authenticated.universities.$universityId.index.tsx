@@ -761,17 +761,17 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                         <div className="grid grid-cols-3 gap-3">
                           <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 text-center">
                             <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">Tuition Fee</p>
-                            <p className="text-[15px] font-bold text-blue-600">
+                            <p className="text-[12px] font-bold text-blue-600">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
                           <div className="bg-emerald-50/30 rounded-xl p-3 border border-emerald-100/30 text-center">
                             <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">Scholarship</p>
-                            <p className="text-[15px] font-bold text-emerald-600">Up to 30%</p>
+                            <p className="text-[12px] font-bold text-emerald-600">Up to 30%</p>
                           </div>
                           <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 text-center">
                             <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">App. Fee</p>
-                            <p className="text-[15px] font-bold text-[#0F172A]">{p.currency || "MYR"} {p.application_fee || "600"}</p>
+                            <p className="text-[12px] font-bold text-[#0F172A]">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                           </div>
                         </div>
 

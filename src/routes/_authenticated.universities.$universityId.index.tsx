@@ -564,26 +564,18 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         </div>
 
         {/* Filter Chips / Secondary Filters */}
-        <div className="flex flex-wrap items-center gap-4 mt-5 pt-5 border-t border-slate-50">
-          <FilterDropdown placeholder="All Faculties" />
+        <div className="flex flex-wrap items-center gap-2 mt-5 pt-5 border-t border-slate-50">
           <FilterDropdown 
-            placeholder="All Campuses" 
+            placeholder="Campuses" 
             value={campusFilter}
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
+          <FilterDropdown placeholder="Degrees" />
+          <FilterDropdown placeholder="Intakes" />
+          <FilterDropdown placeholder="Scholarships" />
           <FilterDropdown 
-            placeholder="Study Mode" 
-            options={[
-              { label: "Full-time", value: "full_time" },
-              { label: "Part-time", value: "part_time" },
-              { label: "Online", value: "online" }
-            ]}
-          />
-          <FilterDropdown placeholder="All Intakes" />
-          <FilterDropdown placeholder="All Scholarships" />
-          <FilterDropdown 
-            placeholder="Sort by: Newest" 
+            placeholder="Newest" 
             value={sortOrder}
             onValueChange={setSortOrder}
             options={[
@@ -593,10 +585,10 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           />
           
           <div className="ml-auto flex items-center p-1 bg-slate-100/50 rounded-xl">
-            <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/50 transition-all">
+            <Button size="icon" variant="icon" className="h-9 w-10 rounded-lg bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/50 transition-all">
               <LayoutGrid className="h-4 w-4" />
             </Button>
-            <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg text-slate-400 hover:bg-white/50 transition-all">
+            <Button size="icon" variant="icon" className="h-9 w-10 rounded-lg text-slate-400 hover:bg-white/50 transition-all">
               <ListIcon className="h-4 w-4" />
             </Button>
           </div>

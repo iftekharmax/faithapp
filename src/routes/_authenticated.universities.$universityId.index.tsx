@@ -660,7 +660,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-3 px-12">
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 px-12">
               {displayed.map((p) => {
                 const universityName = uni?.name || "University";
                 return (
@@ -732,9 +732,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
 
                         <div className="mt-10 space-y-4">
                           <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400">Next Intake</p>
-                          <div className="flex flex-wrap gap-3">
+                          <div className="flex flex-nowrap gap-2 overflow-x-auto scrollbar-none pb-1">
                             {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                              <span key={i} className="rounded-2xl bg-blue-50/50 border border-blue-100/50 px-6 py-3 text-[13px] font-medium text-blue-600 transition-all hover:bg-blue-600 hover:text-white cursor-default shadow-sm">
+                              <span key={i} className="rounded-2xl bg-blue-50/50 border border-blue-100/50 px-4 py-2 text-[12px] font-medium text-blue-600 transition-all hover:bg-blue-600 hover:text-white cursor-default shadow-sm whitespace-nowrap">
                                 {intake.trim()}
                               </span>
                             ))}

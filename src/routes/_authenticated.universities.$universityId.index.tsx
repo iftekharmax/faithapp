@@ -741,27 +741,27 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </div>
                         </div>
 
-                        <div className="mt-10 grid grid-cols-3 gap-2 border-t border-slate-100/60 pt-8 pb-2">
+                        <div className="mt-12 grid grid-cols-3 gap-4 border-t border-slate-100/80 pt-10 pb-2">
                           <div className="text-center">
-                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
-                              <Users className="h-3.5 w-3.5" />
-                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Applications</span>
+                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
+                              <Users className="h-4 w-4" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Applications</span>
                             </div>
-                            <p className="text-sm font-black text-slate-900">312</p>
+                            <p className="text-lg font-black text-slate-900 tracking-tighter">312</p>
                           </div>
-                          <div className="text-center border-x border-slate-100/60">
-                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
-                              <PieChart className="h-3.5 w-3.5" />
-                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Acceptance</span>
+                          <div className="text-center border-x border-slate-100/80">
+                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
+                              <PieChart className="h-4 w-4" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Acceptance</span>
                             </div>
-                            <p className="text-sm font-black text-slate-900">62%</p>
+                            <p className="text-lg font-black text-slate-900 tracking-tighter">62%</p>
                           </div>
                           <div className="text-center">
-                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
-                              <ShieldCheck className="h-3.5 w-3.5" />
-                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Visa Success</span>
+                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
+                              <ShieldCheck className="h-4 w-4" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Visa Success</span>
                             </div>
-                            <p className="text-sm font-black text-slate-900">91%</p>
+                            <p className="text-lg font-black text-slate-900 tracking-tighter">91%</p>
                           </div>
                         </div>
 

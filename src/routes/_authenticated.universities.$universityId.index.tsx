@@ -687,7 +687,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                               <h3 className="text-[24px] font-black leading-[1.15] text-slate-900 line-clamp-2 min-h-[56px] tracking-tight">
                                 {p.name}
                               </h3>
-                              <p className="text-xs font-bold text-slate-400 mt-2 tracking-wide uppercase">{universityName}</p>
+                              <p className="text-sm font-black text-slate-400 mt-2 tracking-widest uppercase">{universityName}</p>
                             </div>
                           </div>
 

@@ -707,7 +707,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                     )}
                   >
                     <div className="flex flex-1 flex-col p-7">
-                      <div className="mb-6 flex items-start justify-between">
+                      <div className="flex items-start justify-between">
                         <div className="space-y-4 w-full">
                           {/* Badges */}
                           <div className="flex flex-wrap items-center gap-2">

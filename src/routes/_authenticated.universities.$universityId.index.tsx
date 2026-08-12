@@ -9,7 +9,7 @@ import {
   TrendingUp, Search, RotateCcw, Filter, ChevronRight,
   School, Book, UserCheck, Star, ShieldCheck, Flame, Zap, Trophy,
   History, PieChart, Activity, Info, Landmark, Languages, GraduationCap as GradIcon,
-  MousePointer2, Share, Check
+  MousePointer2, Share, Check, MoreVertical
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -199,84 +199,82 @@ function UniversityDetail() {
     <div className="mx-auto max-w-[1600px] space-y-8 animate-in fade-in duration-500 px-4 py-8">
       {/* Back button and title */}
       <div className="flex items-center gap-2 mb-4">
-        <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black" onClick={() => navigate({ to: "/universities" })}>
+        <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black hover:bg-slate-100" onClick={() => navigate({ to: "/universities" })}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
       </div>
 
       {/* Hero Section - Matched to Screenshot */}
-      <Card className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
-          <div className="flex h-24 w-48 shrink-0 items-center justify-center rounded-2xl border border-slate-100 p-2">
+      <Card className="rounded-[32px] border border-slate-100 bg-white p-10 shadow-sm overflow-hidden">
+        <div className="flex flex-col md:flex-row gap-10 items-start md:items-center">
+          <div className="flex h-32 w-56 shrink-0 items-center justify-center rounded-3xl border border-slate-50 p-4 bg-white">
             {uni.logo_url ? (
               <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
             ) : (
-              <Building2 className="h-12 w-12 text-slate-200" />
+              <Building2 className="h-16 w-16 text-slate-100" />
             )}
           </div>
-
-
           
-          <div className="flex-1 space-y-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight">{uni.name}</h1>
-              <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+          <div className="flex-1 space-y-5">
+            <div className="flex flex-wrap items-center gap-4">
+              <h1 className="text-[34px] font-black text-slate-900 tracking-tight leading-none">{uni.name}</h1>
+              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-3.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border-none">
                 {uni.status === "active" ? "Active" : uni.status}
               </Badge>
             </div>
             
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-black">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">🇲🇾</span>
-                <span>Malaysia</span>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">🇲🇾</span>
+                <span className="font-bold text-slate-900">MY Malaysia</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <MapPin className="h-4 w-4 text-slate-400" />
-                <span>{uni.city || "Negeri Sembilan"}</span>
+                <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
               </div>
               {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline">
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 text-blue-600 hover:underline font-bold">
                   <span>Website</span>
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               )}
-
             </div>
 
-            <p className="text-sm leading-relaxed text-black max-w-4xl">{uni.description}</p>
-
+            <p className="text-sm leading-relaxed text-slate-500 max-w-3xl font-medium">
+              {uni.description || `${uni.name} is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.`}
+            </p>
           </div>
 
           <div className="flex gap-4">
-            <div className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 min-w-[100px]">
-              <span className="text-2xl font-black text-slate-900">4</span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Campuses</span>
+            <div className="flex flex-col items-center justify-center px-8 py-6 rounded-3xl bg-slate-50 border border-slate-50 min-w-[130px]">
+              <span className="text-[32px] font-black text-slate-900 leading-none">4</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-2">Campuses</span>
             </div>
-            <div className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 min-w-[100px]">
-              <span className="text-2xl font-black text-slate-900">155</span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Programs</span>
+            <div className="flex flex-col items-center justify-center px-8 py-6 rounded-3xl bg-slate-50 border border-slate-50 min-w-[130px]">
+              <span className="text-[32px] font-black text-slate-900 leading-none">155</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-2">Programs</span>
             </div>
           </div>
         </div>
       </Card>
 
-      <Tabs defaultValue="programs" className="space-y-10">
-        <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-2xl border border-slate-200 shadow-sm h-auto p-0 gap-10 px-10 overflow-hidden">
+      <Tabs defaultValue="programs" className="space-y-12">
+        <TabsList className="bg-white border border-slate-200 shadow-sm w-full justify-start rounded-3xl h-auto p-0 gap-14 px-12 overflow-hidden">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-8 pb-6 text-[17px] font-bold text-slate-500 transition-all hover:text-slate-900"
           >
             Programs ({programs.length})
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-8 pb-6 text-[17px] font-bold text-slate-500 transition-all hover:text-slate-900"
           >
             Campuses ({campuses.length})
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-7 pb-5 text-base font-medium text-black transition-all"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-8 pb-6 text-[17px] font-bold text-slate-500 transition-all hover:text-slate-900"
           >
             Applications ({totalApplicationsCount.toLocaleString()})
           </TabsTrigger>
@@ -513,46 +511,45 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   return (
     <>
     <div className="relative flex flex-col pt-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 px-10">
+      <div className="flex flex-wrap items-center justify-between gap-6 px-12">
         <div className="flex flex-wrap items-center gap-4 flex-1">
-          <div className="relative min-w-[300px] flex-1 max-w-sm">
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <div className="relative min-w-[360px] flex-1 max-w-md">
+            <Search className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input 
               placeholder="Search programs..." 
               value={search} 
               onChange={(e) => setSearch(e.target.value)} 
-              className="pl-10 h-11 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-600/20 text-black" 
+              className="pl-12 h-14 rounded-2xl border-slate-200 bg-white text-base font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-sm" 
             />
           </div>
           <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-            <SelectTrigger className="w-[180px] h-11 rounded-xl border-slate-200 bg-white font-medium text-black focus:ring-1 focus:ring-blue-600/20">
+            <SelectTrigger className="w-[200px] h-14 rounded-2xl border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-blue-600/10 shadow-sm px-6">
               <SelectValue placeholder="All degrees" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-              <SelectItem value="all" className="font-medium text-black">All degrees</SelectItem>
-              {degrees.map(d => <SelectItem key={d} value={d} className="font-medium text-black">{d}</SelectItem>)}
+            <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2">
+              <SelectItem value="all" className="rounded-xl font-bold py-3">All degrees</SelectItem>
+              {degrees.map(d => <SelectItem key={d} value={d} className="rounded-xl font-bold py-3">{d}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
         
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="h-14 rounded-2xl border-slate-200 font-bold text-slate-900 hover:bg-slate-50 px-6 text-sm shadow-sm transition-all hover:border-slate-300">
             <Download className="mr-2 h-4 w-4" /> Export programs
           </Button>
-          <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
+          <Button variant="outline" className="h-14 rounded-2xl border-slate-200 font-bold text-slate-900 hover:bg-slate-50 px-6 text-sm shadow-sm transition-all hover:border-slate-300">
             <Share2 className="mr-2 h-4 w-4" /> Import programs
           </Button>
-          <Button variant="outline" className="h-11 rounded-xl border-slate-200 font-medium text-black hover:bg-slate-50 px-5 text-sm">
+          <Button variant="outline" className="h-14 rounded-2xl border-slate-200 font-bold text-slate-900 hover:bg-slate-50 px-6 text-sm shadow-sm transition-all hover:border-slate-300">
             <FileText className="mr-2 h-4 w-4" /> Template
           </Button>
-          <Button onClick={openNew} className="h-11 rounded-xl bg-blue-600 font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 px-8 ml-2">
-            <Plus className="mr-2 h-4 w-4" /> Add program
+          <Button onClick={openNew} className="h-14 rounded-2xl bg-[#2563EB] font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 px-10 ml-2 transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <Plus className="mr-2 h-5 w-5" /> Add program
           </Button>
         </div>
       </div>
-      <hr className="mt-6 mb-8 border-slate-100" />
-          
-      <div className="flex flex-wrap items-center gap-3 px-10">
+
+      <div className="flex flex-wrap items-center gap-4 px-12 mt-8">
         <FilterDropdown placeholder="All Faculties" />
         <FilterDropdown 
           placeholder="All Campuses" 
@@ -570,15 +567,17 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         <FilterDropdown placeholder="All Scholarships" />
         <FilterDropdown placeholder="Sort by: Newest" />
         
-        <div className="ml-auto flex items-center gap-2">
-          <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-sm">
-            <LayoutGrid className="h-5 w-5" />
+        <div className="ml-auto flex items-center gap-3">
+          <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-sm transition-all hover:bg-blue-100">
+            <LayoutGrid className="h-6 w-6" />
           </Button>
-          <Button size="icon" variant="ghost" className="h-11 w-11 rounded-xl text-slate-400 hover:bg-slate-50">
-            <ListIcon className="h-5 w-5" />
+          <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl text-slate-400 hover:bg-slate-50 transition-all">
+            <ListIcon className="h-6 w-6" />
           </Button>
+        </div>
       </div>
-    </div>
+      
+      <hr className="mt-10 mb-2 border-transparent" />
 
     <div className="mt-8 pb-10">
       {loading ? (
@@ -661,161 +660,158 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 px-12">
               {displayed.map((p) => {
                 const universityName = uni?.name || "University";
                 return (
-
-
-                <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-2xl bg-[#F9FAFB] border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-lg hover:bg-white hover:border-blue-100">
-                  <div className="flex flex-1 flex-col p-6">
-                    <div className="mb-4 flex items-start justify-between gap-4">
-                      <div className="space-y-3 w-full">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center rounded-md bg-orange-50 px-2 py-0.5 text-[9px] font-bold text-orange-600">
-                            <Star className="mr-1 h-3 w-3 fill-orange-600" /> Featured
-                          </span>
-                          {p.status === "active" && (
-                            <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-600">
-                              <Zap className="mr-1 h-3 w-3 fill-emerald-600" /> Active
+                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[32px] bg-[#F9FAFB] border border-slate-50 shadow-sm transition-all duration-500 hover:shadow-2xl hover:bg-white hover:border-blue-100/50 hover:-translate-y-1">
+                    <div className="flex flex-1 flex-col p-10">
+                      <div className="mb-6 flex items-start justify-between gap-4">
+                        <div className="space-y-4 w-full">
+                          <div className="flex flex-wrap items-center gap-2.5">
+                            <span className="inline-flex items-center rounded-lg bg-orange-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-orange-600 border border-orange-100/50">
+                              <Star className="mr-1.5 h-3.5 w-3.5 fill-orange-600" /> Featured
                             </span>
-                          )}
-                        </div>
-                        
-                        <div className="flex items-start gap-4">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 p-2 shrink-0">
-                            <Activity className="h-6 w-6 text-blue-600" />
+                            {p.status === "active" && (
+                              <span className="inline-flex items-center rounded-lg bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-600 border border-emerald-100/50">
+                                <Zap className="mr-1.5 h-3.5 w-3.5 fill-emerald-600" /> Active
+                              </span>
+                            )}
                           </div>
-                          <div className="flex-1 pr-8">
-                            <h3 className="text-base font-bold leading-snug text-slate-900 line-clamp-2 min-h-[40px]">
-                              {p.name}
-                            </h3>
-                            <p className="text-[11px] font-medium text-slate-500 mt-1">{universityName}</p>
+                          
+                          <div className="flex items-start gap-5">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-blue-50/50 p-3 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                              <Activity className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
+                            </div>
+                            <div className="flex-1 pr-6 pt-1">
+                              <h3 className="text-[19px] font-black leading-tight text-slate-900 line-clamp-2 min-h-[48px] tracking-tight">
+                                {p.name}
+                              </h3>
+                              <p className="text-xs font-bold text-slate-400 mt-2 tracking-wide uppercase">{universityName}</p>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-2.5 pt-3">
+                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
+                              <GraduationCap className="h-4 w-4 text-blue-600" />
+                              <span>{p.degree || "Bachelor's Degree"}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
+                              <Clock className="h-4 w-4 text-blue-600" />
+                              <span>{p.duration || "3 Years (9 Semesters)"}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
+                              <MapPin className="h-4 w-4 text-blue-600" />
+                              <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-1.5 pt-1">
-                          <div className="flex items-center gap-2 text-[12px] font-medium text-slate-600">
-                            <GraduationCap className="h-3.5 w-3.5 text-blue-600" />
-                            <span>{p.degree || "Bachelor's Degree"}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-[12px] font-medium text-slate-600">
-                            <Clock className="h-3.5 w-3.5 text-blue-600" />
-                            <span>{p.duration || "3 Years (9 Semesters)"}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-[12px] font-medium text-slate-600">
-                            <MapPin className="h-3.5 w-3.5 text-blue-600" />
-                            <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 absolute right-6 top-6">
-                        <Heart className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-slate-100">
-                      <div className="grid grid-cols-3 gap-2 text-center">
-                        <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tuition Fee</p>
-                          <p className="text-[13px] font-bold text-blue-600">
-                            {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
-                          </p>
-                        </div>
-                        <div className="space-y-1 border-x border-slate-100">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Scholarship</p>
-                          <p className="text-[13px] font-bold text-emerald-600">Up to 30%</p>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">App. Fee</p>
-                          <p className="text-[13px] font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "200"}</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 space-y-1.5">
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Next Intake</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                            <span key={i} className="rounded-lg bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-600">
-                              {intake.trim()}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="mt-5 grid grid-cols-3 gap-2 border-t border-slate-100 pt-4">
-                        <div className="text-center">
-                          <div className="flex items-center justify-center gap-1 text-slate-400 mb-0.5">
-                            <Users className="h-3 w-3" />
-                            <span className="text-[8px] font-bold uppercase tracking-wider">Applications</span>
-                          </div>
-                          <p className="text-xs font-black text-slate-900">312</p>
-                        </div>
-                        <div className="text-center border-x border-slate-100">
-                          <div className="flex items-center justify-center gap-1 text-slate-400 mb-0.5">
-                            <PieChart className="h-3 w-3" />
-                            <span className="text-[8px] font-bold uppercase tracking-wider">Acceptance</span>
-                          </div>
-                          <p className="text-xs font-black text-slate-900">62%</p>
-                        </div>
-                        <div className="text-center">
-                          <div className="flex items-center justify-center gap-1 text-slate-400 mb-0.5">
-                            <ShieldCheck className="h-3 w-3" />
-                            <span className="text-[8px] font-bold uppercase tracking-wider">Visa Success</span>
-                          </div>
-                          <p className="text-xs font-black text-slate-900">91%</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 flex gap-2">
-                        <Button 
-                          className="flex-1 h-10 rounded-xl bg-blue-600 text-[12px] font-bold text-white hover:bg-blue-700 shadow-sm shadow-blue-600/20"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
-                          }}
-                        >
-                          Create Application
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all absolute right-8 top-8 bg-white/50 backdrop-blur-sm shadow-sm ring-1 ring-slate-100/50">
+                          <Heart className="h-5 w-5" />
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          className="flex-1 h-10 rounded-xl border-slate-200 text-[12px] font-bold text-slate-600 hover:bg-slate-50"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Logic for view details
-                          }}
-                        >
-                          View Details
-                        </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl border-slate-200 text-slate-400">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
-                            <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-lg font-bold"><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-lg font-bold text-blue-600"><Plus className="mr-2 h-4 w-4" /> Apply Now</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-lg font-bold text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                      </div>
+
+                      <div className="mt-8 pt-8 border-t border-slate-100/60">
+                        <div className="grid grid-cols-3 gap-4 text-center">
+                          <div className="space-y-2">
+                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Tuition Fee</p>
+                            <p className="text-base font-black text-blue-600">
+                              {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
+                            </p>
+                          </div>
+                          <div className="space-y-2 border-x border-slate-100/60 px-2">
+                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Scholarship</p>
+                            <p className="text-base font-black text-emerald-600 whitespace-nowrap">Up to 30%</p>
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">App. Fee</p>
+                            <p className="text-base font-black text-slate-900">{p.currency || "MYR"} {p.application_fee || "200"}</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-8 space-y-3">
+                          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Next Intake</p>
+                          <div className="flex flex-wrap gap-2.5">
+                            {(p.intake || "January, April, August").split(",").map((intake, i) => (
+                              <span key={i} className="rounded-xl bg-blue-50/50 border border-blue-100/50 px-5 py-2 text-[11px] font-black text-blue-600 transition-colors hover:bg-blue-600 hover:text-white cursor-default">
+                                {intake.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mt-10 grid grid-cols-3 gap-2 border-t border-slate-100/60 pt-8 pb-2">
+                          <div className="text-center">
+                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
+                              <Users className="h-3.5 w-3.5" />
+                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Applications</span>
+                            </div>
+                            <p className="text-sm font-black text-slate-900">312</p>
+                          </div>
+                          <div className="text-center border-x border-slate-100/60">
+                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
+                              <PieChart className="h-3.5 w-3.5" />
+                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Acceptance</span>
+                            </div>
+                            <p className="text-sm font-black text-slate-900">62%</p>
+                          </div>
+                          <div className="text-center">
+                            <div className="flex items-center justify-center gap-1.5 text-slate-400 mb-1.5">
+                              <ShieldCheck className="h-3.5 w-3.5" />
+                              <span className="text-[9px] font-black uppercase tracking-[0.1em]">Visa Success</span>
+                            </div>
+                            <p className="text-sm font-black text-slate-900">91%</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-8 flex gap-3">
+                          <Button 
+                            className="flex-1 h-14 rounded-2xl bg-[#2563EB] text-sm font-black text-white hover:bg-blue-700 shadow-lg shadow-blue-600/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
+                            }}
+                          >
+                            Create Application
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            className="flex-1 h-14 rounded-2xl border-slate-200 text-sm font-black text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            View Details
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" size="icon" className="h-14 w-14 shrink-0 rounded-2xl border-slate-200 text-slate-400 hover:bg-slate-50 hover:border-slate-300 transition-all">
+                                <MoreHorizontal className="h-6 w-6" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[180px]">
+                              <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-xl font-bold py-3"><Pencil className="mr-3 h-4 w-4" /> Edit Program</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-xl font-bold py-3 text-blue-600 bg-blue-50/50"><Plus className="mr-3 h-4 w-4" /> Apply Now</DropdownMenuItem>
+                              <DropdownMenuSeparator className="my-2 bg-slate-100" />
+                              <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-bold py-3 text-rose-600 hover:bg-rose-50"><Trash2 className="mr-3 h-4 w-4" /> Delete Program</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
                 );
               })}
             </div>
 
             {hasMore && (
-              <div className="mt-12 flex justify-center">
+              <div className="mt-20 flex justify-center pb-12">
                 <Button
                   variant="outline"
                   size="lg"
                   onClick={() => setPage((p) => p + 1)}
-                  className="rounded-2xl border-2 px-12 font-bold transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-xl hover:shadow-primary/20"
+                  className="rounded-3xl border-2 border-slate-200 px-16 h-16 text-base font-black text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
                 >
                   Load More Programs
                 </Button>
@@ -1049,7 +1045,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             <Button 
               onClick={save} 
               disabled={saving}
-              className="rounded-xl px-10 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="rounded-xl px-10 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all bg-[#2563EB] text-white hover:bg-blue-700"
             >
               {saving ? (
                 <>
@@ -1058,8 +1054,10 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 </>
               ) : (
                 <>
-                  <Check className="mr-2 h-5 w-5" />
-                  {editing ? "Update Program" : "Create Program"}
+                  <div className="flex items-center gap-2">
+                    {editing ? <Check className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                    <span>{editing ? "Update Program" : "Create Program"}</span>
+                  </div>
                 </>
               )}
             </Button>
@@ -1211,13 +1209,13 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
 function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-black focus:ring-1 focus:ring-blue-600/20 shadow-sm transition-all hover:border-slate-300">
+      <SelectTrigger className="w-fit min-w-[130px] h-14 rounded-2xl border-slate-200 bg-white px-5 font-bold text-slate-900 focus:ring-2 focus:ring-blue-600/10 shadow-sm transition-all hover:border-slate-300">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-        <SelectItem value="all" className="font-medium text-black focus:bg-slate-50">{placeholder}</SelectItem>
+      <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[200px]">
+        <SelectItem value="all" className="rounded-xl font-bold py-3 focus:bg-slate-50">{placeholder}</SelectItem>
         {options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value} className="font-medium text-black focus:bg-slate-50">{opt.label}</SelectItem>
+          <SelectItem key={opt.value} value={opt.value} className="rounded-xl font-bold py-3 focus:bg-slate-50">{opt.label}</SelectItem>
         ))}
       </SelectContent>
     </Select>

@@ -348,10 +348,9 @@ function UniversityDetail() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
-
-
 }
 
 

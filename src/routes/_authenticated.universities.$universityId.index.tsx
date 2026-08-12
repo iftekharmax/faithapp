@@ -566,14 +566,14 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         {/* Filter Chips / Secondary Filters */}
         <div className="flex flex-wrap items-center gap-2 mt-5 pt-5 border-t border-slate-50">
           <FilterDropdown 
-            placeholder="Campuses" 
+            placeholder="All Campuses" 
             value={campusFilter}
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
-          <FilterDropdown placeholder="Degrees" />
-          <FilterDropdown placeholder="Intakes" />
-          <FilterDropdown placeholder="Scholarships" />
+          <FilterDropdown placeholder="All Degrees" />
+          <FilterDropdown placeholder="All Intakes" />
+          <FilterDropdown placeholder="All Scholarships" />
           <FilterDropdown 
             placeholder="Newest" 
             value={sortOrder}

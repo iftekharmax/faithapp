@@ -268,7 +268,7 @@ function UniversityDetail() {
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-8 pb-6 text-[17px] font-bold text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-black text-slate-500 transition-all hover:text-slate-900"
           >
             Campuses ({campuses.length})
           </TabsTrigger>

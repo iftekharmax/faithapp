@@ -443,10 +443,12 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
   const [degreeFilter, setDegreeFilter] = useState<string>("all");
+  const [campusFilter, setCampusFilter] = useState<string>("all");
+  const [sortOrder, setSortOrder] = useState<string>("newest");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 9;
 
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
   const filtered = programs.filter((p) =>

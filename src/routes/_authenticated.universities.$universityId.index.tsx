@@ -568,6 +568,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           <FilterDropdown placeholder="All Faculties" />
           <FilterDropdown 
             placeholder="All Campuses" 
+            value={campusFilter}
+            onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
           <FilterDropdown 
@@ -580,7 +582,15 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           />
           <FilterDropdown placeholder="All Intakes" />
           <FilterDropdown placeholder="All Scholarships" />
-          <FilterDropdown placeholder="Sort by: Newest" />
+          <FilterDropdown 
+            placeholder="Sort by: Newest" 
+            value={sortOrder}
+            onValueChange={setSortOrder}
+            options={[
+              { label: "Newest", value: "newest" },
+              { label: "Oldest", value: "oldest" }
+            ]}
+          />
           
           <div className="ml-auto flex items-center p-1 bg-slate-100/50 rounded-xl">
             <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/50 transition-all">

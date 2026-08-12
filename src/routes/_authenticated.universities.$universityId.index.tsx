@@ -778,9 +778,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                         {/* Intakes */}
                         <div className="mt-6 space-y-2">
                           <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">Next Intake</p>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-nowrap gap-2 overflow-x-auto scrollbar-none pb-1">
                             {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                              <span key={i} className="rounded-full bg-blue-50 text-blue-600 px-3 py-1 text-[11px] font-medium border border-blue-100/50">
+                              <span key={i} className="rounded-full bg-blue-50 text-blue-600 px-3 py-1 text-[11px] font-medium border border-blue-100/50 whitespace-nowrap">
                                 {intake.trim()}
                               </span>
                             ))}

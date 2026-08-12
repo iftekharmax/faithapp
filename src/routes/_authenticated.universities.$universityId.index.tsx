@@ -199,62 +199,60 @@ function UniversityDetail() {
     <div className="mx-auto max-w-[1600px] space-y-8 animate-in fade-in duration-500 px-4 py-8">
       {/* Back button and title */}
       <div className="flex items-center gap-2 mb-4">
-        <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black" onClick={() => navigate({ to: "/universities" })}>
+        <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black hover:bg-slate-100" onClick={() => navigate({ to: "/universities" })}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
       </div>
 
       {/* Hero Section - Matched to Screenshot */}
-      <Card className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
-          <div className="flex h-24 w-48 shrink-0 items-center justify-center rounded-2xl border border-slate-100 p-2">
+      <Card className="rounded-[32px] border border-slate-100 bg-white p-10 shadow-sm overflow-hidden">
+        <div className="flex flex-col md:flex-row gap-10 items-start md:items-center">
+          <div className="flex h-32 w-56 shrink-0 items-center justify-center rounded-3xl border border-slate-50 p-4 bg-white">
             {uni.logo_url ? (
               <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
             ) : (
-              <Building2 className="h-12 w-12 text-slate-200" />
+              <Building2 className="h-16 w-16 text-slate-100" />
             )}
           </div>
-
-
           
-          <div className="flex-1 space-y-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight">{uni.name}</h1>
-              <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+          <div className="flex-1 space-y-5">
+            <div className="flex flex-wrap items-center gap-4">
+              <h1 className="text-[34px] font-black text-slate-900 tracking-tight leading-none">{uni.name}</h1>
+              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-3.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border-none">
                 {uni.status === "active" ? "Active" : uni.status}
               </Badge>
             </div>
             
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-black">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">🇲🇾</span>
-                <span>Malaysia</span>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">🇲🇾</span>
+                <span className="font-bold text-slate-900">MY Malaysia</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <MapPin className="h-4 w-4 text-slate-400" />
-                <span>{uni.city || "Negeri Sembilan"}</span>
+                <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
               </div>
               {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline">
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 text-blue-600 hover:underline font-bold">
                   <span>Website</span>
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               )}
-
             </div>
 
-            <p className="text-sm leading-relaxed text-black max-w-4xl">{uni.description}</p>
-
+            <p className="text-sm leading-relaxed text-slate-500 max-w-3xl font-medium">
+              {uni.description || `${uni.name} is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.`}
+            </p>
           </div>
 
           <div className="flex gap-4">
-            <div className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 min-w-[100px]">
-              <span className="text-2xl font-black text-slate-900">4</span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Campuses</span>
+            <div className="flex flex-col items-center justify-center px-8 py-6 rounded-3xl bg-slate-50 border border-slate-50 min-w-[130px]">
+              <span className="text-[32px] font-black text-slate-900 leading-none">4</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-2">Campuses</span>
             </div>
-            <div className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 min-w-[100px]">
-              <span className="text-2xl font-black text-slate-900">155</span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Programs</span>
+            <div className="flex flex-col items-center justify-center px-8 py-6 rounded-3xl bg-slate-50 border border-slate-50 min-w-[130px]">
+              <span className="text-[32px] font-black text-slate-900 leading-none">155</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-2">Programs</span>
             </div>
           </div>
         </div>

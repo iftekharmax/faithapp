@@ -217,8 +217,8 @@ function UniversityDetail() {
           
           <div className="flex-1 space-y-6">
             <div className="flex flex-wrap items-center gap-5">
-              <h1 className="text-[42px] font-black text-slate-900 tracking-tighter leading-none">{uni.name}</h1>
-              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest border-none shadow-sm">
+              <h1 className="text-[42px] font-medium text-slate-900 tracking-tighter leading-none">{uni.name}</h1>
+              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-[11px] font-medium uppercase tracking-widest border-none shadow-sm">
                 {uni.status === "active" ? "Active" : uni.status}
               </Badge>
             </div>
@@ -226,33 +226,33 @@ function UniversityDetail() {
             <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-base font-bold text-slate-600">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">🇲🇾</span>
-                <span className="font-black text-slate-900">MY Malaysia</span>
+                <span className="font-medium text-slate-900">MY Malaysia</span>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="h-5 w-5 text-slate-400" />
-                <span className="font-black text-slate-900">{uni.city || "Negeri Sembilan"}</span>
+                <span className="font-medium text-slate-900">{uni.city || "Negeri Sembilan"}</span>
               </div>
               {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-blue-600 hover:text-blue-700 font-black decoration-2 underline-offset-4 hover:underline">
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-blue-600 hover:text-blue-700 font-medium decoration-2 underline-offset-4 hover:underline">
                   <span>Website</span>
                   <ExternalLink className="h-4 w-4" />
                 </a>
               )}
             </div>
 
-            <p className="text-[16px] leading-relaxed text-slate-500 max-w-4xl font-black">
+            <p className="text-[16px] leading-relaxed text-slate-500 max-w-4xl font-medium">
               {uni.description || `${uni.name} is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.`}
             </p>
           </div>
 
           <div className="flex gap-6">
             <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-black text-slate-900 leading-none tracking-tighter">4</span>
-              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 mt-3">Campuses</span>
+              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">4</span>
+              <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Campuses</span>
             </div>
             <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-black text-slate-900 leading-none tracking-tighter">155</span>
-              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 mt-3">Programs</span>
+              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">155</span>
+              <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Programs</span>
             </div>
           </div>
         </div>
@@ -262,19 +262,19 @@ function UniversityDetail() {
         <TabsList className="bg-white border border-slate-200 shadow-sm w-full justify-start rounded-[32px] h-auto p-0 gap-16 px-14 overflow-hidden">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-black text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
           >
             Programs ({programs.length})
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-black text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
           >
             Campuses ({campuses.length})
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-black text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
           >
             Applications ({totalApplicationsCount.toLocaleString()})
           </TabsTrigger>
@@ -291,7 +291,7 @@ function UniversityDetail() {
         <TabsContent value="applications" className="mt-0 outline-none">
           <Card className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <CardHeader className="border-b border-slate-50 p-6">
-              <CardTitle className="text-lg font-black text-slate-900">Recent Applications</CardTitle>
+              <CardTitle className="text-lg font-medium text-slate-900">Recent Applications</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {applications.length === 0 ? (
@@ -369,10 +369,10 @@ function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: stri
       <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shadow-sm", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
-      <div className="text-[22px] font-black tracking-tighter text-black">{value}</div>
+      <div className="text-[22px] font-medium tracking-tighter text-black">{value}</div>
       <div className="text-[10px] font-medium uppercase tracking-widest text-black">{label}</div>
       {growth && (
-        <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-50 text-[8px] font-black text-emerald-600 hover:bg-emerald-100 flex items-center gap-0.5 shadow-sm">
+        <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-50 text-[8px] font-medium text-emerald-600 hover:bg-emerald-100 flex items-center gap-0.5 shadow-sm">
           <TrendingUp className="h-2 w-2" /> {growth}
         </Badge>
       )}
@@ -418,7 +418,7 @@ function StatCard({ label, value, icon: Icon, color, growth }: { label: string; 
       <div className={cn("mb-1 flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
-      <div className="text-xl font-black tracking-tight text-black">{value}</div>
+      <div className="text-xl font-medium tracking-tight text-black">{value}</div>
       <div className="text-[10px] font-medium uppercase tracking-widest text-black">{label}</div>
       {growth && (
         <Badge className="absolute right-2 top-2 h-4 border-none bg-emerald-100 text-[8px] font-bold text-emerald-700 hover:bg-emerald-100">
@@ -626,13 +626,13 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 <GraduationCap className="h-12 w-12 text-blue-600/40" />
               </div>
               <div className="max-w-md space-y-2">
-                <h3 className="text-2xl font-black text-slate-900">No programs yet</h3>
+                <h3 className="text-2xl font-medium text-slate-900">No programs yet</h3>
                 <p className="text-slate-500 font-medium">
                   Start tracking academic programs for this university by creating your first one.
                 </p>
               </div>
               {canEdit && (
-                <Button onClick={openNew} className="mt-4 rounded-xl shadow-lg shadow-blue-600/20 h-12 px-8 font-black bg-blue-600 hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                <Button onClick={openNew} className="mt-4 rounded-xl shadow-lg shadow-blue-600/20 h-12 px-8 font-medium bg-blue-600 hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98]">
                   <Plus className="mr-2 h-5 w-5" /> Add Program Now
                 </Button>
               )}
@@ -643,7 +643,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 <SearchX className="h-12 w-12 text-slate-300" />
               </div>
               <div className="max-w-md space-y-2">
-                <h3 className="text-2xl font-black text-slate-900">No matching programs</h3>
+                <h3 className="text-2xl font-medium text-slate-900">No matching programs</h3>
                 <p className="text-slate-500 font-medium">
                   We couldn't find any programs matching your search or filters. Try adjusting your criteria.
                 </p>
@@ -652,7 +652,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 <Button variant="outline" className="rounded-xl px-8 h-12 font-bold border-slate-200 text-slate-600 hover:bg-slate-50" onClick={() => { setSearch(""); setDegreeFilter("all"); }}>
                   Clear all filters
                 </Button>
-                <Button onClick={openNew} className="rounded-xl shadow-lg shadow-blue-600/20 h-12 px-8 font-black bg-blue-600 hover:bg-blue-700">
+                <Button onClick={openNew} className="rounded-xl shadow-lg shadow-blue-600/20 h-12 px-8 font-medium bg-blue-600 hover:bg-blue-700">
                   <Plus className="mr-2 h-5 w-5" /> Add New Program
                 </Button>
               </div>
@@ -669,11 +669,11 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                       <div className="mb-8 flex items-start justify-between gap-6">
                         <div className="space-y-5 w-full">
                           <div className="flex flex-wrap items-center gap-3">
-                            <span className="inline-flex items-center rounded-xl bg-orange-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-orange-600 border border-orange-100/50 shadow-sm">
+                            <span className="inline-flex items-center rounded-xl bg-orange-50 px-4 py-1.5 text-[11px] font-medium uppercase tracking-widest text-orange-600 border border-orange-100/50 shadow-sm">
                               <Star className="mr-2 h-4 w-4 fill-orange-600" /> Featured
                             </span>
                             {p.status === "active" && (
-                              <span className="inline-flex items-center rounded-xl bg-emerald-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-emerald-600 border border-emerald-100/50 shadow-sm">
+                              <span className="inline-flex items-center rounded-xl bg-emerald-50 px-4 py-1.5 text-[11px] font-medium uppercase tracking-widest text-emerald-600 border border-emerald-100/50 shadow-sm">
                                 <Zap className="mr-2 h-4 w-4 fill-emerald-600" /> Active
                               </span>
                             )}
@@ -684,23 +684,23 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                               <Activity className="h-10 w-10 text-blue-600 group-hover:text-white transition-colors" />
                             </div>
                             <div className="flex-1 pr-8 pt-2">
-                              <h3 className="text-[24px] font-black leading-[1.15] text-slate-900 line-clamp-2 min-h-[56px] tracking-tight">
+                              <h3 className="text-[24px] font-medium leading-[1.15] text-slate-900 line-clamp-2 min-h-[56px] tracking-tight">
                                 {p.name}
                               </h3>
-                              <p className="text-sm font-black text-slate-400 mt-2 tracking-widest uppercase">{universityName}</p>
+                              <p className="text-sm font-medium text-slate-400 mt-2 tracking-widest uppercase">{universityName}</p>
                             </div>
                           </div>
 
                           <div className="grid grid-cols-1 gap-2.5 pt-3">
-                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                            <div className="flex items-center gap-4 text-base font-medium text-slate-600">
                               <GraduationCap className="h-5 w-5 text-blue-600" />
                               <span>{p.degree || "Bachelor's Degree"}</span>
                             </div>
-                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                            <div className="flex items-center gap-4 text-base font-medium text-slate-600">
                               <Clock className="h-5 w-5 text-blue-600" />
                               <span>{p.duration || "3 Years (9 Semesters)"}</span>
                             </div>
-                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                            <div className="flex items-center gap-4 text-base font-medium text-slate-600">
                               <MapPin className="h-5 w-5 text-blue-600" />
                               <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
                             </div>
@@ -715,26 +715,26 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                       <div className="mt-10 pt-10 border-t border-slate-100/80">
                         <div className="grid grid-cols-3 gap-6 text-center">
                           <div className="space-y-3">
-                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Tuition Fee</p>
-                            <p className="text-xl font-black text-blue-600 tracking-tighter">
+                            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">Tuition Fee</p>
+                            <p className="text-xl font-medium text-blue-600 tracking-tighter">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
                           <div className="space-y-3 border-x border-slate-100/80 px-3">
-                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Scholarship</p>
-                            <p className="text-xl font-black text-emerald-600 whitespace-nowrap tracking-tighter">Up to 30%</p>
+                            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">Scholarship</p>
+                            <p className="text-xl font-medium text-emerald-600 whitespace-nowrap tracking-tighter">Up to 30%</p>
                           </div>
                           <div className="space-y-3">
-                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">App. Fee</p>
-                            <p className="text-xl font-black text-slate-900 tracking-tighter">{p.currency || "MYR"} {p.application_fee || "200"}</p>
+                            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">App. Fee</p>
+                            <p className="text-xl font-medium text-slate-900 tracking-tighter">{p.currency || "MYR"} {p.application_fee || "200"}</p>
                           </div>
                         </div>
 
                         <div className="mt-10 space-y-4">
-                          <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">Next Intake</p>
+                          <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400">Next Intake</p>
                           <div className="flex flex-wrap gap-3">
                             {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                              <span key={i} className="rounded-2xl bg-blue-50/50 border border-blue-100/50 px-6 py-3 text-[13px] font-black text-blue-600 transition-all hover:bg-blue-600 hover:text-white cursor-default shadow-sm">
+                              <span key={i} className="rounded-2xl bg-blue-50/50 border border-blue-100/50 px-6 py-3 text-[13px] font-medium text-blue-600 transition-all hover:bg-blue-600 hover:text-white cursor-default shadow-sm">
                                 {intake.trim()}
                               </span>
                             ))}
@@ -745,29 +745,29 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           <div className="text-center">
                             <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
                               <Users className="h-4 w-4" />
-                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Applications</span>
+                              <span className="text-[10px] font-medium uppercase tracking-[0.2em]">Applications</span>
                             </div>
-                            <p className="text-lg font-black text-slate-900 tracking-tighter">312</p>
+                            <p className="text-lg font-medium text-slate-900 tracking-tighter">312</p>
                           </div>
                           <div className="text-center border-x border-slate-100/80">
                             <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
                               <PieChart className="h-4 w-4" />
-                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Acceptance</span>
+                              <span className="text-[10px] font-medium uppercase tracking-[0.2em]">Acceptance</span>
                             </div>
-                            <p className="text-lg font-black text-slate-900 tracking-tighter">62%</p>
+                            <p className="text-lg font-medium text-slate-900 tracking-tighter">62%</p>
                           </div>
                           <div className="text-center">
                             <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
                               <ShieldCheck className="h-4 w-4" />
-                              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Visa Success</span>
+                              <span className="text-[10px] font-medium uppercase tracking-[0.2em]">Visa Success</span>
                             </div>
-                            <p className="text-lg font-black text-slate-900 tracking-tighter">91%</p>
+                            <p className="text-lg font-medium text-slate-900 tracking-tighter">91%</p>
                           </div>
                         </div>
 
                         <div className="mt-8 flex gap-3">
                           <Button 
-                            className="flex-1 h-14 rounded-2xl bg-[#2563EB] text-sm font-black text-white hover:bg-blue-700 shadow-lg shadow-blue-600/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            className="flex-1 h-14 rounded-2xl bg-[#2563EB] text-sm font-medium text-white hover:bg-blue-700 shadow-lg shadow-blue-600/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
@@ -777,7 +777,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="flex-1 h-14 rounded-2xl border-slate-200 text-sm font-black text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                            className="flex-1 h-14 rounded-2xl border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
                             onClick={(e) => {
                               e.stopPropagation();
                             }}
@@ -811,7 +811,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   variant="outline"
                   size="lg"
                   onClick={() => setPage((p) => p + 1)}
-                  className="rounded-3xl border-2 border-slate-200 px-16 h-16 text-base font-black text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
+                  className="rounded-3xl border-2 border-slate-200 px-16 h-16 text-base font-medium text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
                 >
                   Load More Programs
                 </Button>
@@ -835,7 +835,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 {editing ? <Pencil className="h-8 w-8 text-white" /> : <Plus className="h-8 w-8 text-white" />}
               </div>
               <DialogHeader className="text-left">
-                <DialogTitle className="text-3xl font-black tracking-tight text-white">
+                <DialogTitle className="text-3xl font-medium tracking-tight text-white">
                   {editing ? "Edit Program" : "Create New Program"}
                 </DialogTitle>
                 <p className="text-lg text-primary-foreground/70">
@@ -848,7 +848,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           <div className="max-h-[70vh] overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-slate-200">
             <div className="grid gap-8 md:grid-cols-2">
               <div className="md:col-span-2 space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Program Name <span className="text-primary">*</span></Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Program Name <span className="text-primary">*</span></Label>
                 <Input 
                   className="h-14 rounded-xl border-slate-100 bg-white px-5 text-lg font-bold shadow-sm focus-visible:ring-primary"
                   placeholder="e.g. Bachelor of Computer Science"
@@ -858,7 +858,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Degree Level</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Degree Level</Label>
                 <Input 
                   className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                   placeholder="e.g. Bachelor" 
@@ -868,7 +868,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Duration</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Duration</Label>
                 <Input 
                   className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                   placeholder="e.g. 4 Years" 
@@ -878,7 +878,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Campus</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Campus</Label>
                 <Select value={form.campus_id ?? "none"} onValueChange={(v) => setForm({ ...form, campus_id: v === "none" ? null : v })}>
                   <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm">
                     <SelectValue placeholder="Select campus" />
@@ -891,7 +891,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Intake Periods</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Intake Periods</Label>
                 <Input 
                   className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                   placeholder="e.g. September, January" 
@@ -901,7 +901,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Application Deadline</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Application Deadline</Label>
                 <div className="relative">
                   <Input 
                     type="date" 
@@ -915,12 +915,12 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
 
               <div className="md:col-span-2">
                 <div className="mb-6 flex items-center gap-4">
-                  <span className="text-xs font-black uppercase tracking-[0.2em] text-primary">Financial Information</span>
+                  <span className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Financial Information</span>
                   <div className="h-px flex-1 bg-slate-100" />
                 </div>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-3">
-                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Annual Tuition Fee</Label>
+                    <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Annual Tuition Fee</Label>
                     <div className="relative">
                       <Input 
                         type="number" 
@@ -933,7 +933,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Currency</Label>
+                    <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Currency</Label>
                     <Input 
                       className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                       value={form.currency ?? "USD"} 
@@ -942,7 +942,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Application Fee</Label>
+                    <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Application Fee</Label>
                     <div className="relative">
                       <Input 
                         type="number" 
@@ -955,7 +955,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Registration Fee</Label>
+                    <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Registration Fee</Label>
                     <Input 
                       type="number" 
                       className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
@@ -965,7 +965,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">EMGS Fee</Label>
+                    <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">EMGS Fee</Label>
                     <Input 
                       type="number" 
                       className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
@@ -975,7 +975,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Other Fees</Label>
+                    <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Other Fees</Label>
                     <Input 
                       type="number" 
                       className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
@@ -987,7 +987,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="md:col-span-2 space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Scholarship Information</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Scholarship Information</Label>
                 <Input 
                   className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm"
                   placeholder="e.g. 20% Merit Scholarship available"
@@ -997,7 +997,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="md:col-span-2 space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Entry Requirements</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Entry Requirements</Label>
                 <Textarea 
                   className="min-h-[120px] rounded-2xl border-slate-100 bg-white p-4 font-medium shadow-sm focus-visible:ring-primary"
                   placeholder="Describe academic and language requirements..."
@@ -1007,7 +1007,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="md:col-span-2 space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Program Description</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Program Description</Label>
                 <Textarea 
                   className="min-h-[160px] rounded-2xl border-slate-100 bg-white p-4 font-medium shadow-sm focus-visible:ring-primary"
                   placeholder="Detailed overview of the program curriculum and outcomes..."
@@ -1017,7 +1017,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
 
               <div className="space-y-3">
-                <Label className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Program Status</Label>
+                <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Program Status</Label>
                 <Select value={form.status ?? "active"} onValueChange={(v) => setForm({ ...form, status: v as UniStatus })}>
                   <SelectTrigger className="h-12 rounded-xl border-slate-100 bg-white px-4 font-bold shadow-sm">
                     <SelectValue />
@@ -1045,7 +1045,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             <Button 
               onClick={save} 
               disabled={saving}
-              className="rounded-xl px-10 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all bg-[#2563EB] text-white hover:bg-blue-700"
+              className="rounded-xl px-10 font-medium shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all bg-[#2563EB] text-white hover:bg-blue-700"
             >
               {saving ? (
                 <>
@@ -1106,7 +1106,7 @@ function HeroMetaItem({ icon: Icon, label, value }: { icon: any; label: string; 
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center gap-2">
         <Icon className="h-4 w-4 text-slate-400" />
-        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</span>
+        <span className="text-[10px] font-medium uppercase tracking-widest text-slate-400">{label}</span>
       </div>
       <span className="text-sm font-bold text-slate-900">{value}</span>
     </div>
@@ -1132,7 +1132,7 @@ function OverviewItem({ icon: Icon, label, value, flag, isLink }: { icon: any; l
       </div>
       <div className="flex items-center gap-2">
         {flag && <span className="text-sm">{flag}</span>}
-        <span className={cn("text-sm font-black text-slate-900", isLink && "text-primary hover:underline cursor-pointer")}>{value}</span>
+        <span className={cn("text-sm font-medium text-slate-900", isLink && "text-primary hover:underline cursor-pointer")}>{value}</span>
         {isLink && <ExternalLink className="h-3 w-3 text-primary" />}
       </div>
     </div>
@@ -1146,7 +1146,7 @@ function OverviewStat({ label, value, icon: Icon }: { label: string; value: stri
         {Icon && <Icon className="h-4 w-4 text-slate-300 group-hover:text-primary transition-colors" />}
         <span className="text-sm font-bold text-slate-400">{label}</span>
       </div>
-      <span className="text-sm font-black text-slate-900">{value}</span>
+      <span className="text-sm font-medium text-slate-900">{value}</span>
     </div>
   );
 }
@@ -1164,9 +1164,9 @@ function IntakeItem({ label, days, status = 'primary' }: { label: string; days: 
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-300 transition-colors group-hover:bg-blue-50 group-hover:text-blue-400">
           <Calendar className="h-5 w-5" />
         </div>
-        <span className="text-base font-black text-slate-900">{label}</span>
+        <span className="text-base font-medium text-slate-900">{label}</span>
       </div>
-      <span className={cn("text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl", statusColors[status])}>
+      <span className={cn("text-[10px] font-medium uppercase tracking-widest px-3 py-1.5 rounded-xl", statusColors[status])}>
         {days}
       </span>
     </div>
@@ -1194,7 +1194,7 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
         </div>
       )}
       <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger className="min-w-[140px] h-12 rounded-xl border-slate-100 bg-slate-50 font-black shadow-inner">
+        <SelectTrigger className="min-w-[140px] h-12 rounded-xl border-slate-100 bg-slate-50 font-medium shadow-inner">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-slate-100">
@@ -1235,9 +1235,9 @@ function ProgramMeta({ icon: Icon, value }: { icon: any; value: string }) {
 function ProgramStat({ label, value, isPrimary, isHighlight }: { label: string; value: string; isPrimary?: boolean; isHighlight?: boolean }) {
   return (
     <div className="space-y-1">
-      <p className="text-[9px] font-black uppercase tracking-widest text-black">{label}</p>
+      <p className="text-[9px] font-medium uppercase tracking-widest text-black">{label}</p>
       <p className={cn(
-        "text-xs font-black tracking-tight",
+        "text-xs font-medium tracking-tight",
         isPrimary ? "text-primary text-sm" : isHighlight ? "text-emerald-500" : "text-black"
       )}>
         {value}

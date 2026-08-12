@@ -3,49 +3,58 @@ import fs from 'fs';
 import path from 'path';
 
 async function bootstrap() {
-  // Use the password provided by the user in context
   const DB_PASSWORD = "bxwhgrS6uoBsEEru"; 
   const PROJECT_ID = "qdveirhlzuzrxaqjevxr";
-  const DB_USER = "postgres";
-  const DB_HOST = `db.${PROJECT_ID}.supabase.co`;
-  const DB_PORT = 5432;
-  const DB_NAME = "postgres";
+  
+  // Try common Supabase connection hosts
+  const hosts = [
+    `db.${PROJECT_ID}.supabase.co`,
+    `aws-0-us-east-1.pooler.supabase.com`
+  ];
 
-  const connectionString = `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-
-  console.log(`🔗 Connecting to database at ${DB_HOST}...`);
-  const client = new Client({
-    connectionString,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
-
-  try {
-    await client.connect();
-    console.log("✅ Connected to database.");
-
-    const helperPath = path.join(process.cwd(), 'db/migrations/20260812000000_exec_sql_helper.sql');
-    if (!fs.existsSync(helperPath)) {
-      throw new Error(`Migration helper file not found at ${helperPath}`);
-    }
-
-    const sql = fs.readFileSync(helperPath, 'utf8');
-    console.log("🚀 Applying exec_sql helper...");
+  for (const host of hosts) {
+    // Try both direct (5432) and pooler (6543) ports
+    const ports = [5432, 6543];
     
-    await client.query(sql);
-    console.log("✅ exec_sql helper applied successfully.");
+    for (const port of ports) {
+      // Use postgres.project_id for pooler if host is common pooler
+      const user = host.includes('pooler') ? `postgres.${PROJECT_ID}` : 'postgres';
+      
+      console.log(`🔗 Trying to connect to ${host}:${port} as ${user}...`);
+      
+      const client = new Client({
+        host,
+        port,
+        database: 'postgres',
+        user,
+        password: DB_PASSWORD,
+        ssl: { rejectUnauthorized: false },
+        connectionTimeoutMillis: 5000,
+      });
 
-    // Also reload schema just in case
-    await client.query("NOTIFY pgrst, 'reload schema';");
-    console.log("✨ PostgREST schema reload notified.");
+      try {
+        await client.connect();
+        console.log("✅ Connected!");
 
-  } catch (err: any) {
-    console.error("❌ Bootstrap failed:", err.message);
-    process.exit(1);
-  } finally {
-    await client.end();
+        const helperPath = path.join(process.cwd(), 'db/migrations/20260812000000_exec_sql_helper.sql');
+        const sql = fs.readFileSync(helperPath, 'utf8');
+        
+        console.log("🚀 Applying exec_sql helper...");
+        await client.query(sql);
+        console.log("✅ Applied!");
+        
+        await client.query("NOTIFY pgrst, 'reload schema';");
+        await client.end();
+        return; // Success!
+      } catch (err: any) {
+        console.log(`❌ Failed: ${err.message}`);
+        try { await client.end(); } catch {}
+      }
+    }
   }
+  
+  console.error("❌ All connection attempts failed.");
+  process.exit(1);
 }
 
 bootstrap();

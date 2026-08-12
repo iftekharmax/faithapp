@@ -196,7 +196,8 @@ function UniversityDetail() {
   }
 
   return (
-    <div className="mx-auto max-w-[1600px] space-y-8 animate-in fade-in duration-500 px-4 py-8">
+    <div className="min-h-screen bg-[#F8FAFC] -mt-10 pt-10 px-8 pb-12 animate-in fade-in duration-700">
+      <div className="mx-auto max-w-[1600px] space-y-10">
       {/* Back button and title */}
       <div className="flex items-center gap-2 mb-4">
         <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black hover:bg-slate-100" onClick={() => navigate({ to: "/universities" })}>
@@ -247,11 +248,11 @@ function UniversityDetail() {
 
           <div className="flex gap-6">
             <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">4</span>
+              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">{campuses.length}</span>
               <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Campuses</span>
             </div>
             <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">155</span>
+              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">{programs.length}</span>
               <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Programs</span>
             </div>
           </div>
@@ -347,10 +348,9 @@ function UniversityDetail() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
-
-
 }
 
 
@@ -443,16 +443,23 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
   const [degreeFilter, setDegreeFilter] = useState<string>("all");
+  const [campusFilter, setCampusFilter] = useState<string>("all");
+  const [sortOrder, setSortOrder] = useState<string>("newest");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 9;
 
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
   const filtered = programs.filter((p) =>
     (!search || p.name.toLowerCase().includes(search.toLowerCase())) &&
-    (degreeFilter === "all" || p.degree === degreeFilter)
-  );
+    (degreeFilter === "all" || p.degree === degreeFilter) &&
+    (campusFilter === "all" || p.campus_id === campusFilter)
+  ).sort((a, b) => {
+    if (sortOrder === "newest") return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+    if (sortOrder === "oldest") return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
+    return 0;
+  });
 
   const displayed = filtered.slice(0, page * itemsPerPage);
   const hasMore = displayed.length < filtered.length;
@@ -510,74 +517,93 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
 
   return (
     <>
-    <div className="relative flex flex-col pt-6">
-      <div className="flex flex-wrap items-center justify-between gap-6 px-12">
-        <div className="flex flex-wrap items-center gap-4 flex-1">
-          <div className="relative min-w-[360px] flex-1 max-w-md">
-            <Search className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <Input 
-              placeholder="Search programs..." 
-              value={search} 
-              onChange={(e) => setSearch(e.target.value)} 
-              className="pl-12 h-14 rounded-2xl border-slate-200 bg-white text-base font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-sm" 
-            />
+    <div className="relative flex flex-col pt-8">
+      {/* Filter Container */}
+      <div className="bg-white rounded-[18px] p-5 shadow-[0_2px_10px_rgba(15,23,42,0.05)] mx-12">
+        <div className="flex flex-wrap items-center justify-between gap-5">
+          <div className="flex flex-wrap items-center gap-4 flex-1">
+            {/* Search Box */}
+            <div className="relative min-w-[360px] flex-1 max-w-md">
+              <Search className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-500" />
+              <Input 
+                placeholder="Search programs..." 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)} 
+                className="pl-12 h-[48px] rounded-full border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
+              />
+            </div>
+            
+            <Select value={degreeFilter} onValueChange={setDegreeFilter}>
+              <SelectTrigger className="w-[180px] h-[46px] rounded-[14px] border-slate-100 bg-slate-50/50 font-medium text-slate-900 focus:ring-2 focus:ring-blue-600/10 shadow-none px-5 transition-all hover:bg-slate-100/80 group">
+                <SelectValue placeholder="All degrees" />
+              </SelectTrigger>
+              <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 animate-in fade-in zoom-in-95 duration-200">
+                <SelectItem value="all" className="rounded-xl font-medium py-2.5">All degrees</SelectItem>
+                {degrees.map(d => <SelectItem key={d} value={d} className="rounded-xl font-medium py-2.5">{d}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
-          <Select value={degreeFilter} onValueChange={setDegreeFilter}>
-            <SelectTrigger className="w-[200px] h-14 rounded-2xl border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-blue-600/10 shadow-sm px-6">
-              <SelectValue placeholder="All degrees" />
-            </SelectTrigger>
-            <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2">
-              <SelectItem value="all" className="rounded-xl font-bold py-3">All degrees</SelectItem>
-              {degrees.map(d => <SelectItem key={d} value={d} className="rounded-xl font-bold py-3">{d}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
+              <Download className="mr-2 h-4 w-4" /> Export
+            </Button>
+            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
+              <Share2 className="mr-2 h-4 w-4" /> Import
+            </Button>
+            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
+              <FileText className="mr-2 h-4 w-4" /> Template
+            </Button>
+            <Button 
+              onClick={openNew} 
+              className="h-[46px] rounded-[14px] bg-gradient-to-r from-[#2563EB] to-[#3B82F6] font-medium text-white shadow-lg shadow-blue-600/20 px-8 ml-2 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-600/30 active:scale-[0.98]"
+            >
+              <Plus className="mr-2 h-5 w-5" /> Add Program
+            </Button>
+          </div>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="h-14 rounded-2xl border-slate-200 font-bold text-slate-900 hover:bg-slate-50 px-6 text-sm shadow-sm transition-all hover:border-slate-300">
-            <Download className="mr-2 h-4 w-4" /> Export programs
-          </Button>
-          <Button variant="outline" className="h-14 rounded-2xl border-slate-200 font-bold text-slate-900 hover:bg-slate-50 px-6 text-sm shadow-sm transition-all hover:border-slate-300">
-            <Share2 className="mr-2 h-4 w-4" /> Import programs
-          </Button>
-          <Button variant="outline" className="h-14 rounded-2xl border-slate-200 font-bold text-slate-900 hover:bg-slate-50 px-6 text-sm shadow-sm transition-all hover:border-slate-300">
-            <FileText className="mr-2 h-4 w-4" /> Template
-          </Button>
-          <Button onClick={openNew} className="h-14 rounded-2xl bg-[#2563EB] font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 px-10 ml-2 transition-all hover:scale-[1.02] active:scale-[0.98]">
-            <Plus className="mr-2 h-5 w-5" /> Add program
-          </Button>
-        </div>
-      </div>
 
-      <div className="flex flex-wrap items-center gap-4 px-12 mt-8">
-        <FilterDropdown placeholder="All Faculties" />
-        <FilterDropdown 
-          placeholder="All Campuses" 
-          options={campuses.map(c => ({ label: c.name, value: c.id }))}
-        />
-        <FilterDropdown 
-          placeholder="Study Mode" 
-          options={[
-            { label: "Full-time", value: "full_time" },
-            { label: "Part-time", value: "part_time" },
-            { label: "Online", value: "online" }
-          ]}
-        />
-        <FilterDropdown placeholder="All Intakes" />
-        <FilterDropdown placeholder="All Scholarships" />
-        <FilterDropdown placeholder="Sort by: Newest" />
-        
-        <div className="ml-auto flex items-center gap-3">
-          <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 shadow-sm transition-all hover:bg-blue-100">
-            <LayoutGrid className="h-6 w-6" />
-          </Button>
-          <Button size="icon" variant="ghost" className="h-14 w-14 rounded-2xl text-slate-400 hover:bg-slate-50 transition-all">
-            <ListIcon className="h-6 w-6" />
-          </Button>
+        {/* Filter Chips / Secondary Filters */}
+        <div className="flex flex-wrap items-center gap-4 mt-5 pt-5 border-t border-slate-50">
+          <FilterDropdown placeholder="All Faculties" />
+          <FilterDropdown 
+            placeholder="All Campuses" 
+            value={campusFilter}
+            onValueChange={setCampusFilter}
+            options={campuses.map(c => ({ label: c.name, value: c.id }))}
+          />
+          <FilterDropdown 
+            placeholder="Study Mode" 
+            options={[
+              { label: "Full-time", value: "full_time" },
+              { label: "Part-time", value: "part_time" },
+              { label: "Online", value: "online" }
+            ]}
+          />
+          <FilterDropdown placeholder="All Intakes" />
+          <FilterDropdown placeholder="All Scholarships" />
+          <FilterDropdown 
+            placeholder="Sort by: Newest" 
+            value={sortOrder}
+            onValueChange={setSortOrder}
+            options={[
+              { label: "Newest", value: "newest" },
+              { label: "Oldest", value: "oldest" }
+            ]}
+          />
+          
+          <div className="ml-auto flex items-center p-1 bg-slate-100/50 rounded-xl">
+            <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/50 transition-all">
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg text-slate-400 hover:bg-white/50 transition-all">
+              <ListIcon className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
       
-      <hr className="mt-10 mb-2 border-transparent" />
+      <div className="mt-8 mb-2" />
 
     <div className="mt-8 pb-10">
       {loading ? (
@@ -661,113 +687,132 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         ) : (
           <div className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 px-12">
-              {displayed.map((p) => {
+              {displayed.map((p, idx) => {
                 const universityName = uni?.name || "University";
+                // Varied gradients for the premium grid look
+                const cardGradients = [
+                  "from-white to-[#FCFCFD]",
+                  "from-white to-[#F8FAFF]",
+                  "from-white to-[#FBFAFF]",
+                  "from-white to-[#F8FFF9]"
+                ];
+                const gradient = cardGradients[idx % cardGradients.length];
+
                 return (
-                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[40px] bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-blue-100/50 hover:-translate-y-2">
-                    <div className="flex flex-1 flex-col p-12">
-                      <div className="mb-8 flex items-start justify-between gap-6">
-                        <div className="space-y-5 w-full">
-                          <div className="flex flex-wrap items-center gap-3">
-                            <span className="inline-flex items-center rounded-xl bg-orange-50 px-4 py-1.5 text-[11px] font-medium uppercase tracking-widest text-orange-600 border border-orange-100/50 shadow-sm">
-                              <Star className="mr-2 h-4 w-4 fill-orange-600" /> Featured
+                  <div 
+                    key={p.id} 
+                    className={cn(
+                      "group relative flex flex-col overflow-hidden rounded-[20px] bg-gradient-to-br border border-[#E8ECF3] shadow-[0_2px_10px_rgba(15,23,42,0.05)] transition-all duration-300 ease-in-out hover:shadow-[0_16px_40px_rgba(37,99,235,0.15)] hover:border-[#3B82F6] hover:-translate-y-[6px]",
+                      gradient
+                    )}
+                  >
+                    <div className="flex flex-1 flex-col p-7">
+                      <div className="mb-6 flex items-start justify-between">
+                        <div className="space-y-4 w-full">
+                          {/* Badges */}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center rounded-full bg-orange-50 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-orange-600">
+                              <Star className="mr-1.5 h-3 w-3 fill-orange-500" /> Featured
                             </span>
                             {p.status === "active" && (
-                              <span className="inline-flex items-center rounded-xl bg-emerald-50 px-4 py-1.5 text-[11px] font-medium uppercase tracking-widest text-emerald-600 border border-emerald-100/50 shadow-sm">
-                                <Zap className="mr-2 h-4 w-4 fill-emerald-600" /> Active
+                              <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-emerald-600">
+                                <Zap className="mr-1.5 h-3 w-3 fill-emerald-500" /> Active
                               </span>
                             )}
                           </div>
                           
-                          <div className="flex items-start gap-6">
-                            <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-blue-50/50 p-4 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                              <Activity className="h-10 w-10 text-blue-600 group-hover:text-white transition-colors" />
+                          {/* Title and Icon */}
+                          <div className="flex items-start gap-4">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50/50 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 transition-all duration-300">
+                              <Activity className="h-7 w-7 text-blue-600 group-hover:text-white transition-colors" />
                             </div>
-                            <div className="flex-1 pr-8 pt-2">
-                              <h3 className="text-[18px] font-bold leading-[1.15] text-slate-900 line-clamp-2 min-h-[56px] tracking-tight">
+                            <div className="flex-1 pr-6">
+                              <h3 className="text-[20px] font-bold leading-tight text-[#0F172A] line-clamp-2 min-h-[50px]">
                                 {p.name}
                               </h3>
-                              <p className="text-[16px] font-medium text-slate-400 mt-2 tracking-widest uppercase">{universityName}</p>
+                              <p className="text-[14px] font-medium text-slate-500 mt-1">{universityName}</p>
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-1 gap-2.5 pt-3">
-                            <div className="flex items-center gap-4 text-[14px] font-normal text-slate-600">
-                              <GraduationCap className="h-4 w-4 text-blue-600" />
+                          {/* Meta Information */}
+                          <div className="space-y-2 pt-2">
+                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
+                              <GraduationCap className="h-4 w-4 text-blue-500" />
                               <span>{p.degree || "Bachelor's Degree"}</span>
                             </div>
-                            <div className="flex items-center gap-4 text-[14px] font-normal text-slate-600">
-                              <Clock className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
+                              <Clock className="h-4 w-4 text-blue-500" />
                               <span>{p.duration || "3 Years (9 Semesters)"}</span>
                             </div>
-                            <div className="flex items-center gap-4 text-[14px] font-normal text-slate-600">
-                              <MapPin className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
+                              <MapPin className="h-4 w-4 text-blue-500" />
                               <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
                             </div>
                           </div>
                         </div>
 
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all absolute right-8 top-8 bg-white/50 backdrop-blur-sm shadow-sm ring-1 ring-slate-100/50">
+                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
                           <Heart className="h-5 w-5" />
                         </Button>
                       </div>
 
-                      <div className="mt-10 pt-10 border-t border-slate-100/80">
-                        <div className="grid grid-cols-3 gap-6 text-center">
-                          <div className="space-y-3">
-                            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">Tuition Fee</p>
-                            <p className="text-xl font-medium text-blue-600 tracking-tighter">
+                      {/* Tuition Stats Section */}
+                      <div className="mt-6 pt-6 border-t border-[#E8ECF3]">
+                        <div className="grid grid-cols-3 gap-3">
+                          <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 text-center">
+                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">Tuition Fee</p>
+                            <p className="text-[15px] font-bold text-blue-600">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
-                          <div className="space-y-3 border-x border-slate-100/80 px-3">
-                            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">Scholarship</p>
-                            <p className="text-xl font-medium text-emerald-600 whitespace-nowrap tracking-tighter">Up to 30%</p>
+                          <div className="bg-emerald-50/30 rounded-xl p-3 border border-emerald-100/30 text-center">
+                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">Scholarship</p>
+                            <p className="text-[15px] font-bold text-emerald-600">Up to 30%</p>
                           </div>
-                          <div className="space-y-3">
-                            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">App. Fee</p>
-                            <p className="text-xl font-medium text-slate-900 tracking-tighter">{p.currency || "MYR"} {p.application_fee || "200"}</p>
+                          <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 text-center">
+                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">App. Fee</p>
+                            <p className="text-[15px] font-bold text-[#0F172A]">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                           </div>
                         </div>
 
-                        <div className="mt-10 space-y-4">
-                          <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400">Next Intake</p>
+                        {/* Intakes */}
+                        <div className="mt-6 space-y-2">
+                          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">Next Intake</p>
                           <div className="flex flex-nowrap gap-2 overflow-x-auto scrollbar-none pb-1">
                             {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                              <span key={i} className="rounded-2xl bg-blue-50/50 border border-blue-100/50 px-4 py-2 text-[12px] font-medium text-blue-600 transition-all hover:bg-blue-600 hover:text-white cursor-default shadow-sm whitespace-nowrap">
+                              <span key={i} className="rounded-full bg-blue-50 text-blue-600 px-3 py-1 text-[11px] font-medium border border-blue-100/50 whitespace-nowrap">
                                 {intake.trim()}
                               </span>
                             ))}
                           </div>
                         </div>
 
-                        <div className="mt-12 grid grid-cols-3 gap-4 border-t border-slate-100/80 pt-10 pb-2">
-                          <div className="text-center">
-                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
-                              <Users className="h-4 w-4" />
-                              <span className="text-[10px] font-medium uppercase tracking-[0.2em]">Applications</span>
-                            </div>
-                            <p className="text-lg font-medium text-slate-900 tracking-tighter">312</p>
+                        {/* Bottom Statistics */}
+                        <div className="mt-8 grid grid-cols-3 gap-3">
+                          <div className="bg-slate-50 rounded-xl p-2.5 text-center transition-all hover:bg-white hover:shadow-sm hover:ring-1 hover:ring-slate-100 group/stat">
+                            <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400 flex items-center justify-center gap-1.5 mb-1">
+                              <Users className="h-3 w-3" /> Applications
+                            </p>
+                            <p className="text-[15px] font-bold text-[#0F172A]">312</p>
                           </div>
-                          <div className="text-center border-x border-slate-100/80">
-                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
-                              <PieChart className="h-4 w-4" />
-                              <span className="text-[10px] font-medium uppercase tracking-[0.2em]">Acceptance</span>
-                            </div>
-                            <p className="text-lg font-medium text-slate-900 tracking-tighter">62%</p>
+                          <div className="bg-slate-50 rounded-xl p-2.5 text-center transition-all hover:bg-white hover:shadow-sm hover:ring-1 hover:ring-slate-100">
+                            <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400 flex items-center justify-center gap-1.5 mb-1">
+                              <PieChart className="h-3 w-3" /> Acceptance
+                            </p>
+                            <p className="text-[15px] font-bold text-[#0F172A]">62%</p>
                           </div>
-                          <div className="text-center">
-                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-2">
-                              <ShieldCheck className="h-4 w-4" />
-                              <span className="text-[10px] font-medium uppercase tracking-[0.2em]">Visa Success</span>
-                            </div>
-                            <p className="text-lg font-medium text-slate-900 tracking-tighter">91%</p>
+                          <div className="bg-slate-50 rounded-xl p-2.5 text-center transition-all hover:bg-white hover:shadow-sm hover:ring-1 hover:ring-slate-100">
+                            <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400 flex items-center justify-center gap-1.5 mb-1">
+                              <ShieldCheck className="h-3 w-3" /> Visa Success
+                            </p>
+                            <p className="text-[15px] font-bold text-[#0F172A]">91%</p>
                           </div>
                         </div>
 
+                        {/* Actions */}
                         <div className="mt-8 flex gap-3">
                           <Button 
-                            className="flex-1 h-14 rounded-2xl bg-[#2563EB] text-sm font-medium text-white hover:bg-blue-700 shadow-lg shadow-blue-600/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            className="flex-1 h-[44px] rounded-xl bg-gradient-to-r from-[#2563EB] to-[#3B82F6] text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-600/20 transition-all"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
@@ -777,24 +822,25 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="flex-1 h-14 rounded-2xl border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                            className="flex-1 h-[44px] rounded-xl border-[#E8ECF3] text-sm font-medium text-slate-600 hover:border-[#3B82F6] hover:text-[#3B82F6] transition-all bg-white"
                             onClick={(e) => {
                               e.stopPropagation();
+                              openEdit(p);
                             }}
                           >
                             View Details
                           </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="outline" size="icon" className="h-14 w-14 shrink-0 rounded-2xl border-slate-200 text-slate-400 hover:bg-slate-50 hover:border-slate-300 transition-all">
-                                <MoreVertical className="h-6 w-6" />
+                              <Button variant="outline" size="icon" className="h-[44px] w-[44px] shrink-0 rounded-full border-[#E8ECF3] text-slate-400 hover:border-[#3B82F6] transition-all bg-white">
+                                <MoreHorizontal className="h-5 w-5" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[180px]">
-                              <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-xl font-bold py-3"><Pencil className="mr-3 h-4 w-4" /> Edit Program</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-xl font-bold py-3 text-blue-600 bg-blue-50/50"><Plus className="mr-3 h-4 w-4" /> Apply Now</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-xl font-medium py-2.5"><Pencil className="mr-3 h-4 w-4" /> Edit Program</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-xl font-medium py-2.5 text-blue-600 bg-blue-50/50"><Plus className="mr-3 h-4 w-4" /> Apply Now</DropdownMenuItem>
                               <DropdownMenuSeparator className="my-2 bg-slate-100" />
-                              <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-bold py-3 text-rose-600 hover:bg-rose-50"><Trash2 className="mr-3 h-4 w-4" /> Delete Program</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-medium py-2.5 text-rose-600 hover:bg-rose-50"><Trash2 className="mr-3 h-4 w-4" /> Delete Program</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
@@ -1207,15 +1253,24 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
 }
 
 function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
+  const isSelected = value && value !== "all";
+
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-fit min-w-[130px] h-14 rounded-2xl border-slate-200 bg-white px-5 font-bold text-slate-900 focus:ring-2 focus:ring-blue-600/10 shadow-sm transition-all hover:border-slate-300">
+      <SelectTrigger 
+        className={cn(
+          "w-fit min-w-[130px] h-[46px] rounded-[14px] px-5 font-medium transition-all shadow-none outline-none group",
+          isSelected 
+            ? "bg-blue-600 border-blue-600 text-white hover:bg-blue-700" 
+            : "border-slate-100 bg-slate-50/50 text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+        )}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[200px]">
-        <SelectItem value="all" className="rounded-xl font-bold py-3 focus:bg-slate-50">{placeholder}</SelectItem>
+      <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[200px] animate-in fade-in zoom-in-95 duration-200">
+        <SelectItem value="all" className="rounded-xl font-medium py-2.5 focus:bg-slate-50">{placeholder}</SelectItem>
         {options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value} className="rounded-xl font-bold py-3 focus:bg-slate-50">{opt.label}</SelectItem>
+          <SelectItem key={opt.value} value={opt.value} className="rounded-xl font-medium py-2.5 focus:bg-slate-50">{opt.label}</SelectItem>
         ))}
       </SelectContent>
     </Select>

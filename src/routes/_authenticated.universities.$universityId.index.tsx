@@ -565,6 +565,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           <FilterDropdown placeholder="All Degrees" />
           <FilterDropdown placeholder="All Intakes" />
           <FilterDropdown placeholder="All Scholarships" />
+          <FilterDropdown placeholder="All Duration" />
           <FilterDropdown 
             placeholder="Newest" 
             value={sortOrder}

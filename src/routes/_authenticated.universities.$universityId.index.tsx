@@ -196,7 +196,8 @@ function UniversityDetail() {
   }
 
   return (
-    <div className="mx-auto max-w-[1600px] space-y-8 animate-in fade-in duration-500 px-4 py-8">
+    <div className="min-h-screen bg-[#F8FAFC] -mt-10 pt-10 px-8 pb-12 animate-in fade-in duration-700">
+      <div className="mx-auto max-w-[1600px] space-y-10">
       {/* Back button and title */}
       <div className="flex items-center gap-2 mb-4">
         <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black hover:bg-slate-100" onClick={() => navigate({ to: "/universities" })}>

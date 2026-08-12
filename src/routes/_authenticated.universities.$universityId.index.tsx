@@ -1236,15 +1236,24 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
 }
 
 function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
+  const isSelected = value && value !== "all";
+
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-fit min-w-[130px] h-14 rounded-2xl border-slate-200 bg-white px-5 font-bold text-slate-900 focus:ring-2 focus:ring-blue-600/10 shadow-sm transition-all hover:border-slate-300">
+      <SelectTrigger 
+        className={cn(
+          "w-fit min-w-[130px] h-[46px] rounded-[14px] px-5 font-medium transition-all shadow-none outline-none group",
+          isSelected 
+            ? "bg-blue-600 border-blue-600 text-white hover:bg-blue-700" 
+            : "border-slate-100 bg-slate-50/50 text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+        )}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[200px]">
-        <SelectItem value="all" className="rounded-xl font-bold py-3 focus:bg-slate-50">{placeholder}</SelectItem>
+      <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[200px] animate-in fade-in zoom-in-95 duration-200">
+        <SelectItem value="all" className="rounded-xl font-medium py-2.5 focus:bg-slate-50">{placeholder}</SelectItem>
         {options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value} className="rounded-xl font-bold py-3 focus:bg-slate-50">{opt.label}</SelectItem>
+          <SelectItem key={opt.value} value={opt.value} className="rounded-xl font-medium py-2.5 focus:bg-slate-50">{opt.label}</SelectItem>
         ))}
       </SelectContent>
     </Select>

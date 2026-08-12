@@ -564,26 +564,18 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         </div>
 
         {/* Filter Chips / Secondary Filters */}
-        <div className="flex flex-wrap items-center gap-4 mt-5 pt-5 border-t border-slate-50">
-          <FilterDropdown placeholder="All Faculties" />
+        <div className="flex flex-wrap items-center gap-2 mt-5 pt-5 border-t border-slate-50">
           <FilterDropdown 
-            placeholder="All Campuses" 
+            placeholder="Campuses" 
             value={campusFilter}
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
+          <FilterDropdown placeholder="Degrees" />
+          <FilterDropdown placeholder="Intakes" />
+          <FilterDropdown placeholder="Scholarships" />
           <FilterDropdown 
-            placeholder="Study Mode" 
-            options={[
-              { label: "Full-time", value: "full_time" },
-              { label: "Part-time", value: "part_time" },
-              { label: "Online", value: "online" }
-            ]}
-          />
-          <FilterDropdown placeholder="All Intakes" />
-          <FilterDropdown placeholder="All Scholarships" />
-          <FilterDropdown 
-            placeholder="Sort by: Newest" 
+            placeholder="Newest" 
             value={sortOrder}
             onValueChange={setSortOrder}
             options={[
@@ -1240,7 +1232,7 @@ function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { p
         className={cn(
           "w-fit min-w-[130px] h-[46px] rounded-[14px] px-5 font-medium transition-all shadow-none outline-none group",
           isSelected 
-            ? "bg-blue-600 border-blue-600 text-white hover:bg-blue-700" 
+            ? "border-blue-600 text-blue-600 hover:bg-blue-50" 
             : "border-slate-100 bg-slate-50/50 text-slate-600 hover:bg-blue-50 hover:text-blue-600"
         )}
       >

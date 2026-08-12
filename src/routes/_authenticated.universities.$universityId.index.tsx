@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { 
   ArrowLeft, Building2, ExternalLink, Plus, Pencil, Trash2, MapPin, 
   GraduationCap, Calendar, DollarSign, Award, Loader2, AlertCircle, 
@@ -8,8 +8,8 @@ import {
   ArrowRight, MoreHorizontal, LayoutGrid, List as ListIcon, 
   TrendingUp, Search, RotateCcw, Filter, ChevronRight,
   School, Book, UserCheck, Star, ShieldCheck, Flame, Zap, Trophy,
-  History, PieChart, Activity, Info, Landmark, Languages,
-  MoreVertical
+  History, PieChart, Activity, Info, Landmark, Languages, GraduationCap as GradIcon,
+  MousePointer2, Share, Check, MoreVertical
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";

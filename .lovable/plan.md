@@ -1,73 +1,32 @@
-# ApplyBoard-Style Application Management System
+# Plan: Automated Migration Command
 
-This is a large scope (12 sections, ~9 new tables, 8-tab detail page). I'll extend your existing modules (applications, programs, universities, students) rather than rebuild. Before I start, please confirm the plan or trim scope.
+Implement an automated database migration system that allows me to apply schema changes directly to Supabase using a service role key.
 
-## What already exists (will be extended, not replaced)
-- `/applications` list + `/applications/new` + `/applications/:id`
-- `/programs`, `/universities`, `/countries`, `/students`
-- `applications`, `programs`, `institutions`, `campuses`, `countries`, `intakes` tables
-- Auth, RBAC (admin/counselor/processor/student), sidebar, chat, notifications
+## User Review Required
 
-## New database migration (`20260734000000_ats_system.sql`)
-Adds tables + RLS + realtime + grants:
-- `application_status_history` — status changes with actor + timestamp
-- `application_documents` — file metadata (storage bucket `application-docs`), type enum, expiry, version
-- `application_checklists` — per-application checklist items + completion %
-- `application_reviews` — Processor → Sr Processor → Manager → Submit stages
-- `application_offers` — conditional/unconditional/reject, deposit, acceptance
-- `application_activities` — unified activity log (auto-populated by triggers)
-- New enum `application_status_v2` with all 15 statuses (adds columns to `applications` if missing: `priority`, `deadline`, `assigned_processor`, `application_date`)
-- Storage bucket `application-docs` (private) + RLS policies
-- Trigger: auto-log to `application_activities` on status/document/checklist/review/offer changes
-- Trigger: when all required checklist items checked → status = `ready_for_review`
-- RLS: admin all; counselor/processor see assigned only; student sees own
+> [!IMPORTANT]
+> To use this system, you MUST add your Supabase Service Role Key as a secret named `SB_SERVICE_ROLE_KEY` in the project settings.
 
-## New/extended routes
-1. **`/programs`** (extend existing) — advanced filters (country, institution, campus, intake, fee range, scholarship, duration), multi-select compare modal
-2. **`/applications/new`** (extend) — priority, deadline, processor, auto-generated App ID
-3. **`/applications/:id`** (extend) — sticky header + horizontal status stepper + tabbed layout:
-   - Overview
-   - Documents (drag-drop upload, preview, replace, expiry, progress)
-   - Checklist (auto-status trigger)
-   - Review (4-stage workflow, lock next until prev approved)
-   - Offers (upload letter, accept/reject, expiry warning)
-   - Timeline (activity feed)
-4. **`/dashboard`** (extend, non-destructive) — add ATS widget row + 3 charts (by country / intake / monthly trend) using existing recharts
+## Proposed Changes
 
-## New reusable components
-- `components/applications/StatusStepper.tsx`
-- `components/applications/DocumentUploader.tsx` (drag-drop, progress)
-- `components/applications/ChecklistPanel.tsx`
-- `components/applications/ReviewWorkflow.tsx`
-- `components/applications/OfferPanel.tsx`
-- `components/applications/ActivityTimeline.tsx`
-- `components/programs/ProgramCompareModal.tsx`
+### Database & Scripts
 
-## Realtime
-Subscribe on `/applications/:id` to `application_status_history`, `application_activities`, `application_documents` — Supabase channel filtered by application_id.
+- **`scripts/migrate.ts`**: Create a robust TypeScript migration runner that:
+  - Connects to Supabase using the Service Role Key.
+  - Tracks applied migrations in a `public._migrations` table.
+  - Applies pending `.sql` files from `db/migrations/` in chronological order.
+  - Triggers a PostgREST schema reload after completion.
+- **`package.json`**: Add `npm run db:migrate` to execute the migration runner using `tsx`.
+- **`db/migrations/20260754000000_pgrst_reload_rpc.sql`**: Ensure the `exec_sql` RPC exists in the database to allow raw SQL execution via the migration script.
 
-## Security
-- RLS on every new table, keyed by `assigned_counselor` / `assigned_processor` / `has_role('admin')`
-- Storage RLS: only assigned staff + admin can download; owner student can read own
-- File validation client + server (mime, size ≤ 10MB)
+## Technical Details
 
-## What I will NOT touch
-Auth, existing sidebar entries, existing route files' unrelated logic, chat, students module, universities module internals, theme, layouts.
+- Uses `@supabase/supabase-js` for database interaction.
+- The `exec_sql` function will be defined as `SECURITY DEFINER` to allow administrative tasks.
+- The script will read `SB_SERVICE_ROLE_KEY` from the environment/secrets at runtime.
 
-## Seed data
-Migration inserts sample checklist templates and 2-3 demo activity rows for the admin's existing applications so the UI is populated on first load.
+## Verification Plan
 
-## Delivery order (single turn)
-1. Write + apply migration
-2. Storage bucket + policies
-3. Components
-4. Route extensions
-5. Dashboard widgets
-6. Verify with `tsgo`
-
-## Please confirm
-- OK to add the 6 tabs on `/applications/:id` (Overview stays, others are new)?
-- OK that the new status enum has 15 values and I'll migrate existing `applications.status` values into it?
-- Any status names you want renamed?
-
-Reply "go" to proceed, or edit the scope.
+1. **Dry Run**: Check if the script correctly identifies pending vs. applied migrations.
+2. **Execution**: Run a test migration (e.g., adding a metadata column) and verify it reflects in the Supabase schema.
+3. **Logs**: Check console output for success/failure states.

@@ -1207,13 +1207,13 @@ function FilterSelect({ icon: Icon, placeholder, label, value, onValueChange, op
 function FilterDropdown({ placeholder, value, onValueChange, options = [] }: { placeholder: string; value?: string; onValueChange?: (v: string) => void; options?: { label: string; value: string }[] }) {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-fit min-w-[130px] h-11 rounded-xl border-slate-200 bg-white px-4 font-medium text-black focus:ring-1 focus:ring-blue-600/20 shadow-sm transition-all hover:border-slate-300">
+      <SelectTrigger className="w-fit min-w-[130px] h-14 rounded-2xl border-slate-200 bg-white px-5 font-bold text-slate-900 focus:ring-2 focus:ring-blue-600/10 shadow-sm transition-all hover:border-slate-300">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent className="rounded-xl border-slate-100 shadow-xl">
-        <SelectItem value="all" className="font-medium text-black focus:bg-slate-50">{placeholder}</SelectItem>
+      <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[200px]">
+        <SelectItem value="all" className="rounded-xl font-bold py-3 focus:bg-slate-50">{placeholder}</SelectItem>
         {options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value} className="font-medium text-black focus:bg-slate-50">{opt.label}</SelectItem>
+          <SelectItem key={opt.value} value={opt.value} className="rounded-xl font-bold py-3 focus:bg-slate-50">{opt.label}</SelectItem>
         ))}
       </SelectContent>
     </Select>

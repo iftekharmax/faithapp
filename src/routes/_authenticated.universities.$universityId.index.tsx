@@ -692,16 +692,16 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </div>
 
                           <div className="grid grid-cols-1 gap-2.5 pt-3">
-                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
-                              <GraduationCap className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                              <GraduationCap className="h-5 w-5 text-blue-600" />
                               <span>{p.degree || "Bachelor's Degree"}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
-                              <Clock className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                              <Clock className="h-5 w-5 text-blue-600" />
                               <span>{p.duration || "3 Years (9 Semesters)"}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
-                              <MapPin className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-center gap-4 text-base font-black text-slate-600">
+                              <MapPin className="h-5 w-5 text-blue-600" />
                               <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
                             </div>
                           </div>

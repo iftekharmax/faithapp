@@ -684,24 +684,24 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                               <Activity className="h-10 w-10 text-blue-600 group-hover:text-white transition-colors" />
                             </div>
                             <div className="flex-1 pr-8 pt-2">
-                              <h3 className="text-[24px] font-medium leading-[1.15] text-slate-900 line-clamp-2 min-h-[56px] tracking-tight">
+                              <h3 className="text-[18px] font-bold leading-[1.15] text-slate-900 line-clamp-2 min-h-[56px] tracking-tight">
                                 {p.name}
                               </h3>
-                              <p className="text-sm font-medium text-slate-400 mt-2 tracking-widest uppercase">{universityName}</p>
+                              <p className="text-[16px] font-medium text-slate-400 mt-2 tracking-widest uppercase">{universityName}</p>
                             </div>
                           </div>
 
                           <div className="grid grid-cols-1 gap-2.5 pt-3">
-                            <div className="flex items-center gap-4 text-base font-medium text-slate-600">
-                              <GraduationCap className="h-5 w-5 text-blue-600" />
+                            <div className="flex items-center gap-4 text-[14px] font-normal text-slate-600">
+                              <GraduationCap className="h-4 w-4 text-blue-600" />
                               <span>{p.degree || "Bachelor's Degree"}</span>
                             </div>
-                            <div className="flex items-center gap-4 text-base font-medium text-slate-600">
-                              <Clock className="h-5 w-5 text-blue-600" />
+                            <div className="flex items-center gap-4 text-[14px] font-normal text-slate-600">
+                              <Clock className="h-4 w-4 text-blue-600" />
                               <span>{p.duration || "3 Years (9 Semesters)"}</span>
                             </div>
-                            <div className="flex items-center gap-4 text-base font-medium text-slate-600">
-                              <MapPin className="h-5 w-5 text-blue-600" />
+                            <div className="flex items-center gap-4 text-[14px] font-normal text-slate-600">
+                              <MapPin className="h-4 w-4 text-blue-600" />
                               <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
                             </div>
                           </div>

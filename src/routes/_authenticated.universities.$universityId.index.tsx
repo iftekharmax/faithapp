@@ -205,54 +205,54 @@ function UniversityDetail() {
       </div>
 
       {/* Hero Section - Matched to Screenshot */}
-      <Card className="rounded-[32px] border border-slate-100 bg-white p-10 shadow-sm overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-10 items-start md:items-center">
-          <div className="flex h-32 w-56 shrink-0 items-center justify-center rounded-3xl border border-slate-50 p-4 bg-white">
+      <Card className="rounded-[40px] border border-slate-100 bg-white p-12 shadow-sm overflow-hidden">
+        <div className="flex flex-col md:flex-row gap-12 items-start md:items-center">
+          <div className="flex h-36 w-64 shrink-0 items-center justify-center rounded-[32px] border border-slate-50 p-6 bg-white shadow-sm">
             {uni.logo_url ? (
               <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
             ) : (
-              <Building2 className="h-16 w-16 text-slate-100" />
+              <Building2 className="h-20 w-20 text-slate-100" />
             )}
           </div>
           
-          <div className="flex-1 space-y-5">
-            <div className="flex flex-wrap items-center gap-4">
-              <h1 className="text-[34px] font-black text-slate-900 tracking-tight leading-none">{uni.name}</h1>
-              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-3.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border-none">
+          <div className="flex-1 space-y-6">
+            <div className="flex flex-wrap items-center gap-5">
+              <h1 className="text-[42px] font-black text-slate-900 tracking-tighter leading-none">{uni.name}</h1>
+              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest border-none shadow-sm">
                 {uni.status === "active" ? "Active" : uni.status}
               </Badge>
             </div>
             
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600">
-              <div className="flex items-center gap-2.5">
-                <span className="text-xl">🇲🇾</span>
-                <span className="font-bold text-slate-900">MY Malaysia</span>
+            <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-base font-bold text-slate-600">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🇲🇾</span>
+                <span className="font-black text-slate-900">MY Malaysia</span>
               </div>
-              <div className="flex items-center gap-2.5">
-                <MapPin className="h-4 w-4 text-slate-400" />
-                <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
+              <div className="flex items-center gap-3">
+                <MapPin className="h-5 w-5 text-slate-400" />
+                <span className="font-black text-slate-900">{uni.city || "Negeri Sembilan"}</span>
               </div>
               {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 text-blue-600 hover:underline font-bold">
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-blue-600 hover:text-blue-700 font-black decoration-2 underline-offset-4 hover:underline">
                   <span>Website</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
+                  <ExternalLink className="h-4 w-4" />
                 </a>
               )}
             </div>
 
-            <p className="text-sm leading-relaxed text-slate-500 max-w-3xl font-medium">
+            <p className="text-[15px] leading-relaxed text-slate-500 max-w-4xl font-bold">
               {uni.description || `${uni.name} is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.`}
             </p>
           </div>
 
-          <div className="flex gap-4">
-            <div className="flex flex-col items-center justify-center px-8 py-6 rounded-3xl bg-slate-50 border border-slate-50 min-w-[130px]">
-              <span className="text-[32px] font-black text-slate-900 leading-none">4</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-2">Campuses</span>
+          <div className="flex gap-6">
+            <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
+              <span className="text-[40px] font-black text-slate-900 leading-none tracking-tighter">4</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 mt-3">Campuses</span>
             </div>
-            <div className="flex flex-col items-center justify-center px-8 py-6 rounded-3xl bg-slate-50 border border-slate-50 min-w-[130px]">
-              <span className="text-[32px] font-black text-slate-900 leading-none">155</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-2">Programs</span>
+            <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
+              <span className="text-[40px] font-black text-slate-900 leading-none tracking-tighter">155</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 mt-3">Programs</span>
             </div>
           </div>
         </div>

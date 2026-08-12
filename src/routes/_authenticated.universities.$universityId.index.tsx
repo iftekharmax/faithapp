@@ -453,8 +453,13 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
   const filtered = programs.filter((p) =>
     (!search || p.name.toLowerCase().includes(search.toLowerCase())) &&
-    (degreeFilter === "all" || p.degree === degreeFilter)
-  );
+    (degreeFilter === "all" || p.degree === degreeFilter) &&
+    (campusFilter === "all" || p.campus_id === campusFilter)
+  ).sort((a, b) => {
+    if (sortOrder === "newest") return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+    if (sortOrder === "oldest") return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
+    return 0;
+  });
 
   const displayed = filtered.slice(0, page * itemsPerPage);
   const hasMore = displayed.length < filtered.length;

@@ -660,7 +660,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 px-12">
+            <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-3 px-12">
               {displayed.map((p) => {
                 const universityName = uni?.name || "University";
                 return (

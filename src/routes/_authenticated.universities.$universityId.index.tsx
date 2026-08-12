@@ -787,27 +787,6 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </div>
                         </div>
 
-                        {/* Bottom Statistics */}
-                        <div className="mt-8 grid grid-cols-3 gap-3">
-                          <div className="bg-slate-50 rounded-xl p-2.5 text-center transition-all hover:bg-white hover:shadow-sm hover:ring-1 hover:ring-slate-100 group/stat">
-                            <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400 flex items-center justify-center gap-1.5 mb-1">
-                              <Users className="h-3 w-3" /> Applications
-                            </p>
-                            <p className="text-[12px] font-bold text-[#0F172A]">312</p>
-                          </div>
-                          <div className="bg-slate-50 rounded-xl p-2.5 text-center transition-all hover:bg-white hover:shadow-sm hover:ring-1 hover:ring-slate-100">
-                            <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400 flex items-center justify-center gap-1.5 mb-1">
-                              <PieChart className="h-3 w-3" /> Acceptance
-                            </p>
-                            <p className="text-[12px] font-bold text-[#0F172A]">62%</p>
-                          </div>
-                          <div className="bg-slate-50 rounded-xl p-2.5 text-center transition-all hover:bg-white hover:shadow-sm hover:ring-1 hover:ring-slate-100">
-                            <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400 flex items-center justify-center gap-1.5 mb-1">
-                              <ShieldCheck className="h-3 w-3" /> Visa Success
-                            </p>
-                            <p className="text-[12px] font-bold text-[#0F172A]">91%</p>
-                          </div>
-                        </div>
 
                         {/* Actions */}
                         <div className="mt-8 flex gap-3">

@@ -664,7 +664,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               {displayed.map((p) => {
                 const universityName = uni?.name || "University";
                 return (
-                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[32px] bg-[#F9FAFB] border border-slate-50 shadow-sm transition-all duration-500 hover:shadow-2xl hover:bg-white hover:border-blue-100/50 hover:-translate-y-1">
+                  <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-[32px] bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:bg-white hover:border-blue-100/50 hover:-translate-y-1">
                     <div className="flex flex-1 flex-col p-10">
                       <div className="mb-6 flex items-start justify-between gap-4">
                         <div className="space-y-4 w-full">
@@ -787,7 +787,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="outline" size="icon" className="h-14 w-14 shrink-0 rounded-2xl border-slate-200 text-slate-400 hover:bg-slate-50 hover:border-slate-300 transition-all">
-                                <MoreHorizontal className="h-6 w-6" />
+                                <MoreVertical className="h-6 w-6" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[180px]">

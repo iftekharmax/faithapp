@@ -686,7 +686,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 px-12">
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p, idx) => {
                 const universityName = uni?.name || "University";
                 // Varied gradients for the premium grid look

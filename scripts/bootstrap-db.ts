@@ -4,7 +4,7 @@ import path from 'path';
 
 async function bootstrap() {
   // Use the password provided by the user in context
-  const DB_PASSWORD = "faithapp_password_2024"; 
+  const DB_PASSWORD = "bxwhgrS6uoBsEEru"; 
   const PROJECT_ID = "qdveirhlzuzrxaqjevxr";
   const DB_USER = "postgres";
   const DB_HOST = `db.${PROJECT_ID}.supabase.co`;

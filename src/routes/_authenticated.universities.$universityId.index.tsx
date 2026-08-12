@@ -730,11 +730,11 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </div>
                         </div>
 
-                        <div className="mt-8 space-y-3">
-                          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Next Intake</p>
-                          <div className="flex flex-wrap gap-2.5">
+                        <div className="mt-10 space-y-4">
+                          <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">Next Intake</p>
+                          <div className="flex flex-wrap gap-3">
                             {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                              <span key={i} className="rounded-xl bg-blue-50/50 border border-blue-100/50 px-5 py-2 text-[11px] font-black text-blue-600 transition-colors hover:bg-blue-600 hover:text-white cursor-default">
+                              <span key={i} className="rounded-2xl bg-blue-50/50 border border-blue-100/50 px-6 py-3 text-[13px] font-black text-blue-600 transition-all hover:bg-blue-600 hover:text-white cursor-default shadow-sm">
                                 {intake.trim()}
                               </span>
                             ))}

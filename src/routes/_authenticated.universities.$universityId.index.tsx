@@ -240,7 +240,7 @@ function UniversityDetail() {
               )}
             </div>
 
-            <p className="text-[15px] leading-relaxed text-slate-500 max-w-4xl font-bold">
+            <p className="text-[16px] leading-relaxed text-slate-500 max-w-4xl font-black">
               {uni.description || `${uni.name} is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.`}
             </p>
           </div>

@@ -1045,7 +1045,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             <Button 
               onClick={save} 
               disabled={saving}
-              className="rounded-xl px-10 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="rounded-xl px-10 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all bg-[#2563EB] text-white hover:bg-blue-700"
             >
               {saving ? (
                 <>
@@ -1054,8 +1054,10 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                 </>
               ) : (
                 <>
-                  <Check className="mr-2 h-5 w-5" />
-                  {editing ? "Update Program" : "Create Program"}
+                  <div className="flex items-center gap-2">
+                    {editing ? <Check className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                    <span>{editing ? "Update Program" : "Create Program"}</span>
+                  </div>
                 </>
               )}
             </Button>

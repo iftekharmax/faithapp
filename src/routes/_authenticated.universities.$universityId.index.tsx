@@ -712,21 +712,21 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                         </Button>
                       </div>
 
-                      <div className="mt-8 pt-8 border-t border-slate-100/60">
-                        <div className="grid grid-cols-3 gap-4 text-center">
-                          <div className="space-y-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Tuition Fee</p>
-                            <p className="text-base font-extrabold text-blue-600">
+                      <div className="mt-10 pt-10 border-t border-slate-100/80">
+                        <div className="grid grid-cols-3 gap-6 text-center">
+                          <div className="space-y-3">
+                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Tuition Fee</p>
+                            <p className="text-xl font-black text-blue-600 tracking-tighter">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
-                          <div className="space-y-2 border-x border-slate-100/60 px-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Scholarship</p>
-                            <p className="text-base font-extrabold text-emerald-600 whitespace-nowrap">Up to 30%</p>
+                          <div className="space-y-3 border-x border-slate-100/80 px-3">
+                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Scholarship</p>
+                            <p className="text-xl font-black text-emerald-600 whitespace-nowrap tracking-tighter">Up to 30%</p>
                           </div>
-                          <div className="space-y-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">App. Fee</p>
-                            <p className="text-base font-extrabold text-slate-900">{p.currency || "MYR"} {p.application_fee || "200"}</p>
+                          <div className="space-y-3">
+                            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">App. Fee</p>
+                            <p className="text-xl font-black text-slate-900 tracking-tighter">{p.currency || "MYR"} {p.application_fee || "200"}</p>
                           </div>
                         </div>
 

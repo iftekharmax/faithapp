@@ -1233,6 +1233,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         </AlertDialogContent>
       </AlertDialog>
     </div>
+    </>
   );
 }
 

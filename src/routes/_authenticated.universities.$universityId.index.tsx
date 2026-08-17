@@ -501,6 +501,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   const [search, setSearch] = useState("");
   const [degreeFilter, setDegreeFilter] = useState<string>("all");
   const [campusFilter, setCampusFilter] = useState<string>("all");
+  const [intakeFilter, setIntakeFilter] = useState<string>("all");
+  const [scholarshipFilter, setScholarshipFilter] = useState<string>("all");
   const [sortOrder, setSortOrder] = useState<string>("newest");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
@@ -508,10 +510,20 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   const itemsPerPage = 9;
 
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
+  const intakes = Array.from(
+    new Set(
+      programs.flatMap((p) => String(p.intake ?? "").split(",").map((s) => s.trim()).filter(Boolean))
+    )
+  );
   const filtered = programs.filter((p) =>
     (!search || p.name.toLowerCase().includes(search.toLowerCase())) &&
     (degreeFilter === "all" || p.degree === degreeFilter) &&
-    (campusFilter === "all" || p.campus_id === campusFilter)
+    (campusFilter === "all" || p.campus_id === campusFilter) &&
+    (intakeFilter === "all" || String(p.intake ?? "").toLowerCase().includes(intakeFilter.toLowerCase())) &&
+    (scholarshipFilter === "all" ||
+      (scholarshipFilter === "yes"
+        ? !!String(p.scholarship ?? "").replace(/<[^>]*>/g, "").trim()
+        : !String(p.scholarship ?? "").replace(/<[^>]*>/g, "").trim()))
   ).sort((a, b) => {
     if (sortOrder === "newest") return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
     if (sortOrder === "oldest") return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
@@ -625,9 +637,27 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
-          <FilterDropdown placeholder="All Degrees" />
-          <FilterDropdown placeholder="All Intakes" />
-          <FilterDropdown placeholder="All Scholarships" />
+          <FilterDropdown
+            placeholder="All Degrees"
+            value={degreeFilter}
+            onValueChange={setDegreeFilter}
+            options={degrees.map((d) => ({ label: d, value: d }))}
+          />
+          <FilterDropdown
+            placeholder="All Intakes"
+            value={intakeFilter}
+            onValueChange={setIntakeFilter}
+            options={intakes.map((i) => ({ label: i, value: i }))}
+          />
+          <FilterDropdown
+            placeholder="All Scholarships"
+            value={scholarshipFilter}
+            onValueChange={setScholarshipFilter}
+            options={[
+              { label: "With Scholarship", value: "yes" },
+              { label: "No Scholarship", value: "no" },
+            ]}
+          />
           <FilterDropdown 
             placeholder="Newest" 
             value={sortOrder}
@@ -638,7 +668,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             ]}
           />
           
-          <Button variant="ghost" size="sm" className="ml-auto h-10 rounded-xl font-bold text-slate-400 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); setCampusFilter("all"); }}>
+          <Button variant="ghost" size="sm" className="ml-auto h-10 rounded-xl font-bold text-slate-400 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); setCampusFilter("all"); setIntakeFilter("all"); setScholarshipFilter("all"); }}>
             <RotateCcw className="mr-2 h-4 w-4" /> Clear
           </Button>
         </div>

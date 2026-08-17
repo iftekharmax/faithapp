@@ -737,57 +737,62 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                       </div>
 
                       {/* Tuition Stats Section */}
-                      <div className="mt-6 pt-6 border-t border-[#E8ECF3]">
+                      <div className="mt-6 pt-6 border-t border-slate-50">
                         <div className="grid grid-cols-3 gap-3">
-                          <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 text-center">
-                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">Tuition Fee</p>
+                          <div className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tuition Fee</p>
                             <p className="text-[12px] font-bold text-blue-600">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
-                          <div className="bg-emerald-50/30 rounded-xl p-3 border border-emerald-100/30 text-center">
-                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">Scholarship</p>
+                          <div className="bg-emerald-50 rounded-2xl p-3 text-center border border-emerald-50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Scholarship</p>
                             <p className="text-[12px] font-bold text-emerald-600">Up to 30%</p>
                           </div>
-                          <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 text-center">
-                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">App. Fee</p>
-                            <p className="text-[12px] font-bold text-[#0F172A]">{p.currency || "MYR"} {p.application_fee || "600"}</p>
+                          <div className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">App. Fee</p>
+                            <p className="text-[12px] font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                           </div>
                         </div>
 
                         {/* Intakes */}
-                        <div className="mt-6 space-y-2">
-                          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">Next Intake</p>
-                          <div className="flex flex-nowrap gap-2 overflow-x-auto scrollbar-none pb-1">
-                            {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                              <span key={i} className="rounded-full bg-blue-50 text-blue-600 px-3 py-1 text-[11px] font-medium border border-blue-100/50 whitespace-nowrap">
-                                {intake.trim()}
-                              </span>
-                            ))}
+                        <div className="mt-5 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Intake:</p>
+                            <div className="flex flex-nowrap gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                              {(p.intake || "January, April, August").split(",").map((intake, i) => (
+                                <Badge key={i} variant="secondary" className="bg-slate-50 text-slate-600 rounded-lg px-2.5 py-0.5 text-[10px] font-bold border-none whitespace-nowrap">
+                                  {intake.trim()}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
                         </div>
 
 
                         {/* Actions */}
-                        <div className="mt-8 flex gap-3">
+                        <div className="mt-6 flex gap-3">
                           <Button 
-                            className="flex-1 h-[44px] rounded-xl bg-gradient-to-r from-[#2563EB] to-[#3B82F6] text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-600/20 transition-all"
+                            className="flex-1 h-10 rounded-xl bg-blue-600 text-xs font-bold text-white hover:bg-blue-700 transition-all shadow-sm"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
                             }}
                           >
-                            Create Application
+                            Apply Now
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="flex-1 h-[44px] rounded-xl border-[#E8ECF3] text-sm font-medium text-slate-600 hover:border-[#3B82F6] hover:text-[#3B82F6] transition-all bg-white"
+                            className="flex-1 h-10 rounded-xl border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               openEdit(p);
                             }}
                           >
-                            View Details
+                            Details
+                          </Button>
+                        </div>
+                      </div>
                           </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>

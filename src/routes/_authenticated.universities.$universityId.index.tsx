@@ -755,7 +755,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p, idx) => {
                 const universityName = uni?.name || "University";
                 
@@ -917,7 +917,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           </div>
 
           <div className="max-h-[70vh] overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-slate-200">
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2">
               <div className="md:col-span-2 space-y-3">
                 <Label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Program Name <span className="text-primary">*</span></Label>
                 <Input 

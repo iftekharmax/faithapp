@@ -382,12 +382,75 @@ function UniversityDetail() {
           <TabsContent value="programs" className="mt-0 outline-none">
             <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
           </TabsContent>
-        </Tabs>
 
+          <TabsContent value="campuses" className="mt-0 outline-none">
+            <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+          </TabsContent>
+
+          <TabsContent value="applications" className="mt-0 outline-none">
+            <Card className="rounded-[28px] border-none bg-white shadow-[0_2px_12px_rgba(0,0,0,0.03)] overflow-hidden">
+              <CardHeader className="border-b border-slate-50 p-8">
+                <CardTitle className="text-xl font-bold text-slate-900">Recent Applications</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {applications.length === 0 ? (
+                  <div className="flex flex-col items-center py-24 text-center">
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 mb-6">
+                      <FileText className="h-10 w-10 text-slate-300" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900">No applications found</h3>
+                    <p className="text-slate-500 font-bold mt-2">No students have applied to this university yet.</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="hover:bg-transparent border-slate-100">
+                          <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Application Code</TableHead>
+                          <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Student Name</TableHead>
+                          <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Program</TableHead>
+                          <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Status</TableHead>
+                          <TableHead className="py-6 px-8 text-right"></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {applications.map((a) => (
+                          <TableRow key={a.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors group">
+                            <TableCell className="py-6 px-8 font-mono text-xs font-bold text-blue-600">{a.application_code}</TableCell>
+                            <TableCell className="py-6 px-8">
+                              <div className="flex flex-col">
+                                <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{a.student?.student_code}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-6 px-8 font-bold text-slate-600 text-sm">{a.program}</TableCell>
+                            <TableCell className="py-6 px-8">
+                              <Badge variant="outline" className="rounded-xl border-slate-200 bg-white px-4 py-1.5 font-bold text-[10px] uppercase text-slate-600 shadow-none">
+                                {String(a.status).replace(/_/g, " ")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="py-6 px-8 text-right">
+                              <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-blue-600 hover:text-white text-blue-600 transition-all px-4" asChild>
+                                <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
+                                  View Details
+                                </Link>
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
 }
+
 
 
 

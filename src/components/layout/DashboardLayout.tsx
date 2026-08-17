@@ -6,6 +6,7 @@ import { HeaderChatButton } from "@/components/chat/HeaderChatButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 import { Separator } from "@/components/ui/separator";
+import { Breadcrumbs } from "./Breadcrumbs";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const [isHovered, setIsHovered] = useState(false);

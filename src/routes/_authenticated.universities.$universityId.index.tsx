@@ -536,37 +536,33 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             
           </div>
           
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
-              <Download className="mr-2 h-4 w-4" /> Export
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4 text-xs">
+              <Download className="mr-2 h-3.5 w-3.5" /> Export
             </Button>
-            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
-              <Share2 className="mr-2 h-4 w-4" /> Import
-            </Button>
-            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
-              <FileText className="mr-2 h-4 w-4" /> Template
+            <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4 text-xs">
+              <Share2 className="mr-2 h-3.5 w-3.5" /> Import
             </Button>
             <Button 
               onClick={openNew} 
-              className="h-[46px] rounded-[14px] bg-gradient-to-r from-[#2563EB] to-[#3B82F6] font-medium text-white shadow-lg shadow-blue-600/20 px-8 ml-2 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-600/30 active:scale-[0.98]"
+              className="h-10 rounded-xl bg-blue-600 font-bold text-white shadow-sm px-6 ml-2 transition-all hover:bg-blue-700"
             >
-              <Plus className="mr-2 h-5 w-5" /> Add Program
+              <Plus className="mr-2 h-4 w-4" /> Add Program
             </Button>
           </div>
         </div>
 
         {/* Filter Chips / Secondary Filters */}
-        <div className="flex flex-wrap items-center gap-2 mt-5 pt-5 border-t border-slate-50">
+        <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-slate-50">
           <FilterDropdown 
-            placeholder="All Campuses" 
+            placeholder="Campuses" 
             value={campusFilter}
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
-          <FilterDropdown placeholder="All Degrees" />
-          <FilterDropdown placeholder="All Intakes" />
-          <FilterDropdown placeholder="All Scholarships" />
-          <FilterDropdown placeholder="All Duration" />
+          <FilterDropdown placeholder="Degrees" />
+          <FilterDropdown placeholder="Intakes" />
+          <FilterDropdown placeholder="Scholarships" />
           <FilterDropdown 
             placeholder="Newest" 
             value={sortOrder}
@@ -706,14 +702,14 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           
                           {/* Title and Icon */}
                           <div className="flex items-start gap-4">
-                            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50/50 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 transition-all duration-300">
-                              <Activity className="h-7 w-7 text-blue-600 group-hover:text-white transition-colors" />
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 shrink-0 group-hover:bg-blue-50 transition-colors">
+                              <School className="h-6 w-6 text-slate-400 group-hover:text-blue-600" />
                             </div>
-                            <div className="flex-1 pr-6">
-                              <h3 className="text-[20px] font-bold leading-tight text-[#0F172A] line-clamp-2 min-h-[50px]">
+                            <div className="flex-1 pr-4">
+                              <h3 className="text-lg font-bold leading-snug text-slate-900 line-clamp-2">
                                 {p.name}
                               </h3>
-                              <p className="text-[14px] font-medium text-slate-500 mt-1">{universityName}</p>
+                              <p className="text-sm font-medium text-slate-400 mt-0.5">{universityName}</p>
                             </div>
                           </div>
 

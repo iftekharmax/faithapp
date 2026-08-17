@@ -1,11 +1,25 @@
 import type { ReactNode } from "react";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth-context";
 import type { AppRole } from "@/lib/supabase";
 
 export function RoleGuard({ roles, children }: { roles: AppRole[]; children: ReactNode }) {
-  const { hasAnyRole } = useAuth();
+  const { hasAnyRole, authReady, rolesReady, permissionsReady, loading } = useAuth();
+
+  const isAuthReady = authReady && rolesReady && permissionsReady;
+
+  if (loading || !isAuthReady) {
+    return (
+      <div className="flex h-[200px] w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">Checking permissions...</span>
+        </div>
+      </div>
+    );
+  }
+
   if (!hasAnyRole(roles)) {
     return (
       <div className="mx-auto max-w-md pt-10">

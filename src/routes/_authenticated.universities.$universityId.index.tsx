@@ -524,13 +524,13 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         <div className="flex flex-wrap items-center justify-between gap-5">
           <div className="flex flex-wrap items-center gap-4 flex-1">
             {/* Search Box */}
-            <div className="relative min-w-[360px] flex-1 max-w-md">
-              <Search className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-500" />
+            <div className="relative min-w-[300px] flex-1 max-w-sm">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input 
                 placeholder="Search programs..." 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
-                className="pl-12 h-[48px] rounded-full border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
+                className="pl-10 h-10 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
               />
             </div>
             

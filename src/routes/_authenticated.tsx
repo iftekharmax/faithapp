@@ -16,37 +16,46 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthenticatedLayout() {
-  const { session, loading, sessionTimedOut, emailVerified, signOut } = useAuth();
+  const { session, loading, authReady, rolesReady, permissionsReady, sessionTimedOut, emailVerified, signOut } = useAuth();
   const navigate = useNavigate();
   const hadSessionRef = useRef(false);
 
   useEffect(() => {
     if (session) { hadSessionRef.current = true; return; }
-    if (loading || sessionTimedOut) return;
-    // Debounce transient session drops (token rotation races). Only redirect
-    // if the session is still missing after a short grace period AND we can
-    // confirm with Supabase directly that there is no user.
+    if (loading || !authReady || sessionTimedOut) return;
+    
     const t = setTimeout(async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) navigate({ to: "/auth/login", replace: true });
     }, 2500);
     return () => clearTimeout(t);
-  }, [session, loading, sessionTimedOut, navigate]);
+  }, [session, loading, authReady, sessionTimedOut, navigate]);
 
   if (sessionTimedOut && !session) {
     return <SessionTimeoutFallback />;
   }
 
-  if (loading || (!session && !hadSessionRef.current)) {
+  // Wait for all auth state to be ready
+  const isAuthReady = authReady && rolesReady && permissionsReady;
+
+  if (loading || !isAuthReady) {
+    let loadingMessage = "Initializing session...";
+    if (authReady && !rolesReady) loadingMessage = "Loading user roles...";
+    if (authReady && rolesReady && !permissionsReady) loadingMessage = "Loading permissions...";
+
     return (
       <div className="grid min-h-screen place-items-center bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm font-medium text-muted-foreground animate-pulse">
+            {loadingMessage}
+          </p>
+        </div>
       </div>
     );
   }
 
   if (!session) {
-    // Had a session before, waiting for the debounced confirm above.
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

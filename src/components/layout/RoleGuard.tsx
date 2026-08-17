@@ -9,7 +9,8 @@ export function RoleGuard({ roles, children }: { roles: AppRole[]; children: Rea
 
   const isAuthReady = authReady && rolesReady && permissionsReady;
 
-  if (loading || !isAuthReady) {
+  // Persistent state safety: If we already had data but it's re-validating, don't show spinner
+  if (loading || (!isAuthReady && !hasAnyRole(roles))) {
     return (
       <div className="flex h-[200px] w-full items-center justify-center">
         <div className="flex flex-col items-center gap-2">

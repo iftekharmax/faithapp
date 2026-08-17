@@ -766,115 +766,97 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p, idx) => {
                 const universityName = uni?.name || "University";
-                // Varied gradients for the premium grid look
-                const cardGradients = [
-                  "from-white to-[#FCFCFD]",
-                  "from-white to-[#F8FAFF]",
-                  "from-white to-[#FBFAFF]",
-                  "from-white to-[#F8FFF9]"
-                ];
-                const gradient = cardGradients[idx % cardGradients.length];
-
+                
                 return (
                   <div 
                     key={p.id} 
-                    className={cn(
-                      "group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1",
-                      "from-white to-white"
-                    )}
+                    className="group relative flex flex-col overflow-hidden rounded-[28px] bg-white border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-2 cursor-pointer"
                     onClick={() => openEdit(p)}
                   >
-                    <div className="flex flex-1 flex-col p-7">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-4 w-full">
-                          {/* Badges */}
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="inline-flex items-center rounded-full bg-orange-50 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-orange-600">
-                              <Star className="mr-1.5 h-3 w-3 fill-orange-500" /> Featured
+                    <div className="flex flex-1 flex-col p-8">
+                      <div className="flex items-start justify-between mb-6">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center rounded-lg bg-orange-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-600">
+                            <Star className="mr-1.5 h-3.5 w-3.5 fill-orange-500" /> Featured
+                          </span>
+                          {p.status === "active" && (
+                            <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                              <Zap className="mr-1.5 h-3.5 w-3.5 fill-emerald-500" /> Active
                             </span>
-                            {p.status === "active" && (
-                              <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-emerald-600">
-                                <Zap className="mr-1.5 h-3 w-3 fill-emerald-500" /> Active
-                              </span>
-                            )}
-                          </div>
-                          
-                          {/* Title and Icon */}
-                          <div className="flex items-start gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 shrink-0 group-hover:bg-blue-50 transition-colors">
-                              <School className="h-6 w-6 text-slate-400 group-hover:text-blue-600" />
-                            </div>
-                            <div className="flex-1 pr-4">
-                              <h3 className="text-lg font-bold leading-snug text-slate-900 line-clamp-2">
-                                {p.name}
-                              </h3>
-                              <p className="text-sm font-medium text-slate-400 mt-0.5">{universityName}</p>
-                            </div>
-                          </div>
-
-                          {/* Meta Information */}
-                          <div className="space-y-2 pt-2">
-                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
-                              <GraduationCap className="h-4 w-4 text-blue-500" />
-                              <span>{p.degree || "Bachelor's Degree"}</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
-                              <Clock className="h-4 w-4 text-blue-500" />
-                              <span>{p.duration || "3 Years (9 Semesters)"}</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
-                              <MapPin className="h-4 w-4 text-blue-500" />
-                              <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
-                            </div>
-                          </div>
+                          )}
                         </div>
-
-                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
                           <Heart className="h-5 w-5" />
                         </Button>
                       </div>
 
+                      {/* Title and Icon */}
+                      <div className="flex items-start gap-5 mb-6">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 shrink-0 group-hover:bg-blue-50 transition-colors">
+                          <School className="h-7 w-7 text-slate-400 group-hover:text-blue-600" />
+                        </div>
+                        <div className="flex-1 pr-2">
+                          <h3 className="text-[19px] font-bold leading-snug text-slate-900 line-clamp-2">
+                            {p.name}
+                          </h3>
+                          <p className="text-sm font-bold text-slate-400 mt-1">{universityName}</p>
+                        </div>
+                      </div>
+
+                      {/* Meta Information */}
+                      <div className="space-y-3 mb-8">
+                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                          <GraduationCap className="h-4.5 w-4.5 text-blue-500/70" />
+                          <span>{p.degree || "Bachelor / Undergraduate"}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                          <Clock className="h-4.5 w-4.5 text-blue-500/70" />
+                          <span>{p.duration || "2 Years"}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                          <MapPin className="h-4.5 w-4.5 text-blue-500/70" />
+                          <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Nilai Campus"}</span>
+                        </div>
+                      </div>
+
                       {/* Tuition Stats Section */}
-                      <div className="mt-6 pt-6 border-t border-slate-50">
-                        <div className="grid grid-cols-3 gap-3">
-                          <div className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-50">
-                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tuition Fee</p>
-                            <p className="text-[12px] font-bold text-blue-600">
+                      <div className="mt-auto">
+                        <div className="grid grid-cols-3 gap-3 mb-6">
+                          <div className="bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-100/50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tuition Fee</p>
+                            <p className="text-[13px] font-bold text-blue-600">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
-                          <div className="bg-emerald-50 rounded-2xl p-3 text-center border border-emerald-50">
-                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Scholarship</p>
-                            <p className="text-[12px] font-bold text-emerald-600">Up to 30%</p>
+                          <div className="bg-emerald-50 rounded-2xl p-3.5 text-center border border-emerald-100/50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/60 mb-1.5">Scholarship</p>
+                            <p className="text-[13px] font-bold text-emerald-600">Up to 30%</p>
                           </div>
-                          <div className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-50">
-                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">App. Fee</p>
-                            <p className="text-[12px] font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
+                          <div className="bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-100/50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">App. Fee</p>
+                            <p className="text-[13px] font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                           </div>
                         </div>
 
                         {/* Intakes */}
-                        <div className="mt-5 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Intake:</p>
-                            <div className="flex flex-nowrap gap-1.5 overflow-x-auto no-scrollbar pb-1">
-                              {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                                <Badge key={i} variant="secondary" className="bg-slate-50 text-slate-600 rounded-lg px-2.5 py-0.5 text-[10px] font-bold border-none whitespace-nowrap">
-                                  {intake.trim()}
-                                </Badge>
-                              ))}
-                            </div>
+                        <div className="flex items-center gap-3 mb-8 overflow-hidden">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 shrink-0">Intakes:</span>
+                          <div className="flex flex-nowrap gap-2 overflow-x-auto no-scrollbar pb-1">
+                            {(p.intake || "January, June, August").split(",").map((intake, i) => (
+                              <Badge key={i} variant="secondary" className="bg-slate-100 text-slate-600 rounded-lg px-3 py-1 text-[10px] font-bold border-none whitespace-nowrap">
+                                {intake.trim()}
+                              </Badge>
+                            ))}
                           </div>
                         </div>
 
-
                         {/* Actions */}
-                        <div className="mt-6 flex gap-3">
+                        <div className="flex gap-4">
                           <Button 
-                            className="flex-1 h-10 rounded-xl bg-blue-600 text-xs font-bold text-white hover:bg-blue-700 transition-all shadow-sm"
+                            className="flex-1 h-12 rounded-2xl bg-blue-600 text-sm font-bold text-white hover:bg-blue-700 transition-all shadow-[0_4px_12px_rgba(37,99,235,0.2)]"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
@@ -884,7 +866,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="flex-1 h-10 rounded-xl border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
+                            className="flex-1 h-12 rounded-2xl border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               openEdit(p);
@@ -901,17 +883,20 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             </div>
 
             {hasMore && (
-              <div className="mt-20 flex justify-center pb-12">
+              <div className="mt-16 flex justify-center pb-8">
                 <Button
                   variant="outline"
                   size="lg"
                   onClick={() => setPage((p) => p + 1)}
-                  className="rounded-3xl border-2 border-slate-200 px-16 h-16 text-base font-medium text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
+                  className="rounded-full border-2 border-slate-200 px-12 h-14 text-sm font-bold text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
                 >
                   Load More Programs
                 </Button>
               </div>
             )}
+          </div>
+        )}
+      </div>
           </div>
         )}
       </div>

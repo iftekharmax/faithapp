@@ -17,7 +17,8 @@ const LABELS: Record<string, string> = {
 
 export function Breadcrumbs() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const parts = pathname.split("/").filter(Boolean);
+  const isId = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(s) || /^\d+$/.test(s);
+  const parts = pathname.split("/").filter(Boolean).filter((s) => !isId(s));
   if (parts.length === 0) return null;
 
   return (

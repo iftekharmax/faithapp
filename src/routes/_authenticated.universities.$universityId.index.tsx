@@ -268,11 +268,11 @@ function UniversityDetail() {
               <div className="flex-1 space-y-6 pt-2">
                 <div className="space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="text-[38px] font-bold text-slate-900 tracking-tight leading-[1.1] max-w-2xl">{uni.name}</h1>
+                    <h1 className="text-[30px] font-bold text-slate-900 tracking-tight leading-[1.1] max-w-2xl">{uni.name}</h1>
                     <CheckCircle2 className="h-6 w-6 text-blue-500 fill-blue-500/10" />
                   </div>
                   
-                  <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium">
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-[13px] font-medium">
                     <Badge className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border-none shadow-none">
                       Active
                     </Badge>
@@ -289,7 +289,7 @@ function UniversityDetail() {
                   </div>
                 </div>
 
-                <p className="text-[15px] leading-relaxed text-slate-500 max-w-2xl font-medium">
+                <p className="text-[13px] leading-relaxed text-slate-500 max-w-2xl font-medium">
                   {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
                 </p>
 
@@ -297,22 +297,22 @@ function UniversityDetail() {
                   <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
                     <History className="h-5 w-5 text-slate-400" />
                     <div className="flex flex-col">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Established</span>
-                      <span className="text-sm font-bold text-slate-900">1986</span>
+                      <span className="text-[8px] font-bold uppercase tracking-wider text-slate-400">Established</span>
+                      <span className="text-[13px] font-bold text-slate-900">1986</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
                     <ShieldCheck className="h-5 w-5 text-slate-400" />
                     <div className="flex flex-col">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Type</span>
-                      <span className="text-sm font-bold text-slate-900">Private University</span>
+                      <span className="text-[8px] font-bold uppercase tracking-wider text-slate-400">Type</span>
+                      <span className="text-[13px] font-bold text-slate-900">Private University</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
                     <MapPin className="h-5 w-5 text-slate-400" />
                     <div className="flex flex-col">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Main Campus</span>
-                      <span className="text-sm font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
+                      <span className="text-[8px] font-bold uppercase tracking-wider text-slate-400">Main Campus</span>
+                      <span className="text-[13px] font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
                     </div>
                   </div>
                 </div>
@@ -323,15 +323,15 @@ function UniversityDetail() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 mb-3">
                     <Building2 className="h-6 w-6" />
                   </div>
-                  <span className="text-3xl font-bold text-slate-900">{campuses.length}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mt-1">Campuses</span>
+                  <span className="text-2xl font-bold text-slate-900">{campuses.length}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 mt-1">Campuses</span>
                 </div>
                 <div className="flex flex-col items-center justify-center w-32 h-36 rounded-[28px] bg-white border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.04)]">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 mb-3">
                     <GraduationCap className="h-6 w-6" />
                   </div>
-                  <span className="text-3xl font-bold text-slate-900">{programs.length}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mt-1">Programs</span>
+                  <span className="text-2xl font-bold text-slate-900">{programs.length}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 mt-1">Programs</span>
                 </div>
               </div>
             </div>

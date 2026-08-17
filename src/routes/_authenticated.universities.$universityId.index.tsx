@@ -668,7 +668,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             ]}
           />
           
-          <Button variant="ghost" size="sm" className="ml-auto h-10 rounded-xl font-bold text-slate-400 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); setCampusFilter("all"); }}>
+          <Button variant="ghost" size="sm" className="ml-auto h-10 rounded-xl font-bold text-slate-400 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); setCampusFilter("all"); setIntakeFilter("all"); setScholarshipFilter("all"); }}>
             <RotateCcw className="mr-2 h-4 w-4" /> Clear
           </Button>
         </div>

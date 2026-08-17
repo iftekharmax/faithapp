@@ -793,22 +793,6 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </Button>
                         </div>
                       </div>
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="outline" size="icon" className="h-[44px] w-[44px] shrink-0 rounded-full border-[#E8ECF3] text-slate-400 hover:border-[#3B82F6] transition-all bg-white">
-                                <MoreHorizontal className="h-5 w-5" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[180px]">
-                              <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-xl font-medium py-2.5"><Pencil className="mr-3 h-4 w-4" /> Edit Program</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-xl font-medium py-2.5 text-blue-600 bg-blue-50/50"><Plus className="mr-3 h-4 w-4" /> Apply Now</DropdownMenuItem>
-                              <DropdownMenuSeparator className="my-2 bg-slate-100" />
-                              <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-medium py-2.5 text-rose-600 hover:bg-rose-50"><Trash2 className="mr-3 h-4 w-4" /> Delete Program</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 );

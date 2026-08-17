@@ -895,11 +895,13 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               </div>
             )}
           </div>
-        )}
-      </div>
-          </div>
-        )}
-      </div>
+        </TabsContent>
+        
+        <TabsContent value="campuses" className="mt-0 outline-none">
+          <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+        </TabsContent>
+
+        <TabsContent value="applications" className="mt-0 outline-none">
 
 
 

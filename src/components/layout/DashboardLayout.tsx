@@ -6,6 +6,7 @@ import { HeaderChatButton } from "@/components/chat/HeaderChatButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 import { Separator } from "@/components/ui/separator";
+import { Breadcrumbs } from "./Breadcrumbs";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -55,7 +56,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background/80 px-3 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sm:px-6">
             <SidebarTrigger className="h-9 w-9 rounded-lg hover:bg-accent focus-visible:ring-2 focus-visible:ring-primary" />
             <Separator orientation="vertical" className="mx-1 h-6" />
-            <div className="min-w-0 flex-1" />
+            <div className="min-w-0 flex-1">
+              <Breadcrumbs />
+            </div>
 
             <div className="flex items-center gap-0.5 sm:gap-1">
               <div className="hidden sm:flex items-center gap-0.5 rounded-xl border border-border/60 bg-card/50 p-1 shadow-sm backdrop-blur">

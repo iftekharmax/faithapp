@@ -456,6 +456,7 @@ function UniversityDetail() {
 
 
 
+
 function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: string; value: string | number; icon: any; color: string; growth?: string }) {
   const colors: Record<string, string> = {
     blue: 'bg-blue-50 text-blue-600 ring-blue-100',

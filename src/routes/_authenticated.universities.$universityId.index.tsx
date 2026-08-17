@@ -681,9 +681,10 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   <div 
                     key={p.id} 
                     className={cn(
-                      "group relative flex flex-col overflow-hidden rounded-[20px] bg-gradient-to-br border border-[#E8ECF3] shadow-[0_2px_10px_rgba(15,23,42,0.05)] transition-all duration-300 ease-in-out hover:shadow-[0_16px_40px_rgba(37,99,235,0.15)] hover:border-[#3B82F6] hover:-translate-y-[6px]",
-                      gradient
+                      "group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1",
+                      "from-white to-white"
                     )}
+                    onClick={() => openEdit(p)}
                   >
                     <div className="flex flex-1 flex-col p-7">
                       <div className="flex items-start justify-between">

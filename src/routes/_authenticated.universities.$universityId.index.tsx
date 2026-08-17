@@ -196,163 +196,266 @@ function UniversityDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] -mt-10 pt-10 px-8 pb-12 animate-in fade-in duration-700">
-      <div className="mx-auto max-w-[1600px] space-y-10">
-      {/* Back button and title */}
-      <div className="flex items-center gap-2 mb-4">
-        <Button variant="ghost" size="sm" className="rounded-xl font-medium text-black hover:bg-slate-100" onClick={() => navigate({ to: "/universities" })}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
-      </div>
-
-      {/* Hero Section - Matched to Screenshot */}
-      <Card className="rounded-[32px] border-none bg-white p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)] overflow-hidden">
-        <div className="flex flex-col lg:flex-row gap-10 items-start">
-          {/* Logo Container */}
-          <div className="flex h-32 w-56 shrink-0 items-center justify-center rounded-3xl border border-slate-100 p-6 bg-white shadow-sm self-center lg:self-start">
-            {uni.logo_url ? (
-              <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
-            ) : (
-              <Building2 className="h-16 w-16 text-slate-200" />
-            )}
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Top Header / Breadcrumb */}
+      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white px-8">
+        <div className="flex items-center gap-4 text-sm text-slate-500">
+          <MoreHorizontal className="h-5 w-5 cursor-pointer text-slate-400 hover:text-slate-600" />
+          <ChevronRight className="h-4 w-4 text-slate-300" />
+          <Link to="/universities" className="hover:text-slate-900 transition-colors">Universities</Link>
+          <ChevronRight className="h-4 w-4 text-slate-300" />
+          <span className="font-medium text-slate-400 truncate max-w-[200px]">{universityId}</span>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 border-r border-slate-100 pr-4 mr-2">
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400">
+              <Zap className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400">
+              <Share2 className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400 relative">
+              <div className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white" />
+              <Activity className="h-4 w-4" />
+            </Button>
           </div>
-          
-          <div className="flex-1 space-y-6">
-            <div className="flex flex-wrap items-center gap-4">
-              <h1 className="text-[36px] font-bold text-slate-900 tracking-tight leading-tight">{uni.name}</h1>
-              <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border-none">
-                {uni.status === "active" ? "Active" : uni.status}
-              </Badge>
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col items-end">
+              <span className="text-sm font-bold text-slate-900">Iftekhar Abir</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Counselor</span>
             </div>
-            
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🇲🇾</span>
-                <span className="font-bold text-slate-900">MY Malaysia</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-slate-400" />
-                <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
-              </div>
-              {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline font-bold">
-                  <span>Website</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-              )}
-            </div>
-
-            <p className="text-[15px] leading-relaxed text-slate-500 max-w-3xl">
-              {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
-            </p>
-          </div>
-
-          <div className="flex gap-4 self-center lg:self-start">
-            <div className="flex flex-col items-center justify-center w-28 h-28 rounded-3xl bg-slate-50 border border-slate-100 shadow-sm">
-              <span className="text-3xl font-bold text-slate-900">{campuses.length}</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mt-2">Campuses</span>
-            </div>
-            <div className="flex flex-col items-center justify-center w-28 h-28 rounded-3xl bg-slate-50 border border-slate-100 shadow-sm">
-              <span className="text-3xl font-bold text-slate-900">{programs.length}</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mt-2">Programs</span>
+            <div className="h-10 w-10 rounded-full bg-slate-200 overflow-hidden border-2 border-slate-50">
+              <img src="https://github.com/shadcn.png" alt="User" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>
-      </Card>
+      </header>
 
-      <Tabs defaultValue="programs" className="space-y-12">
-        <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-none h-auto p-0 gap-10 px-0 overflow-x-auto scrollbar-none">
-          <TabsTrigger 
-            value="programs" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
-          >
-            Programs <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{programs.length}</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="campuses" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
-          >
-            Campuses <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{campuses.length}</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="applications" 
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
-          >
-            Applications <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{totalApplicationsCount}</span>
-          </TabsTrigger>
-        </TabsList>
+      <div className="mx-auto max-w-[1600px] px-8 pt-6 pb-12 space-y-8 animate-in fade-in duration-700">
+        {/* Back to Universities */}
+        <Link 
+          to="/universities" 
+          className="inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-blue-600 transition-colors group"
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          Back to Universities
+        </Link>
 
-        <TabsContent value="programs" className="mt-0 outline-none">
-          <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
-        </TabsContent>
-        
-        <TabsContent value="campuses" className="mt-0 outline-none">
-          <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
-        </TabsContent>
+        {/* University Hero Card */}
+        <Card className="relative rounded-[32px] border-none bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden min-h-[400px]">
+          {/* Background Image Container */}
+          <div className="absolute top-0 right-0 w-3/5 h-full opacity-40 lg:opacity-100">
+            <div className="absolute inset-0 z-10 bg-gradient-to-r from-white via-white/85 to-transparent" />
+            <img 
+              src="https://images.unsplash.com/photo-1541339907198-e08756ebafe3?auto=format&fit=crop&q=80&w=1000" 
+              alt="Campus" 
+              className="h-full w-full object-cover object-center"
+            />
+          </div>
 
-        <TabsContent value="applications" className="mt-0 outline-none">
-          <Card className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <CardHeader className="border-b border-slate-50 p-6">
-              <CardTitle className="text-lg font-medium text-slate-900">Recent Applications</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {applications.length === 0 ? (
-                <div className="flex flex-col items-center py-20 text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 mb-4">
-                    <FileText className="h-8 w-8 text-slate-300" />
+          <div className="relative z-20 p-10 flex flex-col h-full">
+            <div className="flex flex-col lg:flex-row gap-10 items-start">
+              {/* Logo Container */}
+              <div className="flex h-36 w-36 shrink-0 items-center justify-center rounded-[28px] border border-slate-100 p-6 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] self-center lg:self-start">
+                {uni.logo_url ? (
+                  <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
+                ) : (
+                  <Building2 className="h-16 w-16 text-slate-200" />
+                )}
+              </div>
+              
+              <div className="flex-1 space-y-6 pt-2">
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h1 className="text-[38px] font-bold text-slate-900 tracking-tight leading-[1.1] max-w-2xl">{uni.name}</h1>
+                    <CheckCircle2 className="h-6 w-6 text-blue-500 fill-blue-500/10" />
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900">No applications found</h3>
-                  <p className="text-sm text-slate-500 mt-1">No students have applied to this university yet.</p>
+                  
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium">
+                    <Badge className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border-none shadow-none">
+                      Active
+                    </Badge>
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <MapPin className="h-4 w-4 text-slate-400" />
+                      <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}, Malaysia</span>
+                    </div>
+                    {uni.website && (
+                      <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline font-bold">
+                        <span>Website</span>
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="hover:bg-transparent border-slate-100">
-                        <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Application Code</TableHead>
-                        <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Student Name</TableHead>
-                        <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Program</TableHead>
-                        <TableHead className="py-4 font-bold text-slate-500 uppercase text-[10px] tracking-wider">Status</TableHead>
-                        <TableHead className="py-4 text-right"></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {applications.map((a) => (
-                        <TableRow key={a.id} className="border-slate-50">
-                          <TableCell className="py-4 font-mono text-xs font-bold text-blue-600">{a.application_code}</TableCell>
-                          <TableCell className="py-4">
-                            <div className="flex flex-col">
-                              <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
-                              <span className="text-[10px] text-slate-400">{a.student?.student_code}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="py-4 font-medium text-slate-600 text-sm">{a.program}</TableCell>
-                          <TableCell className="py-4">
-                            <Badge variant="outline" className="rounded-full border-slate-200 px-3 py-1 font-bold text-[10px] uppercase text-slate-600">
-                              {String(a.status).replace(/_/g, " ")}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="py-4 text-right">
-                            <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-blue-50 text-blue-600" asChild>
-                              <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
-                                View Details
-                              </Link>
-                            </Button>
-                          </TableCell>
+
+                <p className="text-[15px] leading-relaxed text-slate-500 max-w-2xl font-medium">
+                  {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
+                </p>
+
+                <div className="flex flex-wrap gap-4 pt-2">
+                  <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
+                    <History className="h-5 w-5 text-slate-400" />
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Established</span>
+                      <span className="text-sm font-bold text-slate-900">1986</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
+                    <ShieldCheck className="h-5 w-5 text-slate-400" />
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Type</span>
+                      <span className="text-sm font-bold text-slate-900">Private University</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
+                    <MapPin className="h-5 w-5 text-slate-400" />
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Main Campus</span>
+                      <span className="text-sm font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-5 self-center lg:self-start lg:pt-2">
+                <div className="flex flex-col items-center justify-center w-32 h-36 rounded-[28px] bg-white border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.04)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 mb-3">
+                    <Building2 className="h-6 w-6" />
+                  </div>
+                  <span className="text-3xl font-bold text-slate-900">{campuses.length}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mt-1">Campuses</span>
+                </div>
+                <div className="flex flex-col items-center justify-center w-32 h-36 rounded-[28px] bg-white border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.04)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 mb-3">
+                    <GraduationCap className="h-6 w-6" />
+                  </div>
+                  <span className="text-3xl font-bold text-slate-900">{programs.length}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mt-1">Programs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Navigation Tabs */}
+        <Tabs defaultValue="programs" className="space-y-8">
+          <TabsList className="bg-transparent border-b border-slate-200 w-full justify-start rounded-none h-auto p-0 gap-10 overflow-x-auto scrollbar-none">
+            <TabsTrigger 
+              value="programs" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900 group"
+            >
+              <div className="flex items-center gap-3">
+                <Building2 className="h-5 w-5" />
+                <span>Programs</span>
+                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">
+                  {programs.length}
+                </span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="campuses" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900 group"
+            >
+              <div className="flex items-center gap-3">
+                <MapPin className="h-5 w-5" />
+                <span>Campuses</span>
+                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">
+                  {campuses.length}
+                </span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="applications" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900 group"
+            >
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5" />
+                <span>Applications</span>
+                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">
+                  {totalApplicationsCount}
+                </span>
+              </div>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="programs" className="mt-0 outline-none">
+            <ProgramsTab universityId={universityId} programs={programs} campuses={campuses} canEdit={canEdit} onChange={reload} uni={uni} loading={loading} />
+          </TabsContent>
+
+          <TabsContent value="campuses" className="mt-0 outline-none">
+            <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+          </TabsContent>
+
+          <TabsContent value="applications" className="mt-0 outline-none">
+            <Card className="rounded-[28px] border-none bg-white shadow-[0_2px_12px_rgba(0,0,0,0.03)] overflow-hidden">
+              <CardHeader className="border-b border-slate-50 p-8">
+                <CardTitle className="text-xl font-bold text-slate-900">Recent Applications</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {applications.length === 0 ? (
+                  <div className="flex flex-col items-center py-24 text-center">
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 mb-6">
+                      <FileText className="h-10 w-10 text-slate-300" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900">No applications found</h3>
+                    <p className="text-slate-500 font-bold mt-2">No students have applied to this university yet.</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="hover:bg-transparent border-slate-100">
+                          <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Application Code</TableHead>
+                          <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Student Name</TableHead>
+                          <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Program</TableHead>
+                          <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Status</TableHead>
+                          <TableHead className="py-6 px-8 text-right"></TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                      </TableHeader>
+                      <TableBody>
+                        {applications.map((a) => (
+                          <TableRow key={a.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors group">
+                            <TableCell className="py-6 px-8 font-mono text-xs font-bold text-blue-600">{a.application_code}</TableCell>
+                            <TableCell className="py-6 px-8">
+                              <div className="flex flex-col">
+                                <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{a.student?.student_code}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-6 px-8 font-bold text-slate-600 text-sm">{a.program}</TableCell>
+                            <TableCell className="py-6 px-8">
+                              <Badge variant="outline" className="rounded-xl border-slate-200 bg-white px-4 py-1.5 font-bold text-[10px] uppercase text-slate-600 shadow-none">
+                                {String(a.status).replace(/_/g, " ")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="py-6 px-8 text-right">
+                              <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-blue-600 hover:text-white text-blue-600 transition-all px-4" asChild>
+                                <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
+                                  View Details
+                                </Link>
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
 }
+
+
+
+
+
+
 
 
 function HeroStatCard({ label, value, icon: Icon, color, growth }: { label: string; value: string | number; icon: any; color: string; growth?: string }) {
@@ -518,51 +621,60 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
 
   return (
     <>
-    <div className="relative flex flex-col pt-8">
+    <div className="relative flex flex-col pt-0">
       {/* Filter Container */}
-      <div className="bg-white rounded-[18px] p-5 shadow-[0_2px_10px_rgba(15,23,42,0.05)]">
-        <div className="flex flex-wrap items-center justify-between gap-5">
-          <div className="flex flex-wrap items-center gap-4 flex-1">
+      <div className="bg-white rounded-[24px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="flex flex-1 items-center gap-4">
             {/* Search Box */}
-            <div className="relative min-w-[300px] flex-1 max-w-sm">
+            <div className="relative flex-1 max-w-md">
               <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input 
                 placeholder="Search programs..." 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
-                className="pl-10 h-10 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
+                className="pl-11 h-12 rounded-[14px] border-slate-100 bg-slate-50/50 text-sm font-bold placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
               />
             </div>
-            
           </div>
           
-          <div className="flex items-center gap-2">
-            <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4 text-xs">
-              <Download className="mr-2 h-3.5 w-3.5" /> Export
+          <div className="flex flex-wrap items-center gap-3">
+            <Button variant="outline" className="h-12 rounded-[14px] border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-6 text-xs transition-all">
+              <Download className="mr-2 h-4 w-4 text-slate-400" /> Export
             </Button>
-            <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4 text-xs">
-              <Share2 className="mr-2 h-3.5 w-3.5" /> Import
+            <Button variant="outline" className="h-12 rounded-[14px] border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-6 text-xs transition-all">
+              <Share2 className="mr-2 h-4 w-4 text-slate-400" /> Import
             </Button>
+            
+            <div className="flex items-center p-1 bg-slate-100/50 rounded-[14px] ml-2">
+              <Button size="icon" variant="ghost" className="h-10 w-11 rounded-xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/50 transition-all">
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-10 w-11 rounded-xl text-slate-400 hover:bg-white/50 transition-all">
+                <ListIcon className="h-4 w-4" />
+              </Button>
+            </div>
+
             <Button 
               onClick={openNew} 
-              className="h-10 rounded-xl bg-blue-600 font-bold text-white shadow-sm px-6 ml-2 transition-all hover:bg-blue-700"
+              className="h-12 rounded-[14px] bg-blue-600 font-bold text-white shadow-[0_4px_12px_rgba(37,99,235,0.2)] px-8 ml-2 transition-all hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus className="mr-2 h-4 w-4" /> Add Program
+              <Plus className="mr-2 h-5 w-5" /> Add Program
             </Button>
           </div>
         </div>
 
         {/* Filter Chips / Secondary Filters */}
-        <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-slate-50">
+        <div className="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-slate-50">
           <FilterDropdown 
-            placeholder="Campuses" 
+            placeholder="All Campuses" 
             value={campusFilter}
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
-          <FilterDropdown placeholder="Degrees" />
-          <FilterDropdown placeholder="Intakes" />
-          <FilterDropdown placeholder="Scholarships" />
+          <FilterDropdown placeholder="All Degrees" />
+          <FilterDropdown placeholder="All Intakes" />
+          <FilterDropdown placeholder="All Scholarships" />
           <FilterDropdown 
             placeholder="Newest" 
             value={sortOrder}
@@ -573,14 +685,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             ]}
           />
           
-          <div className="ml-auto flex items-center p-1 bg-slate-100/50 rounded-xl">
-            <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/50 transition-all">
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
-            <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg text-slate-400 hover:bg-white/50 transition-all">
-              <ListIcon className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button variant="ghost" size="sm" className="ml-auto h-10 rounded-xl font-bold text-slate-400 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); setCampusFilter("all"); }}>
+            <RotateCcw className="mr-2 h-4 w-4" /> Clear
+          </Button>
         </div>
       </div>
       
@@ -665,115 +772,97 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           )
         ) : (
           <div className="space-y-8">
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
               {displayed.map((p, idx) => {
                 const universityName = uni?.name || "University";
-                // Varied gradients for the premium grid look
-                const cardGradients = [
-                  "from-white to-[#FCFCFD]",
-                  "from-white to-[#F8FAFF]",
-                  "from-white to-[#FBFAFF]",
-                  "from-white to-[#F8FFF9]"
-                ];
-                const gradient = cardGradients[idx % cardGradients.length];
-
+                
                 return (
                   <div 
                     key={p.id} 
-                    className={cn(
-                      "group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1",
-                      "from-white to-white"
-                    )}
+                    className="group relative flex flex-col overflow-hidden rounded-[28px] bg-white border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-2 cursor-pointer"
                     onClick={() => openEdit(p)}
                   >
-                    <div className="flex flex-1 flex-col p-7">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-4 w-full">
-                          {/* Badges */}
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="inline-flex items-center rounded-full bg-orange-50 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-orange-600">
-                              <Star className="mr-1.5 h-3 w-3 fill-orange-500" /> Featured
+                    <div className="flex flex-1 flex-col p-8">
+                      <div className="flex items-start justify-between mb-6">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center rounded-lg bg-orange-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-600">
+                            <Star className="mr-1.5 h-3.5 w-3.5 fill-orange-500" /> Featured
+                          </span>
+                          {p.status === "active" && (
+                            <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                              <Zap className="mr-1.5 h-3.5 w-3.5 fill-emerald-500" /> Active
                             </span>
-                            {p.status === "active" && (
-                              <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-emerald-600">
-                                <Zap className="mr-1.5 h-3 w-3 fill-emerald-500" /> Active
-                              </span>
-                            )}
-                          </div>
-                          
-                          {/* Title and Icon */}
-                          <div className="flex items-start gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 shrink-0 group-hover:bg-blue-50 transition-colors">
-                              <School className="h-6 w-6 text-slate-400 group-hover:text-blue-600" />
-                            </div>
-                            <div className="flex-1 pr-4">
-                              <h3 className="text-lg font-bold leading-snug text-slate-900 line-clamp-2">
-                                {p.name}
-                              </h3>
-                              <p className="text-sm font-medium text-slate-400 mt-0.5">{universityName}</p>
-                            </div>
-                          </div>
-
-                          {/* Meta Information */}
-                          <div className="space-y-2 pt-2">
-                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
-                              <GraduationCap className="h-4 w-4 text-blue-500" />
-                              <span>{p.degree || "Bachelor's Degree"}</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
-                              <Clock className="h-4 w-4 text-blue-500" />
-                              <span>{p.duration || "3 Years (9 Semesters)"}</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-[14px] text-slate-600">
-                              <MapPin className="h-4 w-4 text-blue-500" />
-                              <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Subang Campus"}</span>
-                            </div>
-                          </div>
+                          )}
                         </div>
-
-                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
                           <Heart className="h-5 w-5" />
                         </Button>
                       </div>
 
+                      {/* Title and Icon */}
+                      <div className="flex items-start gap-5 mb-6">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 shrink-0 group-hover:bg-blue-50 transition-colors">
+                          <School className="h-7 w-7 text-slate-400 group-hover:text-blue-600" />
+                        </div>
+                        <div className="flex-1 pr-2">
+                          <h3 className="text-[19px] font-bold leading-snug text-slate-900 line-clamp-2">
+                            {p.name}
+                          </h3>
+                          <p className="text-sm font-bold text-slate-400 mt-1">{universityName}</p>
+                        </div>
+                      </div>
+
+                      {/* Meta Information */}
+                      <div className="space-y-3 mb-8">
+                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                          <GraduationCap className="h-4.5 w-4.5 text-blue-500/70" />
+                          <span>{p.degree || "Bachelor / Undergraduate"}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                          <Clock className="h-4.5 w-4.5 text-blue-500/70" />
+                          <span>{p.duration || "2 Years"}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                          <MapPin className="h-4.5 w-4.5 text-blue-500/70" />
+                          <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Nilai Campus"}</span>
+                        </div>
+                      </div>
+
                       {/* Tuition Stats Section */}
-                      <div className="mt-6 pt-6 border-t border-slate-50">
-                        <div className="grid grid-cols-3 gap-3">
-                          <div className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-50">
-                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tuition Fee</p>
-                            <p className="text-[12px] font-bold text-blue-600">
+                      <div className="mt-auto">
+                        <div className="grid grid-cols-3 gap-3 mb-6">
+                          <div className="bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-100/50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tuition Fee</p>
+                            <p className="text-[13px] font-bold text-blue-600">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
-                          <div className="bg-emerald-50 rounded-2xl p-3 text-center border border-emerald-50">
-                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Scholarship</p>
-                            <p className="text-[12px] font-bold text-emerald-600">Up to 30%</p>
+                          <div className="bg-emerald-50 rounded-2xl p-3.5 text-center border border-emerald-100/50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/60 mb-1.5">Scholarship</p>
+                            <p className="text-[13px] font-bold text-emerald-600">Up to 30%</p>
                           </div>
-                          <div className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-50">
-                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">App. Fee</p>
-                            <p className="text-[12px] font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
+                          <div className="bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-100/50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">App. Fee</p>
+                            <p className="text-[13px] font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                           </div>
                         </div>
 
                         {/* Intakes */}
-                        <div className="mt-5 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Intake:</p>
-                            <div className="flex flex-nowrap gap-1.5 overflow-x-auto no-scrollbar pb-1">
-                              {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                                <Badge key={i} variant="secondary" className="bg-slate-50 text-slate-600 rounded-lg px-2.5 py-0.5 text-[10px] font-bold border-none whitespace-nowrap">
-                                  {intake.trim()}
-                                </Badge>
-                              ))}
-                            </div>
+                        <div className="flex items-center gap-3 mb-8 overflow-hidden">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 shrink-0">Intakes:</span>
+                          <div className="flex flex-nowrap gap-2 overflow-x-auto no-scrollbar pb-1">
+                            {(p.intake || "January, June, August").split(",").map((intake, i) => (
+                              <Badge key={i} variant="secondary" className="bg-slate-100 text-slate-600 rounded-lg px-3 py-1 text-[10px] font-bold border-none whitespace-nowrap">
+                                {intake.trim()}
+                              </Badge>
+                            ))}
                           </div>
                         </div>
 
-
                         {/* Actions */}
-                        <div className="mt-6 flex gap-3">
+                        <div className="flex gap-4">
                           <Button 
-                            className="flex-1 h-10 rounded-xl bg-blue-600 text-xs font-bold text-white hover:bg-blue-700 transition-all shadow-sm"
+                            className="flex-1 h-12 rounded-2xl bg-blue-600 text-sm font-bold text-white hover:bg-blue-700 transition-all shadow-[0_4px_12px_rgba(37,99,235,0.2)]"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
@@ -783,7 +872,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="flex-1 h-10 rounded-xl border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
+                            className="flex-1 h-12 rounded-2xl border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               openEdit(p);
@@ -800,20 +889,86 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             </div>
 
             {hasMore && (
-              <div className="mt-20 flex justify-center pb-12">
+              <div className="mt-16 flex justify-center pb-8">
                 <Button
                   variant="outline"
                   size="lg"
                   onClick={() => setPage((p) => p + 1)}
-                  className="rounded-3xl border-2 border-slate-200 px-16 h-16 text-base font-medium text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
+                  className="rounded-full border-2 border-slate-200 px-12 h-14 text-sm font-bold text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
                 >
                   Load More Programs
                 </Button>
               </div>
             )}
           </div>
-        )}
-      </div>
+        </TabsContent>
+
+
+
+        
+        <TabsContent value="campuses" className="mt-0 outline-none">
+          <CampusesTab universityId={universityId} campuses={campuses} canEdit={canEdit} onChange={reload} />
+        </TabsContent>
+
+        <TabsContent value="applications" className="mt-0 outline-none">
+          <Card className="rounded-[28px] border-none bg-white shadow-[0_2px_12px_rgba(0,0,0,0.03)] overflow-hidden">
+            <CardHeader className="border-b border-slate-50 p-8">
+              <CardTitle className="text-xl font-bold text-slate-900">Recent Applications</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              {applications.length === 0 ? (
+                <div className="flex flex-col items-center py-24 text-center">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 mb-6">
+                    <FileText className="h-10 w-10 text-slate-300" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900">No applications found</h3>
+                  <p className="text-slate-500 font-bold mt-2">No students have applied to this university yet.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="hover:bg-transparent border-slate-100">
+                        <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Application Code</TableHead>
+                        <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Student Name</TableHead>
+                        <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Program</TableHead>
+                        <TableHead className="py-6 px-8 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Status</TableHead>
+                        <TableHead className="py-6 px-8 text-right"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {applications.map((a) => (
+                        <TableRow key={a.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors group">
+                          <TableCell className="py-6 px-8 font-mono text-xs font-bold text-blue-600">{a.application_code}</TableCell>
+                          <TableCell className="py-6 px-8">
+                            <div className="flex flex-col">
+                              <span className="font-bold text-slate-900">{a.student?.full_name ?? "—"}</span>
+                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{a.student?.student_code}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-6 px-8 font-bold text-slate-600 text-sm">{a.program}</TableCell>
+                          <TableCell className="py-6 px-8">
+                            <Badge variant="outline" className="rounded-xl border-slate-200 bg-white px-4 py-1.5 font-bold text-[10px] uppercase text-slate-600 shadow-none">
+                              {String(a.status).replace(/_/g, " ")}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="py-6 px-8 text-right">
+                            <Button size="sm" variant="ghost" className="rounded-xl font-bold hover:bg-blue-600 hover:text-white text-blue-600 transition-all px-4" asChild>
+                              <Link to="/applications/$applicationId" params={{ applicationId: a.id }}>
+                                View Details
+                              </Link>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
 
 
@@ -1090,6 +1245,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
     </>
   );
 }
+
 
 
 

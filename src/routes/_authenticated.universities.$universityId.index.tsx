@@ -796,17 +796,17 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                       </div>
 
                       {/* Meta Information */}
-                      <div className="space-y-3 mb-8">
-                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center gap-2 text-[13px] font-semibold leading-tight text-slate-500">
                           <GraduationCap className="h-4.5 w-4.5 text-blue-500/70" />
                           <span>{p.degree || "Bachelor / Undergraduate"}</span>
                         </div>
-                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                        <div className="flex items-center gap-2 text-[13px] font-semibold leading-tight text-slate-500">
                           <Clock className="h-4.5 w-4.5 text-blue-500/70" />
                           <span>{p.duration || "2 Years"}</span>
                         </div>
                         {campuses.find(c => c.id === p.campus_id)?.name && (
-                          <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                          <div className="flex items-center gap-2 text-[13px] font-semibold leading-tight text-slate-500">
                             <MapPin className="h-4.5 w-4.5 text-blue-500/70" />
                             <span>{campuses.find(c => c.id === p.campus_id)?.name}</span>
                           </div>

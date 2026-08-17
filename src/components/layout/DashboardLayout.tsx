@@ -5,7 +5,6 @@ import { NotificationBell } from "./NotificationBell";
 import { HeaderChatButton } from "@/components/chat/HeaderChatButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
-import { Breadcrumbs } from "./Breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {

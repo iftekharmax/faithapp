@@ -96,12 +96,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .map(p => p.permission);
       
       const uniquePerms = Array.from(new Set(perms));
-      setPermissions(uniquePerms);
+      
+      // Only update if permissions actually changed
+      setPermissions(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(uniquePerms)) return prev;
+        return uniquePerms;
+      });
+      
       setPermissionsReady(true);
       console.log("[Auth] Permissions loaded:", uniquePerms.length);
     } catch (err) {
       console.error("[Auth] Fatal error loading permissions:", err);
-      // We don't set permissionsReady here so the UI can show retrying
     }
   };
 
@@ -193,14 +198,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (event === "SIGNED_IN" || event === "USER_UPDATED") {
-        setSession(s);
-        setAuthReady(!!s);
-        scheduleProactiveRefresh(s);
+        // Optimization: If session ID hasn't changed, don't trigger a full reload
+        setSession(prev => {
+          if (prev?.user?.id === s?.user?.id && prev?.access_token === s?.access_token) {
+            return prev;
+          }
+          return s;
+        });
 
         if (s?.user) {
+          // If we already have roles/permissions for THIS user, skip reloading data
+          if (hadSessionRef.current && session?.user?.id === s.user.id && rolesReady && permissionsReady) {
+            console.log("[Auth] Session stable, skipping user data reload");
+            setAuthReady(true);
+            return;
+          }
+
+          setAuthReady(true);
           hadSessionRef.current = true;
           void loadUserData(s.user.id);
         }
+        scheduleProactiveRefresh(s);
       } else if (event === "SIGNED_OUT") {
         setSession(null);
         setProfile(null);

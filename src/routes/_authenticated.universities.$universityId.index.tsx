@@ -637,9 +637,27 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
-          <FilterDropdown placeholder="All Degrees" />
-          <FilterDropdown placeholder="All Intakes" />
-          <FilterDropdown placeholder="All Scholarships" />
+          <FilterDropdown
+            placeholder="All Degrees"
+            value={degreeFilter}
+            onValueChange={setDegreeFilter}
+            options={degrees.map((d) => ({ label: d, value: d }))}
+          />
+          <FilterDropdown
+            placeholder="All Intakes"
+            value={intakeFilter}
+            onValueChange={setIntakeFilter}
+            options={intakes.map((i) => ({ label: i, value: i }))}
+          />
+          <FilterDropdown
+            placeholder="All Scholarships"
+            value={scholarshipFilter}
+            onValueChange={setScholarshipFilter}
+            options={[
+              { label: "With Scholarship", value: "yes" },
+              { label: "No Scholarship", value: "no" },
+            ]}
+          />
           <FilterDropdown 
             placeholder="Newest" 
             value={sortOrder}

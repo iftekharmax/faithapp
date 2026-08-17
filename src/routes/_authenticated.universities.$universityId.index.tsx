@@ -206,78 +206,79 @@ function UniversityDetail() {
       </div>
 
       {/* Hero Section - Matched to Screenshot */}
-      <Card className="rounded-[40px] border border-slate-100 bg-white p-12 shadow-sm overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-12 items-start md:items-center">
-          <div className="flex h-36 w-64 shrink-0 items-center justify-center rounded-[32px] border border-slate-50 p-6 bg-white shadow-sm">
+      <Card className="rounded-[32px] border-none bg-white p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="flex flex-col lg:flex-row gap-10 items-start">
+          {/* Logo Container */}
+          <div className="flex h-32 w-56 shrink-0 items-center justify-center rounded-3xl border border-slate-100 p-6 bg-white shadow-sm self-center lg:self-start">
             {uni.logo_url ? (
               <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
             ) : (
-              <Building2 className="h-20 w-20 text-slate-100" />
+              <Building2 className="h-16 w-16 text-slate-200" />
             )}
           </div>
           
           <div className="flex-1 space-y-6">
-            <div className="flex flex-wrap items-center gap-5">
-              <h1 className="text-[42px] font-medium text-slate-900 tracking-tighter leading-none">{uni.name}</h1>
-              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-[11px] font-medium uppercase tracking-widest border-none shadow-sm">
+            <div className="flex flex-wrap items-center gap-4">
+              <h1 className="text-[36px] font-bold text-slate-900 tracking-tight leading-tight">{uni.name}</h1>
+              <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border-none">
                 {uni.status === "active" ? "Active" : uni.status}
               </Badge>
             </div>
             
-            <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-base font-bold text-slate-600">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🇲🇾</span>
-                <span className="font-medium text-slate-900">MY Malaysia</span>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🇲🇾</span>
+                <span className="font-bold text-slate-900">MY Malaysia</span>
               </div>
-              <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-slate-400" />
-                <span className="font-medium text-slate-900">{uni.city || "Negeri Sembilan"}</span>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-slate-400" />
+                <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
               </div>
               {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-blue-600 hover:text-blue-700 font-medium decoration-2 underline-offset-4 hover:underline">
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline font-bold">
                   <span>Website</span>
-                  <ExternalLink className="h-4 w-4" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               )}
             </div>
 
-            <p className="text-[16px] leading-relaxed text-slate-500 max-w-4xl font-medium">
-              {uni.description || `${uni.name} is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.`}
+            <p className="text-[15px] leading-relaxed text-slate-500 max-w-3xl">
+              {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
             </p>
           </div>
 
-          <div className="flex gap-6">
-            <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">{campuses.length}</span>
-              <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Campuses</span>
+          <div className="flex gap-4 self-center lg:self-start">
+            <div className="flex flex-col items-center justify-center w-28 h-28 rounded-3xl bg-slate-50 border border-slate-100 shadow-sm">
+              <span className="text-3xl font-bold text-slate-900">{campuses.length}</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mt-2">Campuses</span>
             </div>
-            <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">{programs.length}</span>
-              <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Programs</span>
+            <div className="flex flex-col items-center justify-center w-28 h-28 rounded-3xl bg-slate-50 border border-slate-100 shadow-sm">
+              <span className="text-3xl font-bold text-slate-900">{programs.length}</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mt-2">Programs</span>
             </div>
           </div>
         </div>
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-12">
-        <TabsList className="bg-white border border-slate-200 shadow-sm w-full justify-start rounded-[32px] h-auto p-0 gap-16 px-14 overflow-hidden">
+        <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-none h-auto p-0 gap-10 px-0 overflow-x-auto scrollbar-none">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
           >
-            Programs ({programs.length})
+            Programs <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{programs.length}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
           >
-            Campuses ({campuses.length})
+            Campuses <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{campuses.length}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
           >
-            Applications ({totalApplicationsCount.toLocaleString()})
+            Applications <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{totalApplicationsCount}</span>
           </TabsTrigger>
         </TabsList>
 

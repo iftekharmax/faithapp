@@ -775,10 +775,12 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           <Clock className="h-4.5 w-4.5 text-blue-500/70" />
                           <span>{p.duration || "2 Years"}</span>
                         </div>
-                        <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
-                          <MapPin className="h-4.5 w-4.5 text-blue-500/70" />
-                          <span>{p.campus_id ? campuses.find(c => c.id === p.campus_id)?.name : "Nilai Campus"}</span>
-                        </div>
+                        {campuses.find(c => c.id === p.campus_id)?.name && (
+                          <div className="flex items-center gap-3 text-[14px] font-bold text-slate-500">
+                            <MapPin className="h-4.5 w-4.5 text-blue-500/70" />
+                            <span>{campuses.find(c => c.id === p.campus_id)?.name}</span>
+                          </div>
+                        )}
                       </div>
 
                       {/* Tuition Stats Section */}

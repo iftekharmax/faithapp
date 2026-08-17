@@ -293,20 +293,6 @@ function UniversityDetail() {
                   {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">Established</p>
-                    <p className="text-[13px] font-bold text-slate-900">{(uni as any).established_year || "—"}</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">Type</p>
-                    <p className="text-[13px] font-bold text-slate-900">{(uni as any).type || "Private"}</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">Main Campus</p>
-                    <p className="text-[13px] font-bold text-slate-900">{campuses[0]?.name || uni.city || "—"}</p>
-                  </div>
-                </div>
 
 
 

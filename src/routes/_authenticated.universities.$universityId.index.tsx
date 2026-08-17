@@ -615,51 +615,60 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
 
   return (
     <>
-    <div className="relative flex flex-col pt-8">
+    <div className="relative flex flex-col pt-0">
       {/* Filter Container */}
-      <div className="bg-white rounded-[18px] p-5 shadow-[0_2px_10px_rgba(15,23,42,0.05)]">
-        <div className="flex flex-wrap items-center justify-between gap-5">
-          <div className="flex flex-wrap items-center gap-4 flex-1">
+      <div className="bg-white rounded-[24px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="flex flex-1 items-center gap-4">
             {/* Search Box */}
-            <div className="relative min-w-[300px] flex-1 max-w-sm">
+            <div className="relative flex-1 max-w-md">
               <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input 
                 placeholder="Search programs..." 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
-                className="pl-10 h-10 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
+                className="pl-11 h-12 rounded-[14px] border-slate-100 bg-slate-50/50 text-sm font-bold placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
               />
             </div>
-            
           </div>
           
-          <div className="flex items-center gap-2">
-            <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4 text-xs">
-              <Download className="mr-2 h-3.5 w-3.5" /> Export
+          <div className="flex flex-wrap items-center gap-3">
+            <Button variant="outline" className="h-12 rounded-[14px] border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-6 text-xs transition-all">
+              <Download className="mr-2 h-4 w-4 text-slate-400" /> Export
             </Button>
-            <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4 text-xs">
-              <Share2 className="mr-2 h-3.5 w-3.5" /> Import
+            <Button variant="outline" className="h-12 rounded-[14px] border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-6 text-xs transition-all">
+              <Share2 className="mr-2 h-4 w-4 text-slate-400" /> Import
             </Button>
+            
+            <div className="flex items-center p-1 bg-slate-100/50 rounded-[14px] ml-2">
+              <Button size="icon" variant="ghost" className="h-10 w-11 rounded-xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/50 transition-all">
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-10 w-11 rounded-xl text-slate-400 hover:bg-white/50 transition-all">
+                <ListIcon className="h-4 w-4" />
+              </Button>
+            </div>
+
             <Button 
               onClick={openNew} 
-              className="h-10 rounded-xl bg-blue-600 font-bold text-white shadow-sm px-6 ml-2 transition-all hover:bg-blue-700"
+              className="h-12 rounded-[14px] bg-blue-600 font-bold text-white shadow-[0_4px_12px_rgba(37,99,235,0.2)] px-8 ml-2 transition-all hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus className="mr-2 h-4 w-4" /> Add Program
+              <Plus className="mr-2 h-5 w-5" /> Add Program
             </Button>
           </div>
         </div>
 
         {/* Filter Chips / Secondary Filters */}
-        <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-slate-50">
+        <div className="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-slate-50">
           <FilterDropdown 
-            placeholder="Campuses" 
+            placeholder="All Campuses" 
             value={campusFilter}
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
-          <FilterDropdown placeholder="Degrees" />
-          <FilterDropdown placeholder="Intakes" />
-          <FilterDropdown placeholder="Scholarships" />
+          <FilterDropdown placeholder="All Degrees" />
+          <FilterDropdown placeholder="All Intakes" />
+          <FilterDropdown placeholder="All Scholarships" />
           <FilterDropdown 
             placeholder="Newest" 
             value={sortOrder}
@@ -670,14 +679,9 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
             ]}
           />
           
-          <div className="ml-auto flex items-center p-1 bg-slate-100/50 rounded-xl">
-            <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/50 transition-all">
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
-            <Button size="icon" variant="ghost" className="h-9 w-10 rounded-lg text-slate-400 hover:bg-white/50 transition-all">
-              <ListIcon className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button variant="ghost" size="sm" className="ml-auto h-10 rounded-xl font-bold text-slate-400 hover:text-blue-600 hover:bg-blue-50" onClick={() => { setSearch(""); setDegreeFilter("all"); setCampusFilter("all"); }}>
+            <RotateCcw className="mr-2 h-4 w-4" /> Clear
+          </Button>
         </div>
       </div>
       

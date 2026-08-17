@@ -293,29 +293,6 @@ function UniversityDetail() {
                   {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
                 </p>
 
-                <div className="flex flex-wrap gap-4 pt-2">
-                  <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
-                    <History className="h-5 w-5 text-slate-400" />
-                    <div className="flex flex-col">
-                      <span className="text-[8px] font-bold uppercase tracking-wider text-slate-400">Established</span>
-                      <span className="text-[13px] font-bold text-slate-900">1986</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
-                    <ShieldCheck className="h-5 w-5 text-slate-400" />
-                    <div className="flex flex-col">
-                      <span className="text-[8px] font-bold uppercase tracking-wider text-slate-400">Type</span>
-                      <span className="text-[13px] font-bold text-slate-900">Private University</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100/50">
-                    <MapPin className="h-5 w-5 text-slate-400" />
-                    <div className="flex flex-col">
-                      <span className="text-[8px] font-bold uppercase tracking-wider text-slate-400">Main Campus</span>
-                      <span className="text-[13px] font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <div className="flex gap-5 self-center lg:self-start lg:pt-2">

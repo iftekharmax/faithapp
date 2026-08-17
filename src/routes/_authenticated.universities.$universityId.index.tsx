@@ -206,78 +206,79 @@ function UniversityDetail() {
       </div>
 
       {/* Hero Section - Matched to Screenshot */}
-      <Card className="rounded-[40px] border border-slate-100 bg-white p-12 shadow-sm overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-12 items-start md:items-center">
-          <div className="flex h-36 w-64 shrink-0 items-center justify-center rounded-[32px] border border-slate-50 p-6 bg-white shadow-sm">
+      <Card className="rounded-[32px] border-none bg-white p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="flex flex-col lg:flex-row gap-10 items-start">
+          {/* Logo Container */}
+          <div className="flex h-32 w-56 shrink-0 items-center justify-center rounded-3xl border border-slate-100 p-6 bg-white shadow-sm self-center lg:self-start">
             {uni.logo_url ? (
               <img src={uni.logo_url} alt={uni.name} className="h-full w-full object-contain" />
             ) : (
-              <Building2 className="h-20 w-20 text-slate-100" />
+              <Building2 className="h-16 w-16 text-slate-200" />
             )}
           </div>
           
           <div className="flex-1 space-y-6">
-            <div className="flex flex-wrap items-center gap-5">
-              <h1 className="text-[42px] font-medium text-slate-900 tracking-tighter leading-none">{uni.name}</h1>
-              <Badge className="bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-[11px] font-medium uppercase tracking-widest border-none shadow-sm">
+            <div className="flex flex-wrap items-center gap-4">
+              <h1 className="text-[36px] font-bold text-slate-900 tracking-tight leading-tight">{uni.name}</h1>
+              <Badge className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border-none">
                 {uni.status === "active" ? "Active" : uni.status}
               </Badge>
             </div>
             
-            <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-base font-bold text-slate-600">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🇲🇾</span>
-                <span className="font-medium text-slate-900">MY Malaysia</span>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🇲🇾</span>
+                <span className="font-bold text-slate-900">MY Malaysia</span>
               </div>
-              <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-slate-400" />
-                <span className="font-medium text-slate-900">{uni.city || "Negeri Sembilan"}</span>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-slate-400" />
+                <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}</span>
               </div>
               {uni.website && (
-                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-blue-600 hover:text-blue-700 font-medium decoration-2 underline-offset-4 hover:underline">
+                <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline font-bold">
                   <span>Website</span>
-                  <ExternalLink className="h-4 w-4" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               )}
             </div>
 
-            <p className="text-[16px] leading-relaxed text-slate-500 max-w-4xl font-medium">
-              {uni.description || `${uni.name} is a private university located in Malaysia. The main campus was initially known as INTI University College until 31 May 2010 when the Higher Education Ministry announced its upgrade to university status.`}
+            <p className="text-[15px] leading-relaxed text-slate-500 max-w-3xl">
+              {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
             </p>
           </div>
 
-          <div className="flex gap-6">
-            <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">{campuses.length}</span>
-              <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Campuses</span>
+          <div className="flex gap-4 self-center lg:self-start">
+            <div className="flex flex-col items-center justify-center w-28 h-28 rounded-3xl bg-slate-50 border border-slate-100 shadow-sm">
+              <span className="text-3xl font-bold text-slate-900">{campuses.length}</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mt-2">Campuses</span>
             </div>
-            <div className="flex flex-col items-center justify-center px-10 py-8 rounded-[32px] bg-slate-50 border border-slate-50 min-w-[150px] shadow-sm">
-              <span className="text-[40px] font-medium text-slate-900 leading-none tracking-tighter">{programs.length}</span>
-              <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 mt-3">Programs</span>
+            <div className="flex flex-col items-center justify-center w-28 h-28 rounded-3xl bg-slate-50 border border-slate-100 shadow-sm">
+              <span className="text-3xl font-bold text-slate-900">{programs.length}</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mt-2">Programs</span>
             </div>
           </div>
         </div>
       </Card>
 
       <Tabs defaultValue="programs" className="space-y-12">
-        <TabsList className="bg-white border border-slate-200 shadow-sm w-full justify-start rounded-[32px] h-auto p-0 gap-16 px-14 overflow-hidden">
+        <TabsList className="bg-white border-b border-slate-100 w-full justify-start rounded-none h-auto p-0 gap-10 px-0 overflow-x-auto scrollbar-none">
           <TabsTrigger 
             value="programs" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
           >
-            Programs ({programs.length})
+            Programs <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{programs.length}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="campuses" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
           >
-            Campuses ({campuses.length})
+            Campuses <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{campuses.length}</span>
           </TabsTrigger>
           <TabsTrigger 
             value="applications" 
-            className="rounded-none border-b-[3px] border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-0 pt-10 pb-8 text-[19px] font-medium text-slate-500 transition-all hover:text-slate-900"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-600 px-2 py-4 text-base font-bold text-slate-400 transition-all hover:text-slate-900"
           >
-            Applications ({totalApplicationsCount.toLocaleString()})
+            Applications <span className="ml-2 px-2 py-0.5 rounded-full bg-slate-100 text-[10px] text-slate-500 group-data-[state=active]:bg-blue-50 group-data-[state=active]:text-blue-600">{totalApplicationsCount}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -523,49 +524,45 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
         <div className="flex flex-wrap items-center justify-between gap-5">
           <div className="flex flex-wrap items-center gap-4 flex-1">
             {/* Search Box */}
-            <div className="relative min-w-[360px] flex-1 max-w-md">
-              <Search className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-500" />
+            <div className="relative min-w-[300px] flex-1 max-w-sm">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input 
                 placeholder="Search programs..." 
                 value={search} 
                 onChange={(e) => setSearch(e.target.value)} 
-                className="pl-12 h-[48px] rounded-full border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
+                className="pl-10 h-10 rounded-xl border-slate-200 bg-white text-sm font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-blue-600/10 text-slate-900 shadow-none transition-all" 
               />
             </div>
             
           </div>
           
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
-              <Download className="mr-2 h-4 w-4" /> Export
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4 text-xs">
+              <Download className="mr-2 h-3.5 w-3.5" /> Export
             </Button>
-            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
-              <Share2 className="mr-2 h-4 w-4" /> Import
-            </Button>
-            <Button variant="ghost" className="h-[46px] rounded-[14px] bg-slate-50/50 font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 px-5 text-sm transition-all">
-              <FileText className="mr-2 h-4 w-4" /> Template
+            <Button variant="outline" className="h-10 rounded-xl border-slate-200 font-bold text-slate-600 hover:bg-slate-50 px-4 text-xs">
+              <Share2 className="mr-2 h-3.5 w-3.5" /> Import
             </Button>
             <Button 
               onClick={openNew} 
-              className="h-[46px] rounded-[14px] bg-gradient-to-r from-[#2563EB] to-[#3B82F6] font-medium text-white shadow-lg shadow-blue-600/20 px-8 ml-2 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-600/30 active:scale-[0.98]"
+              className="h-10 rounded-xl bg-blue-600 font-bold text-white shadow-sm px-6 ml-2 transition-all hover:bg-blue-700"
             >
-              <Plus className="mr-2 h-5 w-5" /> Add Program
+              <Plus className="mr-2 h-4 w-4" /> Add Program
             </Button>
           </div>
         </div>
 
         {/* Filter Chips / Secondary Filters */}
-        <div className="flex flex-wrap items-center gap-2 mt-5 pt-5 border-t border-slate-50">
+        <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-slate-50">
           <FilterDropdown 
-            placeholder="All Campuses" 
+            placeholder="Campuses" 
             value={campusFilter}
             onValueChange={setCampusFilter}
             options={campuses.map(c => ({ label: c.name, value: c.id }))}
           />
-          <FilterDropdown placeholder="All Degrees" />
-          <FilterDropdown placeholder="All Intakes" />
-          <FilterDropdown placeholder="All Scholarships" />
-          <FilterDropdown placeholder="All Duration" />
+          <FilterDropdown placeholder="Degrees" />
+          <FilterDropdown placeholder="Intakes" />
+          <FilterDropdown placeholder="Scholarships" />
           <FilterDropdown 
             placeholder="Newest" 
             value={sortOrder}
@@ -684,9 +681,10 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   <div 
                     key={p.id} 
                     className={cn(
-                      "group relative flex flex-col overflow-hidden rounded-[20px] bg-gradient-to-br border border-[#E8ECF3] shadow-[0_2px_10px_rgba(15,23,42,0.05)] transition-all duration-300 ease-in-out hover:shadow-[0_16px_40px_rgba(37,99,235,0.15)] hover:border-[#3B82F6] hover:-translate-y-[6px]",
-                      gradient
+                      "group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1",
+                      "from-white to-white"
                     )}
+                    onClick={() => openEdit(p)}
                   >
                     <div className="flex flex-1 flex-col p-7">
                       <div className="flex items-start justify-between">
@@ -705,14 +703,14 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           
                           {/* Title and Icon */}
                           <div className="flex items-start gap-4">
-                            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50/50 shrink-0 ring-1 ring-blue-100/30 group-hover:bg-blue-600 transition-all duration-300">
-                              <Activity className="h-7 w-7 text-blue-600 group-hover:text-white transition-colors" />
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 shrink-0 group-hover:bg-blue-50 transition-colors">
+                              <School className="h-6 w-6 text-slate-400 group-hover:text-blue-600" />
                             </div>
-                            <div className="flex-1 pr-6">
-                              <h3 className="text-[20px] font-bold leading-tight text-[#0F172A] line-clamp-2 min-h-[50px]">
+                            <div className="flex-1 pr-4">
+                              <h3 className="text-lg font-bold leading-snug text-slate-900 line-clamp-2">
                                 {p.name}
                               </h3>
-                              <p className="text-[14px] font-medium text-slate-500 mt-1">{universityName}</p>
+                              <p className="text-sm font-medium text-slate-400 mt-0.5">{universityName}</p>
                             </div>
                           </div>
 
@@ -739,71 +737,60 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                       </div>
 
                       {/* Tuition Stats Section */}
-                      <div className="mt-6 pt-6 border-t border-[#E8ECF3]">
+                      <div className="mt-6 pt-6 border-t border-slate-50">
                         <div className="grid grid-cols-3 gap-3">
-                          <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 text-center">
-                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">Tuition Fee</p>
+                          <div className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tuition Fee</p>
                             <p className="text-[12px] font-bold text-blue-600">
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
-                          <div className="bg-emerald-50/30 rounded-xl p-3 border border-emerald-100/30 text-center">
-                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">Scholarship</p>
+                          <div className="bg-emerald-50 rounded-2xl p-3 text-center border border-emerald-50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Scholarship</p>
                             <p className="text-[12px] font-bold text-emerald-600">Up to 30%</p>
                           </div>
-                          <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 text-center">
-                            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1">App. Fee</p>
-                            <p className="text-[12px] font-bold text-[#0F172A]">{p.currency || "MYR"} {p.application_fee || "600"}</p>
+                          <div className="bg-slate-50 rounded-2xl p-3 text-center border border-slate-50">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">App. Fee</p>
+                            <p className="text-[12px] font-bold text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
                           </div>
                         </div>
 
                         {/* Intakes */}
-                        <div className="mt-6 space-y-2">
-                          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">Next Intake</p>
-                          <div className="flex flex-nowrap gap-2 overflow-x-auto scrollbar-none pb-1">
-                            {(p.intake || "January, April, August").split(",").map((intake, i) => (
-                              <span key={i} className="rounded-full bg-blue-50 text-blue-600 px-3 py-1 text-[11px] font-medium border border-blue-100/50 whitespace-nowrap">
-                                {intake.trim()}
-                              </span>
-                            ))}
+                        <div className="mt-5 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Intake:</p>
+                            <div className="flex flex-nowrap gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                              {(p.intake || "January, April, August").split(",").map((intake, i) => (
+                                <Badge key={i} variant="secondary" className="bg-slate-50 text-slate-600 rounded-lg px-2.5 py-0.5 text-[10px] font-bold border-none whitespace-nowrap">
+                                  {intake.trim()}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
                         </div>
 
 
                         {/* Actions */}
-                        <div className="mt-8 flex gap-3">
+                        <div className="mt-6 flex gap-3">
                           <Button 
-                            className="flex-1 h-[44px] rounded-xl bg-gradient-to-r from-[#2563EB] to-[#3B82F6] text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-600/20 transition-all"
+                            className="flex-1 h-10 rounded-xl bg-blue-600 text-xs font-bold text-white hover:bg-blue-700 transition-all shadow-sm"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
                             }}
                           >
-                            Create Application
+                            Apply Now
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="flex-1 h-[44px] rounded-xl border-[#E8ECF3] text-sm font-medium text-slate-600 hover:border-[#3B82F6] hover:text-[#3B82F6] transition-all bg-white"
+                            className="flex-1 h-10 rounded-xl border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               openEdit(p);
                             }}
                           >
-                            View Details
+                            Details
                           </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="outline" size="icon" className="h-[44px] w-[44px] shrink-0 rounded-full border-[#E8ECF3] text-slate-400 hover:border-[#3B82F6] transition-all bg-white">
-                                <MoreHorizontal className="h-5 w-5" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="rounded-2xl border-slate-100 shadow-2xl p-2 min-w-[180px]">
-                              <DropdownMenuItem onClick={() => openEdit(p)} className="rounded-xl font-medium py-2.5"><Pencil className="mr-3 h-4 w-4" /> Edit Program</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => navigate({ to: "/applications/new", search: { universityId, programId: p.id } })} className="rounded-xl font-medium py-2.5 text-blue-600 bg-blue-50/50"><Plus className="mr-3 h-4 w-4" /> Apply Now</DropdownMenuItem>
-                              <DropdownMenuSeparator className="my-2 bg-slate-100" />
-                              <DropdownMenuItem onClick={() => setDeleteId(p.id)} className="rounded-xl font-medium py-2.5 text-rose-600 hover:bg-rose-50"><Trash2 className="mr-3 h-4 w-4" /> Delete Program</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
                         </div>
                       </div>
                     </div>
@@ -827,6 +814,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
           </div>
         )}
       </div>
+
 
 
 

@@ -197,40 +197,6 @@ function UniversityDetail() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Top Header / Breadcrumb */}
-      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white px-8">
-        <div className="flex items-center gap-4 text-sm text-slate-500">
-          <MoreHorizontal className="h-5 w-5 cursor-pointer text-slate-400 hover:text-slate-600" />
-          <ChevronRight className="h-4 w-4 text-slate-300" />
-          <Link to="/universities" className="hover:text-slate-900 transition-colors">Universities</Link>
-          <ChevronRight className="h-4 w-4 text-slate-300" />
-          <span className="font-medium text-slate-400 truncate max-w-[200px]">{universityId}</span>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 border-r border-slate-100 pr-4 mr-2">
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400">
-              <Zap className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400">
-              <Share2 className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400 relative">
-              <div className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white" />
-              <Activity className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col items-end">
-              <span className="text-sm font-bold text-slate-900">Iftekhar Abir</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Counselor</span>
-            </div>
-            <div className="h-10 w-10 rounded-full bg-slate-200 overflow-hidden border-2 border-slate-50">
-              <img src="https://github.com/shadcn.png" alt="User" className="h-full w-full object-cover" />
-            </div>
-          </div>
-        </div>
-      </header>
 
       <div className="mx-auto max-w-[1600px] px-8 pt-6 pb-12 space-y-8 animate-in fade-in duration-700">
         {/* Back to Universities */}
@@ -280,6 +246,11 @@ function UniversityDetail() {
                       <MapPin className="h-4 w-4 text-slate-400" />
                       <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}, Malaysia</span>
                     </div>
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <Building2 className="h-4 w-4 text-slate-400" />
+                      <span className="font-bold text-slate-900">{campuses[0]?.name || uni.city || "—"}</span>
+                    </div>
+
                     {uni.website && (
                       <a href={uni.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline font-bold">
                         <span>Website</span>
@@ -293,20 +264,6 @@ function UniversityDetail() {
                   {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">Established</p>
-                    <p className="text-[13px] font-bold text-slate-900">{(uni as any).established_year || "—"}</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">Type</p>
-                    <p className="text-[13px] font-bold text-slate-900">{(uni as any).type || "Private"}</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">Main Campus</p>
-                    <p className="text-[13px] font-bold text-slate-900">{campuses[0]?.name || uni.city || "—"}</p>
-                  </div>
-                </div>
 
 
 

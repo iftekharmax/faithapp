@@ -614,7 +614,6 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   }
 
   return (
-    <>
     <div className="relative flex flex-col pt-0">
       {/* Filter Container */}
       <div className="bg-white rounded-[24px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">

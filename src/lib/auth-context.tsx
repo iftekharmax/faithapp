@@ -113,28 +113,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const [profResult, rolesResult] = await Promise.all([
         fetchWithRetry(
           async () => {
-            const res = await supabase.from("profiles").select("*").eq("id", uid).maybeSingle();
-            return res;
+            const { data, error } = await supabase.from("profiles").select("*").eq("id", uid).maybeSingle();
+            if (error) throw error;
+            return data;
           },
           "Profile"
         ),
         fetchWithRetry(
           async () => {
-            const res = await supabase.from("user_roles").select("role").eq("user_id", uid);
-            return res;
+            const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", uid);
+            if (error) throw error;
+            return data;
           },
           "Roles"
         )
       ]);
 
-      const profData = profResult as any;
-      const rolesData = rolesResult as any;
-
-      if (profData.error) throw profData.error;
-      if (rolesData.error) throw rolesData.error;
-
-      setProfile((profData.data as Profile) ?? null);
-      const userRoles = ((rolesData.data as { role: AppRole }[]) ?? []).map((x) => x.role);
+      setProfile((profResult as Profile) ?? null);
+      const userRoles = ((rolesResult as { role: AppRole }[]) ?? []).map((x) => x.role);
       setRoles(userRoles);
       setRolesReady(true);
       

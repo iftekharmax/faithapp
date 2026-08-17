@@ -33,8 +33,9 @@ export function UserMenu() {
   };
 
   const primaryRole = roles[0];
-  void primaryRole; void displayName;
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "User";
+  void primaryRole; void displayName;
+
 
   return (
     <DropdownMenu>

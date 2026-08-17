@@ -112,11 +112,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const [profResult, rolesResult] = await Promise.all([
         fetchWithRetry(
-          () => supabase.from("profiles").select("*").eq("id", uid).maybeSingle().then(res => res),
+          async () => {
+            const res = await supabase.from("profiles").select("*").eq("id", uid).maybeSingle();
+            return res;
+          },
           "Profile"
         ),
         fetchWithRetry(
-          () => supabase.from("user_roles").select("role").eq("user_id", uid).then(res => res),
+          async () => {
+            const res = await supabase.from("user_roles").select("role").eq("user_id", uid);
+            return res;
+          },
           "Roles"
         )
       ]);

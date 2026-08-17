@@ -38,7 +38,9 @@ function AuthenticatedLayout() {
   // Wait for all auth state to be ready
   const isAuthReady = authReady && rolesReady && permissionsReady;
 
-  if (loading || !isAuthReady) {
+  // Persistent state safety: If we have a session but data is just re-fetching in background,
+  // do NOT show the loading overlay. Only show it on initial app load.
+  if (loading || (!isAuthReady && !hadSessionRef.current)) {
     let loadingMessage = "Initializing session...";
     if (authReady && !rolesReady) loadingMessage = "Loading user roles...";
     if (authReady && rolesReady && !permissionsReady) loadingMessage = "Loading permissions...";

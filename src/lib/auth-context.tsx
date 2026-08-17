@@ -59,6 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hadSessionRef = useRef(false);
+  const mountedRef = useRef(false);
+  const loadingUserDataRef = useRef<string | null>(null);
 
   // Global Permissions Cache
   const cachedPermissionsRef = useRef<RolePermission[] | null>(null);
@@ -107,13 +109,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("[Auth] Permissions loaded:", uniquePerms.length);
     } catch (err) {
       console.error("[Auth] Fatal error loading permissions:", err);
+      // Ensure we don't stay in a loading state forever
+      setPermissionsReady(true);
     }
   };
 
   const loadUserData = async (uid: string) => {
-    setRolesReady(false);
-    setPermissionsReady(false);
-    
+    // If we're already loading data for this user, don't start again
+    if (loadingUserDataRef.current === uid) return;
+    loadingUserDataRef.current = uid;
+
     try {
       const [profResult, rolesResult] = await Promise.all([
         fetchWithRetry(
@@ -134,21 +139,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         )
       ]);
 
-      setProfile((profResult as Profile) ?? null);
-      const userRoles = ((rolesResult as { role: AppRole }[]) ?? []).map((x) => x.role);
-      setRoles(userRoles);
-      setRolesReady(true);
-      
-      console.log("[Auth] User data loaded for:", uid, "Roles:", userRoles);
-      
-      // Chain permissions loading
-      await loadPermissions(userRoles);
+      if (mountedRef.current) {
+        setProfile((profResult as Profile) ?? null);
+        const userRoles = ((rolesResult as { role: AppRole }[]) ?? []).map((x) => x.role);
+        setRoles(userRoles);
+        setRolesReady(true);
+        
+        console.log("[Auth] User data loaded for:", uid, "Roles:", userRoles);
+        
+        // Chain permissions loading
+        await loadPermissions(userRoles);
+      }
     } catch (err: any) {
       console.error("[Auth] Fatal error loading user data:", err);
-      // If it's a 401/403, we might be in a race or really unauthorized
-      if (err.status === 401 || err.status === 403) {
-        setAuthReady(false); // Force re-check
+      if (mountedRef.current) {
+        if (err.status === 401 || err.status === 403) {
+          // Only force re-check if we really don't have a session
+          const { data } = await supabase.auth.getSession();
+          if (!data.session) setAuthReady(false);
+        }
+        // Ensure we don't stay in a loading state forever
+        setRolesReady(true);
+        setPermissionsReady(true);
       }
+    } finally {
+      loadingUserDataRef.current = null;
     }
   };
 
@@ -183,6 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    mountedRef.current = true;
     let mounted = true;
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
@@ -276,6 +292,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       mounted = false;
+      mountedRef.current = false;
       clearTimeout(loadingSafety);
       clearRefreshTimer();
       sub.subscription.unsubscribe();

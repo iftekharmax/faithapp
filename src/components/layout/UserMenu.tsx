@@ -45,14 +45,6 @@ export function UserMenu() {
               {initials(profile?.full_name, user?.email)}
             </AvatarFallback>
           </Avatar>
-          <div className="hidden text-left sm:block">
-            <div className="text-xs font-medium leading-tight truncate max-w-[120px]">{displayName}</div>
-            {primaryRole && (
-              <div className="text-[10px] text-muted-foreground leading-tight">
-                {ROLE_LABELS[primaryRole]}
-              </div>
-            )}
-          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

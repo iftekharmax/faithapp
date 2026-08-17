@@ -508,10 +508,20 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   const itemsPerPage = 9;
 
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
+  const intakes = Array.from(
+    new Set(
+      programs.flatMap((p) => String(p.intake ?? "").split(",").map((s) => s.trim()).filter(Boolean))
+    )
+  );
   const filtered = programs.filter((p) =>
     (!search || p.name.toLowerCase().includes(search.toLowerCase())) &&
     (degreeFilter === "all" || p.degree === degreeFilter) &&
-    (campusFilter === "all" || p.campus_id === campusFilter)
+    (campusFilter === "all" || p.campus_id === campusFilter) &&
+    (intakeFilter === "all" || String(p.intake ?? "").toLowerCase().includes(intakeFilter.toLowerCase())) &&
+    (scholarshipFilter === "all" ||
+      (scholarshipFilter === "yes"
+        ? !!String(p.scholarship ?? "").replace(/<[^>]*>/g, "").trim()
+        : !String(p.scholarship ?? "").replace(/<[^>]*>/g, "").trim()))
   ).sort((a, b) => {
     if (sortOrder === "newest") return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
     if (sortOrder === "oldest") return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();

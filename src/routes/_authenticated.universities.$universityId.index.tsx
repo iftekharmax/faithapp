@@ -763,7 +763,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   <div 
                     key={p.id} 
                     className="group relative flex flex-col overflow-hidden rounded-[28px] bg-white border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-2 cursor-pointer"
-                    onClick={() => openEdit(p)}
+                    onClick={() => navigate({ to: "/universities/$universityId/programs/$programId", params: { universityId, programId: p.id } })}
                   >
                     <div className="flex flex-1 flex-col p-8">
                       <div className="flex items-start justify-between mb-6">

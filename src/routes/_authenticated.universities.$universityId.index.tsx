@@ -857,14 +857,29 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="flex-1 h-12 rounded-2xl border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
+                            className="h-12 w-12 shrink-0 rounded-2xl border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
                             onClick={(e) => {
                               e.stopPropagation();
-                              openEdit(p);
+                              navigate({ to: "/universities/$universityId/programs/$programId", params: { universityId, programId: p.id } });
                             }}
                           >
                             Details
                           </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50">
+                                <MoreHorizontal className="h-5 w-5 text-slate-400" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="rounded-xl p-2 w-40">
+                              <DropdownMenuItem className="rounded-lg font-bold text-slate-600 cursor-pointer" onClick={() => openEdit(p)}>
+                                <Pencil className="mr-2 h-4 w-4" /> Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="rounded-lg font-bold text-rose-600 cursor-pointer focus:text-rose-600 focus:bg-rose-50" onClick={() => setDeleteId(p.id)}>
+                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </div>
                     </div>

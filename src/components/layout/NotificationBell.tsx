@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -11,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { formatDistanceToNow } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface Notification {
   id: string;
@@ -22,7 +24,9 @@ interface Notification {
 
 export function NotificationBell() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [items, setItems] = useState<Notification[]>([]);
+  const [open, setOpen] = useState(false);
 
   const load = async () => {
     if (!user) return;
@@ -70,8 +74,46 @@ export function NotificationBell() {
     setItems((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
+  const handleNotificationClick = async (n: Notification) => {
+    // 1. Mark as read in DB if unread
+    if (!n.read) {
+      await supabase.from("notifications").update({ read: true }).eq("id", n.id);
+      setItems((prev) => prev.map((item) => (item.id === n.id ? { ...item, read: true } : item)));
+    }
+
+    // 2. Determine target URL
+    const fullText = `${n.title} ${n.message || ""}`;
+    const appMatch = fullText.match(/APP-\d{4}-\d+/);
+    
+    let targetUrl: string | null = null;
+    
+    if (appMatch) {
+      // Find application UUID by its code
+      const { data: appData } = await supabase
+        .from("applications")
+        .select("id")
+        .eq("application_code", appMatch[0])
+        .maybeSingle();
+      
+      if (appData) {
+        targetUrl = `/applications/${appData.id}`;
+      } else {
+        // Fallback to searching if we can't find the UUID
+        targetUrl = `/applications?q=${appMatch[0]}`;
+      }
+    } else if (fullText.toLowerCase().includes("task") || fullText.toLowerCase().includes("approval")) {
+      targetUrl = "/tasks";
+    }
+
+    // 3. Navigate and close popover
+    if (targetUrl) {
+      setOpen(false);
+      void navigate({ to: targetUrl as any });
+    }
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
           <Bell className="h-4 w-4" />
@@ -82,35 +124,47 @@ export function NotificationBell() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 p-0">
-        <div className="flex items-center justify-between border-b p-3">
+      <PopoverContent align="end" className="w-80 p-0 shadow-xl">
+        <div className="flex items-center justify-between border-b p-3 bg-muted/20">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold">Notifications</span>
-            {unread > 0 && <Badge variant="secondary">{unread} new</Badge>}
+            {unread > 0 && <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-none">{unread} new</Badge>}
           </div>
-          <Button variant="ghost" size="sm" onClick={markAll} disabled={unread === 0}>
+          <Button variant="ghost" size="sm" onClick={markAll} disabled={unread === 0} className="text-xs h-7">
             Mark all read
           </Button>
         </div>
-        <ScrollArea className="max-h-80">
+        <ScrollArea className="max-h-[400px]">
           {items.length === 0 ? (
-            <div className="p-6 text-center text-sm text-muted-foreground">No notifications yet</div>
+            <div className="p-8 text-center text-sm text-muted-foreground">No notifications yet</div>
           ) : (
-            <ul className="divide-y">
+            <ul className="divide-y divide-muted/50">
               {items.map((n) => (
-                <li key={n.id} className="p-3 hover:bg-accent/50">
-                  <div className="flex items-start gap-2">
-                    {!n.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium leading-tight">{n.title}</p>
+                <li key={n.id}>
+                  <button
+                    onClick={() => handleNotificationClick(n)}
+                    className={cn(
+                      "flex w-full items-start gap-3 p-4 text-left transition-all hover:bg-accent/50",
+                      !n.read && "bg-primary/5"
+                    )}
+                  >
+                    {!n.read && (
+                      <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary ring-4 ring-primary/10" />
+                    )}
+                    <div className={cn("min-w-0 flex-1", n.read ? "opacity-70" : "")}>
+                      <p className="text-[13px] font-semibold leading-snug text-foreground">
+                        {n.title}
+                      </p>
                       {n.message && (
-                        <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">{n.message}</p>
+                        <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                          {n.message}
+                        </p>
                       )}
-                      <p className="mt-1 text-[11px] text-muted-foreground">
+                      <p className="mt-2 text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
                         {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
                       </p>
                     </div>
-                  </div>
+                  </button>
                 </li>
               ))}
             </ul>

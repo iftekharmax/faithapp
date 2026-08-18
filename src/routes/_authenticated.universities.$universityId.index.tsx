@@ -530,7 +530,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
     return 0;
   });
 
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
   const displayed = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
 

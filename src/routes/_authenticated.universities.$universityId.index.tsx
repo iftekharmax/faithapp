@@ -9,7 +9,7 @@ import {
   TrendingUp, Search, RotateCcw, Filter, ChevronRight,
   School, Book, UserCheck, Star, ShieldCheck, Flame, Zap, Trophy,
   History, PieChart, Activity, Info, Landmark, Languages, GraduationCap as GradIcon,
-  MousePointer2, Share, Check, MoreVertical
+  MousePointer2, Share, Check, MoreVertical, ChevronLeft, ChevronsLeft, ChevronsRight
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -507,7 +507,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 9;
+  const [itemsPerPage, setItemsPerPage] = useState(9);
 
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
   const intakes = Array.from(
@@ -530,7 +530,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
     return 0;
   });
 
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
   const displayed = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
 
@@ -873,46 +873,49 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               })}
             </div>
 
-            {totalPages > 1 && (
-              <div className="mt-12 flex items-center justify-center gap-2 pb-8">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page === 1}
-                  onClick={() => { setPage((p) => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className="rounded-xl border-slate-200 px-4 font-bold text-slate-600 disabled:opacity-50"
-                >
-                  Previous
-                </Button>
-                
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <Button
-                      key={p}
-                      variant={page === p ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                      className={cn(
-                        "h-9 w-9 rounded-xl font-bold transition-all",
-                        page === p ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" : "text-slate-600 hover:bg-slate-100"
-                      )}
-                    >
-                      {p}
-                    </Button>
-                  ))}
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page === totalPages}
-                  onClick={() => { setPage((p) => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className="rounded-xl border-slate-200 px-4 font-bold text-slate-600 disabled:opacity-50"
-                >
-                  Next
-                </Button>
+            {/* Pagination footer */}
+            <div className="mt-8 mb-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+              <div className="flex items-center gap-2 text-slate-500">
+                <span>
+                  Showing <span className="font-medium text-slate-900 tabular-nums">{filtered.length === 0 ? 0 : (page - 1) * itemsPerPage + 1}</span>
+                  {"–"}
+                  <span className="font-medium text-slate-900 tabular-nums">{Math.min(page * itemsPerPage, filtered.length)}</span>
+                  {" of "}
+                  <span className="font-medium text-slate-900 tabular-nums">{filtered.length}</span>
+                </span>
               </div>
-            )}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="programs-page-size" className="text-xs text-slate-500">Rows per page</Label>
+                  <Select value={String(itemsPerPage)} onValueChange={(v) => { setItemsPerPage(Number(v)); setPage(1); }}>
+                    <SelectTrigger id="programs-page-size" className="h-8 w-[80px]"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {[9, 12, 25, 50, 100].map((n) => (
+                        <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="mr-2 text-xs text-slate-500 tabular-nums">
+                    Page {page} of {totalPages}
+                  </span>
+                  <Button size="icon" variant="outline" className="h-8 w-8" disabled={page === 1} onClick={() => setPage(1)} aria-label="First page">
+                    <ChevronsLeft className="h-4 w-4" />
+                  </Button>
+                  <Button size="icon" variant="outline" className="h-8 w-8" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))} aria-label="Previous page">
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button size="icon" variant="outline" className="h-8 w-8" disabled={page === totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))} aria-label="Next page">
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                  <Button size="icon" variant="outline" className="h-8 w-8" disabled={page === totalPages} onClick={() => setPage(totalPages)} aria-label="Last page">
+                    <ChevronsRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
           </div>
       )}
     </div>

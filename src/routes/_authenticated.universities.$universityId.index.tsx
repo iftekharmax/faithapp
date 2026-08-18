@@ -507,7 +507,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [dup, setDup] = useState<{ id: string; name: string; payload: any } | null>(null);
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(9);
+  const [itemsPerPage, setItemsPerPage] = useState(18);
 
   const degrees = Array.from(new Set(programs.map((p) => p.degree).filter(Boolean) as string[]));
   const intakes = Array.from(
@@ -890,7 +890,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   <Select value={String(itemsPerPage)} onValueChange={(v) => { setItemsPerPage(Number(v)); setPage(1); }}>
                     <SelectTrigger id="programs-page-size" className="h-8 w-[80px]"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {[9, 12, 25, 50, 100].map((n) => (
+                      {[18, 25, 50, 100].map((n) => (
                         <SelectItem key={n} value={String(n)}>{n}</SelectItem>
                       ))}
                     </SelectContent>

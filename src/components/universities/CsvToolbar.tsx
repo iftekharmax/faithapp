@@ -88,19 +88,39 @@ export function CsvToolbar({
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2">
-        <Button variant="outline" size="sm" onClick={handleExport} disabled={busy !== null}>
-          {busy === "export" ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Download className="mr-1 h-4 w-4" />}
-          Export {label}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={handleExport} 
+          disabled={busy !== null}
+          className="h-9 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
+        >
+          {busy === "export" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+          Export
         </Button>
         {onPreview && canImport && (
           <>
-            <Button variant="outline" size="sm" onClick={() => inputRef.current?.click()} disabled={busy !== null}>
-              {busy === "import" ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Upload className="mr-1 h-4 w-4" />}
-              Import {label}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => inputRef.current?.click()} 
+              disabled={busy !== null}
+              className="h-9 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
+            >
+              {busy === "import" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+              Import
             </Button>
             {templateHeaders && (
-              <Button variant="ghost" size="sm" onClick={downloadTemplate}>Template</Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={downloadTemplate}
+                className="h-9 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Template
+              </Button>
             )}
             <input ref={inputRef} type="file" accept=".csv,text/csv" className="hidden"
               onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />

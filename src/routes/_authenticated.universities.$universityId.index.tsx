@@ -890,7 +890,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   <Select value={String(itemsPerPage)} onValueChange={(v) => { setItemsPerPage(Number(v)); setPage(1); }}>
                     <SelectTrigger id="programs-page-size" className="h-8 w-[80px]"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {[9, 12, 25, 50, 100].map((n) => (
+                      {[18, 25, 50, 100].map((n) => (
                         <SelectItem key={n} value={String(n)}>{n}</SelectItem>
                       ))}
                     </SelectContent>

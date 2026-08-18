@@ -211,7 +211,7 @@ function UniversitiesPage() {
             <p className="mt-1 text-sm font-medium text-slate-500">Manage universities, campuses, faculties and academic programs.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200">
+            <div className="flex items-center gap-1 rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200">
               <CsvToolbar
                 label="universities"
                 onExport={exportUniversitiesCsv}
@@ -221,14 +221,15 @@ function UniversitiesPage() {
                 templateName="universities-template"
                 canImport={canEdit}
               />
-              <div className="h-6 w-px bg-slate-200 mx-1" />
-              <Button variant="ghost" size="sm" className="rounded-lg h-9 text-slate-600 hover:text-slate-900 hover:bg-slate-50" asChild>
-                <Link to="/countries" className="flex items-center gap-2">
-                  <Globe className="h-4 w-4" />
-                  <span>Countries</span>
-                </Link>
-              </Button>
             </div>
+            
+            <Button variant="outline" className="h-11 rounded-xl border-slate-200 bg-white px-5 font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900" asChild>
+              <Link to="/countries" className="flex items-center gap-2">
+                <Globe className="h-4.5 w-4.5" />
+                Countries
+              </Link>
+            </Button>
+
             {canEdit && (
               <Button onClick={openCreate} className="h-11 rounded-xl bg-indigo-600 px-6 font-semibold text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700 hover:shadow-indigo-200 active:scale-[0.98]">
                 <Plus className="mr-2 h-5 w-5" /> New University

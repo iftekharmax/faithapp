@@ -9,7 +9,8 @@ import {
   TrendingUp, Search, RotateCcw, Filter, ChevronRight,
   School, Book, UserCheck, Star, ShieldCheck, Flame, Zap, Trophy,
   History, PieChart, Activity, Info, Landmark, Languages, GraduationCap as GradIcon,
-  MousePointer2, Share, Check, MoreVertical, ChevronLeft, ChevronsLeft, ChevronsRight
+  MousePointer2, Share, Check, MoreVertical, ChevronLeft, ChevronsLeft, ChevronsRight,
+  Send
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -845,30 +846,32 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                         </div>
 
                         {/* Actions */}
-                        <div className="flex gap-4">
+                        <div className="flex items-center gap-3">
                           <Button 
-                            className="flex-1 h-12 rounded-2xl bg-blue-600 text-sm font-bold text-white hover:bg-blue-700 transition-all shadow-[0_4px_12px_rgba(37,99,235,0.2)]"
+                            className="flex-1 h-[46px] rounded-[12px] bg-blue-600 text-[14px] font-bold text-white hover:bg-blue-700 transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
                             }}
                           >
+                            <Send className="mr-2 h-4 w-4" />
                             Apply Now
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="h-12 w-12 shrink-0 rounded-2xl border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
+                            className="flex-1 h-[46px] rounded-[12px] border-slate-200 bg-white text-[14px] font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-none active:scale-[0.98]"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate({ to: "/universities/$universityId/programs/$programId", params: { universityId, programId: p.id } });
                             }}
                           >
+                            <FileText className="mr-2 h-4 w-4 text-slate-400" />
                             Details
                           </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50">
-                                <MoreHorizontal className="h-5 w-5 text-slate-400" />
+                              <Button variant="ghost" size="icon" className="h-[46px] w-[46px] shrink-0 rounded-[12px] border border-slate-200 bg-white hover:bg-slate-50 transition-all active:scale-[0.98]">
+                                <MoreVertical className="h-5 w-5 text-slate-400" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="rounded-xl p-2 w-40">

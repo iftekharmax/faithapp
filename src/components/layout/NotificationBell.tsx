@@ -124,45 +124,82 @@ export function NotificationBell() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 p-0 shadow-xl">
-        <div className="flex items-center justify-between border-b p-3 bg-muted/20">
+      <PopoverContent align="end" className="w-[380px] p-0 shadow-2xl rounded-2xl border-muted/20 overflow-hidden">
+        <div className="flex items-center justify-between border-b p-4 bg-background/50 backdrop-blur-sm">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">Notifications</span>
-            {unread > 0 && <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-none">{unread} new</Badge>}
+            <span className="text-sm font-bold text-foreground">Notifications</span>
+            {unread > 0 && (
+              <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-none px-2 h-5 text-[10px] font-bold uppercase tracking-wider">
+                {unread} new
+              </Badge>
+            )}
           </div>
-          <Button variant="ghost" size="sm" onClick={markAll} disabled={unread === 0} className="text-xs h-7">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={markAll} 
+            disabled={unread === 0} 
+            className="text-[11px] h-8 font-semibold hover:bg-primary/5 hover:text-primary transition-colors"
+          >
             Mark all read
           </Button>
         </div>
-        <ScrollArea className="max-h-[400px]">
+        <ScrollArea className="max-h-[500px]">
           {items.length === 0 ? (
-            <div className="p-8 text-center text-sm text-muted-foreground">No notifications yet</div>
+            <div className="flex flex-col items-center justify-center py-12 px-8 text-center">
+              <div className="h-12 w-12 rounded-full bg-muted/30 flex items-center justify-center mb-4">
+                <Bell className="h-6 w-6 text-muted-foreground/50" />
+              </div>
+              <p className="text-sm font-medium text-muted-foreground">No notifications yet</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">We'll notify you when something important happens.</p>
+            </div>
           ) : (
-            <ul className="divide-y divide-muted/50">
+            <ul className="divide-y divide-muted/30">
               {items.map((n) => (
                 <li key={n.id}>
                   <button
                     onClick={() => handleNotificationClick(n)}
                     className={cn(
-                      "flex w-full items-start gap-3 p-4 text-left transition-all hover:bg-accent/50",
-                      !n.read && "bg-primary/5"
+                      "flex w-full items-start gap-3.5 p-4 text-left transition-all relative group",
+                      !n.read ? "bg-primary/[0.03] hover:bg-primary/[0.06]" : "hover:bg-muted/30"
                     )}
                   >
                     {!n.read && (
-                      <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary ring-4 ring-primary/10" />
+                      <span className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
                     )}
-                    <div className={cn("min-w-0 flex-1", n.read ? "opacity-70" : "")}>
-                      <p className="text-[13px] font-semibold leading-snug text-foreground">
-                        {n.title}
-                      </p>
+                    
+                    <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted/40 text-muted-foreground group-hover:scale-110 transition-transform">
+                      <Bell className={cn("h-4 w-4", !n.read && "text-primary")} />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className={cn(
+                          "text-[13px] leading-snug truncate",
+                          !n.read ? "font-bold text-foreground" : "font-medium text-muted-foreground"
+                        )}>
+                          {n.title}
+                        </p>
+                        <span className="shrink-0 text-[10px] font-medium text-muted-foreground/50 mt-0.5">
+                          {formatDistanceToNow(new Date(n.created_at), { addSuffix: false })}
+                        </span>
+                      </div>
+                      
                       {n.message && (
-                        <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                        <p className={cn(
+                          "mt-1 text-[12px] line-clamp-2 leading-normal",
+                          !n.read ? "text-muted-foreground font-medium" : "text-muted-foreground/70"
+                        )}>
                           {n.message}
                         </p>
                       )}
-                      <p className="mt-2 text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
-                        {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
-                      </p>
+                      
+                      {!n.read && (
+                        <div className="mt-2.5 flex items-center gap-1.5">
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-[10px] font-bold text-primary uppercase tracking-tighter">New Update</span>
+                        </div>
+                      )}
                     </div>
                   </button>
                 </li>
@@ -170,6 +207,13 @@ export function NotificationBell() {
             </ul>
           )}
         </ScrollArea>
+        {items.length > 0 && (
+          <div className="p-2 border-t bg-muted/5">
+            <Button variant="ghost" size="sm" className="w-full text-xs font-semibold h-8 text-muted-foreground hover:text-foreground">
+              View all notifications
+            </Button>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );

@@ -9,7 +9,7 @@ import {
   TrendingUp, Search, RotateCcw, Filter, ChevronRight,
   School, Book, UserCheck, Star, ShieldCheck, Flame, Zap, Trophy,
   History, PieChart, Activity, Info, Landmark, Languages, GraduationCap as GradIcon,
-  MousePointer2, Share, Check, MoreVertical
+  MousePointer2, Share, Check, MoreVertical, ChevronLeft, ChevronsLeft, ChevronsRight
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";

@@ -144,7 +144,7 @@ function ProgramDetailsPage() {
   const currency = program.currency || "MYR";
   const intakes = (program.intake || "").split(",").map((s) => s.trim()).filter(Boolean);
   const total = [program.tuition_fee, program.application_fee, program.registration_fee, program.emgs_fee, program.others_fee]
-    .reduce((a, v) => a + (Number(v) || 0), 0);
+    .reduce<number>((a, v) => a + (Number(v) || 0), 0);
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 p-6">

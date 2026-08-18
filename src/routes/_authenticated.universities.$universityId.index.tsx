@@ -763,7 +763,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                   <div 
                     key={p.id} 
                     className="group relative flex flex-col overflow-hidden rounded-[28px] bg-white border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-2 cursor-pointer"
-                    onClick={() => openEdit(p)}
+                    onClick={() => navigate({ to: "/universities/$universityId/programs/$programId", params: { universityId, programId: p.id } })}
                   >
                     <div className="flex flex-1 flex-col p-8">
                       <div className="flex items-start justify-between mb-6">
@@ -857,14 +857,29 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                           </Button>
                           <Button 
                             variant="outline" 
-                            className="flex-1 h-12 rounded-2xl border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
+                            className="h-12 w-12 shrink-0 rounded-2xl border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all bg-white"
                             onClick={(e) => {
                               e.stopPropagation();
-                              openEdit(p);
+                              navigate({ to: "/universities/$universityId/programs/$programId", params: { universityId, programId: p.id } });
                             }}
                           >
                             Details
                           </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50">
+                                <MoreHorizontal className="h-5 w-5 text-slate-400" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="rounded-xl p-2 w-40">
+                              <DropdownMenuItem className="rounded-lg font-bold text-slate-600 cursor-pointer" onClick={() => openEdit(p)}>
+                                <Pencil className="mr-2 h-4 w-4" /> Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="rounded-lg font-bold text-rose-600 cursor-pointer focus:text-rose-600 focus:bg-rose-50" onClick={() => setDeleteId(p.id)}>
+                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </div>
                     </div>

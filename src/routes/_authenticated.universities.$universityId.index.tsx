@@ -530,8 +530,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
     return 0;
   });
 
-  const displayed = filtered.slice(0, page * itemsPerPage);
-  const hasMore = displayed.length < filtered.length;
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const displayed = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
 
   function openNew() { navigate({ to: "/universities/$universityId/programs/new", params: { universityId } }); }
@@ -873,15 +873,43 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
               })}
             </div>
 
-            {hasMore && (
-              <div className="mt-16 flex justify-center pb-8">
+            {totalPages > 1 && (
+              <div className="mt-12 flex items-center justify-center gap-2 pb-8">
                 <Button
                   variant="outline"
-                  size="lg"
-                  onClick={() => setPage((p) => p + 1)}
-                  className="rounded-full border-2 border-slate-200 px-12 h-14 text-sm font-bold text-slate-900 transition-all hover:bg-white hover:border-blue-600 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-600/10 active:scale-95"
+                  size="sm"
+                  disabled={page === 1}
+                  onClick={() => { setPage((p) => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className="rounded-xl border-slate-200 px-4 font-bold text-slate-600 disabled:opacity-50"
                 >
-                  Load More Programs
+                  Previous
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <Button
+                      key={p}
+                      variant={page === p ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      className={cn(
+                        "h-9 w-9 rounded-xl font-bold transition-all",
+                        page === p ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" : "text-slate-600 hover:bg-slate-100"
+                      )}
+                    >
+                      {p}
+                    </Button>
+                  ))}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page === totalPages}
+                  onClick={() => { setPage((p) => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className="rounded-xl border-slate-200 px-4 font-bold text-slate-600 disabled:opacity-50"
+                >
+                  Next
                 </Button>
               </div>
             )}

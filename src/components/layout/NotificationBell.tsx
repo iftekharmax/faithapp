@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -11,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { formatDistanceToNow } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface Notification {
   id: string;

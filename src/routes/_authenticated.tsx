@@ -21,13 +21,23 @@ function AuthenticatedLayout() {
   const hadSessionRef = useRef(false);
 
   useEffect(() => {
-    if (session) { hadSessionRef.current = true; return; }
-    if (loading || !authReady || sessionTimedOut) return;
+    // Definitive redirect: Loading finished, we are ready, and there is no session.
+    if (!loading && authReady && !session) {
+      console.log("[AuthenticatedLayout] No session detected. Redirecting to login...");
+      navigate({ to: "/auth/login", replace: true });
+      return;
+    }
+
+    // Safety fallback for edge cases where session might be stale or authReady is delayed
+    if (session || loading || !authReady || sessionTimedOut) return;
     
     const t = setTimeout(async () => {
       const { data } = await supabase.auth.getUser();
-      if (!data.user) navigate({ to: "/auth/login", replace: true });
-    }, 2500);
+      if (!data.user) {
+        console.log("[AuthenticatedLayout] Safety check failed. Redirecting to login...");
+        navigate({ to: "/auth/login", replace: true });
+      }
+    }, 2000);
     return () => clearTimeout(t);
   }, [session, loading, authReady, sessionTimedOut, navigate]);
 

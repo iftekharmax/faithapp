@@ -62,9 +62,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sessionLimitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initializationTimeoutTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hadSessionRef = useRef(false);
   const mountedRef = useRef(false);
   const loadingUserDataRef = useRef<string | null>(null);
+  const initializationPromiseRef = useRef<Promise<void> | null>(null);
 
   // Global Permissions Cache
   const cachedPermissionsRef = useRef<RolePermission[] | null>(null);

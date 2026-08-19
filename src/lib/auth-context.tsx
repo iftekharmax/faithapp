@@ -42,6 +42,7 @@ const RETRY_COUNT = 3;
 const RETRY_DELAYS = [500, 1000, 2000];
 const MAX_SESSION_DURATION_MS = 10 * 60 * 60 * 1000; // 10 hours
 const SESSION_START_KEY = "auth_session_start_time";
+const AUTH_INITIALIZATION_TIMEOUT_MS = 10000; // 10 seconds hard timeout for auth initialization
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -61,9 +62,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sessionLimitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initializationTimeoutTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hadSessionRef = useRef(false);
   const mountedRef = useRef(false);
   const loadingUserDataRef = useRef<string | null>(null);
+  const initializationPromiseRef = useRef<Promise<void> | null>(null);
 
   // Global Permissions Cache
   const cachedPermissionsRef = useRef<RolePermission[] | null>(null);
@@ -258,7 +261,76 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     mountedRef.current = true;
     let mounted = true;
 
-    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
+    const startInitializationTimeout = () => {
+      if (initializationTimeoutTimer.current) clearTimeout(initializationTimeoutTimer.current);
+      initializationTimeoutTimer.current = setTimeout(() => {
+        if (!mounted) return;
+        if (loading) {
+          console.warn("[Auth] Initialization timeout reached. Forcing loading=false.");
+          setLoading(false);
+          if (!hadSessionRef.current) setSessionTimedOut(true);
+        }
+      }, AUTH_INITIALIZATION_TIMEOUT_MS);
+    };
+
+    const clearInitializationTimeout = () => {
+      if (initializationTimeoutTimer.current) {
+        clearTimeout(initializationTimeoutTimer.current);
+        initializationTimeoutTimer.current = null;
+      }
+    };
+
+    const initialize = async () => {
+      // Prevent duplicate initialization
+      if (initializationPromiseRef.current) return initializationPromiseRef.current;
+
+      initializationPromiseRef.current = (async () => {
+        startInitializationTimeout();
+        try {
+          console.log("[Auth] Starting session initialization...");
+          const { data, error } = await supabase.auth.getSession();
+          
+          if (!mounted) return;
+          if (error) {
+            console.error("[Auth] Initial session fetch error:", error);
+            // Don't throw, just log and continue to resolve loading state
+          }
+          
+          const s = data.session;
+          if (s) {
+            // Check if we need to set/restore session start time
+            if (!localStorage.getItem(SESSION_START_KEY)) {
+              localStorage.setItem(SESSION_START_KEY, Date.now().toString());
+            }
+            setSession(s);
+            setAuthReady(true);
+            hadSessionRef.current = true;
+            scheduleProactiveRefresh(s);
+            
+            // Load secondary data (profile, roles)
+            // Note: loadUserData already has its own retry logic and loading state protection
+            await loadUserData(s.user.id);
+          } else {
+            console.log("[Auth] No active session found.");
+            setAuthReady(false);
+            hadSessionRef.current = false;
+          }
+        } catch (err) {
+          console.error("[Auth] Fatal error during initialization:", err);
+        } finally {
+          if (mounted) {
+            clearInitializationTimeout();
+            setLoading(false);
+            console.log("[Auth] Initialization complete.");
+          }
+          initializationPromiseRef.current = null;
+        }
+      })();
+
+      return initializationPromiseRef.current;
+    };
+
+    const { data: sub } = supabase.auth.onAuthStateChange(async (event, s) => {
       if (!mounted) return;
       console.log("[Auth] Event:", event);
 
@@ -271,30 +343,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (event === "SIGNED_IN" || event === "USER_UPDATED") {
-        // Optimization: If session ID hasn't changed, don't trigger a full reload
         if (s) {
-          localStorage.setItem(SESSION_START_KEY, Date.now().toString());
-        }
-        setSession(prev => {
-          if (prev?.user?.id === s?.user?.id && prev?.access_token === s?.access_token) {
-            return prev;
+          // New login sets a new 10-hour window
+          if (event === "SIGNED_IN" && !hadSessionRef.current) {
+             localStorage.setItem(SESSION_START_KEY, Date.now().toString());
           }
-          return s;
-        });
+          
+          setSession(prev => {
+            if (prev?.user?.id === s?.user?.id && prev?.access_token === s?.access_token) {
+              return prev;
+            }
+            return s;
+          });
 
-        if (s?.user) {
-          // If we already have roles/permissions for THIS user, skip reloading data
-          if (hadSessionRef.current && session?.user?.id === s.user.id && rolesReady && permissionsReady) {
-            console.log("[Auth] Session stable, skipping user data reload");
+          if (s.user) {
+            // If already loading data for this user, let it finish
+            if (loadingUserDataRef.current === s.user.id) return;
+
             setAuthReady(true);
-            return;
+            hadSessionRef.current = true;
+            void loadUserData(s.user.id).finally(() => {
+              if (mounted) setLoading(false);
+            });
           }
-
-          setAuthReady(true);
-          hadSessionRef.current = true;
-          void loadUserData(s.user.id);
+          scheduleProactiveRefresh(s);
         }
-        scheduleProactiveRefresh(s);
       } else if (event === "SIGNED_OUT") {
         setSession(null);
         setProfile(null);
@@ -306,57 +379,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         cachedPermissionsRef.current = null;
         hadSessionRef.current = false;
         clearTimers();
+        clearInitializationTimeout();
+        setLoading(false);
+        localStorage.removeItem(SESSION_START_KEY);
       }
     });
 
-    const loadingSafety = setTimeout(() => {
-      if (!mounted) return;
-      if (loading) {
-        console.warn("[Auth] Loading safety timeout reached");
-        setLoading(false);
-        if (!hadSessionRef.current) setSessionTimedOut(true);
-      }
-    }, 15000);
-
-    // Initial session check
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (!mounted) return;
-      if (error) console.error("[Auth] Initial session error:", error);
-      
-      const s = data.session;
-      if (s && !localStorage.getItem(SESSION_START_KEY)) {
-        localStorage.setItem(SESSION_START_KEY, Date.now().toString());
-      }
-      setSession(s);
-      setAuthReady(!!s);
-      scheduleProactiveRefresh(s);
-      
-      if (s?.user) {
-        hadSessionRef.current = true;
-        setSessionTimedOut(false);
-        void loadUserData(s.user.id).finally(() => {
-          if (mounted) {
-            clearTimeout(loadingSafety);
-            setLoading(false);
-          }
-        });
-      } else {
-        clearTimeout(loadingSafety);
-        setSessionTimedOut(false);
-        setLoading(false);
-      }
-    }).catch((err) => {
-      if (!mounted) return;
-      console.error("[Auth] Fatal session catch:", err);
-      clearTimeout(loadingSafety);
-      setLoading(false);
-      setSessionTimedOut(true);
-    });
+    // Start initialization
+    void initialize();
 
     return () => {
       mounted = false;
       mountedRef.current = false;
-      clearTimeout(loadingSafety);
+      clearInitializationTimeout();
       clearTimers();
       sub.subscription.unsubscribe();
     };

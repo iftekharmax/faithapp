@@ -302,7 +302,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setPermissionsReady(false);
         cachedPermissionsRef.current = null;
         hadSessionRef.current = false;
-        clearRefreshTimer();
+        clearTimers();
       }
     });
 

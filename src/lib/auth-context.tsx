@@ -174,16 +174,70 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (session?.user) await loadUserData(session.user.id);
   };
 
-  const clearRefreshTimer = () => {
+  const clearTimers = useCallback(() => {
     if (refreshTimer.current) {
       clearTimeout(refreshTimer.current);
       refreshTimer.current = null;
     }
-  };
+    if (sessionLimitTimer.current) {
+      clearTimeout(sessionLimitTimer.current);
+      sessionLimitTimer.current = null;
+    }
+  }, []);
+
+  const signOut = useCallback(async () => {
+    console.log("[Auth] Signing out...");
+    hadSessionRef.current = false;
+    setSessionExpired(false);
+    localStorage.removeItem(SESSION_START_KEY);
+    clearTimers();
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("[Auth] Sign out error:", err);
+    }
+  }, [clearTimers]);
+
+  const handleSessionLimit = useCallback(() => {
+    const startTimeStr = localStorage.getItem(SESSION_START_KEY);
+    if (!startTimeStr) {
+      const now = Date.now().toString();
+      localStorage.setItem(SESSION_START_KEY, now);
+      return now;
+    }
+    
+    const startTime = parseInt(startTimeStr, 10);
+    const elapsed = Date.now() - startTime;
+    
+    if (elapsed >= MAX_SESSION_DURATION_MS) {
+      console.warn("[Auth] Session exceeded 10 hour limit. Signing out.");
+      void signOut();
+      return null;
+    }
+    
+    return startTimeStr;
+  }, [signOut]);
 
   const scheduleProactiveRefresh = useCallback((s: Session | null) => {
-    clearRefreshTimer();
+    if (refreshTimer.current) {
+      clearTimeout(refreshTimer.current);
+      refreshTimer.current = null;
+    }
+
     if (!s?.expires_at) return;
+    
+    const startTimeStr = handleSessionLimit();
+    if (!startTimeStr) return;
+    
+    const startTime = parseInt(startTimeStr, 10);
+    const remainingSessionTime = MAX_SESSION_DURATION_MS - (Date.now() - startTime);
+    
+    if (sessionLimitTimer.current) clearTimeout(sessionLimitTimer.current);
+    sessionLimitTimer.current = setTimeout(() => {
+      console.warn("[Auth] Session limit reached (10h).");
+      void signOut();
+    }, remainingSessionTime);
+
     const expiresAtMs = s.expires_at * 1000;
     const delay = Math.max(5_000, expiresAtMs - Date.now() - REFRESH_BUFFER_MS);
     
@@ -195,10 +249,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error || !data.session) {
         console.error("[Auth] Token refresh failed:", error?.message);
         setSessionExpired(true);
-        await supabase.auth.signOut().catch(() => {});
+        void signOut();
       }
     }, delay);
-  }, []);
+  }, [handleSessionLimit, signOut]);
 
   useEffect(() => {
     mountedRef.current = true;

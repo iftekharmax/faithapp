@@ -380,11 +380,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSessionTimedOut(false);
       setRetryTick((n) => n + 1);
     },
-    signOut: async () => {
-      hadSessionRef.current = false;
-      setSessionExpired(false);
-      await supabase.auth.signOut();
-    },
+    signOut,
     dismissSessionExpired: () => setSessionExpired(false),
   };
 

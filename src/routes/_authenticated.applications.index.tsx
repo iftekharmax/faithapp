@@ -97,6 +97,7 @@ function ApplicationsPage() {
   const [status, setStatus] = useState<string>("all");
 
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
+
   
   const [country, setCountry] = useState<string>("all");
   const [university, setUniversity] = useState<string>("all");

@@ -68,6 +68,7 @@ function StudentsPage() {
 
   const [nationality, setNationality] = useState<string>("all");
   const [gender, setGender] = useState<string>("all");
+
   
   const [passportExpiring, setPassportExpiring] = useState(false);
   const [showFilters, setShowFilters] = useState(false);

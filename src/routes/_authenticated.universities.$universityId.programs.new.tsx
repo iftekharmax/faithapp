@@ -3,7 +3,7 @@ import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import {
   ArrowLeft, Save, Loader2, DollarSign, Award, BookOpen, Clock, School,
-  Calendar, AlertCircle, Sparkles, Building2, RefreshCcw
+  Calendar, AlertCircle, Sparkles, Building2, RefreshCcw, Plus, Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import {
   getUniversity, listCampuses, createProgram,
   type University, type Campus, type UniversityProgram, UNI_STATUSES, type UniStatus,
-  DuplicateError,
+  DuplicateError, type OtherFee,
 } from "@/lib/universities";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 
@@ -85,6 +85,7 @@ function NewProgramPage() {
     registration_fee: 0,
     emgs_fee: 0,
     others_fee: 0,
+    others_fees: [],
   } as any);
 
   // We keep a ref to the form data to preserve it across retry attempts
@@ -117,6 +118,7 @@ function NewProgramPage() {
     (form as any).registration_fee,
     (form as any).emgs_fee,
     (form as any).others_fee,
+    ...(form as any).others_fees?.map((f: OtherFee) => f.amount) ?? [],
   ].reduce((acc, val) => acc + (val ? Number(val) : 0), 0);
 
   const formatCurrency = (val: number) => {
@@ -205,6 +207,7 @@ function NewProgramPage() {
         requirements: form.requirements ? DOMPurify.sanitize(form.requirements) : form.requirements,
         scholarship: form.scholarship ? DOMPurify.sanitize(form.scholarship) : form.scholarship,
         description: form.description ? DOMPurify.sanitize(form.description) : form.description,
+        others_fees: (form as any).others_fees ?? [],
         additional_others_fee: (form as any).additional_others_fee
           ? DOMPurify.sanitize((form as any).additional_others_fee)
           : (form as any).additional_others_fee ?? null,
@@ -527,6 +530,76 @@ function NewProgramPage() {
                       </div>
                     </div>
                     <FieldError msg={errors[key]} />
+                  </div>
+                ))}
+              </div>
+              
+              <div className="space-y-4 pt-2">
+                <div className="flex items-center justify-between">
+                  <Label className={labelCls}>Additional Fees</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 gap-1 rounded-lg text-primary hover:bg-primary/10"
+                    onClick={() => {
+                      const currentFees = (form as any).others_fees || [];
+                      set("others_fees" as any, [...currentFees, { title: "", amount: 0 }]);
+                    }}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Add More</span>
+                  </Button>
+                </div>
+
+                {((form as any).others_fees || []).map((fee: OtherFee, idx: number) => (
+                  <div key={idx} className="group relative grid grid-cols-12 gap-3 items-end bg-muted/20 p-3 rounded-xl ring-1 ring-border/50">
+                    <div className="col-span-7 grid gap-1.5">
+                      <Label className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">Fee Title</Label>
+                      <Input
+                        placeholder="e.g. Medical Insurance"
+                        className="h-9 rounded-lg border-muted-foreground/10 text-sm"
+                        value={fee.title}
+                        onChange={(e) => {
+                          const next = [...((form as any).others_fees || [])];
+                          next[idx] = { ...next[idx], title: e.target.value };
+                          set("others_fees" as any, next);
+                        }}
+                      />
+                    </div>
+                    <div className="col-span-4 grid gap-1.5">
+                      <Label className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">Amount</Label>
+                      <div className="relative">
+                        <Input
+                          type="number" min="0" step="0.01"
+                          placeholder="0.00"
+                          className="h-9 pl-8 rounded-lg border-muted-foreground/10 text-sm"
+                          value={fee.amount || ""}
+                          onChange={(e) => {
+                            const next = [...((form as any).others_fees || [])];
+                            next[idx] = { ...next[idx], amount: e.target.value ? Number(e.target.value) : 0 };
+                            set("others_fees" as any, next);
+                          }}
+                        />
+                        <div className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground">
+                          {getCurrencySymbol(form.currency || "USD")}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-span-1 flex justify-end">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        onClick={() => {
+                          const next = (form as any).others_fees.filter((_: any, i: number) => i !== idx);
+                          set("others_fees" as any, next);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>

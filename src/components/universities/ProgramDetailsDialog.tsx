@@ -125,9 +125,21 @@ export function ProgramDetailsDialog({ program, open, onOpenChange }: ProgramDet
                     </div>
                   )}
 
+                  {(program as any).others_fees && (program as any).others_fees.length > 0 && (
+                    <div className="space-y-3 pt-2">
+                      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Additional Others Fees</p>
+                      {(program as any).others_fees.map((f: any, i: number) => (
+                        <div key={i} className="flex justify-between items-center text-sm">
+                          <span className="text-muted-foreground">{f.title}</span>
+                          <span className="font-semibold">{program.currency} {Number(f.amount).toLocaleString()}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   {(program as any).additional_others_fee && (
                     <div className="space-y-2 pt-2">
-                      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Additional Others Fee</p>
+                      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Additional Fee Description</p>
                       <div
                         className="prose prose-sm max-w-none text-muted-foreground"
                         dangerouslySetInnerHTML={{ __html: sanitizeHtml((program as any).additional_others_fee) || "" }}

@@ -312,11 +312,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             await loadUserData(s.user.id);
           } else {
             console.log("[Auth] No active session found.");
-            setAuthReady(false);
+            setSession(null);
+            setAuthReady(true); // DEFINITIVE: We checked, and there is NO session.
             hadSessionRef.current = false;
           }
         } catch (err) {
           console.error("[Auth] Fatal error during initialization:", err);
+          if (mounted) setAuthReady(true); // Resolve even on error to allow redirect
         } finally {
           if (mounted) {
             clearInitializationTimeout();

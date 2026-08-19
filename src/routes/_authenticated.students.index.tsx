@@ -1,5 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { listUsers } from "@/lib/user-management";
+
 import { Search, Plus, RefreshCw, Filter, X, Eye, Trash2, GraduationCap, PowerOff, Power, Download, FileSpreadsheet, FileText } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
@@ -55,12 +58,16 @@ const statusColor: Record<StudentStatus, string> = {
 };
 
 function StudentsPage() {
+  const { hasRole } = useAuth();
+  const isAdmin = hasRole("admin");
+  const [users, setUsers] = useState<Record<string, string>>({});
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [nationality, setNationality] = useState<string>("all");
   const [gender, setGender] = useState<string>("all");
+
   
   const [passportExpiring, setPassportExpiring] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -73,12 +80,24 @@ function StudentsPage() {
 
   const load = async () => {
     setLoading(true);
-    try { setStudents(await listStudents()); }
+    try {
+      const [data, userList] = await Promise.all([
+        listStudents(),
+        isAdmin ? listUsers() : Promise.resolve([]),
+      ]);
+      setStudents(data);
+      if (isAdmin) {
+        const map: Record<string, string> = {};
+        userList.forEach((u) => { map[u.id] = u.full_name || u.email; });
+        setUsers(map);
+      }
+    }
     catch (e: any) { toast.error(e.message ?? "Failed to load students"); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [isAdmin]);
+
 
   const nationalities = useMemo(() => {
     const s = new Set<string>();
@@ -334,7 +353,9 @@ function StudentsPage() {
                   <TableHead className="hidden lg:table-cell">Nationality</TableHead>
                   <TableHead className="hidden lg:table-cell">Passport expiry</TableHead>
                   <TableHead>Status</TableHead>
+                  {isAdmin && <TableHead>Created By</TableHead>}
                   <TableHead className="w-24 text-right">Actions</TableHead>
+
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -384,7 +405,13 @@ function StudentsPage() {
                     <TableCell>
                       <Badge className={statusColor[s.status]}>{STUDENT_STATUS_LABELS[s.status]}</Badge>
                     </TableCell>
+                    {isAdmin && (
+                      <TableCell className="text-xs text-muted-foreground">
+                        {s.created_by ? (users[s.created_by] || "User") : "—"}
+                      </TableCell>
+                    )}
                     <TableCell className="text-right">
+
                       <div className="flex justify-end gap-1">
                         <Button asChild size="icon" variant="ghost" title="View">
                           <Link to="/students/$studentId" params={{ studentId: s.id }}>

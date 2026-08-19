@@ -1,5 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { listUsers } from "@/lib/user-management";
+
 import { Search, Plus, RefreshCw, Filter, X, FileText, Pencil, Trash2, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
@@ -84,12 +87,16 @@ const docStatusColor: Record<Exclude<DocSummaryStatus, "none">, string> = {
 
 function ApplicationsPage() {
   const navigate = useNavigate();
+  const { hasRole } = useAuth();
+  const isAdmin = hasRole("admin");
+  const [users, setUsers] = useState<Record<string, string>>({});
   const [apps, setApps] = useState<Application[]>([]);
   const [docStatuses, setDocStatuses] = useState<Record<string, DocSummaryStatus>>({});
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
+
   
   const [country, setCountry] = useState<string>("all");
   const [university, setUniversity] = useState<string>("all");
@@ -104,17 +111,24 @@ function ApplicationsPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const [list, docs] = await Promise.all([
+      const [list, docs, userList] = await Promise.all([
         listApplications(),
         listDocumentStatusByApplication().catch(() => ({} as Record<string, DocSummaryStatus>)),
+        isAdmin ? listUsers() : Promise.resolve([]),
       ]);
       setApps(list);
       setDocStatuses(docs);
+      if (isAdmin) {
+        const map: Record<string, string> = {};
+        userList.forEach((u) => { map[u.id] = u.full_name || u.email; });
+        setUsers(map);
+      }
     }
     catch (e: any) { toast.error(e.message ?? "Failed to load applications"); }
     finally { setLoading(false); }
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [isAdmin]);
+
 
 
   const uniq = (arr: (string | null | undefined)[]) =>
@@ -272,7 +286,9 @@ function ApplicationsPage() {
                   <TableHead className="hidden lg:table-cell">Intake</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Documents</TableHead>
+                  {isAdmin && <TableHead>Created By</TableHead>}
                 <TableHead className="w-24">Created</TableHead>
+
                 <TableHead className="w-16 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -347,7 +363,13 @@ function ApplicationsPage() {
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </TableCell>
+                    {isAdmin && (
+                      <TableCell className="text-xs text-muted-foreground">
+                        {a.created_by ? (users[a.created_by] || "User") : "—"}
+                      </TableCell>
+                    )}
                     <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+
                       {a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "—"}
                     </TableCell>
 

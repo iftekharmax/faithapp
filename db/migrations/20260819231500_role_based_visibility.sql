@@ -1,11 +1,6 @@
 -- Role-based data visibility for Students and Applications
 
 -- Update RLS for Students
--- Students don't have assigned_counselor_id in applications if it was dropped, 
--- but wait, the students table migration 20260720 shows assigned_counselor_id.
--- However, application assignees were dropped.
--- I'll check students columns again.
-
 drop policy if exists "students_select_staff" on public.students;
 create policy "students_select_staff" on public.students for select to authenticated
   using (
@@ -92,18 +87,6 @@ create policy "student_docs_all_staff" on public.student_documents for all to au
       select 1 from public.students s
       where s.id = student_id
       and s.created_by = auth.uid()
-    )
-  );
-
--- Update RLS for Application Documents
-drop policy if exists "app_docs_all_staff" on public.application_documents;
-create policy "app_docs_all_staff" on public.application_documents for all to authenticated
-  using (
-    public.has_role(auth.uid(), 'admin')
-    or exists (
-      select 1 from public.applications a
-      where a.id = application_id
-      and a.created_by = auth.uid()
     )
   );
 

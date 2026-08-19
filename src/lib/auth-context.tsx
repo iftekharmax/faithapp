@@ -272,6 +272,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (event === "SIGNED_IN" || event === "USER_UPDATED") {
         // Optimization: If session ID hasn't changed, don't trigger a full reload
+        if (s) {
+          localStorage.setItem(SESSION_START_KEY, Date.now().toString());
+        }
         setSession(prev => {
           if (prev?.user?.id === s?.user?.id && prev?.access_token === s?.access_token) {
             return prev;

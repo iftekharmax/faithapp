@@ -227,6 +227,9 @@ function ProgramDetailsPage() {
           <FeeCard label="Registration Fee" currency={currency} value={program.registration_fee} tone="border-slate-100 bg-slate-50" />
           <FeeCard label="EMGS Fee" currency={currency} value={program.emgs_fee} tone="border-slate-100 bg-slate-50" />
           <FeeCard label="Others Fee" currency={currency} value={program.others_fee} tone="border-slate-100 bg-slate-50" />
+          {othersFees.map((f: any, i: number) => (
+            <FeeCard key={`other-${i}`} label={f.title} currency={currency} value={f.amount} tone="border-slate-100 bg-slate-50" />
+          ))}
           <FeeCard label="Estimated Total" currency={currency} value={total || null} tone="border-emerald-100 bg-emerald-50/60" />
         </div>
       </section>

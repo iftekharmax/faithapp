@@ -324,6 +324,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) console.error("[Auth] Initial session error:", error);
       
       const s = data.session;
+      if (s && !localStorage.getItem(SESSION_START_KEY)) {
+        localStorage.setItem(SESSION_START_KEY, Date.now().toString());
+      }
       setSession(s);
       setAuthReady(!!s);
       scheduleProactiveRefresh(s);

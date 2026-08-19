@@ -91,4 +91,5 @@ create policy "student_docs_all_staff" on public.student_documents for all to au
   );
 
 -- Reload schema
-select pgrst_watch();
+NOTIFY pgrst, 'reload schema';
+

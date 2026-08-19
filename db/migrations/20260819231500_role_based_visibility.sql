@@ -89,7 +89,3 @@ create policy "student_docs_all_staff" on public.student_documents for all to au
       and s.created_by = auth.uid()
     )
   );
-
--- Reload schema
-NOTIFY pgrst, 'reload schema';
-

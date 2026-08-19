@@ -40,6 +40,8 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 const REFRESH_BUFFER_MS = 60_000;
 const RETRY_COUNT = 3;
 const RETRY_DELAYS = [500, 1000, 2000];
+const MAX_SESSION_DURATION_MS = 10 * 60 * 60 * 1000; // 10 hours
+const SESSION_START_KEY = "auth_session_start_time";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);

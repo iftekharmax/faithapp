@@ -351,7 +351,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       mounted = false;
       mountedRef.current = false;
       clearTimeout(loadingSafety);
-      clearRefreshTimer();
+      clearTimers();
       sub.subscription.unsubscribe();
     };
   }, [scheduleProactiveRefresh, retryTick]);

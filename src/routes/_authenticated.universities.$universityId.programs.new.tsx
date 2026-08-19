@@ -85,6 +85,7 @@ function NewProgramPage() {
     registration_fee: 0,
     emgs_fee: 0,
     others_fee: 0,
+    others_fees: [],
   } as any);
 
   // We keep a ref to the form data to preserve it across retry attempts

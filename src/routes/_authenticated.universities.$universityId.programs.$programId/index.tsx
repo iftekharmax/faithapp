@@ -143,8 +143,15 @@ function ProgramDetailsPage() {
 
   const currency = program.currency || "MYR";
   const intakes = (program.intake || "").split(",").map((s) => s.trim()).filter(Boolean);
-  const total = [program.tuition_fee, program.application_fee, program.registration_fee, program.emgs_fee, program.others_fee]
-    .reduce<number>((a, v) => a + (Number(v) || 0), 0);
+  const othersFees = (program as any).others_fees || [];
+  const total = [
+    program.tuition_fee,
+    program.application_fee,
+    program.registration_fee,
+    program.emgs_fee,
+    program.others_fee,
+    ...othersFees.map((f: any) => f.amount)
+  ].reduce<number>((a, v) => a + (Number(v) || 0), 0);
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 p-6">
@@ -220,6 +227,9 @@ function ProgramDetailsPage() {
           <FeeCard label="Registration Fee" currency={currency} value={program.registration_fee} tone="border-slate-100 bg-slate-50" />
           <FeeCard label="EMGS Fee" currency={currency} value={program.emgs_fee} tone="border-slate-100 bg-slate-50" />
           <FeeCard label="Others Fee" currency={currency} value={program.others_fee} tone="border-slate-100 bg-slate-50" />
+          {othersFees.map((f: any, i: number) => (
+            <FeeCard key={`other-${i}`} label={f.title} currency={currency} value={f.amount} tone="border-slate-100 bg-slate-50" />
+          ))}
           <FeeCard label="Estimated Total" currency={currency} value={total || null} tone="border-emerald-100 bg-emerald-50/60" />
         </div>
       </section>

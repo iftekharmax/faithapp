@@ -875,7 +875,16 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="rounded-xl p-2 w-40">
-                              <DropdownMenuItem className="rounded-lg font-bold text-slate-600 cursor-pointer" onClick={() => openEdit(p)}>
+                              <DropdownMenuItem 
+                                className="rounded-lg font-bold text-slate-600 cursor-pointer" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate({ 
+                                    to: "/universities/$universityId/programs/$programId/edit", 
+                                    params: { universityId, programId: p.id } 
+                                  });
+                                }}
+                              >
                                 <Pencil className="mr-2 h-4 w-4" /> Edit
                               </DropdownMenuItem>
                               <DropdownMenuItem className="rounded-lg font-bold text-rose-600 cursor-pointer focus:text-rose-600 focus:bg-rose-50" onClick={() => setDeleteId(p.id)}>

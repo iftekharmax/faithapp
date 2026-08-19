@@ -60,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [sessionExpired, setSessionExpired] = useState(false);
   
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sessionLimitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hadSessionRef = useRef(false);
   const mountedRef = useRef(false);
   const loadingUserDataRef = useRef<string | null>(null);

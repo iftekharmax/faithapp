@@ -340,9 +340,9 @@ function ApplicationsPage() {
                   <TableHead className="hidden lg:table-cell">Intake</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Documents</TableHead>
-                  {canSeeCreator && <TableHead>Created By</TableHead>}
-                  <TableHead>Assigned To</TableHead>
-                <TableHead className="w-24">Created</TableHead>
+                  {canSeeCreator && <TableHead>Created</TableHead>}
+                  <TableHead>Assigned</TableHead>
+                <TableHead className="w-24">Date</TableHead>
 
                 <TableHead className="w-16 text-right">Actions</TableHead>
                 </TableRow>

@@ -164,7 +164,13 @@ function ApplicationsPage() {
       }
       if (status !== "all" && a.status !== status) return false;
       if (canSeeCreator && createdBy !== "all" && a.created_by !== createdBy) return false;
-      if (assignedTo !== "all" && a.assigned_team_id !== assignedTo) return false;
+      if (assignedTo !== "all") {
+        if (assignedTo === "__none__") {
+          if (a.assigned_team_id) return false;
+        } else if (a.assigned_team_id !== assignedTo) {
+          return false;
+        }
+      }
       
       if (country !== "all" && a.country !== country) return false;
       if (university !== "all" && a.university !== university) return false;

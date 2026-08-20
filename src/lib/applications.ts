@@ -196,7 +196,8 @@ export async function deleteApplication(id: string): Promise<void> {
 export async function listApplicationTimeline(applicationId: string): Promise<ApplicationTimelineEvent[]> {
   const { data, error } = await supabase
     .from("application_timeline")
-    .select("*").eq("application_id", applicationId)
+    .select("*, actor_profile:profiles(id, full_name, email)")
+    .eq("application_id", applicationId)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as ApplicationTimelineEvent[];

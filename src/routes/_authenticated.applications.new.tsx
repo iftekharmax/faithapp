@@ -85,6 +85,7 @@ function NewApplicationPage() {
     registration_fee: undefined,
     emgs_fee: undefined,
     others_fee: undefined,
+    assigned_team_id: undefined,
     status: "draft",
     notes: "",
   });

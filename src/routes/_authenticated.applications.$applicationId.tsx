@@ -30,6 +30,7 @@ import {
   validateApplicationInput, allowedNextStatuses,
   type Application, type ApplicationTimelineEvent,
   type ApplicationInput, type ApplicationStatus,
+  listStaff, type StaffOption
 } from "@/lib/applications";
 import { useAuth } from "@/lib/auth-context";
 import { StatusStepper } from "@/components/applications/StatusStepper";
@@ -85,6 +86,7 @@ function ApplicationDetailPage() {
   const [noteTitle, setNoteTitle] = useState("");
   const [noteDesc, setNoteDesc] = useState("");
   const [activeTab, setActiveTab] = useState<string>("timeline");
+  const [appTeam, setAppTeam] = useState<StaffOption[]>([]);
 
   const reloadTimeline = async () => {
     try {
@@ -100,12 +102,13 @@ function ApplicationDetailPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const [a, t, d] = await Promise.all([
+      const [a, t, d, team] = await Promise.all([
         getApplication(applicationId),
         listApplicationTimeline(applicationId),
         listDocumentRequests(applicationId).catch(() => [] as DocumentRequest[]),
+        listStaff("application_team"),
       ]);
-      setApp(a); setTimeline(t); setDocRequests(d);
+      setApp(a); setTimeline(t); setDocRequests(d); setAppTeam(team);
     } catch (e: any) { toast.error(e.message ?? "Failed to load"); }
     finally { setLoading(false); }
   };
@@ -118,6 +121,7 @@ function ApplicationDetailPage() {
     scholarship: app.scholarship, application_fee: app.application_fee,
     status: app.status,
     notes: app.notes,
+    assigned_team_id: app.assigned_team_id,
   } : null, [app]);
 
   const set = <K extends keyof Application>(k: K, v: Application[K]) =>
@@ -402,6 +406,20 @@ function ApplicationDetailPage() {
                       <SelectContent>
                         {allowedNextStatuses(app.status, isAdmin).map((s) => (
                           <SelectItem key={s} value={s}>{APPLICATION_STATUS_LABELS[s]}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+
+                  <Field label="Assigned Team Member">
+                    <Select value={app.assigned_team_id || "__none__"} onValueChange={(v) => set("assigned_team_id", v === "__none__" ? null : v)}>
+                      <SelectTrigger><SelectValue placeholder="Select team member" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="__none__">— Unassigned —</SelectItem>
+                        {appTeam.map((u) => (
+                          <SelectItem key={u.id} value={u.id}>
+                            {u.full_name || u.email}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>

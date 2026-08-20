@@ -27,6 +27,7 @@ import {
   APPLICATION_STATUSES, APPLICATION_STATUS_LABELS,
   createApplication, listStudentsLite,
   validateApplicationInput, type ApplicationInput,
+  listStaff, type StaffOption
 } from "@/lib/applications";
 import {
   listCountries, listUniversities, listCampuses, listPrograms,
@@ -50,6 +51,7 @@ function NewApplicationPage() {
   const [saving, setSaving] = useState(false);
   const [students, setStudents] = useState<Array<{id:string;full_name:string;student_code:string}>>([]);
   const [countries, setCountries] = useState<Country[]>([]);
+  const [appTeam, setAppTeam] = useState<StaffOption[]>([]);
   const [universities, setUniversities] = useState<University[]>([]);
   const [campuses, setCampuses] = useState<Campus[]>([]);
   const [programs, setPrograms] = useState<UniversityProgram[]>([]);
@@ -83,6 +85,7 @@ function NewApplicationPage() {
     registration_fee: undefined,
     emgs_fee: undefined,
     others_fee: undefined,
+    assigned_team_id: undefined,
     status: "draft",
     notes: "",
   });
@@ -91,8 +94,13 @@ function NewApplicationPage() {
   useEffect(() => {
     (async () => {
       try {
-        const [s, c] = await Promise.all([listStudentsLite(), listCountries()]);
+        const [s, c, team] = await Promise.all([
+          listStudentsLite(),
+          listCountries(),
+          listStaff("application_team")
+        ]);
         setStudents(s);
+        setAppTeam(team);
         const activeCountries = c.filter((x) => x.status === "active");
         setCountries(activeCountries);
 
@@ -506,6 +514,22 @@ function NewApplicationPage() {
                       <SelectContent>
                         {APPLICATION_STATUSES.map((s) => (
                           <SelectItem key={s} value={s}>{APPLICATION_STATUS_LABELS[s]}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </ModernField>
+
+                  <ModernField label="Assigned Team Member" icon={<User className="h-4 w-4" />}>
+                    <Select value={form.assigned_team_id ?? NONE} onValueChange={(v) => set("assigned_team_id", v === NONE ? null : v)}>
+                      <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
+                        <SelectValue placeholder="Select team member" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={NONE}>— Unassigned —</SelectItem>
+                        {appTeam.map((u) => (
+                          <SelectItem key={u.id} value={u.id}>
+                            {u.full_name || u.email}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>

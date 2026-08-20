@@ -26,6 +26,7 @@ import {
   deleteApplication,
   APPLICATION_STATUSES, APPLICATION_STATUS_LABELS,
   type Application, type ApplicationStatus,
+  listStaff
 } from "@/lib/applications";
 import {
   listDocumentStatusByApplication,
@@ -93,12 +94,14 @@ function ApplicationsPage() {
   const canSeeCreator = isAdmin || isAppTeam;
 
   const [users, setUsers] = useState<Record<string, string>>({});
+  const [appTeam, setAppTeam] = useState<Record<string, string>>({});
   const [apps, setApps] = useState<Application[]>([]);
   const [docStatuses, setDocStatuses] = useState<Record<string, DocSummaryStatus>>({});
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [createdBy, setCreatedBy] = useState<string>("all");
+  const [assignedTo, setAssignedTo] = useState<string>("all");
 
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
   
@@ -116,10 +119,11 @@ function ApplicationsPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const [list, docs, userList] = await Promise.all([
+      const [list, docs, userList, teamList] = await Promise.all([
         listApplications(),
         listDocumentStatusByApplication().catch(() => ({} as Record<string, DocSummaryStatus>)),
         canSeeCreator ? listUsers() : Promise.resolve([]),
+        listStaff("application_team"),
       ]);
 
       setApps(list);
@@ -129,6 +133,10 @@ function ApplicationsPage() {
         userList.forEach((u) => { map[u.id] = u.full_name || u.email; });
         setUsers(map);
       }
+      
+      const teamMap: Record<string, string> = {};
+      teamList.forEach((u) => { teamMap[u.id] = u.full_name || u.email; });
+      setAppTeam(teamMap);
 
     }
     catch (e: any) { toast.error(e.message ?? "Failed to load applications"); }
@@ -156,6 +164,7 @@ function ApplicationsPage() {
       }
       if (status !== "all" && a.status !== status) return false;
       if (canSeeCreator && createdBy !== "all" && a.created_by !== createdBy) return false;
+      if (assignedTo !== "all" && a.assigned_team_id !== assignedTo) return false;
       
       if (country !== "all" && a.country !== country) return false;
       if (university !== "all" && a.university !== university) return false;
@@ -178,13 +187,13 @@ function ApplicationsPage() {
   const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const clearFilters = () => {
-    setQ(""); setStatus("all"); setCreatedBy("all");
+    setQ(""); setStatus("all"); setCreatedBy("all"); setAssignedTo("all");
     setCountry("all"); setUniversity("all"); setIntake("all");
 
   };
   const activeFilterCount = [
     status !== "all", country !== "all",
-    university !== "all", intake !== "all", createdBy !== "all",
+    university !== "all", intake !== "all", createdBy !== "all", assignedTo !== "all",
   ].filter(Boolean).length;
 
   return (
@@ -252,7 +261,7 @@ function ApplicationsPage() {
           </div>
 
           {showFilters && (
-            <div className={`grid gap-3 rounded-md border bg-muted/30 p-3 md:grid-cols-${canSeeCreator ? "4" : "3"}`}>
+            <div className={`grid gap-3 rounded-md border bg-muted/30 p-3 md:grid-cols-${canSeeCreator ? "5" : "4"}`}>
 
               <div>
                 <Label className="text-[11px] uppercase text-muted-foreground">Country</Label>
@@ -298,6 +307,19 @@ function ApplicationsPage() {
                   </Select>
                 </div>
               )}
+              <div>
+                <Label className="text-[11px] uppercase text-muted-foreground">Assigned To</Label>
+                <Select value={assignedTo} onValueChange={setAssignedTo}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="__none__">Unassigned</SelectItem>
+                    {Object.entries(appTeam).map(([id, name]) => (
+                      <SelectItem key={id} value={id}>{name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
           )}
@@ -313,6 +335,7 @@ function ApplicationsPage() {
                   <TableHead>Status</TableHead>
                   <TableHead>Documents</TableHead>
                   {canSeeCreator && <TableHead>Created By</TableHead>}
+                  <TableHead>Assigned To</TableHead>
                 <TableHead className="w-24">Created</TableHead>
 
                 <TableHead className="w-16 text-right">Actions</TableHead>
@@ -394,6 +417,9 @@ function ApplicationsPage() {
                         {a.created_by ? (users[a.created_by] || "User") : "—"}
                       </TableCell>
                     )}
+                    <TableCell className="text-xs text-muted-foreground">
+                      {a.assigned_team_id ? (appTeam[a.assigned_team_id] || "Team") : "—"}
+                    </TableCell>
 
                     <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
 

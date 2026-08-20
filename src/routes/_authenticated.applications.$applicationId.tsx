@@ -133,6 +133,8 @@ function ApplicationDetailPage() {
     const errs = validateApplicationInput(patch);
     setErrors(errs);
     if (Object.keys(errs).length) { toast.error("Fix validation errors"); return; }
+    
+    const isAssignmentChange = patch.assigned_team_id !== app.assigned_team_id;
     setSaving(true);
     try {
       await updateApplication(app.id, patch);

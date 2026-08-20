@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Search, X, GraduationCap, MapPin, Calendar, Coins,
   Award, Clock, Sparkles, SlidersHorizontal, ArrowRight, BookOpen,
   Bookmark, BookmarkCheck, Share2, ArrowUpDown, FileText, ListChecks,
   Plus, ChevronLeft, ChevronRight, Loader2, CheckCircle2, Trash2, ExternalLink, Replace,
+  School, Heart, Zap, Star, Send, MoreVertical, Pencil, Building2
 } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
@@ -21,6 +22,12 @@ import {
   listPrograms, listCountriesLite, listUniversitiesLite, listIntakes,
   type ProgramRow, type ProgramFilters,
 } from "@/lib/programs";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated/programs")({
   head: () => ({
@@ -154,7 +161,9 @@ function ProgramsPage() {
   const density = "comfortable";
   const [page, setPage] = useState(1);
   const pageSize = 12;
+  const navigate = useNavigate();
   const setDensity = (_: Density) => {}; 
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // Reset page on filter change
   useEffect(() => {
@@ -592,12 +601,14 @@ function ProgramsPage() {
         }
         return (
           <div className="space-y-8">
-            <div className={gridCls}>
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {paginatedRows.map((r) => (
-                <ProgramCard key={r.id} r={r} density={density}
-                  selected={false} onToggle={() => {}} // Disabled selection
-                  bookmarked={bookmarks.has(r.id)} onBookmark={() => toggleBookmark(r.id, r.name)}
-                  onShare={() => share(r)} onOpen={() => setDetail(r)}
+                <ProgramCard 
+                  key={r.id} 
+                  p={r} 
+                  universityName={r.university?.name || "University"}
+                  campusName={r.campus?.name}
+                  onDelete={() => setDeleteId(r.id)}
                 />
               ))}
             </div>
@@ -662,6 +673,38 @@ function ProgramsPage() {
           />}
         </SheetContent>
       </Sheet>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the program.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={async () => {
+                if (!deleteId) return;
+                try {
+                  const { deleteProgram } = await import("@/lib/universities");
+                  await deleteProgram(deleteId);
+                  toast.success("Program deleted");
+                  setRows(rows.filter(r => r.id !== deleteId));
+                } catch (e: any) {
+                  toast.error(e.message || "Failed to delete program");
+                } finally {
+                  setDeleteId(null);
+                }
+              }}
+              className="bg-rose-600 hover:bg-rose-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -688,66 +731,147 @@ function StatChip({ icon: Icon, value, label }: { icon: any; value: number; labe
 }
 
 interface CardProps {
-  r: ProgramRow;
-  selected: boolean; onToggle: () => void;
-  bookmarked: boolean; onBookmark: () => void;
-  onShare: () => void; onOpen: () => void;
-  density?: Density;
+  p: ProgramRow;
+  universityName: string;
+  campusName?: string;
+  onDelete: () => void;
 }
 
-function ProgramCard({ r, selected, onToggle, bookmarked, onBookmark, onShare, onOpen, density = "comfortable" }: CardProps) {
-  const compact = false;
+function ProgramCard({ p, universityName, campusName, onDelete }: CardProps) {
+  const navigate = useNavigate();
+  
   return (
-    <div className={cn(
-      "group relative overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10",
-      selected && "ring-2 ring-primary ring-offset-2 ring-offset-background"
-    )}>
-      <div className={cn("relative bg-gradient-to-br h-28", gradientFor(r.id))}>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.3),transparent_60%)]" />
-        <div className="absolute flex items-center gap-1.5 right-3 top-3">
-          <IconButton title="Share" onClick={onShare}><Share2 className="h-3.5 w-3.5 text-white" /></IconButton>
-          <IconButton title={bookmarked ? "Remove bookmark" : "Save"} onClick={onBookmark}>
-            {bookmarked ? <BookmarkCheck className="h-3.5 w-3.5 text-white" /> : <Bookmark className="h-3.5 w-3.5 text-white" />}
-          </IconButton>
-          {/* Selection label removed */}
-        </div>
-        <div className="absolute bottom-3 left-4 right-14">
-          <GraduationCap className="mb-1 h-6 w-6 text-white/90" />
-          {r.degree && <div className="text-[11px] font-medium uppercase tracking-wider text-white/80">{r.degree}</div>}
-        </div>
-        {r.scholarship && (
-          <div className="absolute flex items-center gap-1 rounded-full bg-amber-400/95 px-2 py-0.5 text-[10px] font-bold text-amber-950 shadow-lg left-3 top-3">
-            <Award className="h-3 w-3" /> SCHOLARSHIP
+    <div 
+      className="group relative flex flex-col overflow-hidden rounded-[28px] bg-white border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-2 cursor-pointer"
+      onClick={() => navigate({ to: "/universities/$universityId/programs/$programId", params: { universityId: p.university?.id || "", programId: p.id } })}
+    >
+      <div className="flex flex-1 flex-col p-8">
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center rounded-lg bg-orange-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-600">
+              <Star className="mr-1.5 h-3.5 w-3.5 fill-orange-500" /> Featured
+            </span>
+            {p.status === "active" && (
+              <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                <Zap className="mr-1.5 h-3.5 w-3.5 fill-emerald-500" /> Active
+              </span>
+            )}
           </div>
-        )}
-      </div>
-
-      <div className="space-y-3 p-4">
-        <button onClick={onOpen} className="block w-full text-left">
-          <h3 className="font-semibold transition-colors group-hover:text-primary line-clamp-2 leading-snug">{r.name}</h3>
-          <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-            <MapPin className="h-3 w-3 shrink-0" />
-            <span className="truncate">{r.university?.name}{r.campus ? ` · ${r.campus.name}` : ""}</span>
-          </div>
-        </button>
-
-        <div className="grid grid-cols-2 gap-2 border-y text-xs py-3">
-          <MetaCell icon={Clock} label="Duration" value={r.duration} />
-          <MetaCell icon={Calendar} label="Intake" value={r.intake} />
-          <MetaCell icon={Coins} label="Tuition" value={r.tuition_fee ? `${r.currency ?? ""} ${r.tuition_fee.toLocaleString()}` : null} />
-          <MetaCell icon={Calendar} label="Deadline" value={r.application_deadline} />
-        </div>
-
-
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="rounded-xl" onClick={onOpen}>
-            Details
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
+            <Heart className="h-5 w-5" />
           </Button>
-          <ApplyButton
-            program={r}
-            label="Apply now"
-            className="flex-1 rounded-xl shadow-md shadow-primary/20 transition-transform group-hover:scale-[1.02]"
-          />
+        </div>
+
+        {/* Title and Icon */}
+        <div className="flex items-start gap-5 mb-6">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 shrink-0 group-hover:bg-blue-50 transition-colors">
+            <School className="h-7 w-7 text-slate-400 group-hover:text-blue-600" />
+          </div>
+          <div className="flex-1 pr-2">
+            <h3 className="text-[19px] font-bold leading-snug text-slate-900 line-clamp-2">
+              {p.name}
+            </h3>
+            <p className="text-sm font-bold text-slate-400 mt-1">{universityName}</p>
+          </div>
+        </div>
+
+        {/* Meta Information */}
+        <div className="space-y-2 mb-6">
+          <div className="flex items-center gap-2 text-[13px] font-semibold leading-tight text-slate-500">
+            <GraduationCap className="h-4.5 w-4.5 text-blue-500/70" />
+            <span>{p.degree || "Bachelor / Undergraduate"}</span>
+          </div>
+          <div className="flex items-center gap-2 text-[13px] font-semibold leading-tight text-slate-500">
+            <Clock className="h-4.5 w-4.5 text-blue-500/70" />
+            <span>{p.duration || "2 Years"}</span>
+          </div>
+          {campusName && (
+            <div className="flex items-center gap-2 text-[13px] font-semibold leading-tight text-slate-500">
+              <MapPin className="h-4.5 w-4.5 text-blue-500/70" />
+              <span>{campusName}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Tuition Stats Section */}
+        <div className="mt-auto">
+          <div className="grid grid-cols-3 gap-2 mb-6">
+            <div className="bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-100/50">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tuition Fee</p>
+              <p className="text-[12px] font-medium text-blue-600">
+                {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
+              </p>
+            </div>
+            <div className="bg-emerald-50 rounded-2xl p-3.5 text-center border border-emerald-100/50">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/60 mb-1.5">Scholarship</p>
+              <p className="text-[12px] font-medium text-emerald-600">Up to 30%</p>
+            </div>
+            <div className="bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-100/50">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">App. Fee</p>
+              <p className="text-[12px] font-medium text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
+            </div>
+          </div>
+
+          {/* Intakes */}
+          <div className="flex items-center gap-3 mb-8 overflow-hidden">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 shrink-0">Intakes:</span>
+            <div className="flex flex-nowrap gap-2 overflow-x-auto no-scrollbar pb-1">
+              {(p.intake || "January, June, August").split(",").map((intake, i) => (
+                <Badge key={i} variant="secondary" className="bg-slate-100 text-slate-600 rounded-lg px-3 py-1 text-[10px] font-bold border-none whitespace-nowrap">
+                  {intake.trim()}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-3">
+            <Button 
+              className="flex-1 h-[46px] rounded-[12px] bg-blue-600 text-[14px] font-bold text-white hover:bg-blue-700 transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate({ to: "/applications/new", search: { universityId: p.university?.id, programId: p.id } });
+              }}
+            >
+              <Send className="mr-2 h-4 w-4" />
+              Apply Now
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex-1 h-[46px] rounded-[12px] border-slate-200 bg-white text-[14px] font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-none active:scale-[0.98]"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate({ to: "/universities/$universityId/programs/$programId", params: { universityId: p.university?.id || "", programId: p.id } });
+              }}
+            >
+              <FileText className="mr-2 h-4 w-4 text-slate-400" />
+              Details
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-[46px] w-[46px] shrink-0 rounded-[12px] border border-slate-200 bg-white hover:bg-slate-50 transition-all active:scale-[0.98]">
+                  <MoreVertical className="h-5 w-5 text-slate-400" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="rounded-xl p-2 w-40">
+                <DropdownMenuItem 
+                  className="rounded-lg font-bold text-slate-600 cursor-pointer" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate({ 
+                      to: "/universities/$universityId/programs/$programId/edit", 
+                      params: { universityId: p.university?.id || "", programId: p.id } 
+                    });
+                  }}
+                >
+                  <Pencil className="mr-2 h-4 w-4" /> Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem className="rounded-lg font-bold text-rose-600 cursor-pointer focus:text-rose-600 focus:bg-rose-50" onClick={(e) => { e.stopPropagation(); onDelete(); }}>
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </div>

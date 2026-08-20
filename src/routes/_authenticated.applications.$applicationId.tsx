@@ -122,6 +122,7 @@ function ApplicationDetailPage() {
     status: app.status,
     notes: app.notes,
     assigned_team_id: app.assigned_team_id,
+    assigned_team: app.assigned_team,
   } : null, [app]);
 
   const set = <K extends keyof Application>(k: K, v: Application[K]) =>
@@ -132,10 +133,16 @@ function ApplicationDetailPage() {
     const errs = validateApplicationInput(patch);
     setErrors(errs);
     if (Object.keys(errs).length) { toast.error("Fix validation errors"); return; }
+    
+    const isAssignmentChange = patch.assigned_team_id !== app.assigned_team_id;
     setSaving(true);
     try {
       await updateApplication(app.id, patch);
-      toast.success("Saved");
+      
+      // If assignment changed manually and triggers aren't reliable/instant, we could call an RPC or rely on the trigger
+      // The trigger we added (on_application_assignment_change) handles timeline and internal notifications.
+      
+      toast.success(isAssignmentChange ? "Application reassigned" : "Saved");
       await load();
     } catch (e: any) { toast.error(e.message ?? "Failed to save"); }
     finally { setSaving(false); }

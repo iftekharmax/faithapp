@@ -125,6 +125,7 @@ export interface ApplicationTimelineEvent {
   metadata: Record<string, unknown> | null;
   actor_id: string | null;
   actor_email: string | null;
+  actor_profile?: { id: string; full_name: string | null; email: string } | null;
   created_at: string;
 }
 
@@ -138,7 +139,7 @@ export interface StaffOption {
 export async function listApplications(): Promise<Application[]> {
   const { data, error } = await supabase
     .from("applications")
-    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles!applications_assigned_team_id_fkey(id, full_name, email)")
+    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles(id, full_name, email)")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Application[];
@@ -147,7 +148,7 @@ export async function listApplications(): Promise<Application[]> {
 export async function getApplication(id: string): Promise<Application | null> {
   const { data, error } = await supabase
     .from("applications")
-    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles!applications_assigned_team_id_fkey(id, full_name, email)")
+    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles(id, full_name, email)")
     .eq("id", id).maybeSingle();
   if (error) throw error;
   return (data as Application) ?? null;
@@ -196,7 +197,8 @@ export async function deleteApplication(id: string): Promise<void> {
 export async function listApplicationTimeline(applicationId: string): Promise<ApplicationTimelineEvent[]> {
   const { data, error } = await supabase
     .from("application_timeline")
-    .select("*").eq("application_id", applicationId)
+    .select("*, actor_profile:profiles(id, full_name, email)")
+    .eq("application_id", applicationId)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as ApplicationTimelineEvent[];

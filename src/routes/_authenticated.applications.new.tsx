@@ -62,6 +62,10 @@ function NewApplicationPage() {
   const [campusId, setCampusId] = useState<string>("");
   const [programId, setProgramId] = useState<string>("");
 
+  // Target IDs for pre-selection from URL
+  const [targetUniId, setTargetUniId] = useState<string | null>(null);
+  const [targetProgId, setTargetProgId] = useState<string | null>(null);
+
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [form, setForm] = useState<ApplicationInput>({
     student_id: undefined,

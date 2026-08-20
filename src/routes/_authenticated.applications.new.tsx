@@ -99,8 +99,12 @@ function NewApplicationPage() {
         // Check search params for pre-selection
         const searchParams = new URLSearchParams(window.location.search);
         const urlUniId = searchParams.get("universityId");
+        const urlProgId = searchParams.get("programId");
         
         if (urlUniId && !preselectionApplied.current) {
+          targetUniId.current = urlUniId;
+          targetProgId.current = urlProgId;
+
           const { data: uniData } = await supabase
             .from("universities")
             .select("country_id")
@@ -109,12 +113,12 @@ function NewApplicationPage() {
 
           if (uniData?.country_id) {
             setCountryId(uniData.country_id);
-            // universityId will be set in the listUniversities effect
           }
         }
       } catch (e: any) { toast.error(e.message ?? "Failed to load form data"); }
     })();
   }, []);
+
 
 
   // Country change → load universities in that country.

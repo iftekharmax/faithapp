@@ -89,6 +89,9 @@ function ApplicationsPage() {
   const navigate = useNavigate();
   const { hasRole } = useAuth();
   const isAdmin = hasRole("admin");
+  const isAppTeam = hasRole("application_team");
+  const canSeeCreator = isAdmin || isAppTeam;
+
   const [users, setUsers] = useState<Record<string, string>>({});
   const [apps, setApps] = useState<Application[]>([]);
   const [docStatuses, setDocStatuses] = useState<Record<string, DocSummaryStatus>>({});
@@ -115,20 +118,22 @@ function ApplicationsPage() {
       const [list, docs, userList] = await Promise.all([
         listApplications(),
         listDocumentStatusByApplication().catch(() => ({} as Record<string, DocSummaryStatus>)),
-        isAdmin ? listUsers() : Promise.resolve([]),
+        canSeeCreator ? listUsers() : Promise.resolve([]),
       ]);
+
       setApps(list);
       setDocStatuses(docs);
-      if (isAdmin) {
+      if (canSeeCreator) {
         const map: Record<string, string> = {};
         userList.forEach((u) => { map[u.id] = u.full_name || u.email; });
         setUsers(map);
       }
+
     }
     catch (e: any) { toast.error(e.message ?? "Failed to load applications"); }
     finally { setLoading(false); }
   };
-  useEffect(() => { load(); }, [isAdmin]);
+  useEffect(() => { load(); }, [isAdmin, isAppTeam]);
 
 
 
@@ -287,7 +292,7 @@ function ApplicationsPage() {
                   <TableHead className="hidden lg:table-cell">Intake</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Documents</TableHead>
-                  {isAdmin && <TableHead>Created By</TableHead>}
+                  {canSeeCreator && <TableHead>Created By</TableHead>}
                 <TableHead className="w-24">Created</TableHead>
 
                 <TableHead className="w-16 text-right">Actions</TableHead>
@@ -364,11 +369,12 @@ function ApplicationsPage() {
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </TableCell>
-                    {isAdmin && (
+                    {canSeeCreator && (
                       <TableCell className="text-xs text-muted-foreground">
                         {a.created_by ? (users[a.created_by] || "User") : "—"}
                       </TableCell>
                     )}
+
                     <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
 
                       {a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "—"}

@@ -1,8 +1,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const supabaseUrl = "https://qdveirhlzuzrxaqjevxr.supabase.co";
+const supabaseKey = "sb_publishable_BKdIW3Wk9DQ5-oBiNPHGmw_2lpXrA0Z";
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY');

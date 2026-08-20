@@ -60,11 +60,16 @@ const statusColor: Record<StudentStatus, string> = {
 function StudentsPage() {
   const { hasRole } = useAuth();
   const isAdmin = hasRole("admin");
+  const isAppTeam = hasRole("application_team");
+  const canSeeCreator = isAdmin || isAppTeam;
+
   const [users, setUsers] = useState<Record<string, string>>({});
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
+  const [createdBy, setCreatedBy] = useState<string>("all");
+
 
   const [nationality, setNationality] = useState<string>("all");
   const [gender, setGender] = useState<string>("all");
@@ -84,10 +89,10 @@ function StudentsPage() {
     try {
       const [data, userList] = await Promise.all([
         listStudents(),
-        isAdmin ? listUsers() : Promise.resolve([]),
+        canSeeCreator ? listUsers() : Promise.resolve([]),
       ]);
       setStudents(data);
-      if (isAdmin) {
+      if (canSeeCreator) {
         const map: Record<string, string> = {};
         userList.forEach((u) => { map[u.id] = u.full_name || u.email; });
         setUsers(map);
@@ -97,7 +102,8 @@ function StudentsPage() {
     finally { setLoading(false); }
   };
 
-  useEffect(() => { load(); }, [isAdmin]);
+  useEffect(() => { load(); }, [isAdmin, isAppTeam]);
+
 
 
   const nationalities = useMemo(() => {
@@ -118,6 +124,7 @@ function StudentsPage() {
       if (status !== "all" && s.status !== status) return false;
       if (nationality !== "all" && s.nationality !== nationality) return false;
       if (gender !== "all" && s.gender !== gender) return false;
+      if (canSeeCreator && createdBy !== "all" && s.created_by !== createdBy) return false;
       if (passportExpiring) {
         if (!s.passport_expiry) return false;
         const d = new Date(s.passport_expiry);
@@ -125,9 +132,10 @@ function StudentsPage() {
       }
       return true;
     });
+
   }, [students, q, status, nationality, gender, passportExpiring]);
 
-  useEffect(() => { setPage(1); }, [q, status, nationality, gender, passportExpiring]);
+  useEffect(() => { setPage(1); }, [q, status, nationality, gender, passportExpiring, createdBy]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
@@ -135,12 +143,14 @@ function StudentsPage() {
 
   const clearFilters = () => {
     setQ(""); setStatus("all"); setNationality("all"); setGender("all");
-    setPassportExpiring(false);
+    setCreatedBy("all"); setPassportExpiring(false);
+
   };
   const activeFilterCount = [
     status !== "all", nationality !== "all", gender !== "all",
-    passportExpiring,
+    createdBy !== "all", passportExpiring,
   ].filter(Boolean).length;
+
 
   const toggleSelect = (id: string) => setSelected((prev) => {
     const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n;
@@ -271,7 +281,8 @@ function StudentsPage() {
           </div>
 
           {showFilters && (
-            <div className="grid gap-3 rounded-md border bg-muted/30 p-3 md:grid-cols-4">
+            <div className={`grid gap-3 rounded-md border bg-muted/30 p-3 md:grid-cols-${canSeeCreator ? "5" : "4"}`}>
+
               <div>
                 <Label className="text-[11px] uppercase text-muted-foreground">Nationality</Label>
                 <Select value={nationality} onValueChange={setNationality}>
@@ -303,7 +314,22 @@ function StudentsPage() {
                   Expiring in 6 months
                 </Button>
               </div>
+              {canSeeCreator && (
+                <div>
+                  <Label className="text-[11px] uppercase text-muted-foreground">Created By</Label>
+                  <Select value={createdBy} onValueChange={setCreatedBy}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Users</SelectItem>
+                      {Object.entries(users).map(([id, name]) => (
+                        <SelectItem key={id} value={id}>{name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
+
           )}
 
           {selected.size > 0 && (
@@ -354,7 +380,7 @@ function StudentsPage() {
                   <TableHead className="hidden lg:table-cell">Nationality</TableHead>
                   <TableHead className="hidden lg:table-cell">Passport expiry</TableHead>
                   <TableHead>Status</TableHead>
-                  {isAdmin && <TableHead>Created By</TableHead>}
+                  {canSeeCreator && <TableHead>Created By</TableHead>}
                   <TableHead className="w-24 text-right">Actions</TableHead>
 
                 </TableRow>
@@ -364,7 +390,7 @@ function StudentsPage() {
                   <TableSkeleton rows={6} columns={7} />
                 ) : paged.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="p-0">
+                    <TableCell colSpan={canSeeCreator ? 8 : 7} className="p-0">
                       <EmptyState
                         icon={GraduationCap}
                         title="No students match your filters"
@@ -406,7 +432,7 @@ function StudentsPage() {
                     <TableCell>
                       <Badge className={statusColor[s.status]}>{STUDENT_STATUS_LABELS[s.status]}</Badge>
                     </TableCell>
-                    {isAdmin && (
+                    {canSeeCreator && (
                       <TableCell className="text-xs text-muted-foreground">
                         {s.created_by ? (users[s.created_by] || "User") : "—"}
                       </TableCell>

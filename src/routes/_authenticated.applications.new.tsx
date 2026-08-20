@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
+
 import { ArrowLeft, Loader2, Save, User, GraduationCap, DollarSign, FileText, Layout, X } from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
@@ -62,6 +63,12 @@ function NewApplicationPage() {
   const [campusId, setCampusId] = useState<string>("");
   const [programId, setProgramId] = useState<string>("");
 
+  // Refs to track pre-selection from URL
+  const targetUniId = useRef<string | null>(null);
+  const targetProgId = useRef<string | null>(null);
+  const preselectionApplied = useRef(false);
+
+
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [form, setForm] = useState<ApplicationInput>({
     student_id: undefined,
@@ -93,9 +100,11 @@ function NewApplicationPage() {
         const searchParams = new URLSearchParams(window.location.search);
         const urlUniId = searchParams.get("universityId");
         const urlProgId = searchParams.get("programId");
+        
+        if (urlUniId && !preselectionApplied.current) {
+          targetUniId.current = urlUniId;
+          targetProgId.current = urlProgId;
 
-        if (urlUniId) {
-          // Find country for this university first
           const { data: uniData } = await supabase
             .from("universities")
             .select("country_id")
@@ -104,50 +113,118 @@ function NewApplicationPage() {
 
           if (uniData?.country_id) {
             setCountryId(uniData.country_id);
-            // Delay university setting to ensure cascade picks it up
-            setTimeout(() => setUniversityId(urlUniId), 100);
-            if (urlProgId) {
-              setTimeout(() => setProgramId(urlProgId), 200);
-            }
           }
         }
       } catch (e: any) { toast.error(e.message ?? "Failed to load form data"); }
     })();
   }, []);
 
+
+
   // Country change → load universities in that country.
   useEffect(() => {
-    setUniversityId(""); setCampusId(""); setProgramId("");
-    setUniversities([]); setCampuses([]); setPrograms([]);
-    setForm((f) => ({ ...f, university: "", campus: "", program: "", degree: "", intake: "", scholarship: "" }));
-    if (!countryId) return;
-    const country = countries.find((c) => c.id === countryId);
-    setForm((f) => ({ ...f, country: country?.name ?? "" }));
-    setLoadingUnis(true);
-    listUniversities({ countryId, status: "active" })
-      .then((rows) => setUniversities(rows))
-      .catch((e) => toast.error(e.message ?? "Failed to load universities"))
-      .finally(() => setLoadingUnis(false));
+    const loadUnis = async () => {
+      setUniversityId(""); setCampusId(""); setProgramId("");
+      setUniversities([]); setCampuses([]); setPrograms([]);
+      if (!preselectionApplied.current && !targetUniId.current) {
+        setForm((f) => ({ ...f, university: "", campus: "", program: "", degree: "", intake: "", scholarship: "" }));
+      }
+
+      
+      if (!countryId) return;
+      
+      const country = countries.find((c) => c.id === countryId);
+      setForm((f) => ({ ...f, country: country?.name ?? "" }));
+      
+      setLoadingUnis(true);
+      try {
+        const rows = await listUniversities({ countryId, status: "active" });
+        setUniversities(rows);
+        if (targetUniId.current && rows.some(r => r.id === targetUniId.current)) {
+          setUniversityId(targetUniId.current);
+        }
+      } catch (e: any) {
+        toast.error(e.message ?? "Failed to load universities");
+      } finally {
+        setLoadingUnis(false);
+      }
+    };
+    
+    loadUnis();
   }, [countryId, countries]);
+
 
   // University change → load campuses + programs.
   useEffect(() => {
-    setCampusId(""); setProgramId("");
-    setCampuses([]); setPrograms([]);
-    setForm((f) => ({ ...f, campus: "", program: "", degree: "", intake: "", scholarship: "" }));
-    if (!universityId) { setForm((f) => ({ ...f, university: "" })); return; }
-    const uni = universities.find((u) => u.id === universityId);
-    setForm((f) => ({ ...f, university: uni?.name ?? "" }));
-    setLoadingCampuses(true); setLoadingPrograms(true);
-    listCampuses(universityId)
-      .then((rows) => setCampuses(rows.filter((c) => c.status === "active")))
-      .catch((e) => toast.error(e.message ?? "Failed to load campuses"))
-      .finally(() => setLoadingCampuses(false));
-    listPrograms({ universityId, status: "active" })
-      .then((rows) => setPrograms(rows))
-      .catch((e) => toast.error(e.message ?? "Failed to load programs"))
-      .finally(() => setLoadingPrograms(false));
-  }, [universityId, universities]);
+    const loadUniData = async () => {
+      setCampusId(""); setProgramId("");
+      setCampuses([]); setPrograms([]);
+      if (!preselectionApplied.current && !targetProgId.current) {
+        setForm((f) => ({ ...f, campus: "", program: "", degree: "", intake: "", scholarship: "" }));
+      }
+
+      
+      if (!universityId) { setForm((f) => ({ ...f, university: "" })); return; }
+      
+      const uni = universities.find((u) => u.id === universityId);
+      setForm((f) => ({ ...f, university: uni?.name ?? "" }));
+      
+      setLoadingCampuses(true); setLoadingPrograms(true);
+      try {
+        const [campusRows, programRows] = await Promise.all([
+          listCampuses(universityId),
+          listPrograms({ universityId, status: "active" })
+        ]);
+        
+        const activeCampuses = campusRows.filter((c) => c.status === "active");
+        setCampuses(activeCampuses);
+        setPrograms(programRows);
+
+        if (targetProgId.current) {
+          const p = programRows.find(r => r.id === targetProgId.current);
+          if (p) {
+            const progId = targetProgId.current;
+            const targetCampusId = p.campus_id && activeCampuses.some(c => c.id === p.campus_id) ? p.campus_id : "";
+            const campusName = targetCampusId ? (activeCampuses.find(c => c.id === targetCampusId)?.name || "") : "";
+
+            // Apply pre-selection all at once to minimize flashes and race conditions
+            setTimeout(() => {
+              setProgramId(progId);
+              setCampusId(targetCampusId);
+              
+              setForm(f => ({
+                ...f,
+                university: uni?.name ?? f.university,
+                campus: campusName,
+                program: p.name,
+                degree: p.degree ?? f.degree ?? "",
+                intake: p.intake ?? f.intake ?? "",
+                scholarship: p.scholarship ?? f.scholarship ?? "",
+                application_fee: p.application_fee ?? f.application_fee ?? undefined,
+                registration_fee: p.registration_fee ?? f.registration_fee ?? undefined,
+                emgs_fee: p.emgs_fee ?? f.emgs_fee ?? undefined,
+                others_fee: p.others_fee ?? f.others_fee ?? undefined,
+              }));
+
+              targetUniId.current = null;
+              targetProgId.current = null;
+              preselectionApplied.current = true;
+            }, 0);
+          }
+        }
+
+      } catch (e: any) {
+        toast.error(e.message ?? "Failed to load institution data");
+      } finally {
+        setLoadingCampuses(false);
+        setLoadingPrograms(false);
+      }
+    };
+    
+    loadUniData();
+
+  }, [universityId, universities]); // targetProgId/targetUniId are stable enough or can be omitted if they are one-shot
+
 
   // Campus change → set text; filter programs.
   useEffect(() => {
@@ -365,10 +442,14 @@ function NewApplicationPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value={NONE}>— None —</SelectItem>
-                        {["Foundation","Diploma","Bachelor","Master","MBA","PhD","Certificate"].map((d) => (
+                        {Array.from(new Set([
+                          "Foundation", "Diploma", "Bachelor", "Master", "MBA", "PhD", "Certificate",
+                          ...(form.degree ? [form.degree] : [])
+                        ])).map((d) => (
                           <SelectItem key={d} value={d}>{d}</SelectItem>
                         ))}
                       </SelectContent>
+
                     </Select>
                   </ModernField>
                 </div>

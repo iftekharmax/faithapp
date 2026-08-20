@@ -101,7 +101,7 @@ function ApplicationsPage() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [createdBy, setCreatedBy] = useState<string>("all");
-  const [assignedTo, setAssignedTo] = useState<string>("all");
+  const [assigned, setAssigned] = useState<string>("all");
 
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
   
@@ -164,10 +164,10 @@ function ApplicationsPage() {
       }
       if (status !== "all" && a.status !== status) return false;
       if (canSeeCreator && createdBy !== "all" && a.created_by !== createdBy) return false;
-      if (assignedTo !== "all") {
-        if (assignedTo === "__none__") {
+      if (assigned !== "all") {
+        if (assigned === "__none__") {
           if (a.assigned_team_id) return false;
-        } else if (a.assigned_team_id !== assignedTo) {
+        } else if (a.assigned_team_id !== assigned) {
           return false;
         }
       }
@@ -193,13 +193,13 @@ function ApplicationsPage() {
   const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const clearFilters = () => {
-    setQ(""); setStatus("all"); setCreatedBy("all"); setAssignedTo("all");
+    setQ(""); setStatus("all"); setCreatedBy("all"); setAssigned("all");
     setCountry("all"); setUniversity("all"); setIntake("all");
 
   };
   const activeFilterCount = [
     status !== "all", country !== "all",
-    university !== "all", intake !== "all", createdBy !== "all", assignedTo !== "all",
+    university !== "all", intake !== "all", createdBy !== "all", assigned !== "all",
   ].filter(Boolean).length;
 
   return (
@@ -315,7 +315,7 @@ function ApplicationsPage() {
               )}
               <div>
                 <Label className="text-[11px] uppercase text-muted-foreground">Assigned</Label>
-                <Select value={assignedTo} onValueChange={setAssignedTo}>
+                <Select value={assigned} onValueChange={setAssigned}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>

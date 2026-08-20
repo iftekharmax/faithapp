@@ -119,10 +119,11 @@ function ApplicationsPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const [list, docs, userList] = await Promise.all([
+      const [list, docs, userList, teamList] = await Promise.all([
         listApplications(),
         listDocumentStatusByApplication().catch(() => ({} as Record<string, DocSummaryStatus>)),
         canSeeCreator ? listUsers() : Promise.resolve([]),
+        listStaff("application_team"),
       ]);
 
       setApps(list);
@@ -132,6 +133,10 @@ function ApplicationsPage() {
         userList.forEach((u) => { map[u.id] = u.full_name || u.email; });
         setUsers(map);
       }
+      
+      const teamMap: Record<string, string> = {};
+      teamList.forEach((u) => { teamMap[u.id] = u.full_name || u.email; });
+      setAppTeam(teamMap);
 
     }
     catch (e: any) { toast.error(e.message ?? "Failed to load applications"); }

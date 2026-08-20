@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = "https://qdveirhlzuzrxaqjevxr.supabase.co";
@@ -7,7 +8,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   global: {
     fetch: (input, init) => {
       const h = new Headers(init?.headers);
-      if (h.get("Authorization") === \`Bearer \${SUPABASE_PUBLISHABLE_KEY}\`) h.delete("Authorization");
+      if (h.get("Authorization") === `Bearer ${SUPABASE_PUBLISHABLE_KEY}`) h.delete("Authorization");
       h.set("apikey", SUPABASE_PUBLISHABLE_KEY);
       return fetch(input, { ...init, headers: h });
     },

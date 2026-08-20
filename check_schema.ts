@@ -1,15 +1,19 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = "https://qdveirhlzuzrxaqjevxr.supabase.co";
-const supabaseKey = "sb_publishable_BKdIW3Wk9DQ5-oBiNPHGmw_2lpXrA0Z";
+const SUPABASE_URL = "https://qdveirhlzuzrxaqjevxr.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BKdIW3Wk9DQ5-oBiNPHGmw_2lpXrA0Z";
 
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY');
-  process.exit(1);
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  global: {
+    fetch: (input, init) => {
+      const h = new Headers(init?.headers);
+      if (h.get("Authorization") === `Bearer ${SUPABASE_PUBLISHABLE_KEY}`) h.delete("Authorization");
+      h.set("apikey", SUPABASE_PUBLISHABLE_KEY);
+      return fetch(input, { ...init, headers: h });
+    },
+  },
+});
 
 async function checkSchema() {
   console.log('Checking applications table...');
@@ -34,6 +38,18 @@ async function checkSchema() {
     console.error('Error fetching assigned_team relationship:', relError);
   } else {
     console.log('assigned_team relationship result:', relData);
+  }
+
+  console.log('\nChecking application_timeline relationship...');
+  const { data: timelineData, error: timelineError } = await supabase
+    .from('application_timeline')
+    .select('*, actor_profile:profiles(id, full_name)')
+    .limit(1);
+
+  if (timelineError) {
+    console.error('Error fetching application_timeline relationship:', timelineError);
+  } else {
+    console.log('application_timeline relationship result:', timelineData);
   }
 }
 

@@ -127,7 +127,12 @@ function NewApplicationPage() {
     setForm((f) => ({ ...f, country: country?.name ?? "" }));
     setLoadingUnis(true);
     listUniversities({ countryId, status: "active" })
-      .then((rows) => setUniversities(rows))
+      .then((rows) => {
+        setUniversities(rows);
+        if (targetUniId && rows.some(r => r.id === targetUniId)) {
+          setUniversityId(targetUniId);
+        }
+      })
       .catch((e) => toast.error(e.message ?? "Failed to load universities"))
       .finally(() => setLoadingUnis(false));
   }, [countryId, countries]);

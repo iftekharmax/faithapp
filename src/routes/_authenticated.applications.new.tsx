@@ -519,7 +519,7 @@ function NewApplicationPage() {
                     </Select>
                   </ModernField>
 
-                  <ModernField label="Assigned Team Member" icon={<User className="h-4 w-4" />}>
+                  <ModernField label="Assigned" icon={<User className="h-4 w-4" />}>
                     <Select value={form.assigned_team_id ?? NONE} onValueChange={(v) => set("assigned_team_id", v === NONE ? null : v)}>
                       <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50/50 focus:bg-white focus:ring-indigo-500/20">
                         <SelectValue placeholder="Select team member" />

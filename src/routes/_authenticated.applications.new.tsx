@@ -159,7 +159,10 @@ function NewApplicationPage() {
     const loadUniData = async () => {
       setCampusId(""); setProgramId("");
       setCampuses([]); setPrograms([]);
-      setForm((f) => ({ ...f, campus: "", program: "", degree: "", intake: "", scholarship: "" }));
+      if (!preselectionApplied.current && !targetProgId.current) {
+        setForm((f) => ({ ...f, campus: "", program: "", degree: "", intake: "", scholarship: "" }));
+      }
+
       
       if (!universityId) { setForm((f) => ({ ...f, university: "" })); return; }
       

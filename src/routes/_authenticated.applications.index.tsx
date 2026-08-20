@@ -301,7 +301,7 @@ function ApplicationsPage() {
               </div>
               {canSeeCreator && (
                 <div>
-                  <Label className="text-[11px] uppercase text-muted-foreground">Created By</Label>
+                  <Label className="text-[11px] uppercase text-muted-foreground">Created</Label>
                   <Select value={createdBy} onValueChange={setCreatedBy}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>

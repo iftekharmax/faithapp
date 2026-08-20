@@ -98,15 +98,16 @@ function ApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
+  const [createdBy, setCreatedBy] = useState<string>("all");
 
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
-
   
   const [country, setCountry] = useState<string>("all");
   const [university, setUniversity] = useState<string>("all");
   const [intake, setIntake] = useState<string>("all");
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
+
   const [selected, setSelected] = useState<Application | null>(null);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -154,12 +155,14 @@ function ApplicationsPage() {
         if (!hay.includes(term)) return false;
       }
       if (status !== "all" && a.status !== status) return false;
+      if (canSeeCreator && createdBy !== "all" && a.created_by !== createdBy) return false;
       
       if (country !== "all" && a.country !== country) return false;
       if (university !== "all" && a.university !== university) return false;
       if (intake !== "all" && a.intake !== intake) return false;
       return true;
     });
+
 
     return [...result].sort((a, b) => {
       const dateA = new Date(a.created_at || 0).getTime();
@@ -168,19 +171,20 @@ function ApplicationsPage() {
     });
   }, [apps, q, status, country, university, intake, sortBy]);
 
-  useEffect(() => { setPage(1); }, [q, status, country, university, intake]);
+  useEffect(() => { setPage(1); }, [q, status, country, university, intake, createdBy]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
   const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const clearFilters = () => {
-    setQ(""); setStatus("all");
+    setQ(""); setStatus("all"); setCreatedBy("all");
     setCountry("all"); setUniversity("all"); setIntake("all");
+
   };
   const activeFilterCount = [
     status !== "all", country !== "all",
-    university !== "all", intake !== "all",
+    university !== "all", intake !== "all", createdBy !== "all",
   ].filter(Boolean).length;
 
   return (
@@ -248,7 +252,8 @@ function ApplicationsPage() {
           </div>
 
           {showFilters && (
-            <div className="grid gap-3 rounded-md border bg-muted/30 p-3 md:grid-cols-3">
+            <div className={`grid gap-3 rounded-md border bg-muted/30 p-3 md:grid-cols-${canSeeCreator ? "4" : "3"}`}>
+
               <div>
                 <Label className="text-[11px] uppercase text-muted-foreground">Country</Label>
                 <Select value={country} onValueChange={setCountry}>
@@ -279,7 +284,22 @@ function ApplicationsPage() {
                   </SelectContent>
                 </Select>
               </div>
+              {canSeeCreator && (
+                <div>
+                  <Label className="text-[11px] uppercase text-muted-foreground">Created By</Label>
+                  <Select value={createdBy} onValueChange={setCreatedBy}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Users</SelectItem>
+                      {Object.entries(users).map(([id, name]) => (
+                        <SelectItem key={id} value={id}>{name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
+
           )}
 
           <div className="overflow-x-auto rounded-md border">

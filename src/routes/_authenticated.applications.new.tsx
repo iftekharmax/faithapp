@@ -151,7 +151,21 @@ function NewApplicationPage() {
       .catch((e) => toast.error(e.message ?? "Failed to load campuses"))
       .finally(() => setLoadingCampuses(false));
     listPrograms({ universityId, status: "active" })
-      .then((rows) => setPrograms(rows))
+      .then((rows) => {
+        setPrograms(rows);
+        if (targetProgId) {
+          const p = rows.find(r => r.id === targetProgId);
+          if (p) {
+            setProgramId(targetProgId);
+            if (p.campus_id) {
+              setCampusId(p.campus_id);
+            }
+            // Clear targets once applied to avoid issues if user manually changes things later
+            setTargetUniId(null);
+            setTargetProgId(null);
+          }
+        }
+      })
       .catch((e) => toast.error(e.message ?? "Failed to load programs"))
       .finally(() => setLoadingPrograms(false));
   }, [universityId, universities]);

@@ -119,23 +119,33 @@ function NewApplicationPage() {
 
   // Country change → load universities in that country.
   useEffect(() => {
-    setUniversityId(""); setCampusId(""); setProgramId("");
-    setUniversities([]); setCampuses([]); setPrograms([]);
-    setForm((f) => ({ ...f, university: "", campus: "", program: "", degree: "", intake: "", scholarship: "" }));
-    if (!countryId) return;
-    const country = countries.find((c) => c.id === countryId);
-    setForm((f) => ({ ...f, country: country?.name ?? "" }));
-    setLoadingUnis(true);
-    listUniversities({ countryId, status: "active" })
-      .then((rows) => {
+    const loadUnis = async () => {
+      setUniversityId(""); setCampusId(""); setProgramId("");
+      setUniversities([]); setCampuses([]); setPrograms([]);
+      setForm((f) => ({ ...f, university: "", campus: "", program: "", degree: "", intake: "", scholarship: "" }));
+      
+      if (!countryId) return;
+      
+      const country = countries.find((c) => c.id === countryId);
+      setForm((f) => ({ ...f, country: country?.name ?? "" }));
+      
+      setLoadingUnis(true);
+      try {
+        const rows = await listUniversities({ countryId, status: "active" });
         setUniversities(rows);
         if (targetUniId && rows.some(r => r.id === targetUniId)) {
           setUniversityId(targetUniId);
         }
-      })
-      .catch((e) => toast.error(e.message ?? "Failed to load universities"))
-      .finally(() => setLoadingUnis(false));
+      } catch (e: any) {
+        toast.error(e.message ?? "Failed to load universities");
+      } finally {
+        setLoadingUnis(false);
+      }
+    };
+    
+    loadUnis();
   }, [countryId, countries]);
+
 
   // University change → load campuses + programs.
   useEffect(() => {

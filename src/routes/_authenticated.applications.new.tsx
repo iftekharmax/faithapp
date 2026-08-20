@@ -62,9 +62,8 @@ function NewApplicationPage() {
   const [campusId, setCampusId] = useState<string>("");
   const [programId, setProgramId] = useState<string>("");
 
-  // Target IDs for pre-selection from URL
-  const [targetUniId, setTargetUniId] = useState<string | null>(null);
-  const [targetProgId, setTargetProgId] = useState<string | null>(null);
+  // Refs to track pre-selection application to avoid loops or redundant resets
+  const preselectionApplied = useRef(false);
 
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [form, setForm] = useState<ApplicationInput>({
@@ -96,13 +95,8 @@ function NewApplicationPage() {
         // Check search params for pre-selection
         const searchParams = new URLSearchParams(window.location.search);
         const urlUniId = searchParams.get("universityId");
-        const urlProgId = searchParams.get("programId");
-
-        if (urlUniId) {
-          setTargetUniId(urlUniId);
-          if (urlProgId) setTargetProgId(urlProgId);
-
-          // Find country for this university first to start the cascade
+        
+        if (urlUniId && !preselectionApplied.current) {
           const { data: uniData } = await supabase
             .from("universities")
             .select("country_id")
@@ -111,11 +105,13 @@ function NewApplicationPage() {
 
           if (uniData?.country_id) {
             setCountryId(uniData.country_id);
+            // universityId will be set in the listUniversities effect
           }
         }
       } catch (e: any) { toast.error(e.message ?? "Failed to load form data"); }
     })();
   }, []);
+
 
   // Country change → load universities in that country.
   useEffect(() => {

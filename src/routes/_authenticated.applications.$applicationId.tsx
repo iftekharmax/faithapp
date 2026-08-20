@@ -420,7 +420,7 @@ function ApplicationDetailPage() {
 
                   <Field label="Assigned">
                     <Select value={app.assigned_team_id || "__none__"} onValueChange={(v) => set("assigned_team_id", v === "__none__" ? null : v)}>
-                      <SelectTrigger><SelectValue placeholder="Select team member" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="Select staff" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="__none__">— Unassigned —</SelectItem>
                         {appTeam.map((u) => (

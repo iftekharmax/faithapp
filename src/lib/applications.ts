@@ -125,6 +125,7 @@ export interface ApplicationTimelineEvent {
   metadata: Record<string, unknown> | null;
   actor_id: string | null;
   actor_email: string | null;
+  actor_profile?: { id: string; full_name: string | null; email: string } | null;
   created_at: string;
 }
 

@@ -344,7 +344,7 @@ export function TimelineEventItem({
 
       <p className="mt-1 text-[11px] text-muted-foreground">
         {new Date(event.created_at).toLocaleString()}
-        {event.actor_email ? ` · ${event.actor_email}` : ""}
+        {event.actor_profile ? ` · ${event.actor_profile.full_name || event.actor_profile.email}` : event.actor_email ? ` · ${event.actor_email}` : ""}
       </p>
 
       <Dialog open={dialogOpen} onOpenChange={(o) => { if (!uploading) setDialogOpen(o); }}>

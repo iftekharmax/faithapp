@@ -138,7 +138,7 @@ export interface StaffOption {
 export async function listApplications(): Promise<Application[]> {
   const { data, error } = await supabase
     .from("applications")
-    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles!applications_assigned_team_id_fkey(id, full_name, email)")
+    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles(id, full_name, email)")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Application[];
@@ -147,7 +147,7 @@ export async function listApplications(): Promise<Application[]> {
 export async function getApplication(id: string): Promise<Application | null> {
   const { data, error } = await supabase
     .from("applications")
-    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles!applications_assigned_team_id_fkey(id, full_name, email)")
+    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles(id, full_name, email)")
     .eq("id", id).maybeSingle();
   if (error) throw error;
   return (data as Application) ?? null;

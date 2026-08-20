@@ -122,6 +122,7 @@ function ApplicationDetailPage() {
     status: app.status,
     notes: app.notes,
     assigned_team_id: app.assigned_team_id,
+    assigned_team: app.assigned_team,
   } : null, [app]);
 
   const set = <K extends keyof Application>(k: K, v: Application[K]) =>

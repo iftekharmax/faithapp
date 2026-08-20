@@ -166,8 +166,10 @@ export function TimelineEventItem({
       ? "bg-muted-foreground/60"
       : toStatus
         ? DOC_REQUEST_DOT_STYLE[toStatus]
-        : "bg-primary";
-  const dotLabel = docBadgeLabel ?? (isModuleRemoval ? "Workflow change" : event.event_type);
+        : event.event_type === "assignment"
+          ? "bg-blue-600"
+          : "bg-primary";
+  const dotLabel = docBadgeLabel ?? (isModuleRemoval ? "Workflow change" : event.event_type === "assignment" ? "Assignment" : event.event_type);
 
   return (
     <li className="group relative">

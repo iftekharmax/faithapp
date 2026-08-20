@@ -301,7 +301,7 @@ function ApplicationsPage() {
               </div>
               {canSeeCreator && (
                 <div>
-                  <Label className="text-[11px] uppercase text-muted-foreground">Created By</Label>
+                  <Label className="text-[11px] uppercase text-muted-foreground">Created</Label>
                   <Select value={createdBy} onValueChange={setCreatedBy}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -314,7 +314,7 @@ function ApplicationsPage() {
                 </div>
               )}
               <div>
-                <Label className="text-[11px] uppercase text-muted-foreground">Assigned To</Label>
+                <Label className="text-[11px] uppercase text-muted-foreground">Assigned</Label>
                 <Select value={assignedTo} onValueChange={setAssignedTo}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -340,9 +340,9 @@ function ApplicationsPage() {
                   <TableHead className="hidden lg:table-cell">Intake</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Documents</TableHead>
-                  {canSeeCreator && <TableHead>Created By</TableHead>}
-                  <TableHead>Assigned To</TableHead>
-                <TableHead className="w-24">Created</TableHead>
+                  {canSeeCreator && <TableHead>Created</TableHead>}
+                  <TableHead>Assigned</TableHead>
+                <TableHead className="w-24">Date</TableHead>
 
                 <TableHead className="w-16 text-right">Actions</TableHead>
                 </TableRow>

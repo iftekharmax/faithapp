@@ -380,7 +380,7 @@ function StudentsPage() {
                   <TableHead className="hidden lg:table-cell">Nationality</TableHead>
                   <TableHead className="hidden lg:table-cell">Passport expiry</TableHead>
                   <TableHead>Status</TableHead>
-                  {canSeeCreator && <TableHead>Created By</TableHead>}
+                  {canSeeCreator && <TableHead>Created</TableHead>}
                   <TableHead className="w-24 text-right">Actions</TableHead>
 
                 </TableRow>

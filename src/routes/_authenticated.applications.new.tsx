@@ -126,7 +126,10 @@ function NewApplicationPage() {
     const loadUnis = async () => {
       setUniversityId(""); setCampusId(""); setProgramId("");
       setUniversities([]); setCampuses([]); setPrograms([]);
-      setForm((f) => ({ ...f, university: "", campus: "", program: "", degree: "", intake: "", scholarship: "" }));
+      if (!preselectionApplied.current && !targetUniId.current) {
+        setForm((f) => ({ ...f, university: "", campus: "", program: "", degree: "", intake: "", scholarship: "" }));
+      }
+
       
       if (!countryId) return;
       

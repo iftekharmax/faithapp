@@ -173,13 +173,16 @@ function NewApplicationPage() {
         if (targetProgId) {
           const p = programRows.find(r => r.id === targetProgId);
           if (p) {
-            setProgramId(targetProgId);
-            if (p.campus_id && activeCampuses.some(c => c.id === p.campus_id)) {
-              setCampusId(p.campus_id);
-            }
-            // Clear targets once applied
-            setTargetUniId(null);
-            setTargetProgId(null);
+            // Use setTimeout to ensure all state updates are processed
+            setTimeout(() => {
+              setProgramId(targetProgId);
+              if (p.campus_id && activeCampuses.some(c => c.id === p.campus_id)) {
+                setCampusId(p.campus_id);
+              }
+              // Clear targets
+              setTargetUniId(null);
+              setTargetProgId(null);
+            }, 0);
           }
         }
       } catch (e: any) {

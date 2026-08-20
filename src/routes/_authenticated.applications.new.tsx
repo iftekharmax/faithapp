@@ -137,8 +137,8 @@ function NewApplicationPage() {
       try {
         const rows = await listUniversities({ countryId, status: "active" });
         setUniversities(rows);
-        if (targetUniId && rows.some(r => r.id === targetUniId)) {
-          setUniversityId(targetUniId);
+        if (targetUniId.current && rows.some(r => r.id === targetUniId.current)) {
+          setUniversityId(targetUniId.current);
         }
       } catch (e: any) {
         toast.error(e.message ?? "Failed to load universities");
@@ -174,18 +174,20 @@ function NewApplicationPage() {
         setCampuses(activeCampuses);
         setPrograms(programRows);
 
-        if (targetProgId) {
-          const p = programRows.find(r => r.id === targetProgId);
+        if (targetProgId.current) {
+          const p = programRows.find(r => r.id === targetProgId.current);
           if (p) {
             // Use setTimeout to ensure all state updates are processed
+            const progId = targetProgId.current;
             setTimeout(() => {
-              setProgramId(targetProgId);
+              setProgramId(progId);
               if (p.campus_id && activeCampuses.some(c => c.id === p.campus_id)) {
                 setCampusId(p.campus_id);
               }
-              // Clear targets
-              setTargetUniId(null);
-              setTargetProgId(null);
+              // Clear targets to prevent re-application on manual changes
+              targetUniId.current = null;
+              targetProgId.current = null;
+              preselectionApplied.current = true;
             }, 0);
           }
         }
@@ -198,6 +200,7 @@ function NewApplicationPage() {
     };
     
     loadUniData();
+
   }, [universityId, universities]); // targetProgId/targetUniId are stable enough or can be omitted if they are one-shot
 
 

@@ -102,6 +102,7 @@ export interface Application {
   registration_fee: number | null;
   emgs_fee: number | null;
   others_fee: number | null;
+  assigned_team_id: string | null;
   
   status: ApplicationStatus;
   notes: string | null;
@@ -112,6 +113,7 @@ export interface Application {
   updated_at: string;
   // joined
   student?: { id: string; full_name: string; student_code: string; email: string | null } | null;
+  assigned_team?: { id: string; full_name: string | null; email: string } | null;
 }
 
 export interface ApplicationTimelineEvent {
@@ -136,7 +138,7 @@ export interface StaffOption {
 export async function listApplications(): Promise<Application[]> {
   const { data, error } = await supabase
     .from("applications")
-    .select("*, student:students(id, full_name, student_code, email)")
+    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles!applications_assigned_team_id_fkey(id, full_name, email)")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Application[];
@@ -145,7 +147,7 @@ export async function listApplications(): Promise<Application[]> {
 export async function getApplication(id: string): Promise<Application | null> {
   const { data, error } = await supabase
     .from("applications")
-    .select("*, student:students(id, full_name, student_code, email)")
+    .select("*, student:students(id, full_name, student_code, email), assigned_team:profiles!applications_assigned_team_id_fkey(id, full_name, email)")
     .eq("id", id).maybeSingle();
   if (error) throw error;
   return (data as Application) ?? null;

@@ -1189,7 +1189,7 @@ function CompareMobileCarousel({
                     <Button variant="ghost" size="sm" className="rounded-xl" onClick={() => onOpen(r)}>
                       <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> Details
                     </Button>
-                    <ApplyButton program={r} className="rounded-xl" />
+                    <ApplyButton program={{ id: r.id, name: r.name }} className="rounded-xl" />
                   </div>
                 </div>
               </div>

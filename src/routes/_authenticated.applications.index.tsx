@@ -314,7 +314,7 @@ function ApplicationsPage() {
                 </div>
               )}
               <div>
-                <Label className="text-[11px] uppercase text-muted-foreground">Assigned To</Label>
+                <Label className="text-[11px] uppercase text-muted-foreground">Assigned</Label>
                 <Select value={assignedTo} onValueChange={setAssignedTo}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>

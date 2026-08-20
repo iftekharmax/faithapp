@@ -139,36 +139,50 @@ function NewApplicationPage() {
 
   // University change → load campuses + programs.
   useEffect(() => {
-    setCampusId(""); setProgramId("");
-    setCampuses([]); setPrograms([]);
-    setForm((f) => ({ ...f, campus: "", program: "", degree: "", intake: "", scholarship: "" }));
-    if (!universityId) { setForm((f) => ({ ...f, university: "" })); return; }
-    const uni = universities.find((u) => u.id === universityId);
-    setForm((f) => ({ ...f, university: uni?.name ?? "" }));
-    setLoadingCampuses(true); setLoadingPrograms(true);
-    listCampuses(universityId)
-      .then((rows) => setCampuses(rows.filter((c) => c.status === "active")))
-      .catch((e) => toast.error(e.message ?? "Failed to load campuses"))
-      .finally(() => setLoadingCampuses(false));
-    listPrograms({ universityId, status: "active" })
-      .then((rows) => {
-        setPrograms(rows);
+    const loadUniData = async () => {
+      setCampusId(""); setProgramId("");
+      setCampuses([]); setPrograms([]);
+      setForm((f) => ({ ...f, campus: "", program: "", degree: "", intake: "", scholarship: "" }));
+      
+      if (!universityId) { setForm((f) => ({ ...f, university: "" })); return; }
+      
+      const uni = universities.find((u) => u.id === universityId);
+      setForm((f) => ({ ...f, university: uni?.name ?? "" }));
+      
+      setLoadingCampuses(true); setLoadingPrograms(true);
+      try {
+        const [campusRows, programRows] = await Promise.all([
+          listCampuses(universityId),
+          listPrograms({ universityId, status: "active" })
+        ]);
+        
+        const activeCampuses = campusRows.filter((c) => c.status === "active");
+        setCampuses(activeCampuses);
+        setPrograms(programRows);
+
         if (targetProgId) {
-          const p = rows.find(r => r.id === targetProgId);
+          const p = programRows.find(r => r.id === targetProgId);
           if (p) {
             setProgramId(targetProgId);
-            if (p.campus_id) {
+            if (p.campus_id && activeCampuses.some(c => c.id === p.campus_id)) {
               setCampusId(p.campus_id);
             }
-            // Clear targets once applied to avoid issues if user manually changes things later
+            // Clear targets once applied
             setTargetUniId(null);
             setTargetProgId(null);
           }
         }
-      })
-      .catch((e) => toast.error(e.message ?? "Failed to load programs"))
-      .finally(() => setLoadingPrograms(false));
-  }, [universityId, universities]);
+      } catch (e: any) {
+        toast.error(e.message ?? "Failed to load institution data");
+      } finally {
+        setLoadingCampuses(false);
+        setLoadingPrograms(false);
+      }
+    };
+    
+    loadUniData();
+  }, [universityId, universities]); // targetProgId/targetUniId are stable enough or can be omitted if they are one-shot
+
 
   // Campus change → set text; filter programs.
   useEffect(() => {

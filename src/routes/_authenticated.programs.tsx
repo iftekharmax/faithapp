@@ -828,8 +828,10 @@ function ProgramCard({ p, universityName, campusName, onDelete }: CardProps) {
           <div className="flex items-center gap-3">
             <Button 
               className="flex-1 h-[46px] rounded-[12px] bg-blue-600 text-[14px] font-bold text-white hover:bg-blue-700 transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
+                // We navigate to /applications/new with search params
+                // The new application page should pick these up and auto-select.
                 navigate({ to: "/applications/new", search: { universityId: p.university?.id, programId: p.id } });
               }}
             >

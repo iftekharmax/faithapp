@@ -31,6 +31,8 @@ import {
   listCountries, listUniversities, listCampuses, listPrograms,
   type Country, type University, type Campus, type UniversityProgram,
 } from "@/lib/universities";
+import { supabase } from "@/lib/supabase";
+
 
 export const Route = createFileRoute("/_authenticated/applications/new")({
   component: () => (

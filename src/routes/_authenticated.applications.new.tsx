@@ -177,20 +177,36 @@ function NewApplicationPage() {
         if (targetProgId.current) {
           const p = programRows.find(r => r.id === targetProgId.current);
           if (p) {
-            // Use setTimeout to ensure all state updates are processed
             const progId = targetProgId.current;
+            const targetCampusId = p.campus_id && activeCampuses.some(c => c.id === p.campus_id) ? p.campus_id : "";
+            const campusName = targetCampusId ? (activeCampuses.find(c => c.id === targetCampusId)?.name || "") : "";
+
+            // Apply pre-selection all at once to minimize flashes and race conditions
             setTimeout(() => {
               setProgramId(progId);
-              if (p.campus_id && activeCampuses.some(c => c.id === p.campus_id)) {
-                setCampusId(p.campus_id);
-              }
-              // Clear targets to prevent re-application on manual changes
+              setCampusId(targetCampusId);
+              
+              setForm(f => ({
+                ...f,
+                university: uni?.name ?? f.university,
+                campus: campusName,
+                program: p.name,
+                degree: p.degree ?? f.degree ?? "",
+                intake: p.intake ?? f.intake ?? "",
+                scholarship: p.scholarship ?? f.scholarship ?? "",
+                application_fee: p.application_fee ?? f.application_fee ?? undefined,
+                registration_fee: p.registration_fee ?? f.registration_fee ?? undefined,
+                emgs_fee: p.emgs_fee ?? f.emgs_fee ?? undefined,
+                others_fee: p.others_fee ?? f.others_fee ?? undefined,
+              }));
+
               targetUniId.current = null;
               targetProgId.current = null;
               preselectionApplied.current = true;
             }, 0);
           }
         }
+
       } catch (e: any) {
         toast.error(e.message ?? "Failed to load institution data");
       } finally {

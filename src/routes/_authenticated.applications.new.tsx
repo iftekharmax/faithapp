@@ -63,8 +63,11 @@ function NewApplicationPage() {
   const [campusId, setCampusId] = useState<string>("");
   const [programId, setProgramId] = useState<string>("");
 
-  // Refs to track pre-selection application to avoid loops or redundant resets
+  // Refs to track pre-selection from URL
+  const targetUniId = useRef<string | null>(null);
+  const targetProgId = useRef<string | null>(null);
   const preselectionApplied = useRef(false);
+
 
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [form, setForm] = useState<ApplicationInput>({

@@ -99,7 +99,10 @@ function NewApplicationPage() {
         const urlProgId = searchParams.get("programId");
 
         if (urlUniId) {
-          // Find country for this university first
+          setTargetUniId(urlUniId);
+          if (urlProgId) setTargetProgId(urlProgId);
+
+          // Find country for this university first to start the cascade
           const { data: uniData } = await supabase
             .from("universities")
             .select("country_id")
@@ -108,11 +111,6 @@ function NewApplicationPage() {
 
           if (uniData?.country_id) {
             setCountryId(uniData.country_id);
-            // Delay university setting to ensure cascade picks it up
-            setTimeout(() => setUniversityId(urlUniId), 100);
-            if (urlProgId) {
-              setTimeout(() => setProgramId(urlProgId), 200);
-            }
           }
         }
       } catch (e: any) { toast.error(e.message ?? "Failed to load form data"); }

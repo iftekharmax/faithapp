@@ -78,13 +78,37 @@ function NewApplicationPage() {
     notes: "",
   });
 
-  // Initial load: students + countries.
+  // Initial load: students + countries + pre-select from URL
   useEffect(() => {
     (async () => {
       try {
         const [s, c] = await Promise.all([listStudentsLite(), listCountries()]);
         setStudents(s);
-        setCountries(c.filter((x) => x.status === "active"));
+        const activeCountries = c.filter((x) => x.status === "active");
+        setCountries(activeCountries);
+
+        // Check search params for pre-selection
+        const searchParams = new URLSearchParams(window.location.search);
+        const urlUniId = searchParams.get("universityId");
+        const urlProgId = searchParams.get("programId");
+
+        if (urlUniId) {
+          // Find country for this university first
+          const { data: uniData } = await supabase
+            .from("universities")
+            .select("country_id")
+            .eq("id", urlUniId)
+            .maybeSingle();
+
+          if (uniData?.country_id) {
+            setCountryId(uniData.country_id);
+            // Delay university setting to ensure cascade picks it up
+            setTimeout(() => setUniversityId(urlUniId), 100);
+            if (urlProgId) {
+              setTimeout(() => setProgramId(urlProgId), 200);
+            }
+          }
+        }
       } catch (e: any) { toast.error(e.message ?? "Failed to load form data"); }
     })();
   }, []);

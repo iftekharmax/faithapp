@@ -849,7 +849,7 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                         <div className="flex items-center gap-3">
                           <Button 
                             className="flex-1 h-[46px] rounded-[12px] bg-blue-600 text-[14px] font-bold text-white hover:bg-blue-700 transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
-                            onClick={(e) => {
+                            onClick={async (e) => {
                               e.stopPropagation();
                               navigate({ to: "/applications/new", search: { universityId, programId: p.id } });
                             }}

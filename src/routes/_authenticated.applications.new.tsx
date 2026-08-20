@@ -420,10 +420,14 @@ function NewApplicationPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value={NONE}>— None —</SelectItem>
-                        {["Foundation","Diploma","Bachelor","Master","MBA","PhD","Certificate"].map((d) => (
+                        {Array.from(new Set([
+                          "Foundation", "Diploma", "Bachelor", "Master", "MBA", "PhD", "Certificate",
+                          ...(form.degree ? [form.degree] : [])
+                        ])).map((d) => (
                           <SelectItem key={d} value={d}>{d}</SelectItem>
                         ))}
                       </SelectContent>
+
                     </Select>
                   </ModernField>
                 </div>

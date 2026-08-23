@@ -1,8 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 
 // Publishable (anon) key — safe to ship in client bundle.
-const SUPABASE_URL = "https://qdveirhlzuzrxaqjevxr.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BKdIW3Wk9DQ5-oBiNPHGmw_2lpXrA0Z";
+const SUPABASE_URL = "http://supabasekong-hzfocpuu60pnsz7ymsrcvj7o.194.233.66.66.sslip.io";
+const SUPABASE_PUBLISHABLE_KEY =
+  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc4NzQ2MjE2MCwiZXhwIjo0OTQzMTM1NzYwLCJyb2xlIjoiYW5vbiJ9.MKnYf63pLHjGrOVDZqHswu0V_WMu8Aa4Af7Eg-rrFgI";
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {

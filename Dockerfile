@@ -16,6 +16,10 @@ RUN bun run build
 FROM oven/bun:1-slim AS runner
 WORKDIR /app
 
+# Coolify's healthcheck runs curl inside the container.
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+    
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 # Coolify injects PORT automatically; 3000 is just the fallback.

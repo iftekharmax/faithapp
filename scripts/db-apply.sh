@@ -30,7 +30,7 @@ fi
 if [ -z "$DB_URL" ]; then
   echo -e "${RED}ERROR: SUPABASE_DB_URL is not set.${NC}"
   echo "Please set it before running this script:"
-  echo "export SUPABASE_DB_URL=\"postgresql://postgres:PASSWORD@db.qdveirhlzuzrxaqjevxr.supabase.co:5432/postgres\""
+  echo "export SUPABASE_DB_URL=\"postgresql://postgres:PASSWORD@api.applywaybd.com:5432/postgres\""
   echo "npm run db:apply"
   exit 1
 fi

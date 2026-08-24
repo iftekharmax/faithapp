@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = "https://qdveirhlzuzrxaqjevxr.supabase.co";
+const SUPABASE_URL = "https://api.applywaybd.com";
 const ALL_ROLES = ["admin", "counselor", "application_team", "student"] as const;
 
 function json(body: unknown, status = 200) {

@@ -1,7 +1,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = "https://qdveirhlzuzrxaqjevxr.supabase.co";
+const SUPABASE_URL = "https://api.applywaybd.com";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BKdIW3Wk9DQ5-oBiNPHGmw_2lpXrA0Z";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {

@@ -90,8 +90,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Faith AMS — Application Management System" },
       { name: "twitter:description", content: "Faith AMS is an enterprise application management platform for education consultancies. Manage students, applications, counselors and workflows in one place." },
-      { property: "og:image", content: "https://applywaybd.com/og-image.png" },
-      { name: "twitter:image", content: "https://applywaybd.com/og-image.png" },
+      { property: "og:image", content: "https://applywaybd.com/preview.png" },
+      { name: "twitter:image", content: "https://applywaybd.com/preview.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

@@ -161,13 +161,13 @@ export const Route =
         // doesn't pay DNS + TLS cost.
         {
           rel: "preconnect",
-          href: "https://qdveirhlzuzrxaqjevxr.supabase.co",
+          href: "https://api.applywaybd.com",
           crossOrigin: "anonymous",
         },
 
         {
           rel: "dns-prefetch",
-          href: "https://qdveirhlzuzrxaqjevxr.supabase.co",
+          href: "https://api.applywaybd.com",
         },
       ],
     }),

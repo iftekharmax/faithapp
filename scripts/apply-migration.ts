@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
 
-const SUPABASE_URL = "https://qdveirhlzuzrxaqjevxr.supabase.co";
+const SUPABASE_URL = "https://api.applywaybd.com";
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SB_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_SERVICE_ROLE_KEY) {

@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 async function migrate() {
-  const SUPABASE_URL = process.env.VITE_SUPABASE_URL || "https://qdveirhlzuzrxaqjevxr.supabase.co";
+  const SUPABASE_URL = process.env.VITE_SUPABASE_URL || "https://api.applywaybd.com";
   const SERVICE_ROLE_KEY = process.env.SB_SERVICE_ROLE_KEY;
 
   if (!SERVICE_ROLE_KEY) {

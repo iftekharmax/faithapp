@@ -64,7 +64,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           >
             Try again
           </button>
-          <a
+          
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
@@ -90,8 +90,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Faith AMS — Application Management System" },
       { name: "twitter:description", content: "Faith AMS is an enterprise application management platform for education consultancies. Manage students, applications, counselors and workflows in one place." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4762841a-0817-4678-91c2-5af5916f7532/id-preview-858af8d1--b3a95749-5360-4090-91dd-9f6eb945373a.lovable.app-1784334520300.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4762841a-0817-4678-91c2-5af5916f7532/id-preview-858af8d1--b3a95749-5360-4090-91dd-9f6eb945373a.lovable.app-1784334520300.png" },
+      { property: "og:image", content: "https://applywaybd.com/og-image.png" },
+      { name: "twitter:image", content: "https://applywaybd.com/og-image.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

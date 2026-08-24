@@ -11,8 +11,8 @@ import { test, expect, type Page, type Route } from "@playwright/test";
  *   - the BulkResultsDialog per-user breakdown + accessibility announcements
  */
 
-const SUPABASE_HOST = "qdveirhlzuzrxaqjevxr.supabase.co";
-const STORAGE_KEY = "sb-qdveirhlzuzrxaqjevxr-auth-token";
+const SUPABASE_HOST = "api.applywaybd.com";
+const STORAGE_KEY = "sb-api-auth-token";
 const ADMIN_ID = "00000000-0000-0000-0000-000000000001";
 
 // 25 fake users so pagination (PAGE_SIZE = 10) engages.

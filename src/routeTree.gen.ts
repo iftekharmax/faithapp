@@ -35,6 +35,7 @@ import { Route as AuthenticatedCounselorsIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedApplicationsIndexRouteImport } from './routes/_authenticated.applications.index'
 import { Route as ApiPublicTaskDigestRouteImport } from './routes/api/public/task-digest'
 import { Route as ApiAdminResendVerificationRouteImport } from './routes/api.admin.resend-verification'
+import { Route as ApiAdminDeleteUserRouteImport } from './routes/api.admin.delete-user'
 import { Route as ApiAdminCreateUserRouteImport } from './routes/api.admin.create-user'
 import { Route as AuthenticatedStudentsNewRouteImport } from './routes/_authenticated.students.new'
 import { Route as AuthenticatedStudentsImportRouteImport } from './routes/_authenticated.students.import'
@@ -187,6 +188,11 @@ const ApiAdminResendVerificationRoute =
     path: '/api/admin/resend-verification',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAdminDeleteUserRoute = ApiAdminDeleteUserRouteImport.update({
+  id: '/api/admin/delete-user',
+  path: '/api/admin/delete-user',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAdminCreateUserRoute = ApiAdminCreateUserRouteImport.update({
   id: '/api/admin/create-user',
   path: '/api/admin/create-user',
@@ -301,6 +307,7 @@ export interface FileRoutesByFullPath {
   '/students/import': typeof AuthenticatedStudentsImportRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
+  '/api/admin/delete-user': typeof ApiAdminDeleteUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
   '/api/public/task-digest': typeof ApiPublicTaskDigestRoute
   '/applications/': typeof AuthenticatedApplicationsIndexRoute
@@ -342,6 +349,7 @@ export interface FileRoutesByTo {
   '/students/import': typeof AuthenticatedStudentsImportRoute
   '/students/new': typeof AuthenticatedStudentsNewRoute
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
+  '/api/admin/delete-user': typeof ApiAdminDeleteUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
   '/api/public/task-digest': typeof ApiPublicTaskDigestRoute
   '/applications': typeof AuthenticatedApplicationsIndexRoute
@@ -385,6 +393,7 @@ export interface FileRoutesById {
   '/_authenticated/students/import': typeof AuthenticatedStudentsImportRoute
   '/_authenticated/students/new': typeof AuthenticatedStudentsNewRoute
   '/api/admin/create-user': typeof ApiAdminCreateUserRoute
+  '/api/admin/delete-user': typeof ApiAdminDeleteUserRoute
   '/api/admin/resend-verification': typeof ApiAdminResendVerificationRoute
   '/api/public/task-digest': typeof ApiPublicTaskDigestRoute
   '/_authenticated/applications/': typeof AuthenticatedApplicationsIndexRoute
@@ -428,6 +437,7 @@ export interface FileRouteTypes {
     | '/students/import'
     | '/students/new'
     | '/api/admin/create-user'
+    | '/api/admin/delete-user'
     | '/api/admin/resend-verification'
     | '/api/public/task-digest'
     | '/applications/'
@@ -469,6 +479,7 @@ export interface FileRouteTypes {
     | '/students/import'
     | '/students/new'
     | '/api/admin/create-user'
+    | '/api/admin/delete-user'
     | '/api/admin/resend-verification'
     | '/api/public/task-digest'
     | '/applications'
@@ -511,6 +522,7 @@ export interface FileRouteTypes {
     | '/_authenticated/students/import'
     | '/_authenticated/students/new'
     | '/api/admin/create-user'
+    | '/api/admin/delete-user'
     | '/api/admin/resend-verification'
     | '/api/public/task-digest'
     | '/_authenticated/applications/'
@@ -530,6 +542,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   ApiAdminCreateUserRoute: typeof ApiAdminCreateUserRoute
+  ApiAdminDeleteUserRoute: typeof ApiAdminDeleteUserRoute
   ApiAdminResendVerificationRoute: typeof ApiAdminResendVerificationRoute
   ApiPublicTaskDigestRoute: typeof ApiPublicTaskDigestRoute
 }
@@ -716,6 +729,13 @@ declare module '@tanstack/react-router' {
       path: '/api/admin/resend-verification'
       fullPath: '/api/admin/resend-verification'
       preLoaderRoute: typeof ApiAdminResendVerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/delete-user': {
+      id: '/api/admin/delete-user'
+      path: '/api/admin/delete-user'
+      fullPath: '/api/admin/delete-user'
+      preLoaderRoute: typeof ApiAdminDeleteUserRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/admin/create-user': {
@@ -918,6 +938,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   ApiAdminCreateUserRoute: ApiAdminCreateUserRoute,
+  ApiAdminDeleteUserRoute: ApiAdminDeleteUserRoute,
   ApiAdminResendVerificationRoute: ApiAdminResendVerificationRoute,
   ApiPublicTaskDigestRoute: ApiPublicTaskDigestRoute,
 }

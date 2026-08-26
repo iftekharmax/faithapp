@@ -66,6 +66,31 @@ async function audit(
   }
 }
 
+async function findAuthUserByEmail(admin: any, email: string) {
+  const needle = email.trim().toLowerCase();
+  for (let page = 1; page <= 20; page += 1) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw error;
+    const users = Array.isArray(data?.users) ? data.users : [];
+    const found = users.find((u: any) => typeof u.email === "string" && u.email.toLowerCase() === needle);
+    if (found) return found;
+    if (users.length < 1000) return null;
+  }
+  return null;
+}
+
+async function hasProfile(admin: any, userId: string): Promise<boolean> {
+  const { data, error } = await admin.from("profiles").select("id").eq("id", userId).maybeSingle();
+  if (error) throw error;
+  return Boolean(data?.id);
+}
+
+async function cleanupOrphanAuthUser(admin: any, userId: string) {
+  await admin.from("user_roles").delete().eq("user_id", userId);
+  const { error } = await admin.auth.admin.deleteUser(userId, false);
+  if (error) throw error;
+}
+
 export const Route = createFileRoute("/api/admin/create-user")({
   server: {
     handlers: {
@@ -87,7 +112,9 @@ export const Route = createFileRoute("/api/admin/create-user")({
         } = body ?? {};
 
         // Backend validation
-        if (typeof email !== "string" || !email.includes("@")) {
+        const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+
+        if (!normalizedEmail || !normalizedEmail.includes("@")) {
           return json({ error: "Valid email is required" }, 400);
         }
         if (typeof password !== "string" || password.length < 8) {
@@ -106,12 +133,42 @@ export const Route = createFileRoute("/api/admin/create-user")({
         // still respects Supabase's "Confirm email" setting.
         const emailConfirm = require_verification === true ? false : true;
 
-        const { data: created, error: cErr } = await admin.auth.admin.createUser({
-          email,
+        let createdResult = await admin.auth.admin.createUser({
+          email: normalizedEmail,
           password,
           email_confirm: emailConfirm,
           user_metadata: { full_name: full_name || null },
         });
+
+        if (createdResult.error && /already.*registered|already.*exists|already.*been registered/i.test(createdResult.error.message)) {
+          try {
+            const existing = await findAuthUserByEmail(admin, normalizedEmail);
+            if (existing?.id && !(await hasProfile(admin, existing.id))) {
+              await cleanupOrphanAuthUser(admin, existing.id);
+              await audit(admin, {
+                actor_id: callerId,
+                actor_email: callerEmail,
+                action: "user.orphan_auth.cleanup",
+                metadata: { email: normalizedEmail, deleted_user_id: existing.id },
+              });
+              createdResult = await admin.auth.admin.createUser({
+                email: normalizedEmail,
+                password,
+                email_confirm: emailConfirm,
+                user_metadata: { full_name: full_name || null },
+              });
+            }
+          } catch (cleanupErr: any) {
+            await audit(admin, {
+              actor_id: callerId,
+              actor_email: callerEmail,
+              action: "user.orphan_auth.cleanup.failed",
+              metadata: { email: normalizedEmail, error: cleanupErr?.message ?? "unknown" },
+            });
+          }
+        }
+
+        const { data: created, error: cErr } = createdResult;
 
         if (cErr || !created?.user) {
           await audit(admin, {
@@ -119,7 +176,7 @@ export const Route = createFileRoute("/api/admin/create-user")({
             actor_email: callerEmail,
             action: "user.create.failed",
             metadata: {
-              email,
+              email: normalizedEmail,
               email_confirm: emailConfirm,
               require_verification: require_verification === true,
               error: cErr?.message ?? "unknown",
@@ -146,7 +203,7 @@ export const Route = createFileRoute("/api/admin/create-user")({
             actor_email: callerEmail,
             target_user_id: newUserId,
             action: "user.create.partial",
-            metadata: { email, stage: "profile", error: pErr.message },
+            metadata: { email: normalizedEmail, stage: "profile", error: pErr.message },
           });
         }
 
@@ -160,7 +217,7 @@ export const Route = createFileRoute("/api/admin/create-user")({
             actor_email: callerEmail,
             target_user_id: newUserId,
             action: "user.create.partial",
-            metadata: { email, stage: "roles", error: rolesErr.message },
+            metadata: { email: normalizedEmail, stage: "roles", error: rolesErr.message },
           });
           return json({ error: `User created but role sync failed: ${rolesErr.message}` }, 500);
         }
@@ -171,7 +228,7 @@ export const Route = createFileRoute("/api/admin/create-user")({
           target_user_id: newUserId,
           action: "user.create.success",
           metadata: {
-            email,
+            email: normalizedEmail,
             roles,
             email_confirm: emailConfirm,
             require_verification: require_verification === true,

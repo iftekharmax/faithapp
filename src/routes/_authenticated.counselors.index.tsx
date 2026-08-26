@@ -300,7 +300,6 @@ function CounselorsPage() {
         const ids = Array.from(selected);
         for (const id of ids) {
           await deleteUserProfile(id);
-          await writeAudit({ action: "user.delete", target_user_id: id, metadata: { via: "counselors.bulk" } });
         }
         toast.success(`Deleted ${ids.length} counselor${ids.length === 1 ? "" : "s"}`);
       } else if (pendingAction === "resend") {
@@ -782,7 +781,7 @@ function CounselorsPage() {
             </AlertDialogTitle>
             <AlertDialogDescription>
               {pendingAction === "delete"
-                ? "This removes the selected profiles and cannot be undone. Auth accounts remain in Supabase."
+                ? "This permanently removes the selected auth accounts, profiles, and role assignments. The same emails can be registered again."
                 : pendingAction === "resend"
                   ? `A new verification email will be sent to each unverified counselor in your selection. Any counselors on cooldown will be skipped.${
                       selected.size - selectedUnverified.length > 0
@@ -814,7 +813,7 @@ function CounselorsPage() {
               Delete {pendingDelete?.full_name || pendingDelete?.email}?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This removes their profile record and cannot be undone. The Supabase auth account itself is preserved.
+              This permanently removes their auth account, profile, and role assignments. The same email can be registered again.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -828,7 +827,6 @@ function CounselorsPage() {
                 setWorking(true);
                 try {
                   await deleteUserProfile(pendingDelete.id);
-                  await writeAudit({ action: "user.delete", target_user_id: pendingDelete.id, metadata: { via: "counselors.row" } });
                   toast.success("Counselor deleted");
                   setPendingDelete(null);
                   await load();

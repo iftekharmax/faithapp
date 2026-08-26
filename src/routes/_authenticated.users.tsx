@@ -567,7 +567,7 @@ function UsersPage() {
                           )}
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="text-destructive" onClick={() => setDeleting(u)}>
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete profile
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete user
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -626,8 +626,8 @@ function UsersPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete user profile?</AlertDialogTitle>
             <AlertDialogDescription>
-              This removes the profile row and role assignments for <b>{deleting?.email}</b>. The underlying
-              auth account is not removed (requires service role); use "Mark inactive" for a soft disable.
+              This permanently removes the auth account, profile, and role assignments for <b>{deleting?.email}</b>.
+              After deletion, the same email can be registered again.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -636,10 +636,8 @@ function UsersPage() {
               onClick={async () => {
                 if (!deleting) return;
                 try {
-                  await setUserRoles(deleting.id, []);
                   await deleteUserProfile(deleting.id);
-                  await writeAudit({ action: "user.delete", target_user_id: deleting.id, metadata: { email: deleting.email } });
-                  toast.success("Profile deleted");
+                  toast.success("User deleted");
                   setDeleting(null);
                   await load();
                 } catch (e: any) {

@@ -64,10 +64,20 @@ export async function setUserRoles(userId: string, roles: AppRole[]) {
 }
 
 export async function deleteUserProfile(id: string) {
-  // Cannot delete auth.users from client (needs service role). Marks the profile
-  // inactive and removes the profile row (auth account remains).
-  const { error } = await supabase.from("profiles").delete().eq("id", id);
-  if (error) throw error;
+  const { data: sess } = await supabase.auth.getSession();
+  const token = sess.session?.access_token;
+  if (!token) throw new Error("Not signed in");
+
+  const res = await fetch("/api/admin/delete-user", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ user_id: id }),
+  });
+  const payload = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(payload?.error || "Failed to delete user");
 }
 
 export async function lockUser(id: string, locked: boolean) {

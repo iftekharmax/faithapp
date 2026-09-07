@@ -109,20 +109,35 @@ export const Route = createFileRoute("/api/admin/delete-user")({
 
         await clearProfileReferences(admin, user_id);
 
-        const { error: deleteErr } = await admin.auth.admin.deleteUser(user_id, false);
-        if (deleteErr) {
-          await audit(admin, {
-            actor_id: callerId,
-            actor_email: callerEmail,
-            action: "user.delete.failed",
-            metadata: {
-              deleted_user_id: user_id,
-              email: targetEmail ?? profileData?.email ?? null,
-              error: deleteErr.message,
-            },
-          });
-          return json({ error: deleteErr.message }, 400);
+        const authExists = Boolean(targetData?.user?.id);
+        if (authExists) {
+          const { error: deleteErr } = await admin.auth.admin.deleteUser(user_id, false);
+          const notFound = deleteErr && /not found/i.test(deleteErr.message || "");
+          if (deleteErr && !notFound) {
+            await audit(admin, {
+              actor_id: callerId,
+              actor_email: callerEmail,
+              action: "user.delete.failed",
+              metadata: {
+                deleted_user_id: user_id,
+                email: targetEmail ?? profileData?.email ?? null,
+                error: deleteErr.message,
+              },
+            });
+            return json({ error: deleteErr.message }, 400);
+          }
         }
+
+        // Remove app-level records even when the auth account is already gone,
+        // otherwise the user keeps appearing in the users list.
+        try {
+          await admin.from("user_roles").delete().eq("user_id", user_id);
+        } catch {
+          // table may not exist on older databases
+        }
+        const { error: profileErr } = await admin.from("profiles").delete().eq("id", user_id);
+        if (profileErr) return json({ error: profileErr.message }, 400);
+
 
         await audit(admin, {
           actor_id: callerId,

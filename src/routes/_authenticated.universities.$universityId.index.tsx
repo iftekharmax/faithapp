@@ -38,6 +38,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { CsvToolbar } from "@/components/universities/CsvToolbar";
+import { hasScholarship } from "@/lib/programs";
 import {
   exportCampusesCsv, previewCampusesCsv,
   exportProgramsCsv, previewProgramsCsv,
@@ -523,8 +524,8 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
     (intakeFilter === "all" || String(p.intake ?? "").toLowerCase().includes(intakeFilter.toLowerCase())) &&
     (scholarshipFilter === "all" ||
       (scholarshipFilter === "yes"
-        ? !!String(p.scholarship ?? "").replace(/<[^>]*>/g, "").trim()
-        : !String(p.scholarship ?? "").replace(/<[^>]*>/g, "").trim()))
+        ? hasScholarship(p.scholarship)
+        : !hasScholarship(p.scholarship)))
   ).sort((a, b) => {
     if (sortOrder === "newest") return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
     if (sortOrder === "oldest") return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
@@ -823,24 +824,17 @@ function ProgramsTab({ universityId, programs, campuses, canEdit, onChange, uni,
                               {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
                             </p>
                           </div>
-                          {(() => {
-                            const scholarshipClean = String(p.scholarship ?? "").replace(/<[^>]*>/g, "").trim();
-                            const hasScholarship = Boolean(
-                              scholarshipClean &&
-                              !["no", "none", "n/a", "nil", "0", "false"].includes(scholarshipClean.toLowerCase())
-                            );
-                            return hasScholarship ? (
-                              <div className="bg-emerald-50 rounded-2xl p-3.5 text-center border border-emerald-100/50">
-                                <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/60 mb-1.5">Scholarship</p>
-                                <p className="text-[12px] font-medium text-emerald-600">Available</p>
-                              </div>
-                            ) : (
-                              <div className="bg-red-50 rounded-2xl p-3.5 text-center border border-red-100/50">
-                                <p className="text-[9px] font-bold uppercase tracking-wider text-red-600/60 mb-1.5">Scholarship</p>
-                                <p className="text-[12px] font-medium text-red-600">Unavailable</p>
-                              </div>
-                            );
-                          })()}
+                          {hasScholarship(p.scholarship) ? (
+                            <div className="bg-emerald-50 rounded-2xl p-3.5 text-center border border-emerald-100/50">
+                              <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/60 mb-1.5">Scholarship</p>
+                              <p className="text-[12px] font-medium text-emerald-600">Available</p>
+                            </div>
+                          ) : (
+                            <div className="bg-red-50 rounded-2xl p-3.5 text-center border border-red-100/50">
+                              <p className="text-[9px] font-bold uppercase tracking-wider text-red-600/60 mb-1.5">Scholarship</p>
+                              <p className="text-[12px] font-medium text-red-600">Unavailable</p>
+                            </div>
+                          )}
                           <div className="bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-100/50">
                             <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">App. Fee</p>
                             <p className="text-[12px] font-medium text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>

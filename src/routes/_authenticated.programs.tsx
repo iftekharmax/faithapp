@@ -19,7 +19,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import {
-  listPrograms, listCountriesLite, listUniversitiesLite, listIntakes,
+  listPrograms, listCountriesLite, listUniversitiesLite, listIntakes, hasScholarship,
   type ProgramRow, type ProgramFilters,
 } from "@/lib/programs";
 import {
@@ -304,7 +304,7 @@ function ProgramsPage() {
 
   const stats = useMemo(() => {
     const uniqUnis = new Set(rows.map((r) => r.university?.id).filter(Boolean)).size;
-    const scholarships = rows.filter((r) => r.scholarship).length;
+    const scholarships = rows.filter((r) => hasScholarship(r.scholarship)).length;
     return { total: rows.length, uniqUnis, scholarships };
   }, [rows]);
 
@@ -802,24 +802,17 @@ function ProgramCard({ p, universityName, campusName, onDelete }: CardProps) {
                 {p.currency || "MYR"} {p.tuition_fee ? p.tuition_fee.toLocaleString() : "89,474"}
               </p>
             </div>
-            {(() => {
-              const scholarshipClean = String(p.scholarship ?? "").replace(/<[^>]*>/g, "").trim();
-              const hasScholarship = Boolean(
-                scholarshipClean &&
-                !["no", "none", "n/a", "nil", "0", "false"].includes(scholarshipClean.toLowerCase())
-              );
-              return hasScholarship ? (
-                <div className="bg-emerald-50 rounded-2xl p-3.5 text-center border border-emerald-100/50">
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/60 mb-1.5">Scholarship</p>
-                  <p className="text-[12px] font-medium text-emerald-600">Available</p>
-                </div>
-              ) : (
-                <div className="bg-red-50 rounded-2xl p-3.5 text-center border border-red-100/50">
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-red-600/60 mb-1.5">Scholarship</p>
-                  <p className="text-[12px] font-medium text-red-600">Unavailable</p>
-                </div>
-              );
-            })()}
+            {hasScholarship(p.scholarship) ? (
+              <div className="bg-emerald-50 rounded-2xl p-3.5 text-center border border-emerald-100/50">
+                <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/60 mb-1.5">Scholarship</p>
+                <p className="text-[12px] font-medium text-emerald-600">Available</p>
+              </div>
+            ) : (
+              <div className="bg-red-50 rounded-2xl p-3.5 text-center border border-red-100/50">
+                <p className="text-[9px] font-bold uppercase tracking-wider text-red-600/60 mb-1.5">Scholarship</p>
+                <p className="text-[12px] font-medium text-red-600">Unavailable</p>
+              </div>
+            )}
             <div className="bg-slate-50 rounded-2xl p-3.5 text-center border border-slate-100/50">
               <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">App. Fee</p>
               <p className="text-[12px] font-medium text-slate-900">{p.currency || "MYR"} {p.application_fee || "600"}</p>
@@ -955,7 +948,7 @@ function ProgramDetail({ r, bookmarked, onBookmark, onShare }: { r: ProgramRow; 
         <Button variant="outline" size="sm" onClick={onShare}>
           <Share2 className="mr-1.5 h-4 w-4" /> Share link
         </Button>
-        {r.scholarship && (
+        {hasScholarship(r.scholarship) && (
           <Badge className="bg-amber-500 hover:bg-amber-500"><Award className="mr-1 h-3 w-3" />Scholarship available</Badge>
         )}
       </div>

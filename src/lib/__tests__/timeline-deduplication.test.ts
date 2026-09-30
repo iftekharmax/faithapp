@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { getDocRequestTitle } from "@/components/applications/TimelineEventItem";
 import { isDocRequestTransitionAllowed } from "@/lib/document-requests";
+import { hasScholarship } from "@/lib/programs";
 
 describe("Timeline Document Event Handling", () => {
   it("formats title correctly according to status", () => {
@@ -45,5 +46,22 @@ describe("Timeline Document Event Handling", () => {
     expect(isDocRequestTransitionAllowed("rejected", "pending")).toBe(true);
     expect(isDocRequestTransitionAllowed("rejected", "under_review")).toBe(true);
     expect(isDocRequestTransitionAllowed("rejected", "required")).toBe(true);
+  });
+
+  it("correctly identifies when a scholarship is available or unavailable", () => {
+    // Available
+    expect(hasScholarship("Scholarship Up to 30%")).toBe(true);
+    expect(hasScholarship("<div>£2,500 Postgraduate Scholarship</div>")).toBe(true);
+    expect(hasScholarship("36% Discount on Published Tuition Fee")).toBe(true);
+
+    // Unavailable / Empty / Placeholder
+    expect(hasScholarship(null)).toBe(false);
+    expect(hasScholarship("")).toBe(false);
+    expect(hasScholarship("<br>")).toBe(false);
+    expect(hasScholarship("Not Specified")).toBe(false);
+    expect(hasScholarship("<u>N/A</u>")).toBe(false);
+    expect(hasScholarship("None")).toBe(false);
+    expect(hasScholarship("No")).toBe(false);
+    expect(hasScholarship("Unavailable")).toBe(false);
   });
 });

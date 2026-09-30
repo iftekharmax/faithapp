@@ -22,6 +22,33 @@ export interface ProgramRow {
   created_at?: string;
 }
 
+export function hasScholarship(val: string | null | undefined): boolean {
+  if (!val) return false;
+  const clean = String(val)
+    .replace(/&nbsp;/gi, " ")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+  if (!clean) return false;
+  const emptyPhrases = [
+    "no",
+    "none",
+    "n/a",
+    "na",
+    "nil",
+    "0",
+    "false",
+    "not specified",
+    "notspecified",
+    "not available",
+    "unavailable",
+    "no scholarship",
+    "none available",
+  ];
+  return !emptyPhrases.includes(clean);
+}
+
 export interface ProgramFilters {
   q?: string;
   country_id?: string;

@@ -86,7 +86,22 @@ function ApplicationDetailPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [noteTitle, setNoteTitle] = useState("");
   const [noteDesc, setNoteDesc] = useState("");
-  const [activeTab, setActiveTab] = useState<string>("timeline");
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const t = new URLSearchParams(window.location.search).get("tab");
+      if (t === "requests" || t === "documents") return "requests";
+      if (t) return t;
+    }
+    return "timeline";
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const t = new URLSearchParams(window.location.search).get("tab");
+      if (t === "requests" || t === "documents") setActiveTab("requests");
+      else if (t) setActiveTab(t);
+    }
+  }, []);
   const [appTeam, setAppTeam] = useState<StaffOption[]>([]);
 
   const reloadTimeline = async () => {

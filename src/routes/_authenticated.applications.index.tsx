@@ -3,7 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { listUsers } from "@/lib/user-management";
 
-import { Search, Plus, RefreshCw, Filter, X, FileText, Pencil, Trash2, ArrowUpDown } from "lucide-react";
+import {
+  Search, Plus, RefreshCw, Filter, X, FileText, Pencil, Trash2,
+  ArrowUpDown, MoreHorizontal, UserPlus, UserCheck, Download, Loader2
+} from "lucide-react";
 import { toast } from "sonner";
 import { RoleGuard } from "@/components/layout/RoleGuard";
 import { Button } from "@/components/ui/button";
@@ -17,22 +20,32 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { EmptyState } from "@/components/ui/empty-state";
 import { TableSkeleton } from "@/components/ui/table-skeleton";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter,
+  DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 
 import {
   listApplications,
   deleteApplication,
+  updateApplication,
   APPLICATION_STATUSES, APPLICATION_STATUS_LABELS,
   type Application, type ApplicationStatus,
-  listStaff
+  listStaff, type StaffOption
 } from "@/lib/applications";
 import {
   listDocumentStatusByApplication,
   type DocSummaryStatus,
 } from "@/lib/document-requests";
-
+import { exportApplicationPDF } from "@/lib/application-export";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/applications/")({
@@ -70,6 +83,7 @@ const statusColor: Record<ApplicationStatus, string> = {
   withdrawn: "bg-muted text-muted-foreground",
   rejected: "bg-red-500/15 text-red-600",
 };
+
 const docStatusLabel: Record<Exclude<DocSummaryStatus, "none">, string> = {
   required: "Required",
   pending: "Pending",
@@ -84,8 +98,6 @@ const docStatusColor: Record<Exclude<DocSummaryStatus, "none">, string> = {
   rejected: "bg-red-500/15 text-red-600",
 };
 
-
-
 function ApplicationsPage() {
   const navigate = useNavigate();
   const { hasRole } = useAuth();
@@ -95,9 +107,11 @@ function ApplicationsPage() {
 
   const [users, setUsers] = useState<Record<string, string>>({});
   const [appTeam, setAppTeam] = useState<Record<string, string>>({});
+  const [appTeamStaff, setAppTeamStaff] = useState<StaffOption[]>([]);
   const [apps, setApps] = useState<Application[]>([]);
   const [docStatuses, setDocStatuses] = useState<Record<string, DocSummaryStatus>>({});
   const [loading, setLoading] = useState(true);
+
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [createdBy, setCreatedBy] = useState<string>("all");
@@ -111,10 +125,23 @@ function ApplicationsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
 
+  // Selected item for dialogs
   const [selected, setSelected] = useState<Application | null>(null);
 
+  // Delete dialog
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  // Assignee dialog
+  const [assignOpen, setAssignOpen] = useState(false);
+  const [assigning, setAssigning] = useState(false);
+  const [assigneeId, setAssigneeId] = useState<string>("__none__");
+
+  // Status dialog
+  const [statusOpen, setStatusOpen] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [nextStatus, setNextStatus] = useState<ApplicationStatus>("draft");
+  const [statusNote, setStatusNote] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -137,14 +164,13 @@ function ApplicationsPage() {
       const teamMap: Record<string, string> = {};
       teamList.forEach((u) => { teamMap[u.id] = u.full_name || u.email; });
       setAppTeam(teamMap);
+      setAppTeamStaff(teamList);
 
     }
     catch (e: any) { toast.error(e.message ?? "Failed to load applications"); }
     finally { setLoading(false); }
   };
   useEffect(() => { load(); }, [isAdmin, isAppTeam]);
-
-
 
   const uniq = (arr: (string | null | undefined)[]) =>
     Array.from(new Set(arr.filter(Boolean) as string[])).sort();
@@ -178,15 +204,14 @@ function ApplicationsPage() {
       return true;
     });
 
-
     return [...result].sort((a, b) => {
       const dateA = new Date(a.created_at || 0).getTime();
       const dateB = new Date(b.created_at || 0).getTime();
       return sortBy === "newest" ? dateB - dateA : dateA - dateB;
     });
-  }, [apps, q, status, country, university, intake, sortBy]);
+  }, [apps, q, status, country, university, intake, createdBy, assigned, sortBy, canSeeCreator]);
 
-  useEffect(() => { setPage(1); }, [q, status, country, university, intake, createdBy]);
+  useEffect(() => { setPage(1); }, [q, status, country, university, intake, createdBy, assigned]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
@@ -195,12 +220,73 @@ function ApplicationsPage() {
   const clearFilters = () => {
     setQ(""); setStatus("all"); setCreatedBy("all"); setAssigned("all");
     setCountry("all"); setUniversity("all"); setIntake("all");
-
   };
   const activeFilterCount = [
     status !== "all", country !== "all",
     university !== "all", intake !== "all", createdBy !== "all", assigned !== "all",
   ].filter(Boolean).length;
+
+  // Actions logic
+  const handleSaveAssignment = async () => {
+    if (!selected) return;
+    setAssigning(true);
+    try {
+      const targetId = assigneeId === "__none__" || !assigneeId ? null : assigneeId;
+      await updateApplication(selected.id, { assigned_team_id: targetId });
+      toast.success(
+        targetId
+          ? `Assigned to ${appTeam[targetId] || "staff"}`
+          : "Application unassigned"
+      );
+      setAssignOpen(false);
+      await load();
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to update assignment");
+    } finally {
+      setAssigning(false);
+    }
+  };
+
+  const handleSaveStatus = async () => {
+    if (!selected) return;
+    setUpdatingStatus(true);
+    try {
+      const requiresNote = ["visa_refused", "rejected", "withdrawn"].includes(nextStatus);
+      if (requiresNote && !statusNote.trim()) {
+        toast.error("Please add a note explaining this status change");
+        setUpdatingStatus(false);
+        return;
+      }
+
+      const updatedNotes = statusNote.trim()
+        ? selected.notes
+          ? `${selected.notes}\n\n[Status Change to ${APPLICATION_STATUS_LABELS[nextStatus]}]: ${statusNote.trim()}`
+          : statusNote.trim()
+        : selected.notes;
+
+      await updateApplication(selected.id, {
+        status: nextStatus,
+        notes: updatedNotes,
+      });
+
+      toast.success(`Status updated to ${APPLICATION_STATUS_LABELS[nextStatus]}`);
+      setStatusOpen(false);
+      await load();
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to update status");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
+  const handleDownloadPdf = (a: Application) => {
+    try {
+      exportApplicationPDF(a);
+      toast.success(`Downloaded ${a.application_code || "application"} summary PDF`);
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to export PDF");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -254,9 +340,18 @@ function ApplicationsPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="sm" onClick={() => setShowFilters((v) => !v)}>
+              <Button
+                variant={showFilters ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => setShowFilters((v) => !v)}
+              >
                 <Filter className="mr-2 h-4 w-4" />
-                Filters {activeFilterCount > 0 && <Badge variant="secondary" className="ml-2">{activeFilterCount}</Badge>}
+                Filters
+                {activeFilterCount > 0 && (
+                  <Badge variant="secondary" className="ml-1.5 px-1.5 py-0 text-[10px]">
+                    {activeFilterCount}
+                  </Badge>
+                )}
               </Button>
               {activeFilterCount > 0 && (
                 <Button variant="ghost" size="sm" onClick={clearFilters}>
@@ -267,15 +362,14 @@ function ApplicationsPage() {
           </div>
 
           {showFilters && (
-            <div className={`grid gap-3 rounded-md border bg-muted/30 p-3 md:grid-cols-${canSeeCreator ? "5" : "4"}`}>
-
+            <div className="grid gap-3 rounded-lg border bg-muted/30 p-3 sm:grid-cols-2 md:grid-cols-5">
               <div>
                 <Label className="text-[11px] uppercase text-muted-foreground">Country</Label>
                 <Select value={country} onValueChange={setCountry}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
-                    {countries.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    {countries.map((c) => (<SelectItem key={c} value={c}>{c}</SelectItem>))}
                   </SelectContent>
                 </Select>
               </div>
@@ -285,7 +379,7 @@ function ApplicationsPage() {
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
-                    {universities.map((u) => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                    {universities.map((u) => (<SelectItem key={u} value={u}>{u}</SelectItem>))}
                   </SelectContent>
                 </Select>
               </div>
@@ -295,7 +389,7 @@ function ApplicationsPage() {
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
-                    {intakes.map((i) => <SelectItem key={i} value={i}>{i}</SelectItem>)}
+                    {intakes.map((i) => (<SelectItem key={i} value={i}>{i}</SelectItem>))}
                   </SelectContent>
                 </Select>
               </div>
@@ -327,14 +421,13 @@ function ApplicationsPage() {
                 </Select>
               </div>
             </div>
-
           )}
 
           <div className="overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                <TableHead>Application No.</TableHead>
+                  <TableHead>Application No.</TableHead>
                   <TableHead className="hidden md:table-cell">Student</TableHead>
                   <TableHead className="hidden lg:table-cell">University / Program</TableHead>
                   <TableHead className="hidden lg:table-cell">Intake</TableHead>
@@ -342,17 +435,16 @@ function ApplicationsPage() {
                   <TableHead>Documents</TableHead>
                   {canSeeCreator && <TableHead>Created</TableHead>}
                   <TableHead>Assigned</TableHead>
-                <TableHead className="w-24">Date</TableHead>
-
-                <TableHead className="w-16 text-right">Actions</TableHead>
+                  <TableHead className="w-24">Date</TableHead>
+                  <TableHead className="w-16 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableSkeleton rows={6} columns={8} />
+                  <TableSkeleton rows={6} columns={canSeeCreator ? 10 : 9} />
                 ) : paged.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="p-0">
+                    <TableCell colSpan={canSeeCreator ? 10 : 9} className="p-0">
                       <EmptyState
                         icon={FileText}
                         title="No applications found"
@@ -368,7 +460,6 @@ function ApplicationsPage() {
                       />
                     </TableCell>
                   </TableRow>
-
                 ) : paged.map((a) => (
                   <TableRow 
                     key={a.id} 
@@ -428,31 +519,106 @@ function ApplicationsPage() {
                     </TableCell>
 
                     <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-
                       {a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "—"}
                     </TableCell>
 
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          type="button"
-                          aria-label="Edit application"
-                          title="View & Edit"
-                          onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
-                          className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary active:scale-95"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label="Delete application"
-                          title="Delete"
-                          onClick={() => { setSelected(a); setDeleteOpen(true); }}
-                          className="grid h-8 w-8 place-items-center rounded-full text-destructive transition-all hover:bg-destructive/10 active:scale-95"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full data-[state=open]:bg-muted hover:bg-muted"
+                            aria-label="Application actions"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-52 rounded-2xl p-1.5 shadow-xl border border-slate-100">
+                          {/* 1. Edit */}
+                          <DropdownMenuItem
+                            className="rounded-xl cursor-pointer"
+                            onClick={() => navigate({ to: "/applications/$applicationId", params: { applicationId: a.id } })}
+                          >
+                            <Pencil className="mr-2 h-4 w-4 text-slate-500" />
+                            <span className="font-medium text-slate-700">Edit</span>
+                          </DropdownMenuItem>
+
+                          {/* 2. Add Assigned or Change Assigned */}
+                          <DropdownMenuItem
+                            className="rounded-xl cursor-pointer"
+                            onClick={() => {
+                              setSelected(a);
+                              setAssigneeId(a.assigned_team_id || "__none__");
+                              setAssignOpen(true);
+                            }}
+                          >
+                            {a.assigned_team_id ? (
+                              <>
+                                <UserCheck className="mr-2 h-4 w-4 text-blue-600" />
+                                <span className="font-medium text-slate-700">Change Assigned</span>
+                              </>
+                            ) : (
+                              <>
+                                <UserPlus className="mr-2 h-4 w-4 text-blue-600" />
+                                <span className="font-medium text-slate-700">Add Assigned</span>
+                              </>
+                            )}
+                          </DropdownMenuItem>
+
+                          {/* 3. Status Change */}
+                          <DropdownMenuItem
+                            className="rounded-xl cursor-pointer"
+                            onClick={() => {
+                              setSelected(a);
+                              setNextStatus(a.status);
+                              setStatusNote("");
+                              setStatusOpen(true);
+                            }}
+                          >
+                            <RefreshCw className="mr-2 h-4 w-4 text-emerald-600" />
+                            <span className="font-medium text-slate-700">Status Change</span>
+                          </DropdownMenuItem>
+
+                          {/* 4. View Document */}
+                          <DropdownMenuItem
+                            className="rounded-xl cursor-pointer"
+                            onClick={() =>
+                              navigate({
+                                to: "/applications/$applicationId",
+                                params: { applicationId: a.id },
+                                search: { tab: "requests" } as any,
+                              })
+                            }
+                          >
+                            <FileText className="mr-2 h-4 w-4 text-amber-600" />
+                            <span className="font-medium text-slate-700">View Document</span>
+                          </DropdownMenuItem>
+
+                          {/* 5. Download PDF */}
+                          <DropdownMenuItem
+                            className="rounded-xl cursor-pointer"
+                            onClick={() => handleDownloadPdf(a)}
+                          >
+                            <Download className="mr-2 h-4 w-4 text-purple-600" />
+                            <span className="font-medium text-slate-700">Download PDF</span>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuSeparator className="my-1" />
+
+                          {/* 6. Delete */}
+                          <DropdownMenuItem
+                            className="rounded-xl cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                            onClick={() => {
+                              setSelected(a);
+                              setDeleteOpen(true);
+                            }}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4 text-destructive" />
+                            <span className="font-medium">Delete</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -470,8 +636,139 @@ function ApplicationsPage() {
         </CardContent>
       </Card>
 
-      
+      {/* ── Assignee Dialog (Add Assigned / Change Assigned) ─────────────────── */}
+      <Dialog open={assignOpen} onOpenChange={setAssignOpen}>
+        <DialogContent className="rounded-3xl sm:max-w-[440px]">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-slate-900">
+              {selected?.assigned_team_id ? "Change Assigned Staff" : "Add Assigned Staff"}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-slate-500">
+              Assign an application team member to handle{" "}
+              <span className="font-semibold text-slate-800">
+                {selected?.application_code}
+              </span>{" "}
+              ({selected?.student?.full_name || "Student"}).
+            </DialogDescription>
+          </DialogHeader>
 
+          <div className="space-y-4 py-3">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Assignee
+              </Label>
+              <Select value={assigneeId} onValueChange={setAssigneeId}>
+                <SelectTrigger className="rounded-xl h-11 border-slate-200">
+                  <SelectValue placeholder="Select team member" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="__none__">Unassigned / None</SelectItem>
+                  {appTeamStaff.map((staff) => (
+                    <SelectItem key={staff.id} value={staff.id}>
+                      {staff.full_name || staff.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0 mt-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-xl h-10 font-semibold"
+              onClick={() => setAssignOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              className="rounded-xl h-10 font-semibold bg-blue-600 hover:bg-blue-700"
+              disabled={assigning}
+              onClick={handleSaveAssignment}
+            >
+              {assigning ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Save Assignment
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Status Change Dialog ────────────────────────────────────────────── */}
+      <Dialog open={statusOpen} onOpenChange={setStatusOpen}>
+        <DialogContent className="rounded-3xl sm:max-w-[460px]">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-slate-900">
+              Change Application Status
+            </DialogTitle>
+            <DialogDescription className="text-sm text-slate-500">
+              Update the current admission lifecycle stage for{" "}
+              <span className="font-semibold text-slate-800">
+                {selected?.application_code}
+              </span>{" "}
+              · {selected?.university}.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-3">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                New Status
+              </Label>
+              <Select
+                value={nextStatus}
+                onValueChange={(val) => setNextStatus(val as ApplicationStatus)}
+              >
+                <SelectTrigger className="rounded-xl h-11 border-slate-200">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-60 rounded-xl">
+                  {APPLICATION_STATUSES.map((st) => (
+                    <SelectItem key={st} value={st}>
+                      {APPLICATION_STATUS_LABELS[st]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Status Note {["visa_refused", "rejected", "withdrawn"].includes(nextStatus) ? "(Required)" : "(Optional)"}
+              </Label>
+              <Textarea
+                placeholder="Enter any notes or reasons for this status update…"
+                value={statusNote}
+                onChange={(e) => setStatusNote(e.target.value)}
+                className="rounded-xl min-h-[90px] border-slate-200"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0 mt-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-xl h-10 font-semibold"
+              onClick={() => setStatusOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              className="rounded-xl h-10 font-semibold bg-emerald-600 hover:bg-emerald-700"
+              disabled={updatingStatus}
+              onClick={handleSaveStatus}
+            >
+              {updatingStatus ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Update Status
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Delete Confirmation Dialog ──────────────────────────────────────── */}
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
@@ -502,4 +799,3 @@ function ApplicationsPage() {
     </div>
   );
 }
-

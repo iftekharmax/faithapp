@@ -246,7 +246,12 @@ function UniversityDetail() {
                     </Badge>
                     <div className="flex items-center gap-2 text-slate-600">
                       <MapPin className="h-4 w-4 text-slate-400" />
-                      <span className="font-bold text-slate-900">{uni.city || "Negeri Sembilan"}, Malaysia</span>
+                      {uni.country?.flag_url && (
+                        <img src={uni.country.flag_url} alt="" className="h-3.5 w-5 object-cover rounded-xs" />
+                      )}
+                      <span className="font-bold text-slate-900">
+                        {[uni.city, uni.country?.name].filter(Boolean).join(", ") || "Global"}
+                      </span>
                     </div>
                     {campuses.length > 0 && campuses[0]?.name && (
                       <div className="flex items-center gap-2 text-slate-600">
@@ -265,7 +270,7 @@ function UniversityDetail() {
                 </div>
 
                 <p className="text-[13px] leading-relaxed text-slate-500 max-w-2xl font-medium">
-                  {uni.description || `${uni.name} is a leading private higher education provider in Malaysia, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
+                  {uni.description || `${uni.name} is a leading private higher education provider in ${uni.country?.name || "the region"}, offering a wide range of programs across multiple campuses with a focus on academic excellence and industry relevance.`}
                 </p>
 
 

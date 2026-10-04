@@ -184,6 +184,43 @@ export async function uploadCountryFlag(countryKey: string, file: File): Promise
 }
 
 
+// Accurately counts programs per university, bypassing PostgREST 1000-row limit
+async function getProgramCounts(ids: string[]): Promise<Record<string, number>> {
+  const pCount: Record<string, number> = {};
+  try {
+    const { data, error } = await supabase.rpc("get_university_program_counts");
+    if (!error && Array.isArray(data)) {
+      data.forEach((row: any) => {
+        if (row.university_id) {
+          pCount[row.university_id] = Number(row.program_count) || 0;
+        }
+      });
+      return pCount;
+    }
+  } catch {
+    // fallback to batched query below
+  }
+
+  // Fallback: paginated fetch to overcome PostgREST 1000-row limit
+  let from = 0;
+  const pageSize = 1000;
+  let hasMore = true;
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from("university_programs")
+      .select("university_id")
+      .in("university_id", ids)
+      .range(from, from + pageSize - 1);
+    if (error || !data || data.length === 0) break;
+    data.forEach((p: any) => {
+      pCount[p.university_id] = (pCount[p.university_id] ?? 0) + 1;
+    });
+    if (data.length < pageSize) hasMore = false;
+    else from += pageSize;
+  }
+  return pCount;
+}
+
 // ============ UNIVERSITIES ============
 export async function listUniversities(opts: { search?: string; countryId?: string; status?: UniStatus } = {}): Promise<University[]> {
   let q = supabase
@@ -199,16 +236,14 @@ export async function listUniversities(opts: { search?: string; countryId?: stri
   // enrich with counts
   const ids = rows.map((r) => r.id);
   if (ids.length) {
-    const [{ data: progs }, { data: apps }, { data: camps }] = await Promise.all([
-      supabase.from("university_programs").select("university_id").in("university_id", ids),
+    const [pCount, { data: apps }, { data: camps }] = await Promise.all([
+      getProgramCounts(ids),
       supabase.from("applications").select("university_id, university, student_id"),
       supabase.from("campuses").select("university_id").in("university_id", ids),
     ]);
-    const pCount: Record<string, number> = {};
     const aCount: Record<string, number> = {};
     const cCount: Record<string, number> = {};
     const sCount: Record<string, Set<string>> = {};
-    (progs ?? []).forEach((p: any) => { pCount[p.university_id] = (pCount[p.university_id] ?? 0) + 1; });
     (camps ?? []).forEach((c: any) => { cCount[c.university_id] = (cCount[c.university_id] ?? 0) + 1; });
 
     const nameToId: Record<string, string> = {};
